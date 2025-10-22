@@ -535,27 +535,27 @@ export const toolsDrawerList = [
     items: [
       {
         text: 'common_wordlist',
-        icon: <img src={WordlistIcon} height="28" width="28" alt="wordlist" />,
+        icon: <img src={WordlistIcon} className="tool-drawer-icon" alt="wordlist" />,
         navigateTo: RouteConstants.WORDLIST
       },
       {
         text: 'common_word_in_context',
-        icon: <img src={WordContextIcon} height="28" width="28" alt="wordcontext" />,
+        icon: <img src={WordContextIcon} className="tool-drawer-icon" alt="wordcontext" />,
         navigateTo: RouteConstants.WORDCONTEXT
       },
       {
         text: 'common_neighbouring_words',
-        icon: <img src={CollocatesIcon} height="28" width="28" alt="collocates" />,
+        icon: <img src={CollocatesIcon} className="tool-drawer-icon" alt="collocates" />,
         navigateTo: RouteConstants.COLLOCATES
       },
       {
         text: 'common_word_analyser',
-        icon: <img src={WordAnalyserIcon} height="28" width="28" alt="wordanalyser" />,
+        icon: <img src={WordAnalyserIcon} className="tool-drawer-icon" alt="wordanalyser" />,
         navigateTo: RouteConstants.WORDANALYSER
       },
       {
         text: 'common_clusters',
-        icon: <img src={ClusterfinderIcon} height="28" width="28" alt="clusterfinder" />,
+        icon: <img src={ClusterfinderIcon} className="tool-drawer-icon" alt="clusterfinder" />,
         navigateTo: RouteConstants.CLUSTERFINDER
       }
     ]
