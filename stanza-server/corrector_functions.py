@@ -24,7 +24,7 @@ VERB = "VERB"
 NUM = "NUM"
 N_VAL = "N"
 
-COMPLEXITY_MARKING_MINIMUM_WORDS_IN_LONG_SENTENCE = 15
+COMPLEXITY_MARKING_MINIMUM_WORDS_IN_LONG_SENTENCE = 17
 COMPLEXITY_MARKING_LONG_WORD_LIMIT = 6
 
 replace_combined = re.compile(r'</?span[^>]*>|</?div[^>]*>', re.IGNORECASE)
@@ -418,11 +418,13 @@ def check_if_word_exists_in_text(word):
 
 def handle_uncommon_words_marking(text, word_types, lemmas, words):
     temp_text = replace_combined.sub('', text)
+    uncommon_count = 0
     for index, liik in enumerate(word_types):
         if liik != NUM and liik != N_VAL and liik != PROPN and lemmas[index] not in common_lemmas:
             new_word = f'<span class="uncommon-word-color">{words[index]}</span>'
             temp_text = re.sub(check_if_word_exists_in_text(words[index]), new_word, temp_text)
-    return temp_text
+            uncommon_count += 1
+    return temp_text, uncommon_count
 
 
 def handle_abstract_words_marking(text, abstract_answer, word_types, words):

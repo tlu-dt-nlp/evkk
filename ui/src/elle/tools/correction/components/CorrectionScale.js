@@ -1,11 +1,20 @@
 import React from 'react';
 
 export default function CorrectionScale({ title, startValue, endValue, value, startText, endText, percentage }) {
-  const newEndValue = endValue < value ? Math.ceil(value / 5) * 5 : endValue;
+  let newEndValue = endValue;
+  const val = Number(value);
+  const endVal = Number(endValue);
 
-  const sliderPercentageCorrection = () => {
-    return (newEndValue - startValue) * startValue / 100;
-  };
+  if (endVal < val && val > 10) {
+    newEndValue = Math.ceil(val / 5) * 5;
+  } else if (endVal === val && val > 10) {
+    newEndValue = Math.ceil((val + 0.1) / 5) * 5;
+  } else if (endVal <= val) {
+    newEndValue = Math.ceil(val);
+  }
+
+  const adjustedlength = newEndValue - startValue;
+  const adjustedMarkerPosition = val - startValue;
 
   return (
     <div>
@@ -17,7 +26,7 @@ export default function CorrectionScale({ title, startValue, endValue, value, st
         <div>{percentage ? `${startValue}%` : startValue}</div>
         <div className="slider-track">
           <div className="slider-thumb"
-               style={{ left: `${97 * (value - sliderPercentageCorrection()) / newEndValue}%`, top: '-20%' }}></div>
+               style={{ left: `${adjustedMarkerPosition * 100 / adjustedlength}%`, top: '-20%' }}></div>
           <div className="slider-labels">
             <div>{startText}</div>
             <div>{endText}</div>
