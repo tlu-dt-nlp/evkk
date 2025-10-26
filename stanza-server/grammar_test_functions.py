@@ -8,7 +8,7 @@ PUNCT_TYPES = {"missingPunctuation", "wrongPunctuation"}
 EXTRA_TYPES = {"extraPunctuation", "extraWordError"}
 EXTRA_PUNCT = {"extraPunctuation"}
 
-QUOTE_MARKERS = {'"', "''"}
+QUOTE_MARKERS = '"„“«»'
 ERROR_TYPE_MAP = {
     "õigekiri": "spellingErrorTest",
     "käändevorm": "caseError",
@@ -69,8 +69,10 @@ EXPL_BLOCK_RE = re.compile(
     re.UNICODE | re.DOTALL | re.MULTILINE | re.VERBOSE,
 )
 
+
 def _strip_quotes(s: str) -> str:
-    return (s or "").strip().strip('"„“«»')
+    return (s or "").strip().strip(QUOTE_MARKERS)
+
 
 def parse_explanations(explanations: str) -> List[Dict[str, Any]]:
     text = (explanations or "").strip()
@@ -98,8 +100,14 @@ def parse_explanations(explanations: str) -> List[Dict[str, Any]]:
         })
     return out
 
+
 def starts_with_punct_regex(s: str) -> bool:
-    return bool(re.match(r'^\s*[^\w\s]', s, flags=re.UNICODE))
+    m = re.match(r'^\s*([^\w\s])', s, flags=re.UNICODE)
+    if not m:
+        return False
+    first_char = m.group(1)
+    return first_char not in {"(", "[", "{"}
+
 
 def _norm_corrected_text(it) -> str:
     if not it.get("corrected"):
@@ -110,6 +118,7 @@ def _norm_corrected_text(it) -> str:
         return ""
     return ctext
 
+
 def next_visible_piece(grammatika, i):
     j = i + 1
     n = len(grammatika)
@@ -118,13 +127,14 @@ def next_visible_piece(grammatika, i):
         if it.get("corrected"):
             txt = _norm_corrected_text(it)
             if txt:
-                return ("corrected", txt, it.get("correction_type"), j)
+                return "corrected", txt, it.get("correction_type"), j
         else:
             txt = str(it.get("text", ""))
             if txt:
-                return ("unmarked", txt, None, j)
+                return "unmarked", txt, None, j
         j += 1
-    return (None, "", None, None)
+    return None, "", None, None
+
 
 def add_spaces_around_unmarked(grammatika):
     n = len(grammatika)
@@ -167,6 +177,7 @@ def add_spaces_around_unmarked(grammatika):
             item["text"] = text
     return grammatika
 
+
 def tokenize_with_spans(s: str) -> List[Tuple[int, int, str, str]]:
     spans: List[Tuple[int, int, str, str]] = []
     for m in WORD_OR_PUNCT.finditer(s):
@@ -174,6 +185,7 @@ def tokenize_with_spans(s: str) -> List[Tuple[int, int, str, str]]:
         tok = s[start:end]
         spans.append((start, end, tok, tok))
     return spans
+
 
 def parse_correction_log(correction_log: str) -> List[Dict[str, Any]]:
     log = (correction_log or "").strip()
@@ -198,8 +210,8 @@ def parse_correction_log(correction_log: str) -> List[Dict[str, Any]]:
         etype_src = m.group("etype").strip()
         sidx = int(m.group("start"))
         eidx = int(m.group("end"))
-        wrong = m.group("wrong").strip().strip('"„“«»')
-        correct = m.group("correct").strip().strip('"„“«»')
+        wrong = m.group("wrong").strip().strip(QUOTE_MARKERS)
+        correct = m.group("correct").strip().strip(QUOTE_MARKERS)
 
         if eidx < sidx:
             eidx = sidx + 1
@@ -224,8 +236,8 @@ def parse_correction_log(correction_log: str) -> List[Dict[str, Any]]:
             etype_src = m.group("etype").strip()
             sidx = int(m.group("start"))
             eidx = int(m.group("end"))
-            wrong = m.group("wrong").strip().strip('"„“«»')
-            correct = m.group("correct").strip().strip('"„“«»')
+            wrong = m.group("wrong").strip().strip(QUOTE_MARKERS)
+            correct = m.group("correct").strip().strip(QUOTE_MARKERS)
             if eidx < sidx:
                 eidx = sidx + 1
             items.append({
@@ -239,9 +251,10 @@ def parse_correction_log(correction_log: str) -> List[Dict[str, Any]]:
 
     return items
 
-def token_range_to_char_span(tokens: List[Tuple[int,int,str,str]],
+
+def token_range_to_char_span(tokens: List[Tuple[int, int, str, str]],
                              start_idx: int, end_idx: int,
-                             wrong_text: str, sentence: str) -> Tuple[int,int]:
+                             wrong_text: str, sentence: str) -> Tuple[int, int]:
     n = len(tokens)
 
     if 0 <= start_idx == end_idx <= n:
@@ -266,20 +279,21 @@ def token_range_to_char_span(tokens: List[Tuple[int,int,str,str]],
             return pos, pos + len(wrong_text)
     return (0, 0)
 
+
 def generate_test_grammar_output(full_text, api_response: Dict[str, Any]) -> Dict[str, Any]:
     corrections = api_response.get("corrections", [])
     originals = [c["original"] for c in corrections]
 
-    WORD_RE = re.compile(r"^\w+$", re.UNICODE)
-    FULL_TOKENS = [(m.start(), m.end(), full_text[m.start():m.end()]) for m in WORD_OR_PUNCT.finditer(full_text)]
-    END_TO_IDX = {end: i for i, (start, end, txt) in enumerate(FULL_TOKENS)}
+    word_re = re.compile(r"^\w+$", re.UNICODE)
+    full_tokens = [(m.start(), m.end(), full_text[m.start():m.end()]) for m in WORD_OR_PUNCT.finditer(full_text)]
+    end_to_idx = {end: i for i, (start, end, txt) in enumerate(full_tokens)}
 
     def find_prev_word_ending_at(pos: int):
-        idx = END_TO_IDX.get(pos, None)
+        idx = end_to_idx.get(pos, None)
         while idx is not None and idx >= 0:
-            s_tok, e_tok, txt = FULL_TOKENS[idx]
-            if WORD_RE.match(txt):
-                return (s_tok, e_tok, txt, idx)
+            s_tok, e_tok, txt = full_tokens[idx]
+            if word_re.match(txt):
+                return s_tok, e_tok, txt, idx
             idx -= 1
         return None
 
@@ -340,21 +354,37 @@ def generate_test_grammar_output(full_text, api_response: Dict[str, Any]) -> Dic
         if e < next_right:
             tail_chunk = full_text[e:next_right]
             if tail_chunk:
-                grammatika_rev.append({
-                    "corrected": False,
-                    "text": tail_chunk.strip(),
-                    "error_id": f"{unmarked_id}_unmarked"
-                })
-                unmarked_id += 1
+                core_text = tail_chunk.strip()
+                if core_text:
+                    grammatika_rev.append({
+                        "corrected": False,
+                        "text": core_text,
+                        "error_id": f"{unmarked_id}_unmarked"
+                    })
+                    unmarked_id += 1
+
+                    if not starts_with_punct_regex(core_text):
+                        grammatika_rev.append({
+                            "corrected": False,
+                            "text": " ",
+                            "error_id": f"{unmarked_id}_space"
+                        })
+                        unmarked_id += 1
 
         is_insertion = (s == e)
         is_missing_punct = (sp.get("etype") == "missingPunctuation")
 
         if is_insertion and is_missing_punct:
+            stripped = corr_txt.strip()
+            if is_missing_punct:
+                corr_txt = stripped
+            else:
+                corr_txt = f" {stripped}"
+
             grammatika_rev.append({
                 "corrected": True,
                 "text": "",
-                "corrected_text": corr_txt.strip(),
+                "corrected_text": corr_txt,
                 "correction_type": sp["etype"],
                 "error_id": f"{s}_marked",
                 "long_explanation": sp.get("long_explanation"),
@@ -363,7 +393,7 @@ def generate_test_grammar_output(full_text, api_response: Dict[str, Any]) -> Dic
 
             prev_word = find_prev_word_ending_at(s)
             if prev_word:
-                pstart, pend, ptxt, _ = prev_word
+                pstart, pend, *_ = prev_word
                 grammatika_rev.append({
                     "corrected": False,
                     "text": full_text[pstart:pend].strip(),
@@ -375,15 +405,32 @@ def generate_test_grammar_output(full_text, api_response: Dict[str, Any]) -> Dic
                 next_right = s
 
         else:
+            is_wrong_punct = (sp.get("etype") == "wrongPunctuation")
+            is_extra_punct = (sp.get("etype") == "extraPunctuation")
+            is_missing_word = (sp.get("etype") == "missingWordError")
+
+            if is_missing_word:
+                corr_txt = f" {corr_txt}"
+            else:
+                corr_txt = corr_txt.strip()
+
             grammatika_rev.append({
                 "corrected": True,
                 "text": full_text[s:e],
-                "corrected_text": corr_txt.strip(),
+                "corrected_text": corr_txt,
                 "correction_type": sp["etype"],
                 "error_id": f"{s}_marked",
                 "long_explanation": sp.get("long_explanation"),
                 "short_explanation": sp.get("short_explanation"),
             })
+
+            if not (starts_with_punct_regex(full_text[s:e]) or is_wrong_punct or is_extra_punct or is_missing_word):
+                grammatika_rev.append({
+                    "corrected": False,
+                    "text": " ",
+                    "error_id": f"{unmarked_id}_space"
+                })
+                unmarked_id += 1
             next_right = s
 
     if 0 < next_right:
@@ -393,7 +440,18 @@ def generate_test_grammar_output(full_text, api_response: Dict[str, Any]) -> Dic
             "error_id": f"{unmarked_id}_unmarked"
         })
 
+        if not starts_with_punct_regex(full_text[0:next_right].strip()):
+            grammatika_rev.append({
+                "corrected": False,
+                "text": " ",
+                "error_id": f"{unmarked_id}_space"
+            })
+            unmarked_id += 1
+
     grammatika = list(reversed(grammatika_rev))
+
+    if grammatika and grammatika[0].get("text") == " ":
+        grammatika = grammatika[1:]
 
     grouped = defaultdict(list)
     for g in grammatika:
@@ -405,7 +463,7 @@ def generate_test_grammar_output(full_text, api_response: Dict[str, Any]) -> Dic
 
     return {
         "full_text": full_text,
-        "corrector_results": add_spaces_around_unmarked(grammatika),
+        "corrector_results": grammatika,
         "error_list": grammatika_vead,
         "error_count": error_count,
     }

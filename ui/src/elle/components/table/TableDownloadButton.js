@@ -305,8 +305,10 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
 
   return (
     <Box>
-      <Tooltip title={t('common_download')}
-               placement="top">
+      <Tooltip
+        title={t('common_download')}
+        placement="top"
+      >
         <Button
           style={DefaultButtonStyle}
           aria-describedby={id}
@@ -334,7 +336,6 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
               <InputLabel>{t('common_download')}</InputLabel>
               <Select
                 size="medium"
-                label={t('common_download')}
                 defaultValue={DownloadType.EXCEL}
               >
                 <MenuItem value={DownloadType.EXCEL}

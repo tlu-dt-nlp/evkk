@@ -43,22 +43,24 @@ export default function SingleError(
         onMouseLeave={() => setHoveredId(null)}
       >
         <span className="corrector-error-word">{error.text}</span>
-        <KeyboardArrowRightIcon fontStyle={'small'} />
+        <KeyboardArrowRightIcon fontStyle="small" />
         <strong>{error.corrected_text}</strong>
-        <IconButton
-          className="corrector-error-icon-button"
-          color="success"
-          onClick={() => resolveErrors(ACCEPT_ERROR)}
-        >
-          <CheckCircleIcon fontSize={'medium'} />
-        </IconButton>
-        <IconButton
-          className="corrector-error-icon-button"
-          onClick={() => resolveErrors(DECLINE_ERROR)}
-          color={'error'}
-        >
-          <CancelIcon fontSize={'medium'} />
-        </IconButton>
+        <span className="fix-pair">
+          <IconButton
+            className="corrector-error-icon-button"
+            color="success"
+            onClick={() => resolveErrors(ACCEPT_ERROR)}
+          >
+            <CheckCircleIcon fontSize="medium" />
+          </IconButton>
+          <IconButton
+            className="corrector-error-icon-button"
+            color="error"
+            onClick={() => resolveErrors(DECLINE_ERROR)}
+          >
+            <CancelIcon fontSize="medium" />
+          </IconButton>
+        </span>
       </div>
       {errorText && <Divider />}
       {correctionModel === GRAMMARCHECKER_TEST && error.correction_type === 'multipleErrors' && error.correction_value &&

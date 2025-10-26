@@ -40,6 +40,19 @@ export const DefaultButtonStyle = {
   }
 };
 
+export const SecondaryButtonStyle = {
+  backgroundColor: '#CDA9FD',
+  fontWeight: 'bold',
+  lineHeight: '30px',
+  borderRadius: '15px',
+  '&:hover': {
+    backgroundColor: '#B593E1'
+  },
+  '&:disabled': {
+    backgroundColor: 'lightgray'
+  }
+};
+
 export const ToggleButtonGroupStyle = {
   borderRadius: '5px',
   overflow: 'hidden',
@@ -112,90 +125,14 @@ export const DefaultInputStyle = {
   }
 };
 
-export const DefaultButtonStyleSmall = {
-  backgroundColor: '#9C27B0',
-  fontWeight: 'bold',
-  borderRadius: '10px',
-  '&:hover': {
-    backgroundColor: '#852197'
-  },
-  '&:disabled': {
-    backgroundColor: 'lightgray'
-  }
-};
-
 export const DefaultButtonStyle5px = {
   ...DefaultButtonStyle,
   borderRadius: '5px'
 };
 
-export const DefaultTabListStyle = {
-  '& .MuiTabs-indicator': {
-    backgroundColor: '#8e24aa'
-  }
-};
-
-export const DefaultTabStyle = {
-  '&.Mui-selected': {
-    color: '#8e24aa'
-  },
-  '&.Mui-selected:hover': {
-    color: '#7b1fa2'
-  },
-  textTransform: 'none',
-  fontWeight: 'bold'
-};
-
-export const CorrectorCustomSlider = {
-  height: 10,
-  '& .MuiSlider-thumb': {
-    height: 0,
-    width: 0
-  },
-  '.MuiSlider-rail': {
-    borderRadius: '3px',
-    opacity: 0.8,
-    background: '#e5e6e4'
-  },
-  '.MuiSlider-valueLabel': {
-    lineHeight: 15,
-    fontSize: 15,
-    textAlign: 'center',
-    width: 50,
-    height: 50,
-    borderRadius: '25px 25px 25px 3px',
-    backgroundColor: '#9C27B0',
-    transformOrigin: 'bottom',
-    transform: 'rotate(-45deg)',
-    '&:before': { display: 'none' },
-    '&.MuiSlider-valueLabelOpen': {
-      transform: 'translate(40%, -90%) rotate(-45deg)'
-    },
-    '& > *': {
-      transform: 'rotate(45deg)'
-    }
-  }
-};
-
 export const DefaultCircularProgressStyle = {
   color: '#9C27B0'
 };
-
-export const MenuLink = styled(HashLink)({
-  fontWeight: 600,
-  fontSize: 16,
-  color: '#1B1B1B',
-  textDecoration: 'none',
-  fontFamily: ['\'Exo 2\'', 'sans-serif'].join(','),
-  '&:hover': {
-    color: '#9C27B0',
-    textDecoration: 'none'
-  },
-  '&.active': {
-    color: '#9C27B0',
-    textDecoration: 'none'
-  }
-});
 
 export const FooterLink = styled(HashLink)({
   color: '#1B1B1BDD',
@@ -385,5 +322,3 @@ export const correctorDocxColors = {
   'abstract-word-color': 'c9daf8',
   'content-word-color': 'ada1d4'
 };
-
-

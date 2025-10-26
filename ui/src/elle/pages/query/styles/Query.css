@@ -1,40 +1,27 @@
-
-.queryContainer {
+.query-form-container {
   display: flex;
+
+  .MuiFormControl-root {
+    margin-bottom: 1rem;
+  }
 }
 
-.queryContainer > div {
+.query-form-container > div {
   flex: 1;
 }
 
-.corpustitle {
-  position: relative;
-  border-bottom: 1px dotted black;
-}
-
-.queryAccordion {
-  margin-top: 1em !important;
-  border-radius: 4px 4px 0 0 !important;
-}
-
-.buttonBox {
-  background-color: black;
-  top: 50px;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: auto;
-  max-width: 0;
-  margin-left: 50px;
-}
-
-.buttonRight {
-  margin-left: auto !important;
-}
-
-.buttonSecondLeft {
-  margin-left: 1em !important;
+.query-main-container {
+  .button-box {
+    background-color: black;
+    top: 50px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: auto;
+    max-width: 0;
+    margin-left: 50px;
+  }
 }
 
 .query-textinput {
@@ -106,10 +93,6 @@
   width: 210px !important;
   background-color: #AA2AC1 !important;
   transition: 0.3s;
-}
-
-.elle-dark {
-  background-color: #9C27B0 !important;
 }
 
 .button-box-open {

@@ -283,7 +283,7 @@ export const iterateCorrectionArray = (input, hoveredId, setInnerValue, newRef, 
                   slotProps={correctionTooltipSlotProps}
                   componentsProps={correctionTooltipComponentsProps}
                   key={`${val.error_id}_tooltip`}
-                  placement={'top'}
+                  placement="top"
                   title={
                     <Paper>
                       <SingleError
@@ -447,4 +447,9 @@ export const cleanEmptySpans = (container) => {
       span.style.backgroundColor = '';
     }
   });
+};
+
+export const toDecimalScale2OrInteger = (value) => {
+  const num = parseFloat(value);
+  return Number.isInteger(num) ? num : num.toFixed(2);
 };

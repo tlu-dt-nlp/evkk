@@ -37,7 +37,8 @@ export default function ComplexityTab(
     setGrammarErrorList,
     setSpellerErrorList,
     noQuery,
-    setNoQuery
+    setNoQuery,
+    tabsVariant
   }) {
   const { t } = useTranslation();
   const [model, setModel] = useState(LONG_SENTENCE);
@@ -60,7 +61,7 @@ export default function ComplexityTab(
 
   return (
     <div className="corrector-border-box">
-      <Box className="d-flex justify-content-between">
+      <Box className="corrector-border-box-inner">
         <CorrectionToggleButtonGroup
           newRef={newRef}
           toggleButtons={ComplexityToggleButtons}
@@ -77,8 +78,9 @@ export default function ComplexityTab(
           setGrammarErrorList={setGrammarErrorList}
           setSpellerErrorList={setSpellerErrorList}
           noQuery={noQuery}
+          tabsVariant={tabsVariant}
         />
-        <CorrectionInfoIcon inputText={
+        <CorrectionInfoIcon>
           <div>
             {t('corrector_complexity_infobox_intro')}
             <br></br><br></br>
@@ -119,10 +121,11 @@ export default function ComplexityTab(
             <br></br><br></br>
             {t('corrector_complexity_infobox_word_length_outro')}&nbsp;
             <NewTabHyperlink path={COMPLEXITY_LONG_WORD_LINK} content={t('common_here')} />).
-          </div>} />
+          </div>
+        </CorrectionInfoIcon>
       </Box>
-      <div className="d-flex gap-2 flex-wrap ">
-        <div className="corector-input">
+      <div className="d-flex gap-2 flex-wrap">
+        <div className="corrector-input">
           <Box
             id={'error-text-box'}
             ref={textBoxRef}
@@ -156,7 +159,13 @@ export default function ComplexityTab(
           {complexityAnswer ?
             <div>
               <div className="complexity-tab-header">
-                {t('corrector_complexity_level')} {generateComplexityAnswer(complexityAnswer.keerukus[11])}</div>
+                <span>
+                  {t('corrector_complexity_level')}
+                </span>
+                <span>
+                  {generateComplexityAnswer(complexityAnswer.keerukus[11])}
+                </span>
+              </div>
               <Accordion square={true} style={{ marginBottom: '0.5em' }} sx={CorrectorAccordionStyle} defaultExpanded>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
@@ -202,7 +211,7 @@ export default function ComplexityTab(
                 >
                   {t('common_indexes')}
                 </AccordionSummary>
-                <AccordionDetails className="index-row pb-lg-5">
+                <AccordionDetails className="index-row">
                   <CorrectionScale
                     title={t('corrector_smog_index')}
                     startValue={0}
@@ -238,6 +247,7 @@ export default function ComplexityTab(
                     startText={t('corrector_has_more_verbs')}
                     endText={t('corrector_has_more_nouns')}
                   />
+                  <Divider />
                 </AccordionDetails>
               </Accordion>
             </div>

@@ -1,0 +1,5 @@
+.tooltip-on-text {
+  border-bottom: 1px dotted black;
+  padding-bottom: 2px;
+  cursor: help;
+}

@@ -13,7 +13,7 @@ import {
 import DownloadIcon from '@mui/icons-material/Download';
 import Popover from '@mui/material/Popover';
 import { useTranslation } from 'react-i18next';
-import '../styles/QueryDownloadButton.css';
+import './styles/QueryDownloadButton.css';
 import { useState } from 'react';
 import i18n from 'i18next';
 import { CC_BY_4_0_LICENSE_PATH } from '../../const/PathConstants';
@@ -64,7 +64,10 @@ export default function QueryDownloadButton({ selected }) {
 
   return (
     <span className="query-download-button-span">
-      <Tooltip title={t('common_download')} placement="top">
+      <Tooltip
+        title={t('common_download')}
+        placement="top"
+      >
         <Button
           sx={DefaultButtonStyle}
           variant="contained"
@@ -87,11 +90,12 @@ export default function QueryDownloadButton({ selected }) {
         <Box className="query-download-dialog">
           <Box className="download-dialog-inner" id="fileDownload">
             <FormControl fullWidth>
-              <InputLabel>{t('query_download_form')}</InputLabel>
+              <InputLabel>
+                {t('query_download_form')}
+              </InputLabel>
               <Select
                 size="medium"
                 defaultValue={FileDownloadForm.BASIC_TEXT}
-                label={t('query_download_form')}
                 onChange={changeDownloadForm}
               >
                 <MenuItem value={FileDownloadForm.BASIC_TEXT}>{t('query_download_basictext')}</MenuItem>

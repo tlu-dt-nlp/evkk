@@ -1,10 +1,10 @@
-import { Box, IconButton, Modal, Tooltip } from '@mui/material';
+import { Box, IconButton, Modal } from '@mui/material';
 import { modalStyle } from '../../const/StyleConstants';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import '../styles/ModalBase.css';
-import { QuestionMark } from '@mui/icons-material';
+import TooltipButton from '../tooltip/TooltipButton';
 
 export default function ModalBase({
                                     isOpen,
@@ -33,16 +33,14 @@ export default function ModalBase({
     >
       <Box
         sx={modalStyle}
-        className={innerClassName || ''}
+        className={`modal-base-root ${innerClassName ?? ''}`.trim()}
       >
         <div className="modal-head">
           {t(title)}
           {titleTooltip &&
-            <Tooltip
-              title={t(titleTooltip)}
-              placement="right">
-              <QuestionMark className="tooltip-icon" />
-            </Tooltip>}
+            <TooltipButton>
+              {t(titleTooltip)}
+            </TooltipButton>}
         </div>
         {!disableCloseButton && (
           <IconButton

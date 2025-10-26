@@ -18,13 +18,11 @@ import {
   RadioGroup,
   Select,
   TextField,
-  Tooltip,
   Typography
 } from '@mui/material';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import './styles/WordContext.css';
 import { TableType } from '../../components/table/TableDownloadButton';
-import { QuestionMark } from '@mui/icons-material';
 import GenericTable from '../../components/GenericTable';
 import { changeWordContextResult, toolAnalysisStore } from '../../store/ToolAnalysisStore';
 import { useTranslation } from 'react-i18next';
@@ -34,6 +32,7 @@ import { AccordionStyle, DefaultButtonStyle } from '../../const/StyleConstants';
 import { useGetWordContextResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
+import TooltipButton from '../../components/tooltip/TooltipButton';
 
 export default function WordContext() {
 
@@ -318,11 +317,10 @@ export default function WordContext() {
                   }
                                     label={<>
                                       {t('common_case_sensitive')}
-                                      <Tooltip
-                                        title={t('concordances_case_sensitive_hover')}
-                                        placement="right">
-                                        <QuestionMark className="tooltip-icon" />
-                                      </Tooltip></>}
+                                      <TooltipButton>
+                                        {t('concordances_case_sensitive_hover')}
+                                      </TooltipButton>
+                                    </>}
                   />
                 </FormControl>
               </div>

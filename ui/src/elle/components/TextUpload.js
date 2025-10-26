@@ -53,7 +53,7 @@ export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
       <div className={`container ${outerClassName}`}>
         <Tooltip
           title={t('textupload_secondary_modal_tooltip')}
-          placement={'top-start'}
+          placement="top"
         >
           <FileUploadIcon
             id="upload_button"

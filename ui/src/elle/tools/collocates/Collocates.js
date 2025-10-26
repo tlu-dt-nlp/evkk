@@ -11,17 +11,16 @@ import {
   FormHelperText,
   FormLabel,
   Grid,
+  InputLabel,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
   TextField,
-  Tooltip,
   Typography
 } from '@mui/material';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import { QuestionMark } from '@mui/icons-material';
 import { TableType } from '../../components/table/TableDownloadButton';
 import { queryStore } from '../../store/QueryStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -35,6 +34,7 @@ import { AccordionStyle, DefaultButtonStyle } from '../../const/StyleConstants';
 import { useGetCollocatesResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
+import TooltipButton from '../../components/tooltip/TooltipButton';
 
 export default function Collocates() {
 
@@ -305,34 +305,25 @@ export default function Collocates() {
               </div>
               <div>
                 <FormControl sx={{ m: 3 }} size="small">
-                  <FormLabel id="formula">{t('neighbouring_words_choose_statistic_measure')}</FormLabel>
-                  <Grid container>
-                    <Grid item>
-                      <Select
-                        sx={{ width: '140px' }}
-                        name="formula"
-                        value={formula}
-                        onChange={(e) => setFormula(e.target.value)}
-                      >
-                        <MenuItem
-                          value={StatisticMeasureFormula.LOGDICE}>{t('neighbouring_words_statistic_measure_logdice')}</MenuItem>
-                        <MenuItem
-                          value={StatisticMeasureFormula.T_SCORE}>{t('neighbouring_words_statistic_measure_t_score')}</MenuItem>
-                        <MenuItem
-                          value={StatisticMeasureFormula.MI_SCORE}>{t('neighbouring_words_statistic_measure_mi_score')}</MenuItem>
-                      </Select>
-                    </Grid>
-                    <Grid
-                      item
-                      className="collocates-explanation"
-                    >
-                      <Tooltip
-                        title={t('neighbouring_words_statistic_measure_hover')}
-                        placement="right">
-                        <QuestionMark className="tooltip-icon" />
-                      </Tooltip>
-                    </Grid>
-                  </Grid>
+                  <InputLabel id="formula">
+                    {t('neighbouring_words_choose_statistic_measure')}
+                    <TooltipButton>
+                      {t('neighbouring_words_statistic_measure_hover')}
+                    </TooltipButton>
+                  </InputLabel>
+                  <Select
+                    sx={{ width: '140px' }}
+                    name="formula"
+                    value={formula}
+                    onChange={(e) => setFormula(e.target.value)}
+                  >
+                    <MenuItem
+                      value={StatisticMeasureFormula.LOGDICE}>{t('neighbouring_words_statistic_measure_logdice')}</MenuItem>
+                    <MenuItem
+                      value={StatisticMeasureFormula.T_SCORE}>{t('neighbouring_words_statistic_measure_t_score')}</MenuItem>
+                    <MenuItem
+                      value={StatisticMeasureFormula.MI_SCORE}>{t('neighbouring_words_statistic_measure_mi_score')}</MenuItem>
+                  </Select>
                 </FormControl>
                 <br />
                 <FormControl sx={{ m: 3 }}
@@ -346,11 +337,10 @@ export default function Collocates() {
                   }
                                     label={<>
                                       {t('common_case_sensitive')}
-                                      <Tooltip
-                                        title={t('neighbouring_words_case_sensitive_hover')}
-                                        placement="right">
-                                        <QuestionMark className="tooltip-icon" />
-                                      </Tooltip></>}
+                                      <TooltipButton>
+                                        {t('neighbouring_words_case_sensitive_hover')}
+                                      </TooltipButton>
+                                    </>}
                   />
                 </FormControl>
               </div>

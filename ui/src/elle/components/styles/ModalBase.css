@@ -1,3 +1,13 @@
+.modal-base-root {
+  @media (max-width: 1023px) {
+    width: 80% !important;
+  }
+
+  @media (max-width: 677px) {
+    width: 90% !important;
+  }
+}
+
 .modal-head {
   font-size: 1.5em;
 }
@@ -13,8 +23,7 @@
 }
 
 .text-upload-modal {
-  width: 40em !important;
-  height: 28em !important;
+  max-width: 40em;
 }
 
 .wordcloud-modal {

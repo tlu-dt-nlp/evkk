@@ -154,16 +154,21 @@
   height: auto;
   min-height: 200px;
   min-width: 300px;
+
+  @media (max-width: 677px) {
+    padding: 0.45em;
+  }
 }
 
-.corector-input {
+.corrector-input {
   flex: 1;
   min-width: 300px;
 }
 
 .corrector-error-word {
   color: gray;
-  text-decoration: line-through gray;
+  text-decoration-line: line-through;
+  text-decoration-color: gray;
   font-weight: bold;
 }
 
@@ -175,12 +180,33 @@
   min-width: 500px;
 }
 
+.corrector-error-word,
+.correction-single-error strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
 .correction-single-error {
   display: flex;
   align-items: center;
   gap: 0.5em;
   padding: 0.5em;
   transition: 0.3s;
+  flex-wrap: wrap;
+
+  .fix-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75em;
+    flex: 1 1 100%;
+    padding-top: 10px;
+
+    @media (max-width: 677px) {
+      justify-content: center;
+    }
+  }
 }
 
 .correction-single-error:hover {
@@ -189,8 +215,18 @@
 }
 
 .corrector-error-icon-button {
-  width: 1em;
-  height: 1em;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 20% !important;
+  background-color: white !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  transition: all 0.1s ease-in-out !important;
+}
+
+.corrector-error-icon-button:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+  background-color: #FFEBFE;
 }
 
 .corrector-btn-visible {

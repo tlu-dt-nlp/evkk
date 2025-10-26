@@ -454,9 +454,20 @@ def margenda_stanza(tekst, comments=True, filename="document", language='et'):
             vdeprel = (word.deprel if word.deprel else "_")
             vkoos = vhead + ":" + vdeprel
             if vkoos == "_:_": vkoos = "_"
-            analysis = '\n'.join([f'{word.id}\t{word.text}\t{word.lemma}\t\
-                    {word.upos}\t{word.xpos}\t{(word.feats if word.feats else "_")}\t{vhead}\t\
-                    {vdeprel}\t{vkoos}\t{viimasesisu}'])
+
+            fields = [
+                str(word.id),
+                word.text,
+                word.lemma,
+                word.upos,
+                word.xpos,
+                word.feats if word.feats else "_",
+                vhead,
+                vdeprel,
+                vkoos,
+                viimasesisu,
+            ]
+            analysis = '\t'.join(fields)
             v.append(analysis + '\n')
             windex += 1
         v.append('\n')

@@ -1,10 +1,8 @@
 import React from 'react';
-import { ToggleButton, ToggleButtonGroup } from '@mui/lab';
 import { queryCaller } from '../util/Utils';
-import { Box, Tooltip } from '@mui/material';
+import { Box, Tab, Tabs, Tooltip } from '@mui/material';
 import { useGetCorrectorResult } from '../../../hooks/service/ToolsService';
 import { useTranslation } from 'react-i18next';
-import { ToggleButtonGroupStyle } from '../../../const/StyleConstants';
 
 export default function CorrectionToggleButtonGroup(
   {
@@ -22,7 +20,8 @@ export default function CorrectionToggleButtonGroup(
     setAbstractWords,
     setGrammarErrorList,
     setSpellerErrorList,
-    noQuery
+    noQuery,
+    tabsVariant
   }) {
 
   const { getCorrectorResult } = useGetCorrectorResult();
@@ -30,25 +29,36 @@ export default function CorrectionToggleButtonGroup(
 
   return (
     <Box className="d-flex">
-      <ToggleButtonGroup
-        color="primary"
+      <Tabs
+        className="correction-toggle-button-group"
+        orientation="horizontal"
+        variant={tabsVariant}
         value={correctionModel}
-        sx={ToggleButtonGroupStyle}
-        exclusive
-        onChange={(e) => {
+        scrollButtons
+        allowScrollButtonsMobile
+        onChange={(_, newValue) => {
           if (!noQuery) {
             queryCaller(textBoxRef, inputText, setRequestingText, setGrammarAnswer, setSpellerAnswer, setInputText, newRef, setComplexityAnswer, setAbstractWords, getCorrectorResult, false, setGrammarErrorList, setSpellerErrorList, correctionModel);
           }
-          setCorrectionModel(e.target.value);
+          setCorrectionModel(newValue);
         }}
-        aria-label="Platform"
       >
         {toggleButtons.map((button) => (
-          <Tooltip key={button.title} placement="top" title={t(button.title)}>
-            <ToggleButton value={button.value}>{t(button.text)}</ToggleButton>
-          </Tooltip>
+          <Tab
+            key={button.title}
+            value={button.value}
+            label={
+              <Tooltip
+                key={button.title}
+                placement="top"
+                title={t(button.title)}
+              >
+                <span>{t(button.text)}</span>
+              </Tooltip>
+            }
+          />
         ))}
-      </ToggleButtonGroup>
+      </Tabs>
     </Box>
   );
 };

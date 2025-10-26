@@ -36,13 +36,14 @@ export default function TextLevelTab(
     setSpellerErrorList,
     setHoveredId,
     hoveredId,
-    setNoQuery
+    setNoQuery,
+    tabsVariant
   }) {
   const { t } = useTranslation();
 
   return (
     <div className="corrector-border-box">
-      <Box className="d-flex justify-content-between">
+      <Box className="corrector-border-box-inner">
         {correctionModel !== GRAMMARCHECKER_TEST ?
           <CorrectionToggleButtonGroup
             newRef={newRef}
@@ -59,6 +60,7 @@ export default function TextLevelTab(
             toggleButtons={CorrectionAndTextLevelToggleButtons}
             setGrammarErrorList={setGrammarErrorList}
             setSpellerErrorList={setSpellerErrorList}
+            tabsVariant={tabsVariant}
           />
           :
           <Alert severity="warning" className="mb-2">
@@ -66,33 +68,32 @@ export default function TextLevelTab(
             <div>{t('corrector_test_version_thanks')}</div>
           </Alert>
         }
-        <CorrectionInfoIcon
-          inputText={
-            <div>
-              {t('corrector_proficiency_level_infobox_intro')}
-              <br></br><br></br>
-              {t('corrector_proficiency_level_infobox_list_header')}
-              <ul>
-                <li>
-                  <b>{t('corrector_proficiency_level_infobox_list_bold_overall')}</b> – {t('corrector_proficiency_level_infobox_list_overall_value')}
-                </li>
-                <li>
-                  <b>{t('corrector_proficiency_level_infobox_list_bold_grammar')}</b> – {t('corrector_proficiency_level_infobox_list_grammar_value')}
-                </li>
-                <li>
-                  <b>{t('corrector_proficiency_level_infobox_list_bold_vocabulary')}</b> – {t('corrector_proficiency_level_infobox_list_vocabulary_value')}
-                </li>
-                {/* Will be reimplemented when correctness is fixed */}
-                {/*<li>
+        <CorrectionInfoIcon>
+          <div>
+            {t('corrector_proficiency_level_infobox_intro')}
+            <br></br><br></br>
+            {t('corrector_proficiency_level_infobox_list_header')}
+            <ul>
+              <li>
+                <b>{t('corrector_proficiency_level_infobox_list_bold_overall')}</b> – {t('corrector_proficiency_level_infobox_list_overall_value')}
+              </li>
+              <li>
+                <b>{t('corrector_proficiency_level_infobox_list_bold_grammar')}</b> – {t('corrector_proficiency_level_infobox_list_grammar_value')}
+              </li>
+              <li>
+                <b>{t('corrector_proficiency_level_infobox_list_bold_vocabulary')}</b> – {t('corrector_proficiency_level_infobox_list_vocabulary_value')}
+              </li>
+              {/* Will be reimplemented when correctness is fixed */}
+              {/*<li>
                   <b>{t('corrector_proficiency_level_infobox_list_bold_correctness')}</b> – {t('corrector_proficiency_level_infobox_list_correctness_value')}
                 </li>*/}
-                <li>
-                  <b>{t('corrector_proficiency_level_infobox_list_bold_overall_score')}</b> – {t('corrector_proficiency_level_infobox_list_overall_score_value')}
-                </li>
-              </ul>
-              {t('corrector_proficiency_level_infobox_outro')}
-            </div>}
-        />
+              <li>
+                <b>{t('corrector_proficiency_level_infobox_list_bold_overall_score')}</b> – {t('corrector_proficiency_level_infobox_list_overall_score_value')}
+              </li>
+            </ul>
+            {t('corrector_proficiency_level_infobox_outro')}
+          </div>
+        </CorrectionInfoIcon>
       </Box>
       <div className="d-flex gap-2 flex-wrap">
         <CorrectionInput
@@ -122,17 +123,19 @@ export default function TextLevelTab(
         />
         <div className="corrector-right">
           {complexityAnswer && complexityAnswer?.keeletase.length !== 0 &&
-            <div className="d-flex justify-content-between">
-              <div style={{ fontSize: '1.5rem' }}>{t('corrector_proficiency_level_color_codes')}:</div>
-              {textLevelColors.map((color, index) => {
-                return (
-                  <div className="d-flex align-items-center" key={t(textLevels[index])}>
-                    <div className="text-level-tab-color-circle" style={{ backgroundColor: color }}></div>
-                    -
-                    {t(textLevels[index])}
+            <div className="levels-row">
+              <div className="levels-title">
+                {t('corrector_proficiency_level_color_codes')}:
+              </div>
+              <div className="levels-spacer" />
+              <div className="levels">
+                {textLevelColors.map((color, index) => (
+                  <div className="level" key={t(textLevels[index])}>
+                    <div className="dot" style={{ backgroundColor: color }} />
+                    <span>{t(textLevels[index])}</span>
                   </div>
-                );
-              })}
+                ))}
+              </div>
             </div>
           }
           {!complexityAnswer &&

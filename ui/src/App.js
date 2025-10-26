@@ -72,6 +72,25 @@ const theme = createTheme({
           maxWidth: '400px'
         }
       }
+    },
+    MuiTextField: {
+      defaultProps: {
+        InputProps: { notched: false }
+      }
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          position: 'static',
+          transform: 'none',
+          marginBottom: '0.25em',
+          whiteSpace: 'normal',
+          overflowWrap: 'anywhere',
+          hyphens: 'auto',
+          contain: 'inline-size',
+          pointerEvents: 'auto'
+        }
+      }
     }
   }
 });

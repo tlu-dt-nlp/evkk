@@ -10,10 +10,9 @@ import {
   ListItemIcon,
   ListItemText,
   MenuItem,
-  Select,
-  Tooltip
+  Select
 } from '@mui/material';
-import '../styles/Query.css';
+import './styles/Query.css';
 import {
   addedYearOptions,
   ageOptions,
@@ -46,6 +45,7 @@ import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { DefaultButtonStyle, ElleDefaultChip, MenuProps, useStyles } from '../../const/StyleConstants';
 import { useGetQueryResults } from '../../hooks/service/TextService';
+import TooltipOnText from '../../components/tooltip/TooltipOnText';
 
 export default function Query(props) {
 
@@ -433,7 +433,7 @@ export default function Query(props) {
 
   return (
     <div className="query-main-container">
-      <div className="buttonBox">
+      <div className="button-box">
         <Button variant="contained"
                 ref={filterButtonRef}
                 id="choose-text-button"
@@ -460,7 +460,7 @@ export default function Query(props) {
                     e.preventDefault();
                   }}
                   id="vorm">
-              <div className="queryContainer">
+              <div className="query-form-container">
                 <div>
                   <b>{t('query_subcorpus')}</b>
                   <br /><br />
@@ -475,98 +475,91 @@ export default function Query(props) {
                     checked={corpusCheckboxStatus.clWmOIrLa}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip title={t('query_subcorpus_L2_proficiency_examinations_hover')}
-                           followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcorpus_L2_proficiency_examinations')}
-                    </label>
-                  </Tooltip>
+                  <TooltipOnText
+                    title={t('query_subcorpus_L2_proficiency_examinations_hover')}
+                  >
+                    {t('query_subcorpus_L2_proficiency_examinations')}
+                  </TooltipOnText>
                   <br />
                   <Checkbox
                     id="cFqPphvYi"
                     checked={corpusCheckboxStatus.cFqPphvYi}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip title={t('query_subcoprus_L2_olympiade_hover')}
-                           followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcoprus_L2_olympiade')}
-                    </label>
-                  </Tooltip>
+                  <TooltipOnText
+                    title={t('query_subcoprus_L2_olympiade_hover')}
+                  >
+                    {t('query_subcoprus_L2_olympiade')}
+                  </TooltipOnText>
                   <br />
                   <Checkbox
                     id="cFOoRQekA"
                     checked={corpusCheckboxStatus.cFOoRQekA}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip
+                  <TooltipOnText
                     title={t('query_subcorpus_L2_estonian_hover')}
-                    followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcorpus_L2_estonian')}
-                    </label>
-                  </Tooltip>
+                  >
+                    {t('query_subcorpus_L2_estonian')}
+                  </TooltipOnText>
                   <br />
                   <Checkbox
                     id="cYDRkpymb"
                     checked={corpusCheckboxStatus.cYDRkpymb}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip title={t('query_subcorpus_L1_estonian_hover')}
-                           followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcorpus_L1_estonian')}
-                    </label>
-                  </Tooltip>
+                  <TooltipOnText
+                    title={t('query_subcorpus_L1_estonian_hover')}
+                  >
+                    {t('query_subcorpus_L1_estonian')}
+                  </TooltipOnText>
                   <br />
                   <Checkbox
                     id="cgSRJPKTr"
                     checked={corpusCheckboxStatus.cgSRJPKTr}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip title={t('query_subcorpus_L1_russian_hover')}
-                           followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcorpus_L1_russian')}
-                    </label>
-                  </Tooltip>
+                  <TooltipOnText
+                    title={t('query_subcorpus_L1_russian_hover')}
+                  >
+                    {t('query_subcorpus_L1_russian')}
+                  </TooltipOnText>
                   <br />
                   <Checkbox
                     id="cZjHWUPtD"
                     checked={corpusCheckboxStatus.cZjHWUPtD}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip
+                  <TooltipOnText
                     title={t('query_subcorpus_L3_russian_hover')}
-                    followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcorpus_L3_russian')}
-                    </label>
-                  </Tooltip>
+                  >
+                    {t('query_subcorpus_L3_russian')}
+                  </TooltipOnText>
                   <br />
                   <Checkbox
                     id="cwUSEqQLt"
                     checked={corpusCheckboxStatus.cwUSEqQLt}
                     onChange={alterCorpusCheckbox}
                   />
-                  <Tooltip
+                  <TooltipOnText
                     title={t('query_subcorpus_academic_estonian_hover')}
-                    followCursor>
-                    <label className="corpustitle">
-                      {t('query_subcorpus_academic_estonian')}
-                    </label>
-                  </Tooltip>
+                  >
+                    {t('query_subcorpus_academic_estonian')}
+                  </TooltipOnText>
                   <br />
                 </div>
                 <div>
                   <b>{t('common_text_data')}</b>
                   <br /><br />
-                  <FormControl className={classes.formControl}
-                               size="small">
-                    <InputLabel id="types-label">{t('query_text_data_type')}</InputLabel>
+                  <FormControl
+                    className={classes.formControl}
+                    size="small"
+                  >
+                    <InputLabel id="types-label">
+                      {t('query_text_data_type')}
+                    </InputLabel>
                     <Select
                       labelId="types-label"
-                      label={t('query_text_data_type')}
                       multiple
                       value={textTypes}
                       name="types"
@@ -619,15 +612,15 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
                   <FormControl size="small">
-                    <InputLabel id="language-label">{t('query_text_data_language')}</InputLabel>
+                    <InputLabel id="language-label">
+                      {t('query_text_data_language')}
+                    </InputLabel>
                     <Select
                       sx={{ minWidth: selectWidth }}
                       labelId="language-label"
                       name="language"
                       value={singlePropertyData.language}
-                      label={t('query_text_data_language')}
                       onClick={(e) => alterSinglePropertyData(e, 'language')}
                     >
                       {Object.keys(textLanguageOptions).map((lang) => (
@@ -636,7 +629,6 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
                   {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
                     ? <>
                       <FormControl size="small">
@@ -647,7 +639,6 @@ export default function Query(props) {
                           labelId="domain-label"
                           name="domain"
                           value={singlePropertyData.domain}
-                          label={t('common_text_data_field_of_research')}
                           onClick={(e) => alterSinglePropertyData(e, 'domain')}
                         >
                           {Object.keys(domainDisplayOptions).map((domain) => (
@@ -656,7 +647,6 @@ export default function Query(props) {
                           ))}
                         </Select>
                       </FormControl>
-                      <br /><br />
                       <FormControl
                         className={classes.formControl}
                         size="small"
@@ -666,7 +656,6 @@ export default function Query(props) {
                         </InputLabel>
                         <Select
                           labelId="usedMultiMaterials-label"
-                          label={t('query_text_data_used_study_or_supporting_materials')}
                           multiple
                           value={usedMultiMaterials}
                           name="usedMultiMaterials"
@@ -720,13 +709,14 @@ export default function Query(props) {
                     </>
                     : <>
                       <FormControl size="small">
-                        <InputLabel id="level-label">{t('query_text_data_level')}</InputLabel>
+                        <InputLabel id="level-label">
+                          {t('query_text_data_level')}
+                        </InputLabel>
                         <Select
                           sx={{ minWidth: selectWidth }}
                           labelId="level-label"
                           name="level"
                           value={singlePropertyData.level}
-                          label={t('query_text_data_level')}
                           onClick={(e) => alterSinglePropertyData(e, 'level')}
                         >
                           {textLevelOptions.map((level) => (
@@ -734,16 +724,15 @@ export default function Query(props) {
                           ))}
                         </Select>
                       </FormControl>
-                      <br /><br />
                       <FormControl size="small">
-                        <InputLabel
-                          id="usedMaterials-label">{t('query_text_data_used_supporting_materials')}</InputLabel>
+                        <InputLabel id="usedMaterials-label">
+                          {t('query_text_data_used_supporting_materials')}
+                        </InputLabel>
                         <Select
                           sx={{ minWidth: selectWidth }}
                           labelId="usedMaterials-label"
                           name="usedMaterials"
                           value={singlePropertyData.usedMaterials}
-                          label={t('query_text_data_used_supporting_materials')}
                           onClick={(e) => alterSinglePropertyData(e, 'usedMaterials')}
                         >
                           {Object.keys(usedMaterialsDisplayOptions).map((material) => (
@@ -754,14 +743,15 @@ export default function Query(props) {
                       </FormControl>
                     </>
                   }
-                  <br /><br />
-                  <FormControl className={classes.formControl}
-                               size="small">
-                    <InputLabel
-                      id="addedYears-label">{t('query_text_data_year_of_publication')}</InputLabel>
+                  <FormControl
+                    className={classes.formControl}
+                    size="small"
+                  >
+                    <InputLabel id="addedYears-label">
+                      {t('query_text_data_year_of_publication')}
+                    </InputLabel>
                     <Select
                       labelId="addedYears-label"
-                      label={t('query_text_data_year_of_publication')}
                       multiple
                       value={addedYears}
                       name="addedYears"
@@ -780,13 +770,15 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
-                  <FormControl className={classes.formControl}
-                               size="small">
-                    <InputLabel id="characters-label">{t('query_text_data_characters')}</InputLabel>
+                  <FormControl
+                    className={classes.formControl}
+                    size="small"
+                  >
+                    <InputLabel id="characters-label">
+                      {t('query_text_data_characters')}
+                    </InputLabel>
                     <Select
                       labelId="characters-label"
-                      label={t('query_text_data_characters')}
                       multiple
                       value={characters}
                       name="characters"
@@ -805,13 +797,15 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
-                  <FormControl className={classes.formControl}
-                               size="small">
-                    <InputLabel id="words-label">{t('common_words')}</InputLabel>
+                  <FormControl
+                    className={classes.formControl}
+                    size="small"
+                  >
+                    <InputLabel id="words-label">
+                      {t('common_words')}
+                    </InputLabel>
                     <Select
                       labelId="words-label"
-                      label={t('common_words')}
                       multiple
                       value={words}
                       name="words"
@@ -830,13 +824,15 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
-                  <FormControl className={classes.formControl}
-                               size="small">
-                    <InputLabel id="sentences-label">{t('common_sentences')}</InputLabel>
+                  <FormControl
+                    className={classes.formControl}
+                    size="small"
+                  >
+                    <InputLabel id="sentences-label">
+                      {t('common_sentences')}
+                    </InputLabel>
                     <Select
                       labelId="sentences-label"
-                      label={t('common_sentences')}
                       multiple
                       value={sentences}
                       name="sentences"
@@ -860,13 +856,14 @@ export default function Query(props) {
                   <b>{t('common_author_data')}</b>
                   <br /><br />
                   <FormControl size="small">
-                    <InputLabel id="age-label">{t('query_author_data_age')}</InputLabel>
+                    <InputLabel id="age-label">
+                      {t('query_author_data_age')}
+                    </InputLabel>
                     <Select
                       sx={{ minWidth: selectWidth }}
                       labelId="age-label"
                       name="age"
                       value={singlePropertyData.age}
-                      label={t('query_author_data_age')}
                       onClick={(e) => alterSinglePropertyData(e, 'age')}
                     >
                       {Object.keys(ageOptions).map((age) => (
@@ -874,15 +871,15 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
                   <FormControl size="small">
-                    <InputLabel id="gender-label">{t('query_author_data_gender')}</InputLabel>
+                    <InputLabel id="gender-label">
+                      {t('query_author_data_gender')}
+                    </InputLabel>
                     <Select
                       sx={{ minWidth: selectWidth }}
                       labelId="gender-label"
                       name="gender"
                       value={singlePropertyData.gender}
-                      label={t('query_author_data_gender')}
                       onClick={(e) => alterSinglePropertyData(e, 'gender')}
                     >
                       {Object.keys(genderOptions).map((gender) => (
@@ -891,18 +888,17 @@ export default function Query(props) {
                       ))}
                     </Select>
                   </FormControl>
-                  <br /><br />
                   {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
                     ? <>
                       <FormControl size="small">
-                        <InputLabel
-                          id="studyLevel-label">{t('query_author_data_level_of_study')}</InputLabel>
+                        <InputLabel id="studyLevel-label">
+                          {t('query_author_data_level_of_study')}
+                        </InputLabel>
                         <Select
                           sx={{ minWidth: selectWidth }}
                           labelId="studyLevel-label"
                           name="studyLevel"
                           value={singlePropertyData.studyLevel}
-                          label={t('query_author_data_level_of_study')}
                           onClick={(e) => alterSinglePropertyData(e, 'studyLevel')}
                         >
                           {Object.keys(studyLevelOptions).map((level) => (
@@ -911,16 +907,15 @@ export default function Query(props) {
                           ))}
                         </Select>
                       </FormControl>
-                      <br /><br />
                       <FormControl size="small">
-                        <InputLabel
-                          id="degree-label">{t('query_author_data_degree')}</InputLabel>
+                        <InputLabel id="degree-label">
+                          {t('query_author_data_degree')}
+                        </InputLabel>
                         <Select
                           sx={{ minWidth: selectWidth }}
                           labelId="degree-label"
                           name="degree"
                           value={singlePropertyData.degree}
-                          label={t('query_author_data_degree')}
                           onClick={(e) => alterSinglePropertyData(e, 'degree')}
                         >
                           {Object.keys(degreeOptions).map((degree) => (
@@ -931,14 +926,14 @@ export default function Query(props) {
                       </FormControl>
                     </>
                     : <FormControl size="small">
-                      <InputLabel
-                        id="education-label">{t('query_author_data_education')}</InputLabel>
+                      <InputLabel id="education-label">
+                        {t('query_author_data_education')}
+                      </InputLabel>
                       <Select
                         sx={{ minWidth: selectWidth }}
                         labelId="education-label"
                         name="education"
                         value={singlePropertyData.education}
-                        label={t('query_author_data_education')}
                         onClick={(e) => alterSinglePropertyData(e, 'education')}
                       >
                         {Object.keys(educationOptions).map((education) => (
@@ -947,17 +942,16 @@ export default function Query(props) {
                         ))}
                       </Select>
                     </FormControl>}
-                  <br /><br />
                   {checkIfOnlySpecificCorpusIsChecked('clWmOIrLa')
                     ? <FormControl size="small">
-                      <InputLabel
-                        id="nationality-label">{t('query_author_data_nationality')}</InputLabel>
+                      <InputLabel id="nationality-label">
+                        {t('query_author_data_nationality')}
+                      </InputLabel>
                       <Select
                         sx={{ minWidth: selectWidth }}
                         labelId="nationality-label"
                         name="nationality"
                         value={singlePropertyData.nationality}
-                        label={t('query_author_data_nationality')}
                         onClick={(e) => alterSinglePropertyData(e, 'nationality')}
                       >
                         {Object.keys(nationalityOptions).map((nationality) => (
@@ -967,14 +961,14 @@ export default function Query(props) {
                       </Select>
                     </FormControl>
                     : <FormControl size="small">
-                      <InputLabel
-                        id="nativeLang-label">{t('query_author_data_native_language')}</InputLabel>
+                      <InputLabel id="nativeLang-label">
+                        {t('query_author_data_native_language')}
+                      </InputLabel>
                       <Select
                         sx={{ minWidth: selectWidth }}
                         labelId="nativeLang-label"
                         name="nativeLang"
                         value={singlePropertyData.nativeLang}
-                        label={t('query_author_data_native_language')}
                         onClick={(e) => alterSinglePropertyData(e, 'nativeLang')}
                       >
                         {Object.keys(languageOptionsForNativeLangs).map((lang) => (
@@ -984,18 +978,17 @@ export default function Query(props) {
                       </Select>
                     </FormControl>
                   }
-                  <br /><br />
                   {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
                     ? <>
                       <FormControl size="small">
-                        <InputLabel
-                          id="otherLang-label">{t('query_author_data_other_languages')}</InputLabel>
+                        <InputLabel id="otherLang-label">
+                          {t('query_author_data_other_languages')}
+                        </InputLabel>
                         <Select
                           sx={{ minWidth: selectWidth }}
                           labelId="otherLang-label"
                           name="otherLang"
                           value={singlePropertyData.otherLang}
-                          label={t('query_author_data_other_languages')}
                           onClick={(e) => alterSinglePropertyData(e, 'otherLang')}
                         >
                           {Object.keys(languageOptionsForOtherLangs).map((lang) => (
@@ -1004,17 +997,17 @@ export default function Query(props) {
                           ))}
                         </Select>
                       </FormControl>
-                      <br /><br />
                     </>
                     : <></>}
                   <FormControl size="small">
-                    <InputLabel id="country-label">{t('query_author_data_country')}</InputLabel>
+                    <InputLabel id="country-label">
+                      {t('query_author_data_country')}
+                    </InputLabel>
                     <Select
                       sx={{ minWidth: selectWidth }}
                       labelId="country-label"
                       name="country"
                       value={singlePropertyData.country}
-                      label={t('query_author_data_country')}
                       onClick={(e) => alterSinglePropertyData(e, 'country')}
                     >
                       {Object.keys(countryOptionsForQuery).map((country) => (

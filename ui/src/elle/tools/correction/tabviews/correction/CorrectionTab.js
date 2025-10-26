@@ -38,7 +38,8 @@ export default function CorrectionTab(
     hoveredId,
     setHoveredId,
     noQuery,
-    setNoQuery
+    setNoQuery,
+    tabsVariant
   }) {
   const { t } = useTranslation();
   const [totalErrors, setTotalErrors] = useState(null);
@@ -51,7 +52,7 @@ export default function CorrectionTab(
 
   return (
     <div className="corrector-border-box">
-      <Box className="d-flex justify-content-between">
+      <Box className="corrector-border-box-inner">
         {correctionModel !== GRAMMARCHECKER_TEST ?
           <CorrectionToggleButtonGroup
             newRef={newRef}
@@ -69,6 +70,7 @@ export default function CorrectionTab(
             setGrammarErrorList={setGrammarErrorList}
             setSpellerErrorList={setSpellerErrorList}
             noQuery={noQuery}
+            tabsVariant={tabsVariant}
           />
           :
           <Alert severity="warning" className="mb-2">
@@ -76,9 +78,10 @@ export default function CorrectionTab(
             <div>{t('corrector_test_version_thanks')}</div>
           </Alert>
         }
-        <div className="d-flex align-items-center">
-          <CorrectionInfoIcon
-            inputText={correctionModel === GRAMMARCHECKER_TEST ?
+        <div>
+          <CorrectionInfoIcon>
+            {correctionModel === GRAMMARCHECKER_TEST
+              ?
               <div style={{ alignItems: 'center', display: 'flex', flexDirection: 'column' }}>
                 {t('corrector_test_version_info')}
                 <img
@@ -95,9 +98,13 @@ export default function CorrectionTab(
                 />
               </div>
               :
-              <div>{t('corrector_proofreading_infobox')} <NewTabHyperlink path={CORRECTION_TAB_LINK}
-                                                                          content={t('common_here')} />.
-              </div>} />
+              <div>
+                {t('corrector_proofreading_infobox')}&nbsp;
+                <NewTabHyperlink path={CORRECTION_TAB_LINK}
+                                 content={t('common_here')} />.
+              </div>
+            }
+          </CorrectionInfoIcon>
         </div>
       </Box>
       <div className="d-flex gap-2 flex-wrap">

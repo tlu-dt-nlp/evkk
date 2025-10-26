@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static ee.tlu.evkk.clusterfinder.service.model.ClusterResult.EMPTY;
+import static java.lang.String.valueOf;
 import static java.nio.file.Files.readString;
 import static java.util.Map.of;
 
@@ -66,7 +67,7 @@ public class ClusterServiceImpl implements ClusterService {
   }
 
   private String klasterdajaKlasterda(String tekst, boolean shouldReplaceOptionalMarkups, String parameetrid) {
-    Map<String, String> body = of("tekst", tekst, "eemaldaValikulised", shouldReplaceOptionalMarkups ? "jah" : "ei", "parameetrid", parameetrid);
+    Map<String, String> body = of("tekst", tekst, "eemalda_valikulised", valueOf(shouldReplaceOptionalMarkups), "parameetrid", parameetrid);
     HttpEntity<?> requestEntity = new HttpEntity<>(body);
     return restOperations.postForObject("/klasterda", requestEntity, String.class);
   }

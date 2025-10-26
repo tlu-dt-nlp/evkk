@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, MenuItem, Select, TextField } from '@mui/material';
+import { Button, ButtonGroup, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -10,14 +10,14 @@ import '../styles/TablePagination.css';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
 
 export default function TablePagination(props) {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="pagination">
-      <div className='buttongroup'>
+      <div className="buttongroup">
         <ButtonGroup
           className="pagination-button-group"
-          size='medium'
+          size="medium"
           fullWidth
           variant="contained"
           aria-label="outlined primary button group"
@@ -29,7 +29,7 @@ export default function TablePagination(props) {
             onClick={() => props.gotoPage(0)}
             disabled={!props.canPreviousPage}
           >
-            {<FirstPageIcon/>}
+            {<FirstPageIcon />}
           </Button>
           <Button
             sx={DefaultButtonStyle}
@@ -38,7 +38,7 @@ export default function TablePagination(props) {
             onClick={() => props.previousPage()}
             disabled={!props.canPreviousPage}
           >
-            {<NavigateBeforeIcon/>}
+            {<NavigateBeforeIcon />}
           </Button>
           <Button
             sx={DefaultButtonStyle}
@@ -47,7 +47,7 @@ export default function TablePagination(props) {
             onClick={() => props.nextPage()}
             disabled={!props.canNextPage}
           >
-            {<NavigateNextIcon/>}
+            {<NavigateNextIcon />}
           </Button>
           <Button
             sx={DefaultButtonStyle}
@@ -55,19 +55,19 @@ export default function TablePagination(props) {
             onClick={() => props.gotoPage(props.pageCount - 1)}
             disabled={!props.canNextPage}
           >
-            {<LastPageIcon/>}
+            {<LastPageIcon />}
           </Button>
           {' '}
         </ButtonGroup>
       </div>
-      <span className='fontStyle'>
-        {t("pagination_page")}{' '}
+      <span className="fontStyle">
+        {t('pagination_page')}{' '}
         <strong>{props.pageIndex + 1} / {props.pageOptions.length}</strong>
       </span>
       <TextField
-        size='small'
+        size="small"
         id="outlined-number"
-        label={t("pagination_go_to_page")}
+        label={t('pagination_go_to_page')}
         type="number"
         defaultValue={props.pageIndex + 1}
         className="pagination-textarea"
@@ -75,24 +75,27 @@ export default function TablePagination(props) {
           props.gotoPage(e.target.value ? Number(e.target.value) - 1 : 0);
         }}
         InputLabelProps={{
-          shrink: true,
+          shrink: true
         }}
       />
-      <Select
-        size='small'
-        value={props.pageSize}
-        variant='outlined'
-        label="Kirjete arv:"
-        onChange={e => {
-          props.setPageSize(Number(e.target.value))
-        }}
-      >
-        {[5, 10, 20, 30, 40, 50, 100].map(pageSizeNo => (
-          <MenuItem key={pageSizeNo} value={pageSizeNo}>
-            {pageSizeNo}
-          </MenuItem>
-        ))}
-      </Select>
+      <FormControl>
+        <InputLabel>{t('pagination_rows_on_page')}</InputLabel>
+        <Select
+          size="small"
+          value={props.pageSize}
+          variant="outlined"
+          className="pagination-textarea"
+          onChange={e => {
+            props.setPageSize(Number(e.target.value));
+          }}
+        >
+          {[5, 10, 20, 30, 40, 50, 100].map(pageSizeNo => (
+            <MenuItem key={pageSizeNo} value={pageSizeNo}>
+              {pageSizeNo}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </div>
-  )
+  );
 }

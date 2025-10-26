@@ -2,11 +2,14 @@ import { Backdrop, CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { loadingEmitter } from '../../App';
 import { DefaultCircularProgressStyle } from '../const/StyleConstants';
+import blueLight from '../resources/images/misc/blue_light.gif';
 
 export default function LoadingSpinner() {
 
   const [loading, setLoading] = useState(false);
   const [shrinkDisabled, setShrinkDisabled] = useState(false);
+  const today = new Date();
+  const isAprilFools = today.getDate() === 1 && today.getMonth() === 3;
 
   useEffect(() => {
     const handleLoaderStart = (disableShrink) => {
@@ -32,10 +35,15 @@ export default function LoadingSpinner() {
       style={{ zIndex: '9999' }}
       open={loading}
     >
-      <CircularProgress style={DefaultCircularProgressStyle}
-                        disableShrink={shrinkDisabled}
-                        thickness={4}
-                        size="8rem" />
+      {isAprilFools
+        ?
+        <img src={blueLight} alt="Loading spinner" />
+        :
+        <CircularProgress style={DefaultCircularProgressStyle}
+                          disableShrink={shrinkDisabled}
+                          thickness={4}
+                          size="8rem" />
+      }
     </Backdrop>
   );
 }

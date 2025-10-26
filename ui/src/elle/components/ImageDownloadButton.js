@@ -70,8 +70,10 @@ export default function ImageDownloadButton({ element, sourceType, fileName }) {
 
   return (
     <div className="image-download-button-row">
-      <Tooltip title={t('common_download')}
-               placement="top">
+      <Tooltip
+        title={t('common_download')}
+        placement="top"
+      >
         <Button
           style={DefaultButtonStyle}
           variant="contained"

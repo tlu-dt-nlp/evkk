@@ -15,12 +15,10 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Tooltip,
   Typography
 } from '@mui/material';
 import { STOPWORDS_DATADOI_PATH } from '../../const/PathConstants';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { QuestionMark } from '@mui/icons-material';
 import WordlistMenu from './components/WordlistMenu';
 import { TableType } from '../../components/table/TableDownloadButton';
 import GenericTable from '../../components/GenericTable';
@@ -34,6 +32,7 @@ import { AccordionStyle, DefaultButtonStyle } from '../../const/StyleConstants';
 import { useGetWordlistResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
+import TooltipButton from '../../components/tooltip/TooltipButton';
 
 export default function Wordlist() {
 
@@ -249,13 +248,15 @@ export default function Wordlist() {
                   }
                                     label={<>
                                       {t('wordlist_stopwords_from_the_default_list')}
-                                      <Tooltip title={<>{t('wordlist_stopwords_textbox_hover_1')}
-                                        <NewTabHyperlink path={STOPWORDS_DATADOI_PATH}
-                                                         content={t('wordlist_stopwords_textbox_hover_2')} />
-                                        {t('wordlist_stopwords_textbox_hover_3')}</>}
-                                               placement="right">
-                                        <QuestionMark className="tooltip-icon" />
-                                      </Tooltip></>}
+                                      <TooltipButton>
+                                        {t('wordlist_stopwords_textbox_hover_1')}
+                                        <NewTabHyperlink
+                                          path={STOPWORDS_DATADOI_PATH}
+                                          content={t('wordlist_stopwords_textbox_hover_2')}
+                                        />
+                                        {t('wordlist_stopwords_textbox_hover_3')}
+                                      </TooltipButton>
+                                    </>}
                   />
                   <TextField label={t('wordlist_stopwords_textbox')}
                              variant="outlined"
@@ -276,22 +277,19 @@ export default function Wordlist() {
                   }
                                     label={<>
                                       {t('wordlist_retain_uppercase_letters')}
-                                      <Tooltip
-                                        title={t('wordlist_retain_uppercase_letters_hover')}
-                                        placement="right">
-                                        <QuestionMark className="tooltip-icon" />
-                                      </Tooltip></>}
+                                      <TooltipButton>
+                                        {t('wordlist_retain_uppercase_letters_hover')}
+                                      </TooltipButton>
+                                    </>}
                   />
                   <TextField label={<>
                     {t('wordlist_set_minimum_word_frequency')}
-                    <Tooltip
-                      title={t('wordlist_set_minimum_word_frequency_hover')}
-                      placement="right">
-                      <QuestionMark className="tooltip-icon" />
-                    </Tooltip></>}
+                    <TooltipButton>
+                      {t('wordlist_set_minimum_word_frequency_hover')}
+                    </TooltipButton>
+                  </>}
                              type="number"
                              inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: '1' }}
-                             InputLabelProps={{ style: { pointerEvents: 'auto' } }}
                              variant="outlined"
                              size="small"
                              value={minimumFrequency}

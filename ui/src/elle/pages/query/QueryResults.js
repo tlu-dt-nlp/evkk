@@ -11,7 +11,7 @@ import {
 import { usePagination, useTable } from 'react-table';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import '../styles/QueryResults.css';
+import './styles/QueryResults.css';
 import {
   ageOptions,
   corpuses,

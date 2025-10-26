@@ -68,11 +68,15 @@ export default function GrammaticalAnalysis() {
       }]);
     };
     return (
-      <Box marginY={'5px'}>
-        <FormControl size={'small'} className="filter-class">
-          <InputLabel>{label}</InputLabel>
+      <Box marginY="5px">
+        <FormControl
+          size="small"
+          className="filter-class"
+        >
+          <InputLabel>
+            {label}
+          </InputLabel>
           <Select
-            label={label}
             multiple
             value={filterValue}
             onChange={handleChange}

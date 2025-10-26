@@ -43,7 +43,8 @@ export default function VocabularyTab(
     setGrammarErrorList,
     setSpellerErrorList,
     noQuery,
-    setNoQuery
+    setNoQuery,
+    tabsVariant
   }) {
   const { t } = useTranslation();
   const [model, setModel] = useState(WORD_REPETITION);
@@ -56,7 +57,7 @@ export default function VocabularyTab(
 
   return (
     <div className="corrector-border-box">
-      <Box className="d-flex justify-content-between">
+      <Box className="corrector-border-box-inner">
         <CorrectionToggleButtonGroup
           newRef={newRef}
           toggleButtons={VocabularyToggleButtons}
@@ -73,9 +74,10 @@ export default function VocabularyTab(
           setGrammarErrorList={setGrammarErrorList}
           setSpellerErrorList={setSpellerErrorList}
           noQuery={noQuery}
+          tabsVariant={tabsVariant}
         />
-        <CorrectionInfoIcon
-          inputText={<div>
+        <CorrectionInfoIcon>
+          <div>
             {t('corrector_vocabulary_infobox_intro')}
             <br></br><br></br>
             <ul>
@@ -116,10 +118,11 @@ export default function VocabularyTab(
             <NewTabHyperlink path={VOCABULARY_REFERENCE_LINK_TWO} content={t('common_here')} />.
             <br></br><br></br>
             {t('corrector_vocabulary_infobox_outro')}
-          </div>} />
+          </div>
+        </CorrectionInfoIcon>
       </Box>
       <div className="d-flex gap-2 flex-wrap">
-        <div className="corector-input">
+        <div className="corrector-input">
           <Box
             id={'error-text-box'}
             ref={textBoxRef}

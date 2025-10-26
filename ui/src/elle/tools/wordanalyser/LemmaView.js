@@ -128,11 +128,15 @@ export default function LemmaView() {
     };
 
     return (
-      <Box marginY={'5px'}>
-        <FormControl className="filter-class" size={'small'}>
-          <InputLabel>{label}</InputLabel>
+      <Box marginY="5px">
+        <FormControl
+          className="filter-class"
+          size="small"
+        >
+          <InputLabel>
+            {label}
+          </InputLabel>
           <Select
-            label={label}
             multiple
             value={filterValue}
             onChange={handleChange}

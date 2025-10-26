@@ -54,14 +54,6 @@ a:hover {
   color: #FFEBFE;
 }
 
-.tooltip-icon {
-  margin-left: 0.25em;
-  color: #3B3B3B;
-  border: 2.5px solid #3B3B3B;
-  border-radius: 12px;
-  padding: 1px;
-}
-
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
   border-color: #9C27B0 !important;
 }
@@ -82,6 +74,11 @@ a:hover {
 
 .MuiAlert-standardInfo .MuiAlert-icon {
   color: #9C27B0 !important;
+}
+
+.MuiFormControl-root {
+  /* todo comment-in this and remove same property from Adding.css */
+  /*contain: inline-size;*/
 }
 
 .global-page-container {

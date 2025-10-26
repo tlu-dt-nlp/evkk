@@ -18,6 +18,7 @@ word_order_error = "wordOrderError"
 extra_word_error = "extraWordError"
 missing_word_error = "missingWordError"
 
+AUX = "AUX"
 NOUN = "NOUN"
 PROPN = "PROPN"
 VERB = "VERB"
@@ -374,7 +375,7 @@ def calculate_noun_count(words_types):
 
 def verb_and_noun_relation(words_types):
     noun_count = sum(1 for word in words_types if word in (NOUN, PROPN))
-    verb_count = sum(1 for word in words_types if word == VERB)
+    verb_count = sum(1 for word in words_types if word in (VERB, AUX))
 
     if verb_count == 0:
         return "0.00"

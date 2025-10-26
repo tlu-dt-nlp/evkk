@@ -34,8 +34,8 @@ export default function InfoElement() {
   const [wordAnalyserVideoId, setWordAnalyserVideoId] = useState(i18n.language === Languages.ESTONIAN ? WORD_ANALYSER_VIDEO_ID_ET : WORD_ANALYSER_VIDEO_ID_EN);
   const [value, setValue] = useState(0);
 
-  const isBelow1500 = useMediaQuery('(max-width:1299px)');
-  const tabsVariant = isBelow1500 ? 'scrollable' : 'fullWidth';
+  const isBelow1300 = useMediaQuery('(max-width:1299px)');
+  const tabsVariant = isBelow1300 ? 'scrollable' : 'fullWidth';
 
   i18n.on('languageChanged', () => {
     if (i18n.language === Languages.ESTONIAN) {
@@ -69,8 +69,6 @@ export default function InfoElement() {
           variant={tabsVariant}
           value={value}
           onChange={handleChange}
-          textColor="primary"
-          indicatorColor="primary"
           scrollButtons
           allowScrollButtonsMobile
           className="info-element-tabs"

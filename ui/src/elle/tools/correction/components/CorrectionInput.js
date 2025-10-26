@@ -86,7 +86,7 @@ export default function CorrectionInput(
 
 
   return (
-    <div className="corector-input">
+    <div className="corrector-input">
       <Box
         id={'error-text-box'}
         ref={textBoxRef}
