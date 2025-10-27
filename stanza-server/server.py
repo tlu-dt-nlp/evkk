@@ -7,7 +7,6 @@ from flask import Flask
 from flask import Response
 from flask import request
 
-from corrector_counters import calculate_uncommon_words
 from corrector_functions import generate_grammar_output, calculate_noun_count, verb_and_noun_relation, \
     calculate_content_word, calculate_abstract_words, calculate_abstractness_average, \
     handle_uncommon_words_marking, handle_content_words_marking, handle_repetition_marking, \

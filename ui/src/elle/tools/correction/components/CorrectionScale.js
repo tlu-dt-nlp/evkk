@@ -14,7 +14,7 @@ export default function CorrectionScale({ title, startValue, endValue, value, st
     newEndValue = Math.ceil(val);
   }
 
-  const adjustedlength = newEndValue - startValue;
+  const adjustedLength = newEndValue - startValue;
   const adjustedMarkerPosition = val - startValue;
 
   return (
@@ -26,8 +26,10 @@ export default function CorrectionScale({ title, startValue, endValue, value, st
       <div className="d-flex justify-content-around">
         <div className="slider-tip-indicator">{percentage ? `${startValue}%` : startValue}</div>
         <div className="slider-track">
-          <div className="slider-thumb"
-               style={{ left: `${adjustedMarkerPosition * 100 / adjustedlength}%`, top: '-20%' }}/>
+          <div
+            className="slider-thumb"
+            style={{ left: `${adjustedMarkerPosition * 100 / adjustedLength}%` }}
+          />
           <div className="slider-labels">
             <div>{startText}</div>
             <div>{endText}</div>
