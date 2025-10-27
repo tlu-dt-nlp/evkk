@@ -7,7 +7,6 @@ from flask import Flask
 from flask import Response
 from flask import request
 
-from corrector_counters import calculate_uncommon_words
 from corrector_functions import generate_grammar_output, calculate_noun_count, verb_and_noun_relation, \
     calculate_content_word, calculate_abstract_words, calculate_abstractness_average, \
     handle_uncommon_words_marking, handle_content_words_marking, handle_repetition_marking, \
@@ -124,7 +123,7 @@ def keerukus_sonaliigid_mitmekesisus():
 
     speller_output = generate_grammar_output(tekst, fetch_speller(tekst), list_checked_speller_errors)
 
-    uncommon_marked = handle_uncommon_words_marking(tekst, sonaliigid, lemmad, sonad)
+    uncommon_marked, uncommon_count = handle_uncommon_words_marking(tekst, sonaliigid, lemmad, sonad)
     abstract_marked = handle_abstract_words_marking(tekst, serializable_word_analysis, sonaliigid, sonad)
     content_marked = handle_content_words_marking(tekst, sonaliigid, lemmad, sonad)
     repetition_marked = handle_repetition_marking(tekst, vocabulary)
@@ -158,7 +157,7 @@ def keerukus_sonaliigid_mitmekesisus():
         "laused": laused,
         "sonavara": vocabulary,
         "korrektori_loendid": {
-            "harvaesinevad": calculate_uncommon_words(lemmad, sonaliigid),
+            "harvaesinevad": uncommon_count,
             "nimisonad": calculate_noun_count(sonaliigid),
             "sisusonad": calculate_content_word(lemmad, sonaliigid),
             "nimitegusuhe": verb_and_noun_relation(sonaliigid),

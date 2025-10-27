@@ -2,19 +2,20 @@ import React from 'react';
 import { toDecimalScale2OrInteger } from '../util/Utils';
 
 export default function CorrectionScale({ title, startValue, endValue, value, startText, endText, percentage }) {
-  const newEndValue = endValue < value ? Math.ceil(value / 5) * 5 : endValue;
+  let newEndValue = endValue;
+  const val = Number(value);
+  const endVal = Number(endValue);
 
-  const sliderPercentageCorrection = () => {
-    return (newEndValue - startValue) * startValue / 100;
-  };
+  if (endVal < val && val > 10) {
+    newEndValue = Math.ceil(val / 5) * 5;
+  } else if (endVal === val && val > 10) {
+    newEndValue = Math.ceil((val + 0.1) / 5) * 5;
+  } else if (endVal <= val) {
+    newEndValue = Math.ceil(val);
+  }
 
-  const getSliderThumbPosition = () => {
-    if (value < startValue) {
-      return 0;
-    }
-
-    return 97 * (value - sliderPercentageCorrection()) / newEndValue;
-  };
+  const adjustedLength = newEndValue - startValue;
+  const adjustedMarkerPosition = val - startValue;
 
   return (
     <div>
@@ -27,7 +28,7 @@ export default function CorrectionScale({ title, startValue, endValue, value, st
         <div className="slider-track">
           <div
             className="slider-thumb"
-            style={{ left: `${getSliderThumbPosition()}%`, top: '-20%' }}
+            style={{ left: `${adjustedMarkerPosition * 100 / adjustedLength}%` }}
           />
           <div className="slider-labels">
             <div>{startText}</div>
