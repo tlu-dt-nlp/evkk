@@ -72,6 +72,7 @@ def keerukus_sonaliigid_mitmekesisus():
     doc = nlp_tpl(tekst)
 
     sonad = []
+    eestikeelsed_sonad = []
     sonaliigid = []
     lemmad = []
     laused = []
@@ -110,8 +111,13 @@ def keerukus_sonaliigid_mitmekesisus():
                 sonad.append(word.text)
                 sonaliigid.append(word.pos)
                 lemmad.append(sanitize_lemma(word.lemma))
+                if sona_on_eestikeelne(word.text):
+                    eestikeelsed_sonad.append(word.text)
+                else:
+                    eestikeelsed_sonad.append("–")
         word_start_and_end.append(sentence_array)
 
+    syllables = silbita_sisemine(" ".join(puhasta_sonad(eestikeelsed_sonad)))
     abstract_answer = utils.analyze(' '.join(lemmad), "estonian")
     serializable_word_analysis = make_serializable(abstract_answer["wordAnalysis"])
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
@@ -130,11 +136,12 @@ def keerukus_sonaliigid_mitmekesisus():
     nouns_marked = handle_noun_marking(tekst, sonaliigid, sonad)
     long_words_marked = handle_long_word_marking(tekst, sonad)
     long_sentences_marked = handle_long_sentence_marking(tekst, doc)
+    polysyllabic_words = sum(1 for word in syllables if word.count('-') + 1 >= 3)
 
     errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
     errors_per_word = grammar_output["error_count"] / total_words
 
-    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data)
+    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, polysyllabic_words)
 
     return Response(json.dumps({
         "sonad": sonad,
