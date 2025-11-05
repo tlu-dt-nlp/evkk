@@ -136,12 +136,20 @@ def keerukus_sonaliigid_mitmekesisus():
     nouns_marked = handle_noun_marking(tekst, sonaliigid, sonad)
     long_words_marked = handle_long_word_marking(tekst, sonad)
     long_sentences_marked = handle_long_sentence_marking(tekst, doc)
-    polysyllabic_words = sum(1 for word in syllables if word.count('-') + 1 >= 3)
+
+    syllable_count = 0
+    polysyllabic_words = 0
+    for word in syllables:
+        word_syllable_count = word.count('-') + 1
+        syllable_count += word_syllable_count
+        if word_syllable_count >= 3:
+            polysyllabic_words += 1
 
     errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
     errors_per_word = grammar_output["error_count"] / total_words
 
-    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, polysyllabic_words)
+    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
+                                   polysyllabic_words)
 
     return Response(json.dumps({
         "sonad": sonad,
