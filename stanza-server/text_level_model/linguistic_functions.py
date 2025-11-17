@@ -1,9 +1,9 @@
 # Original code created by Kais Allkivi
 
-import os
 import json
-import requests
+import os
 import pandas as pd
+import requests
 
 
 def pos_count(data, pos):
@@ -98,15 +98,6 @@ def curl_request(data):
             return None
     except:
         return None
-
-
-def syllabify(text):
-    '''Funktsioon tagastab silbitatud sõnade loendi.
-    Silbitamiseks on kasutatud Robin Kukke (2024) bakalaureusetöös välja pakutud lahendust.'''
-    response = requests.post("https://elle.tlu.ee/api/texts/silbid/", json={"tekst": text},
-                             headers={"Content-Type": "application/json; charset=utf-8"})
-    word_list = json.loads(response.text)
-    return word_list
 
 
 def mtld_calc(word_array, ttr_threshold):

@@ -163,7 +163,7 @@ public class TextService {
   }
 
   public TextWithComplexity keerukusSonaliigidMitmekesisus(CommonTextRequestDto request) {
-    return stanzaServerClient.getKeerukusSonaliigidMitmekesisus(request.getTekst(), request.getModel());
+    return stanzaServerClient.getKeerukusSonaliigidMitmekesisus(sanitizeText(request.getTekst()), request.getModel());
   }
 
   public byte[] tekstidfailina(CorpusDownloadDto corpusDownloadDto) throws IOException {
