@@ -7,7 +7,6 @@ from flask import Flask
 from flask import Response
 from flask import request
 
-from corrector_counters import calculate_uncommon_words
 from corrector_functions import generate_grammar_output, calculate_noun_count, verb_and_noun_relation, \
     calculate_content_word, calculate_abstract_words, calculate_abstractness_average, \
     handle_uncommon_words_marking, handle_content_words_marking, handle_repetition_marking, \
@@ -73,6 +72,7 @@ def keerukus_sonaliigid_mitmekesisus():
     doc = nlp_tpl(tekst)
 
     sonad = []
+    eestikeelsed_sonad = []
     sonaliigid = []
     lemmad = []
     laused = []
@@ -111,8 +111,13 @@ def keerukus_sonaliigid_mitmekesisus():
                 sonad.append(word.text)
                 sonaliigid.append(word.pos)
                 lemmad.append(sanitize_lemma(word.lemma))
+                if sona_on_eestikeelne(word.text):
+                    eestikeelsed_sonad.append(word.text)
+                else:
+                    eestikeelsed_sonad.append("–")
         word_start_and_end.append(sentence_array)
 
+    syllables = silbita_sisemine(" ".join(puhasta_sonad(eestikeelsed_sonad)))
     abstract_answer = utils.analyze(' '.join(lemmad), "estonian")
     serializable_word_analysis = make_serializable(abstract_answer["wordAnalysis"])
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
@@ -124,7 +129,7 @@ def keerukus_sonaliigid_mitmekesisus():
 
     speller_output = generate_grammar_output(tekst, fetch_speller(tekst), list_checked_speller_errors)
 
-    uncommon_marked = handle_uncommon_words_marking(tekst, sonaliigid, lemmad, sonad)
+    uncommon_marked, uncommon_count = handle_uncommon_words_marking(tekst, sonaliigid, lemmad, sonad)
     abstract_marked = handle_abstract_words_marking(tekst, serializable_word_analysis, sonaliigid, sonad)
     content_marked = handle_content_words_marking(tekst, sonaliigid, lemmad, sonad)
     repetition_marked = handle_repetition_marking(tekst, vocabulary)
@@ -132,10 +137,19 @@ def keerukus_sonaliigid_mitmekesisus():
     long_words_marked = handle_long_word_marking(tekst, sonad)
     long_sentences_marked = handle_long_sentence_marking(tekst, doc)
 
+    syllable_count = 0
+    polysyllabic_words = 0
+    for word in syllables:
+        word_syllable_count = word.count('-') + 1
+        syllable_count += word_syllable_count
+        if word_syllable_count >= 3:
+            polysyllabic_words += 1
+
     errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
     errors_per_word = grammar_output["error_count"] / total_words
 
-    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data)
+    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
+                                   polysyllabic_words)
 
     return Response(json.dumps({
         "sonad": sonad,
@@ -158,7 +172,7 @@ def keerukus_sonaliigid_mitmekesisus():
         "laused": laused,
         "sonavara": vocabulary,
         "korrektori_loendid": {
-            "harvaesinevad": calculate_uncommon_words(lemmad, sonaliigid),
+            "harvaesinevad": uncommon_count,
             "nimisonad": calculate_noun_count(sonaliigid),
             "sisusonad": calculate_content_word(lemmad, sonaliigid),
             "nimitegusuhe": verb_and_noun_relation(sonaliigid),

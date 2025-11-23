@@ -25,10 +25,12 @@
 
 .slider-thumb {
   position: absolute;
-  width: 3%;
+  width: 1rem;
+  transform: translate(-0.5rem, 0);
   height: 140%;
   border: 4px solid #274c77;
   border-radius: 3px;
+  top: -20%;
 }
 
 .index-row {
