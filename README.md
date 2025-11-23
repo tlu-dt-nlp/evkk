@@ -1,3 +1,4 @@
+
 # ELLE / EVKK
 
 ELLE - Estonian Language Learning and Analysis Environment is a development of the user interface of the Estonian Interlanguage Corpus (Eesti vahekeele korpus - EVKK).
@@ -32,6 +33,16 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
    2. Windows: `yarn --cwd .\ui install; yarn --cwd .\ui start`  
    Tip: the simplest way to install yarn is `npm install --global yarn`
 6. Run API module: `$ ./gradlew :api:bootRun` (other modules like `task-scheduler` work in similar fashion)
+
+### Python debugging
+
+Only Stanza server currently has built-in support for local debugging, for which you must:
+
+1. Create a new Python Debug Server run configuration (or use the example found under `.run`)
+2. Make sure it listens to localhost:5310 and that the paths are correctly mapped:
+  1. Local path should point to the stanza-server project path, for example `/home/user/IdeaProjects/evkk/stanza-server`
+  2. Remote path should be `/app`
+3. **Start the Python Debug Server before running the container!**
 
 ### Database migrations
 Database migrations are implemented with Flyway migration tool: https://flywaydb.org/  
