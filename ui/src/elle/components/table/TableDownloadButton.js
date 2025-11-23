@@ -1,6 +1,7 @@
 import { createRef, useEffect, useState } from 'react';
 import Popover from '@mui/material/Popover';
-import ReactExport from 'react-export-excel';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import { CSVLink } from 'react-csv';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material';
@@ -13,9 +14,6 @@ import { DefaultButtonStyle } from '../../const/StyleConstants';
 export default function TableDownloadButton({ data, headers, accessors, tableType, sortByColAccessor }) {
 
   const { t } = useTranslation();
-  const ExcelFile = ReactExport.ExcelFile;
-  const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-  const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
   const [fileType, setFileType] = useState(false);
   const fileDownloadElement = createRef();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -23,7 +21,6 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
   const [buttonType, setButtonType] = useState(<Button style={DefaultButtonStyle}
                                                        variant="contained"
                                                        onClick={showButton}>{t('common_download')}</Button>);
-  const excelButtonBase = <Button style={DefaultButtonStyle} variant="contained">{t('common_download')}</Button>;
 
   let csvData = '';
   let tableHeaders = [];
@@ -98,7 +95,6 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
   };
 
   useEffect(() => {
-    // if sortBy column is given, data is sorted accordingly
     if (sortByColAccessor) {
       const sortedData = sortTableDataByCol(data, sortByColAccessor);
       setModifiedData(sortedData);
@@ -120,6 +116,24 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     }
   }
 
+  function exportToExcel(filename, sheetName, data, columns) {
+    const worksheetData = [
+      columns.map(col => col.label),
+      ...data.map(row => columns.map(col => {
+        if (typeof col.value === 'function') {
+          return col.value(row);
+        }
+        return row[col.value];
+      }))
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, filename + '.xlsx');
+  }
+
   function csvButton(filename) {
     return (
       <Button style={DefaultButtonStyle}
@@ -128,6 +142,18 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
                  className="csvLink"
                  headers={tableHeaders}
                  data={csvData}>{t('common_download')}</CSVLink>
+      </Button>
+    );
+  }
+
+  function excelButton(filename, columns) {
+    return (
+      <Button
+        style={DefaultButtonStyle}
+        variant="contained"
+        onClick={() => exportToExcel(t(filename), t('common_excel_sheet_name'), modifiedData, columns)}
+      >
+        {t('common_download')}
       </Button>
     );
   }
@@ -161,22 +187,14 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     if (fileType) {
       setButtonType(csvButton('gram_anal_filename'));
     } else {
-      setButtonType(<ExcelFile filename={t('gram_anal_filename')}
-                               element={excelButtonBase}>
-        <ExcelSheet data={modifiedData}
-                    name={t('common_excel_sheet_name')}>
-          <ExcelColumn label={headers[0]}
-                       value="col1" />
-          <ExcelColumn label={headers[1]}
-                       value="col2" />
-          <ExcelColumn label={headers[2]}
-                       value={(col) => col.col3[2]} />
-          <ExcelColumn label={headers[3]}
-                       value="col4" />
-          <ExcelColumn label={headers[4]}
-                       value="col5" />
-        </ExcelSheet>
-      </ExcelFile>);
+      const columns = [
+        { label: headers[0], value: 'col1' },
+        { label: headers[1], value: 'col2' },
+        { label: headers[2], value: (col) => col.col3[2] },
+        { label: headers[3], value: 'col4' },
+        { label: headers[4], value: 'col5' }
+      ];
+      setButtonType(excelButton('gram_anal_filename', columns));
     }
   };
 
@@ -184,20 +202,13 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     if (fileType) {
       setButtonType(csvButton('lemmas_filename'));
     } else {
-      setButtonType(<ExcelFile filename={t('lemmas_filename')}
-                               element={excelButtonBase}>
-        <ExcelSheet data={modifiedData}
-                    name={t('common_excel_sheet_name')}>
-          <ExcelColumn label={headers[0]}
-                       value="col1" />
-          <ExcelColumn label={headers[1]}
-                       value={(col) => col.col2[2]} />
-          <ExcelColumn label={headers[2]}
-                       value="col3" />
-          <ExcelColumn label={headers[3]}
-                       value="col4" />
-        </ExcelSheet>
-      </ExcelFile>);
+      const columns = [
+        { label: headers[0], value: 'col1' },
+        { label: headers[1], value: (col) => col.col2[2] },
+        { label: headers[2], value: 'col3' },
+        { label: headers[3], value: 'col4' }
+      ];
+      setButtonType(excelButton('lemmas_filename', columns));
     }
   };
 
@@ -205,26 +216,16 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     if (fileType) {
       setButtonType(csvButton('syllables_filename'));
     } else {
-      setButtonType(<ExcelFile filename={t('syllables_filename')}
-                               element={excelButtonBase}>
-        <ExcelSheet data={modifiedData}
-                    name={t('common_excel_sheet_name')}>
-          <ExcelColumn label={headers[0]}
-                       value="col1" />
-          <ExcelColumn label={headers[1]}
-                       value="col2" />
-          <ExcelColumn label={headers[2]}
-                       value="col3" />
-          <ExcelColumn label={headers[3]}
-                       value="col4" />
-          <ExcelColumn label={headers[4]}
-                       value={(col) => col.col5[2]} />
-          <ExcelColumn label={headers[5]}
-                       value="col6" />
-          <ExcelColumn label={headers[6]}
-                       value="col7" />
-        </ExcelSheet>
-      </ExcelFile>);
+      const columns = [
+        { label: headers[0], value: 'col1' },
+        { label: headers[1], value: 'col2' },
+        { label: headers[2], value: 'col3' },
+        { label: headers[3], value: 'col4' },
+        { label: headers[4], value: (col) => col.col5[2] },
+        { label: headers[5], value: 'col6' },
+        { label: headers[6], value: 'col7' }
+      ];
+      setButtonType(excelButton('syllables_filename', columns));
     }
   };
 
@@ -232,18 +233,12 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     if (fileType) {
       setButtonType(csvButton('wordlist_filename'));
     } else {
-      setButtonType(<ExcelFile filename={t('wordlist_filename')}
-                               element={excelButtonBase}>
-        <ExcelSheet data={modifiedData}
-                    name={t('common_excel_sheet_name')}>
-          <ExcelColumn label={headers[0]}
-                       value="word" />
-          <ExcelColumn label={headers[1]}
-                       value="frequencyCount" />
-          <ExcelColumn label={headers[2]}
-                       value="frequencyPercentage" />
-        </ExcelSheet>
-      </ExcelFile>);
+      const columns = [
+        { label: headers[0], value: 'word' },
+        { label: headers[1], value: 'frequencyCount' },
+        { label: headers[2], value: 'frequencyPercentage' }
+      ];
+      setButtonType(excelButton('wordlist_filename', columns));
     }
   };
 
@@ -251,18 +246,12 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     if (fileType) {
       setButtonType(csvButton('wordcontext_filename'));
     } else {
-      setButtonType(<ExcelFile filename={t('wordcontext_filename')}
-                               element={excelButtonBase}>
-        <ExcelSheet data={modifiedData}
-                    name={t('common_excel_sheet_name')}>
-          <ExcelColumn label={headers[0]}
-                       value="contextBefore" />
-          <ExcelColumn label={headers[1]}
-                       value="keyword" />
-          <ExcelColumn label={headers[2]}
-                       value="contextAfter" />
-        </ExcelSheet>
-      </ExcelFile>);
+      const columns = [
+        { label: headers[0], value: 'contextBefore' },
+        { label: headers[1], value: 'keyword' },
+        { label: headers[2], value: 'contextAfter' }
+      ];
+      setButtonType(excelButton('wordcontext_filename', columns));
     }
   };
 
@@ -270,22 +259,14 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     if (fileType) {
       setButtonType(csvButton('collocates_filename'));
     } else {
-      setButtonType(<ExcelFile filename={t('collocates_filename')}
-                               element={excelButtonBase}>
-        <ExcelSheet data={modifiedData}
-                    name={t('common_excel_sheet_name')}>
-          <ExcelColumn label={headers[0]}
-                       value="collocate" />
-          <ExcelColumn label={headers[1]}
-                       value="score" />
-          <ExcelColumn label={headers[2]}
-                       value="coOccurrences" />
-          <ExcelColumn label={headers[3]}
-                       value="frequencyCount" />
-          <ExcelColumn label={headers[4]}
-                       value="frequencyPercentage" />
-        </ExcelSheet>
-      </ExcelFile>);
+      const columns = [
+        { label: headers[0], value: 'collocate' },
+        { label: headers[1], value: 'score' },
+        { label: headers[2], value: 'coOccurrences' },
+        { label: headers[3], value: 'frequencyCount' },
+        { label: headers[4], value: 'frequencyPercentage' }
+      ];
+      setButtonType(excelButton('collocates_filename', columns));
     }
   };
 

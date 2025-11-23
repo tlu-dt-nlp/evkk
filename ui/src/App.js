@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Navbar from './elle/components/Navbar';
 import { Provider } from 'react-redux';
-import thunkMiddleware from 'redux-thunk';
 import { BrowserRouter as Router, useNavigate, useSearchParams } from 'react-router-dom';
 import { createTheme } from '@mui/material/styles';
 import AppRoutes from './AppRoutes';
@@ -25,8 +24,7 @@ export const loadingEmitter = new EventEmitter();
 export const successEmitter = new EventEmitter();
 
 const store = configureStore({
-  reducer: (state = {}, _) => state,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunkMiddleware)
+  reducer: (state = {}, _) => state
 });
 
 const theme = createTheme({
