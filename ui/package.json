@@ -35,7 +35,8 @@
     "redux": "^5.0.1",
     "redux-thunk": "^3.1.0",
     "use-react-router-breadcrumbs": "^4.0.1",
-    "wordcloud": "^1.2.3"
+    "wordcloud": "^1.2.3",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",
