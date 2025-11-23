@@ -11,6 +11,21 @@ import '../styles/TableDownloadButton.css';
 import { sortTableDataByCol } from '../../util/TableUtils';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
 
+export const TableType = {
+  GRAMMATICAL_ANALYSIS: 'GRAMMATICAL_ANALYSIS',
+  LEMMA_VIEW: 'LEMMA_VIEW',
+  SYLLABLES: 'SYLLABLES',
+  WORDLIST: 'WORDLIST',
+  WORD_CONTEXT: 'WORD_CONTEXT',
+  COLLOCATES: 'COLLOCATES'
+};
+
+const DownloadType = {
+  EXCEL: 'Excel',
+  CSV: 'CSV'
+};
+
+
 export default function TableDownloadButton({ data, headers, accessors, tableType, sortByColAccessor }) {
 
   const { t } = useTranslation();
@@ -332,17 +347,3 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     </Box>
   );
 }
-
-export const TableType = {
-  GRAMMATICAL_ANALYSIS: 'GRAMMATICAL_ANALYSIS',
-  LEMMA_VIEW: 'LEMMA_VIEW',
-  SYLLABLES: 'SYLLABLES',
-  WORDLIST: 'WORDLIST',
-  WORD_CONTEXT: 'WORD_CONTEXT',
-  COLLOCATES: 'COLLOCATES'
-};
-
-const DownloadType = {
-  EXCEL: 'Excel',
-  CSV: 'CSV'
-};
