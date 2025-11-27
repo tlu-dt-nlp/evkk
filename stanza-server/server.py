@@ -23,6 +23,24 @@ from vocabulary_marking_handlers import check_both_sentence_repetition
 train()
 utils = Utils()
 
+if os.environ.get("PYCHARM_DEBUG") == "1":
+    try:
+        import pydevd_pycharm
+
+        pydevd_pycharm.settrace(
+            "host.docker.internal",
+            port=5310,
+            stdout_to_server=True,
+            stderr_to_server=True,
+            suspend=False,
+        )
+        print(f"{'✅':2} Debugger connected successfully!")
+    except Exception:
+        print(
+            f"[DEV-ONLY] {'⚠️':2} Unable to connect to the debugger! "
+            "Start the debug listener and restart the container if you intend to debug."
+        )
+
 if os.path.isfile("/app/word_mapping.csv"):
     asendused = [rida.strip().split(",") for rida in open("/app/word_mapping.csv").readlines()]
 else:
@@ -79,7 +97,6 @@ def keerukus_sonaliigid_mitmekesisus():
     word_start_and_end = []
     linguistic_data = []
     total_words = 0
-    grammar_output = []
     list_checked_speller_errors = []
 
     for sentence in doc.sentences:
@@ -108,7 +125,7 @@ def keerukus_sonaliigid_mitmekesisus():
                     "lemma": word.lemma,
                     "upos": word.upos
                 })
-                sonad.append(word.text)
+                sonad.append(word.text.replace("\\", r"\\"))
                 sonaliigid.append(word.pos)
                 lemmad.append(sanitize_lemma(word.lemma))
                 if sona_on_eestikeelne(word.text):
@@ -633,4 +650,4 @@ def detokenize_quotemarks(sentence):
     return ''.join(chars)
 
 
-app.run(host="0.0.0.0", threaded=True, port=5300)
+app.run(host="0.0.0.0", threaded=True, port=5300, use_reloader=False)

@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="stanza DEBUG" type="PyRemoteDebugConfigurationType"
+                 factoryName="Python Remote Debug">
+    <option name="PORT" value="5310" />
+    <option name="HOST" value="localhost" />
+    <PathMappingSettings>
+      <option name="pathMappings">
+        <list>
+          <mapping local-root="$PROJECT_DIR$/stanza-server" remote-root="/app" />
+        </list>
+      </option>
+    </PathMappingSettings>
+    <option name="REDIRECT_OUTPUT" value="true" />
+    <option name="SUSPEND_AFTER_CONNECT" value="false" />
+    <method v="2" />
+  </configuration>
+</component>
