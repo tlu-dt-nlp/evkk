@@ -441,16 +441,14 @@ function WordAnalyser() {
             {t('word_analyser_text_too_long_infobox')}
           </Alert>
         }
-        <Grid item
-              xs={12}
-              md={12}>
+        <Grid item size={12}>
           <Box display={'flex'}
                justifyContent={'flex-start'}>
           </Box>
         </Grid>
         <Grid item
-              xs={12}
-              md={6}>
+              size={{ xs: 12, md: 6 }}
+        >
           <Input isTextTooLong={isTextTooLong}
                  isFinishedLoading={isFinishedLoading}
                  onSubmit={getResponse}
@@ -461,9 +459,7 @@ function WordAnalyser() {
                  ref={inputRef}
           />
         </Grid>
-        <Grid item
-              xs={12}
-              md={6}>
+        <Grid item size={{ xs: 12, md: 6 }}>
           {showResults && !isTextTooLong &&
             <WordInfo onWordInfo={wordInfo} />
           }

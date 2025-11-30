@@ -1,65 +1,127 @@
-export const IMAGES = {
-  alpakids: require('./alpakids.png').default,
-  arkaader: require('./arkaader_logo.jpg').default,
-  delfi: require('./delfi.png').default,
-  digar: require('./digar.png').default,
-  digiraamat: require('./digiraamat.png').default,
-  drops: require('./drops.png').default,
-  eesti_k_tasemetestid: require('./eesti_k_tasemetestid.png').default,
-  eesti_keel: require('./eesti_keel.png').default,
-  ehtl: require('./ehtl.png').default,
-  eis: require('./eis.png').default,
-  eki: require('./eki.png').default,
-  ekkm: require('./ekkm.png').default,
-  ekoolikott: require('./ekoolikott.png').default,
-  ekrk: require('./ekrk.png').default,
-  ellu: require('./ellu.png').default,
-  err_arhiiv: require('./err_arhiiv.png').default,
-  err_logo: require('./err_logo.png').default,
-  etera: require('./etera.png').default,
-  fons: require('./fons.png').default,
-  glosbe: require('./glosbe.png').default,
-  go3: require('./go3.png').default,
-  google_translate: require('./google_translate.png').default,
-  grafo: require('./grafo.png').default,
-  integratsioon_sa: require('./integratsiooni_sa.png').default,
-  jupiter: require('./jupiter.png').default,
-  kaanuk: require('./kaanuk.png').default,
-  kanal2: require('./kanal2.png').default,
-  keelekliki_logo: require('./keelekliki_logo.png').default,
-  keeleoppija_sonaveeb: require('./keeleoppija_sonaveeb.png').default,
-  keeleveeb: require('./keeleveeb.png').default,
-  korp: require('./korp.png').default,
-  kreuzwaldisajand: require('./kreutzwaldisajand.png').default,
-  krisostomus: require('./krisostomus.png').default,
-  kukuraadio: require('./kukuraadio.png').default,
-  lasteekraan: require('./lasteekraan.png').default,
-  leplanner: require('./Leplanner.png').default,
-  multikey: require('./multikey.png').default,
-  neurotolge: require('./neurotolge.png').default,
-  ohtuleht: require('./ohtuleht.png').default,
-  opiq: require('./opiq.png').default,
-  pghtl: require('./pghtl_img.png').default,
-  podcastid: require('./podcastid.png').default,
-  poogen: require('./poogen.png').default,
-  postimees: require('./postimees.png').default,
-  r4: require('./R4.png').default,
-  raadio2: require('./raadio2.png').default,
-  retkeestisse: require('./retkeestisse.png').default,
-  sirp: require('./sirp.png').default,
-  skell: require('./skell.png').default,
-  sky: require('./sky.png').default,
-  sonaveeb: require('./sonaveeb.png').default,
-  speakly: require('./speakly.png').default,
-  tahela: require('./tahela.png').default,
-  taltech: require('./taltech_logo.png').default,
-  tandm: require('./tandm.png').default,
-  taskutark: require('./taskutarga_logo.png').default,
-  tilde: require('./tilde.png').default,
-  tu: require('./tu_logo.png').default,
-  tv3play: require('./tv3play.png').default,
-  vikerraadio: require('./vikerraadio.png').default,
-  walktalk: require('./walktalk.png').default,
-  yleilmakool: require('./yleilmakool.png').default
+import alpakids from './alpakids.png';
+import arkaader from './arkaader_logo.jpg';
+import delfi from './delfi.png';
+import digar from './digar.png';
+import digiraamat from './digiraamat.png';
+import drops from './drops.png';
+import eesti_k_tasemetestid from './eesti_k_tasemetestid.png';
+import eesti_keel from './eesti_keel.png';
+import ehtl from './ehtl.png';
+import eis from './eis.png';
+import eki from './eki.png';
+import ekkm from './ekkm.png';
+import ekoolikott from './ekoolikott.png';
+import ekrk from './ekrk.png';
+import ellu from './ellu.png';
+import err_arhiiv from './err_arhiiv.png';
+import err_logo from './err_logo.png';
+import etera from './etera.png';
+import fons from './fons.png';
+import glosbe from './glosbe.png';
+import go3 from './go3.png';
+import google_translate from './google_translate.png';
+import grafo from './grafo.png';
+import integratsioon_sa from './integratsiooni_sa.png';
+import jupiter from './jupiter.png';
+import kaanuk from './kaanuk.png';
+import kanal2 from './kanal2.png';
+import keelekliki_logo from './keelekliki_logo.png';
+import keeleoppija_sonaveeb from './keeleoppija_sonaveeb.png';
+import keeleveeb from './keeleveeb.png';
+import korp from './korp.png';
+import kreuzwaldisajand from './kreutzwaldisajand.png';
+import krisostomus from './krisostomus.png';
+import kukuraadio from './kukuraadio.png';
+import lasteekraan from './lasteekraan.png';
+import leplanner from './Leplanner.png';
+import multikey from './multikey.png';
+import neurotolge from './neurotolge.png';
+import ohtuleht from './ohtuleht.png';
+import opiq from './opiq.png';
+import pghtl from './pghtl_img.png';
+import podcastid from './podcastid.png';
+import poogen from './poogen.png';
+import postimees from './postimees.png';
+import r4 from './R4.png';
+import raadio2 from './raadio2.png';
+import retkeestisse from './retkeestisse.png';
+import sirp from './sirp.png';
+import skell from './skell.png';
+import sky from './sky.png';
+import sonaveeb from './sonaveeb.png';
+import speakly from './speakly.png';
+import tahela from './tahela.png';
+import taltech from './taltech_logo.png';
+import tandm from './tandm.png';
+import taskutark from './taskutarga_logo.png';
+import tilde from './tilde.png';
+import tu from './tu_logo.png';
+import tv3play from './tv3play.png';
+import vikerraadio from './vikerraadio.png';
+import walktalk from './walktalk.png';
+import yleilmakool from './yleilmakool.png';
 
+export const IMAGES = {
+  alpakids,
+  arkaader,
+  delfi,
+  digar,
+  digiraamat,
+  drops,
+  eesti_k_tasemetestid,
+  eesti_keel,
+  ehtl,
+  eis,
+  eki,
+  ekkm,
+  ekoolikott,
+  ekrk,
+  ellu,
+  err_arhiiv,
+  err_logo,
+  etera,
+  fons,
+  glosbe,
+  go3,
+  google_translate,
+  grafo,
+  integratsioon_sa,
+  jupiter,
+  kaanuk,
+  kanal2,
+  keelekliki_logo,
+  keeleoppija_sonaveeb,
+  keeleveeb,
+  korp,
+  kreuzwaldisajand,
+  krisostomus,
+  kukuraadio,
+  lasteekraan,
+  leplanner,
+  multikey,
+  neurotolge,
+  ohtuleht,
+  opiq,
+  pghtl,
+  podcastid,
+  poogen,
+  postimees,
+  r4,
+  raadio2,
+  retkeestisse,
+  sirp,
+  skell,
+  sky,
+  sonaveeb,
+  speakly,
+  tahela,
+  taltech,
+  tandm,
+  taskutark,
+  tilde,
+  tu,
+  tv3play,
+  vikerraadio,
+  walktalk,
+  yleilmakool
 };
