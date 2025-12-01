@@ -23,6 +23,24 @@ from vocabulary_marking_handlers import check_both_sentence_repetition
 train()
 utils = Utils()
 
+if os.environ.get("PYCHARM_DEBUG") == "1":
+    try:
+        import pydevd_pycharm
+
+        pydevd_pycharm.settrace(
+            "host.docker.internal",
+            port=5310,
+            stdout_to_server=True,
+            stderr_to_server=True,
+            suspend=False,
+        )
+        print(f"{'✅':2} Debugger connected successfully!")
+    except Exception:
+        print(
+            f"[DEV-ONLY] {'⚠️':2} Unable to connect to the debugger! "
+            "Start the debug listener and restart the container if you intend to debug."
+        )
+
 if os.path.isfile("/app/word_mapping.csv"):
     asendused = [rida.strip().split(",") for rida in open("/app/word_mapping.csv").readlines()]
 else:
@@ -72,13 +90,13 @@ def keerukus_sonaliigid_mitmekesisus():
     doc = nlp_tpl(tekst)
 
     sonad = []
+    eestikeelsed_sonad = []
     sonaliigid = []
     lemmad = []
     laused = []
     word_start_and_end = []
     linguistic_data = []
     total_words = 0
-    grammar_output = []
     list_checked_speller_errors = []
 
     for sentence in doc.sentences:
@@ -107,11 +125,16 @@ def keerukus_sonaliigid_mitmekesisus():
                     "lemma": word.lemma,
                     "upos": word.upos
                 })
-                sonad.append(word.text)
+                sonad.append(word.text.replace("\\", r"\\"))
                 sonaliigid.append(word.pos)
                 lemmad.append(sanitize_lemma(word.lemma))
+                if sona_on_eestikeelne(word.text):
+                    eestikeelsed_sonad.append(word.text)
+                else:
+                    eestikeelsed_sonad.append("–")
         word_start_and_end.append(sentence_array)
 
+    syllables = silbita_sisemine(" ".join(puhasta_sonad(eestikeelsed_sonad)))
     abstract_answer = utils.analyze(' '.join(lemmad), "estonian")
     serializable_word_analysis = make_serializable(abstract_answer["wordAnalysis"])
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
@@ -131,10 +154,19 @@ def keerukus_sonaliigid_mitmekesisus():
     long_words_marked = handle_long_word_marking(tekst, sonad)
     long_sentences_marked = handle_long_sentence_marking(tekst, doc)
 
+    syllable_count = 0
+    polysyllabic_words = 0
+    for word in syllables:
+        word_syllable_count = word.count('-') + 1
+        syllable_count += word_syllable_count
+        if word_syllable_count >= 3:
+            polysyllabic_words += 1
+
     errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
     errors_per_word = grammar_output["error_count"] / total_words
 
-    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data)
+    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
+                                   polysyllabic_words)
 
     return Response(json.dumps({
         "sonad": sonad,
@@ -618,4 +650,4 @@ def detokenize_quotemarks(sentence):
     return ''.join(chars)
 
 
-app.run(host="0.0.0.0", threaded=True, port=5300)
+app.run(host="0.0.0.0", threaded=True, port=5300, use_reloader=False)
