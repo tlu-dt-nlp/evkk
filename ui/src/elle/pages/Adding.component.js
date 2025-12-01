@@ -127,9 +127,7 @@ class Adding extends Component {
             >
               <Grid
                 item
-                xs={12}
-                sm={12}
-                md={6}
+                size={{ xs: 12, sm: 12, md: 6 }}
                 className="first-column"
               >
                 <TextField
@@ -150,7 +148,6 @@ class Adding extends Component {
                   name="kirjeldus"
                   value={this.state.kirjeldus}
                   onChange={this.handleChange}
-                  InputLabelProps={{ className: 'no-center-label' }}
                 />
                 <TextField
                   required
@@ -162,19 +159,18 @@ class Adding extends Component {
                   name="sisu"
                   value={this.state.sisu}
                   onChange={this.handleChange}
-                  InputProps={{
-                    endAdornment: <TextUpload
-                      sendTextFromFile={this.sendTextFromFile}
-                      outerClassName="adding-text-upload-component" />
+                  slotProps={{
+                    input: {
+                      endAdornment: <TextUpload
+                        sendTextFromFile={this.sendTextFromFile}
+                        outerClassName="adding-text-upload-component" />
+                    }
                   }}
-                  InputLabelProps={{ className: 'no-center-label' }}
                 />
               </Grid>
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={3}
+                size={{ xs: 12, sm: 6, md: 3 }}
               >
                 <h5>{t('common_text_data')}</h5>
                 <FormControl size="small">
@@ -406,9 +402,7 @@ class Adding extends Component {
               </Grid>
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={3}
+                size={{ xs: 12, sm: 6, md: 3 }}
               >
                 <h5>{t('common_author_data')}</h5>
                 <TextField

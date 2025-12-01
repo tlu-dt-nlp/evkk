@@ -72,8 +72,10 @@ const theme = createTheme({
       }
     },
     MuiTextField: {
-      defaultProps: {
-        InputProps: { notched: false }
+      slotProps: {
+        input: {
+          notched: false
+        }
       }
     },
     MuiInputLabel: {
