@@ -35,6 +35,16 @@
     }
   }
 
+  .terms-of-service {
+    .MuiAlert-icon {
+      display: none;
+    }
+
+    label {
+      display: inline;
+    }
+  }
+
   .button-container {
     display: flex;
     flex-wrap: wrap;

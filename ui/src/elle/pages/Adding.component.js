@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { Alert, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField
+} from '@mui/material';
 import TextUpload from '../components/TextUpload';
 import './styles/Adding.css';
 import { withTranslation } from 'react-i18next';
@@ -32,7 +43,7 @@ class Adding extends Component {
       pealkiri: '',
       kirjeldus: '',
       sisu: '',
-      liik: 'akadeemiline',
+      liik: 'mitteakadeemiline',
       oppematerjal: null,
       akadOppematerjal: [],
       akadOppematerjalMuu: '',
@@ -515,13 +526,21 @@ class Adding extends Component {
               className="terms-of-service"
             >
               <div>
-                {t('publish_your_text_terms_of_service_infobox_1')}
-                <u
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => this.setState({ modalOpen: true })}
-                >
-                  {t('publish_your_text_terms_of_service_infobox_2')}
-                </u>.
+                <Checkbox
+                  required
+                  name="nousOlek"
+                  checked={this.state.nousOlek}
+                  onChange={this.handleChange}
+                />
+                <label>
+                  {t('publish_your_text_terms_of_service_infobox_1')}
+                  <u
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => this.setState({ modalOpen: true })}
+                  >
+                    {t('publish_your_text_terms_of_service_infobox_2')}
+                  </u>.
+                </label>
               </div>
             </Alert>
             <div className="button-container">
@@ -553,6 +572,20 @@ class Adding extends Component {
             {t('publish_your_text_terms_of_service_1')}
             <br /><br />
             {t('publish_your_text_terms_of_service_2')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_3')}
+            <br /><br /><br /><br />
+            {t('publish_your_text_terms_of_service_4')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_5')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_6')}
+            <br /><br /><br /><br />
+            {t('publish_your_text_terms_of_service_7')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_8')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_9')}
           </ModalBase>
           {this.state.isSubmitting && (
             <AddTextFetch
