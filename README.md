@@ -17,8 +17,9 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 
 ### Getting started
 1. Make sure *docker-compose* is installed correctly: `docker-compose --version`
-2. Start docker containers (this can take several minutes the first time around):
-   1. UNIX-like (Linux, macOS): `$ ./run-local.sh`
+2. Start docker containers (this can take several minutes the first time around). The simplest way in IntelliJ is to use
+   a suitable `run-local` run config under `.run`, however, you can also do it manually:
+  1. UNIX-like (Linux, macOS): `./run-local.sh`
    2. Windows: `.\run-local.ps1`  
       By default, this command will start **all** containers.  
       If you only want to start specific containers, you can do so using docker profiles.  
@@ -26,19 +27,28 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
       Examples for choosing profiles:
       1. UNIX-like (Linux, macOS): `COMPOSE_PROFILES=backend,stanza ./run-local.sh`
       2. Windows: `.\run-local.ps1 -Profiles 'backend,stanza'`
-3. Run database migrations and insert seed data: `$ ./gradlew :db:bootRun --args 'clean migrate seed'`
+3. Run database migrations and insert seed data. The simplest way in IntelliJ is to use a suitable `clean db` run config
+   under `.run`, however, you can also do it manually:
+  1. UNIX-like (Linux, macOS): `./gradlew :db:bootRun --args 'clean migrate seed'`
+  2. Windows: `.\gradlew.bat :db:bootRun --args 'clean migrate seed'`
 4. Make sure you have enabled annotation processing for IntelliJ IDEA: `Preferences -> Build, Execution, Deployment -> Compiler -> Annotation Processors -> Enable annotation processing`
-5. Run UI module: 
-   1. UNIX-like (Linux, macOS): `$ yarn --cwd=./ui install && yarn --cwd=./ui start`
+5. Run UI module. The simplest way in IntelliJ is to use a suitable `ui` run config under `.run`, however, you can also
+   do it manually:
+  1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
    2. Windows: `yarn --cwd .\ui install; yarn --cwd .\ui start`  
    Tip: the simplest way to install yarn is `npm install --global yarn`
-6. Run API module: `$ ./gradlew :api:bootRun` (other modules like `task-scheduler` work in similar fashion)
+6. Run API module. The simplest way in IntelliJ is to use the `ApiRunner` run config under `.run`. However, you can also
+   do it manually (other modules like `task-scheduler` work in similar fashion in terms of run configs and running
+   manually):
+  1. UNIX-like (Linux, macOS): `./gradlew :api:bootRun`
+  2. Windows: `.\gradlew.bat :api:bootRun`
 
 ### Python debugging
 
-Only Stanza server currently has built-in support for local debugging, for which you must:
+Only Stanza server currently has built-in support for local debugging. The simplest way in IntelliJ is to use the
+`stanza DEBUG` run config by **running it before running the container**. However, you can also do it manually:
 
-1. Create a new Python Debug Server run configuration (or use the example found under `.run`)
+1. Create a new Python Debug Server run configuration
 2. Make sure it listens to localhost:5310 and that the paths are correctly mapped:
   1. Local path should point to the stanza-server project path, for example `/home/user/IdeaProjects/evkk/stanza-server`
   2. Remote path should be `/app`
@@ -50,7 +60,7 @@ For running migrations execute gradle task `db:bootRun`.
 All standard Flyway commands are supported (see https://flywaydb.org/documentation/ for more information).  
 Also, extra command `seed` has been implemented in order to provide sample data for development environment.  
 Please note that seeds are **not** applied in production environment and are only used for demo data.  
-For example: run **clean**, **migrate** and **seed** commands: `$ ./gradlew :db:bootRun --args 'clean migrate seed'`  
+For example: run **clean**, **migrate** and **seed** commands: `./gradlew :db:bootRun --args 'clean migrate seed'`
 
 ### Java development
 Preferred IDE is IntelliJ IDEA but other widely adopted IDE-s should work as well.  
