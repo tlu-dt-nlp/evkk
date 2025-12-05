@@ -19,7 +19,7 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 1. Make sure *docker-compose* is installed correctly: `docker-compose --version`
 2. Start docker containers (this can take several minutes the first time around). The simplest way in IntelliJ is to use
    a suitable `run-local` run config under `.run`, however, you can also do it manually:
-  1. UNIX-like (Linux, macOS): `./run-local.sh`
+   1. UNIX-like (Linux, macOS): `./run-local.sh`
    2. Windows: `.\run-local.ps1`  
       By default, this command will start **all** containers.  
       If you only want to start specific containers, you can do so using docker profiles.  
@@ -29,19 +29,19 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
       2. Windows: `.\run-local.ps1 -Profiles 'backend,stanza'`
 3. Run database migrations and insert seed data. The simplest way in IntelliJ is to use a suitable `clean db` run config
    under `.run`, however, you can also do it manually:
-  1. UNIX-like (Linux, macOS): `./gradlew :db:bootRun --args 'clean migrate seed'`
-  2. Windows: `.\gradlew.bat :db:bootRun --args 'clean migrate seed'`
+   1. UNIX-like (Linux, macOS): `./gradlew :db:bootRun --args 'clean migrate seed'`
+   2. Windows: `.\gradlew.bat :db:bootRun --args 'clean migrate seed'`
 4. Make sure you have enabled annotation processing for IntelliJ IDEA: `Preferences -> Build, Execution, Deployment -> Compiler -> Annotation Processors -> Enable annotation processing`
 5. Run UI module. The simplest way in IntelliJ is to use a suitable `ui` run config under `.run`, however, you can also
    do it manually:
-  1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
+   1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
    2. Windows: `yarn --cwd .\ui install; yarn --cwd .\ui start`  
    Tip: the simplest way to install yarn is `npm install --global yarn`
 6. Run API module. The simplest way in IntelliJ is to use the `ApiRunner` run config under `.run`. However, you can also
    do it manually (other modules like `task-scheduler` work in similar fashion in terms of run configs and running
    manually):
-  1. UNIX-like (Linux, macOS): `./gradlew :api:bootRun`
-  2. Windows: `.\gradlew.bat :api:bootRun`
+   1. UNIX-like (Linux, macOS): `./gradlew :api:bootRun`
+   2. Windows: `.\gradlew.bat :api:bootRun`
 
 ### Python debugging
 
