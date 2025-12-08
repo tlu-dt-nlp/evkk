@@ -1,2 +1,4 @@
-FROM openjdk:8-jdk-bullseye
-RUN apt-get update && apt-get install maven -y && apt-get clean
+FROM eclipse-temurin:8-jdk
+RUN apt-get update \
+    && apt-get install maven -y \
+    && apt-get clean

@@ -2,11 +2,10 @@
 
 import math
 import pandas as pd
-from text_level_model.linguistic_functions import pos_count, pos_ratio, pos_ttr, feats_table, feat_ratio, count_cases, \
-    curl_request, \
-    mtld_calc, syllabify
 from joblib import load
 from text_abstraction_analyse import Utils
+from text_level_model.linguistic_functions import pos_count, pos_ratio, pos_ttr, feats_table, feat_ratio, count_cases, \
+    curl_request, mtld_calc
 
 utils = Utils()
 
@@ -50,10 +49,10 @@ def linguistic_analysis(model_type, feat_values):
     scaler = load(model_types[model_type]["scaler"])
     features = model_types[model_type]["feats"]
 
-    X = pd.DataFrame([feat_values])[features].fillna(0)
-    X_scaled = scaler.transform(X)
-    predicted_level = model.predict(X_scaled)[0]
-    predicted_probabilities = model.predict_proba(X_scaled)[0].tolist()
+    dataframe = pd.DataFrame([feat_values])[features].fillna(0)
+    x_scaled = scaler.transform(dataframe)
+    predicted_level = model.predict(x_scaled)[0]
+    predicted_probabilities = model.predict_proba(x_scaled)[0].tolist()
 
     filtered = [(i, val) for i, val in enumerate(predicted_probabilities) if val > 0.01]
     rounded = [(i, round(val, 2)) for i, val in filtered]
@@ -67,7 +66,7 @@ def linguistic_analysis(model_type, feat_values):
     # TODO: arvutada veatunnused - paranduste arv sõnade ja lausete arvu suhtes
 
 
-def extract_features(errors_per_sentence, errors_per_word, data):
+def extract_features(errors_per_sentence, errors_per_word, data, syllable_count, polysyllabic_words):
     df = pd.DataFrame(data, columns=['Index', 'Word', 'Lemma', 'Upos', 'Xpos', 'Feats'])
 
     # Creating a dictionary to store predictive feature values
@@ -91,17 +90,8 @@ def extract_features(errors_per_sentence, errors_per_word, data):
     feat_values['word_len'] = df.WordLength.mean()
     feat_values['sent_len'] = feat_values['word_count'] / feat_values['sent_count']
 
-    syllables = 0
-    polysyllabic_words = 0
-    text_word_list = df['Word'].tolist()
-    for word in text_word_list:
-        syllabified = syllabify(word)
-        word_syllables = syllabified[0].count('-') + 1
-        syllables = syllables + word_syllables
-        if word_syllables >= 3:
-            polysyllabic_words += 1
     feat_values['SMOG'] = 1.0430 * math.sqrt(polysyllabic_words * (30 / feat_values['sent_count'])) + 3.1291
-    feat_values['syllables'] = syllables
+    feat_values['syllables'] = syllable_count
 
     # Calculating lexical features
     feat_values['lemma_count'] = int(df.groupby('Lemma').Lemma.count().to_frame().count().iloc[0])
@@ -130,7 +120,7 @@ def extract_features(errors_per_sentence, errors_per_word, data):
             feat_values['S_abstr'] = ab_sum / ab_count
         else:
             feat_values['S_abstr'] = 0
-    except Exception as e:
+    except Exception:
         feat_values['S_abstr'] = 0
 
         # Calculating grammatical features

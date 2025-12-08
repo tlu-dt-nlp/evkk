@@ -148,11 +148,13 @@ public class TeiMappings {
     );
 
     preparedness = ofEntries(
+      entry("tehisintellekt", "generative artificial intelligence"),
+      entry("keeleoppematerjalid", "language learning materials"),
+      entry("automaatkontroll", "automated correction"),
       entry("tolkesonastik", "translation dictionary or machine translation"),
       entry("ykskeelnesonastik", "monolingual dictionary (incl. online dictionaries)"),
       entry("terminisonastik", "term glossary or base"),
       entry("kasiraamat", "professional handbook or manual"),
-      entry("automaatkontroll", "automated correction"),
       entry("muu", "other")
     );
 
