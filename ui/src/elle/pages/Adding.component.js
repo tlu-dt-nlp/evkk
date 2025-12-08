@@ -624,23 +624,29 @@ class Adding extends Component {
             innerClassName="terms-of-service-modal"
             title="publish_your_text_terms_of_service_title"
           >
-            {t('publish_your_text_terms_of_service_1')}
+            <b>{t('publish_your_text_terms_of_service_1')}</b>
             <br /><br />
             {t('publish_your_text_terms_of_service_2')}
             <br /><br />
             {t('publish_your_text_terms_of_service_3')}
-            <br /><br /><br /><br />
-            {t('publish_your_text_terms_of_service_4')}
             <br /><br />
-            {t('publish_your_text_terms_of_service_5')}
+            {t('publish_your_text_terms_of_service_4')}
+            <br /><br /><br />
+            <b>{t('publish_your_text_terms_of_service_5')}</b>
             <br /><br />
             {t('publish_your_text_terms_of_service_6')}
-            <br /><br /><br /><br />
+            <br /><br />
             {t('publish_your_text_terms_of_service_7')}
             <br /><br />
             {t('publish_your_text_terms_of_service_8')}
+            <br /><br /><br />
+            <b>{t('publish_your_text_terms_of_service_9')}</b>
             <br /><br />
-            {t('publish_your_text_terms_of_service_9')}
+            {t('publish_your_text_terms_of_service_10')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_11')}
+            <br /><br />
+            {t('publish_your_text_terms_of_service_12')}
           </ModalBase>
           {this.state.isSubmitting && (
             <AddTextFetch

@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="run-local BACKEND, STANZA" type="ShConfigurationType">
-    <option name="SCRIPT_TEXT" value="sudo ./run-local.sh COMPOSE_PROFILES=backend,stanza" />
+  <configuration default="false" name="[WINDOWS] run-local BACKEND, STANZA" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value=".\run-local.ps1 -Profiles 'backend,stanza'" />
     <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
     <option name="SCRIPT_PATH" value="" />
     <option name="SCRIPT_OPTIONS" value="" />
