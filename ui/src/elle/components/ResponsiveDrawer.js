@@ -114,6 +114,7 @@ export default function ResponsiveDrawer({
       if (item?.customAction) {
         onCustomActionClick(item);
       }
+      setMobileOpen(false);
       return;
     }
 

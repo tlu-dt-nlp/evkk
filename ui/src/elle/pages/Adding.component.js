@@ -128,8 +128,11 @@ class Adding extends Component {
           >
             <Grid
               container
-              spacing={3}
-              direction={{ xs: 'column', sm: 'row' }}
+              spacing={{ xs: 6, sm: 3 }}
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' },
+                flexWrap: { xs: 'nowrap', sm: 'wrap' }
+              }}
             >
               <Grid
                 item

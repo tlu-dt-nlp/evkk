@@ -11,7 +11,7 @@ import {
 import { usePagination, useTable } from 'react-table';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import './styles/QueryResults.css';
+import './styles/QueryResultsModal.css';
 import {
   ageOptions,
   corpuses,
@@ -22,23 +22,23 @@ import {
   textLanguageOptions,
   textTypeList,
   usedMaterialsDisplayOptions
-} from '../../const/Constants';
-import TablePagination from '../../components/table/TablePagination';
-import QueryDownloadButton from './QueryDownloadButton';
+} from '../../../const/Constants';
+import TablePagination from '../../table/TablePagination';
+import QueryDownloadButton from '../../QueryDownloadButton';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { changeCorpusTexts, queryStore } from '../../store/QueryStore';
+import { changeCorpusTexts, queryStore } from '../../../store/QueryStore';
 import { useTranslation } from 'react-i18next';
-import ModalBase from '../../components/modal/ModalBase';
-import { DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
-import { useGetTextAndMetadata } from '../../hooks/service/TextService';
+import ModalBase from '../ModalBase';
+import { DefaultButtonStyle, SecondaryButtonStyle } from '../../../const/StyleConstants';
+import { useGetTextAndMetadata } from '../../../hooks/service/TextService';
 
-export default function QueryResults({
-                                       results,
-                                       setIsQueryAnswerPage,
-                                       setPreviousSelectedIds,
-                                       previousSelectedIds,
-                                       setIsQueryOpen
-                                     }) {
+export default function QueryResultsModal({
+                                            results,
+                                            setIsQueryResponsePage,
+                                            setPreviousSelectedIds,
+                                            previousSelectedIds,
+                                            setIsQueryOpen
+                                          }) {
   const { t } = useTranslation();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalAccordionExpanded, setModalAccordionExpanded] = useState(false);
@@ -205,11 +205,15 @@ export default function QueryResults({
       {results.length > 0 &&
         <>
           <div>
-            <Button style={{ color: 'white' }} startIcon={<ArrowBackIcon />} sx={DefaultButtonStyle}
-                    onClick={() => {
-                      setIsQueryAnswerPage(prevState => !prevState);
-                      setPreviousSelectedIds(checkboxStatuses.current);
-                    }}>{t('query_change_chosen_corpuses')}</Button>
+            <Button
+              style={{ color: 'white' }} startIcon={<ArrowBackIcon />} sx={DefaultButtonStyle}
+              onClick={() => {
+                setIsQueryResponsePage(prevState => !prevState);
+                setPreviousSelectedIds(checkboxStatuses.current);
+              }}
+            >
+              {t('query_change_chosen_corpuses')}
+            </Button>
           </div>
           <LoadingButton
             variant="outlined"

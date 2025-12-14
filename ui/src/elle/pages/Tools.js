@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Box } from '@mui/material';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import Query from './query/Query';
+import QueryModal from '../components/modal/text-selection/QueryModal';
 import { useTranslation } from 'react-i18next';
 import './styles/Tools.css';
 import { queryStore } from '../store/QueryStore';
@@ -13,6 +13,8 @@ import ClusterfinderIcon from '../resources/images/tools/mustrileidja.png';
 import { RouteConstants, RouteFullPathConstants } from '../../AppRoutes';
 import { toolsDrawerList } from '../const/Constants';
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
+import OwnTextsModal from '../components/modal/text-selection/OwnTextsModal';
+import SelectedTextsModal from '../components/modal/text-selection/SelectedTextsModal';
 
 const ToolIconCard = ({ image, text }) => {
   const { t } = useTranslation();
@@ -68,6 +70,7 @@ export default function Tools() {
   const [isQueryOpen, setIsQueryOpen] = useState(false);
   const [isOwnTextsOpen, setIsOwnTextsOpen] = useState(false);
   const [textsSelected, setTextsSelected] = useState(false);
+  const [isSelectedTextsOpen, setIsSelectedTextsOpen] = useState(false);
 
   useEffect(() => {
     if (current.pathname === `/${RouteConstants.TOOLS}`) navigate(RouteConstants.WORDLIST, { replace: true });
@@ -95,54 +98,66 @@ export default function Tools() {
     if (item.text === 'query_own_texts') {
       setIsOwnTextsOpen(true);
     }
+    if (item.text === 'query_results_saved_for_analysis') {
+      setIsSelectedTextsOpen(true);
+    }
   };
 
   return (
-    <ResponsiveDrawer
-      lists={toolsDrawerList}
-      onCustomActionClick={handleCustomActionClick}
-      disableOutletRender
-    >
-      <Box className="tool-page-container-inner">
-        <Query
-          isQueryOpen={isQueryOpen}
-          setIsQueryOpen={setIsQueryOpen}
-          isOwnTextsOpen={isOwnTextsOpen}
-          setIsOwnTextsOpen={setIsOwnTextsOpen}
-        />
-        <Box className="tools-box-right">
-          <TabOutlet
-            textsSelected={textsSelected}
-            image={WordlistIcon}
-            text={'tools_accordion_wordlist_explainer'}
-            outletPath={RouteFullPathConstants.WORDLIST}
-          />
-          <TabOutlet
-            textsSelected={textsSelected}
-            image={WordContextIcon}
-            text={'tools_accordion_word_in_context_explainer'}
-            outletPath={RouteFullPathConstants.WORDCONTEXT}
-          />
-          <TabOutlet
-            textsSelected={textsSelected}
-            image={CollocatesIcon}
-            text={'tools_accordion_neighbouring_words_explainer'}
-            outletPath={RouteFullPathConstants.COLLOCATES}
-          />
-          <TabOutlet
-            textsSelected={textsSelected}
-            image={WordAnalyserIcon}
-            text={'tools_accordion_word_analysis_explainer'}
-            outletPath={RouteFullPathConstants.WORDANALYSER}
-          />
-          <TabOutlet
-            textsSelected={textsSelected}
-            image={ClusterfinderIcon}
-            text={'tools_accordion_clusters_explainer'}
-            outletPath={RouteFullPathConstants.CLUSTERFINDER}
-          />
+    <>
+      <QueryModal
+        isQueryOpen={isQueryOpen}
+        setIsQueryOpen={setIsQueryOpen}
+      />
+      <OwnTextsModal
+        isOpen={isOwnTextsOpen}
+        setIsOpen={setIsOwnTextsOpen}
+      />
+      <SelectedTextsModal
+        isOpen={isSelectedTextsOpen}
+        setIsOpen={setIsSelectedTextsOpen}
+      />
+
+      <ResponsiveDrawer
+        lists={toolsDrawerList}
+        onCustomActionClick={handleCustomActionClick}
+        disableOutletRender
+      >
+        <Box className="tool-page-container-inner">
+          <Box>
+            <TabOutlet
+              textsSelected={textsSelected}
+              image={WordlistIcon}
+              text={'tools_accordion_wordlist_explainer'}
+              outletPath={RouteFullPathConstants.WORDLIST}
+            />
+            <TabOutlet
+              textsSelected={textsSelected}
+              image={WordContextIcon}
+              text={'tools_accordion_word_in_context_explainer'}
+              outletPath={RouteFullPathConstants.WORDCONTEXT}
+            />
+            <TabOutlet
+              textsSelected={textsSelected}
+              image={CollocatesIcon}
+              text={'tools_accordion_neighbouring_words_explainer'}
+              outletPath={RouteFullPathConstants.COLLOCATES}
+            />
+            <TabOutlet
+              textsSelected={textsSelected}
+              image={WordAnalyserIcon}
+              text={'tools_accordion_word_analysis_explainer'}
+              outletPath={RouteFullPathConstants.WORDANALYSER}
+            />
+            <TabOutlet
+              textsSelected={textsSelected}
+              image={ClusterfinderIcon}
+              text={'tools_accordion_clusters_explainer'}
+              outletPath={RouteFullPathConstants.CLUSTERFINDER}
+            />
+          </Box>
         </Box>
-      </Box>
-    </ResponsiveDrawer>
+      </ResponsiveDrawer>
+    </>
   );
 }

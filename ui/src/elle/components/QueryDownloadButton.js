@@ -16,11 +16,11 @@ import { useTranslation } from 'react-i18next';
 import './styles/QueryDownloadButton.css';
 import { useState } from 'react';
 import i18n from 'i18next';
-import { CC_BY_4_0_LICENSE_PATH } from '../../const/PathConstants';
-import NewTabHyperlink from '../../components/NewTabHyperlink';
-import { Languages } from '../../translations/i18n';
-import { DefaultButtonStyle } from '../../const/StyleConstants';
-import { useDownloadQueryResults } from '../../hooks/service/TextService';
+import { CC_BY_4_0_LICENSE_PATH } from '../const/PathConstants';
+import NewTabHyperlink from './NewTabHyperlink';
+import { Languages } from '../translations/i18n';
+import { DefaultButtonStyle } from '../const/StyleConstants';
+import { useDownloadQueryResults } from '../hooks/service/TextService';
 import FileSaver from 'file-saver';
 
 export default function QueryDownloadButton({ selected }) {

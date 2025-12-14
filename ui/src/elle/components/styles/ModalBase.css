@@ -4,7 +4,7 @@
   }
 
   @media (max-width: 677px) {
-    width: 90% !important;
+    width: 95% !important;
   }
 }
 
@@ -28,4 +28,8 @@
 
 .graph-modal {
   width: 84em !important;
+}
+
+.selected-texts-modal {
+  max-width: 30em;
 }

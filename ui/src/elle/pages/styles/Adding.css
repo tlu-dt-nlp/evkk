@@ -19,11 +19,6 @@
     font-weight: bold;
   }
 
-  .MuiFormControl-root {
-    margin-bottom: 1rem;
-    width: 100%;
-  }
-
   .MuiAlert-root {
     margin-top: 2rem;
     margin-bottom: 1rem;

@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Alert, Button, Checkbox, Chip, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import './styles/Query.css';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Button, Checkbox, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import {
   addedYearOptions,
   ageOptions,
@@ -23,24 +22,22 @@ import {
   usedMaterialsMultiList,
   usedMaterialsMultiOptions,
   wordsOptions
-} from '../../const/Constants';
-import QueryResults from './QueryResults';
+} from '../../../const/Constants';
+import QueryResultsModal from './QueryResultsModal';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import TextUpload from '../../components/TextUpload';
-import { changeCorpusTexts, changeOwnTexts, queryStore } from '../../store/QueryStore';
 import { useTranslation } from 'react-i18next';
-import { DefaultButtonStyle, ElleDefaultChip, useStyles } from '../../const/StyleConstants';
-import { useGetQueryResults } from '../../hooks/service/TextService';
-import TooltipOnText from '../../components/tooltip/TooltipOnText';
-import ModalBase from '../../components/modal/ModalBase';
-import SelectMultiple, { SelectMultipleType } from '../../components/SelectMultiple';
+import { DefaultButtonStyle, useStyles } from '../../../const/StyleConstants';
+import { useGetQueryResults } from '../../../hooks/service/TextService';
+import TooltipOnText from '../../tooltip/TooltipOnText';
+import ModalBase from '../ModalBase';
+import SelectMultiple, { SelectMultipleType } from '../../SelectMultiple';
 
-export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, setIsOwnTextsOpen }) {
+export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
   const { t } = useTranslation();
-  const selectWidth = 300;
   const classes = useStyles();
   const navigate = useNavigate();
+  const mainModalRef = useRef();
   const [urlParams] = useSearchParams();
   const [results, setResults] = useState([]);
   const [addedYears, setAddedYears] = useState([]);
@@ -51,9 +48,6 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
   const [usedMultiMaterials, setUsedMultiMaterials] = useState([]);
   const [alert, setAlert] = useState(false);
   const [noResultsError, setNoResultsError] = useState(false);
-  const [textInputValue, setTextInputValue] = useState('');
-  const [corpusTextsSelected, setCorpusTextsSelected] = useState(0);
-  const [ownTextsSelected, setOwnTextsSelected] = useState(false);
   const [corpusCheckboxStatus, setCorpusCheckboxStatus] = useState({
     all: false,
     cFqPphvYi: false,
@@ -64,7 +58,7 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
     cZjHWUPtD: false,
     cwUSEqQLt: false
   });
-  const [isQueryAnswerPage, setIsQueryAnswerPage] = useState(false);
+  const [isQueryResponsePage, setIsQueryResponsePage] = useState(false);
   const [previousSelectedIds, setPreviousSelectedIds] = useState({});
   const { getQueryResults } = useGetQueryResults();
   const [singlePropertyData, setSinglePropertyData] = useState({
@@ -110,34 +104,17 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
   }, [corpusCheckboxStatus]);
 
   useEffect(() => {
-    refreshChips();
-    setTextInputValue(queryStore.getState().ownTexts);
-  }, []);
-
-  useEffect(() => {
     if (urlParams.get('openQuery')) {
       navigate('', { replace: true });
     }
   }, [urlParams, navigate]);
-
-  queryStore.subscribe(() => {
-    refreshChips();
-  });
-
-  const refreshChips = () => {
-    const storeState = queryStore.getState();
-    setCorpusTextsSelected(storeState.corpusTextIds !== null
-      ? storeState.corpusTextIds.length
-      : 0
-    );
-    setOwnTextsSelected(storeState.ownTexts !== null);
-  };
 
   const submitted = () => {
     const selectedCorpuses = getSelectedCorpusList();
 
     if (selectedCorpuses.length === 0) {
       setAlert(true);
+      mainModalRef.current?.scrollTo({ top: 9999 });
     } else {
       setAlert(false);
       let params = {};
@@ -180,10 +157,12 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
           if (response.length > 0) {
             setNoResultsError(false);
             setResults(response);
-            setIsQueryAnswerPage(true);
+            setIsQueryResponsePage(true);
+            mainModalRef.current?.scrollTo({ top: 0 });
           } else {
             setNoResultsError(true);
             setResults([]);
+            mainModalRef.current?.scrollTo({ top: 9999 });
           }
         });
     }
@@ -266,7 +245,7 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
 
   const alterAllCorpusCheckboxes = (event) => {
     let newCorpusCheckboxStatus = { ...corpusCheckboxStatus };
-    for (let checkbox in newCorpusCheckboxStatus) {
+    for (const checkbox in newCorpusCheckboxStatus) {
       newCorpusCheckboxStatus[checkbox] = event.target.checked;
     }
     setCorpusCheckboxStatus(newCorpusCheckboxStatus);
@@ -278,23 +257,12 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
   };
 
   const alterSinglePropertyData = (event, fieldName) => {
-    let newSinglePropertyData = { ...singlePropertyData };
+    const newSinglePropertyData = { ...singlePropertyData };
     newSinglePropertyData[fieldName] = (newSinglePropertyData[fieldName] === event.target.dataset.value || event.target.dataset.value === undefined)
       ? ''
       : event.target.dataset.value;
     setSinglePropertyData(newSinglePropertyData);
   };
-
-  const handleSubmitOwnTexts = () => {
-    queryStore.dispatch(changeOwnTexts(textInputValue));
-    setIsOwnTextsOpen(false);
-  };
-
-  const handleChipDelete = (type) => queryStore.dispatch(
-    type === ChipDeleteType.CORPUS_TEXTS
-      ? changeCorpusTexts(null)
-      : changeOwnTexts(null)
-  );
 
   return (
     <>
@@ -302,8 +270,9 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
         isOpen={isQueryOpen}
         setIsOpen={setIsQueryOpen}
         title="query_choose_texts"
+        modalRef={mainModalRef}
       >
-        {!isQueryAnswerPage ?
+        {!isQueryResponsePage ?
           <form
             id="vorm"
             action=""
@@ -311,8 +280,20 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
               e.preventDefault();
             }}
           >
-            <div className="query-form-container">
-              <div>
+            <Grid
+              container
+              spacing={{ xs: 6, sm: 3 }}
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' },
+                flexWrap: { xs: 'nowrap', sm: 'wrap' }
+              }}
+            >
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+              >
                 <b>{t('query_subcorpus')}</b>
                 <br /><br />
                 <Checkbox
@@ -398,8 +379,13 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                   {t('query_subcorpus_academic_estonian')}
                 </TooltipOnText>
                 <br />
-              </div>
-              <div>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+              >
                 <b>{t('common_text_data')}</b>
                 <br /><br />
                 <FormControl
@@ -422,12 +408,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                   />
                 </FormControl>
                 <FormControl size="small">
-                  <InputLabel id="language-label">
+                  <InputLabel>
                     {t('query_text_data_language')}
                   </InputLabel>
                   <Select
-                    sx={{ minWidth: selectWidth }}
-                    labelId="language-label"
                     name="language"
                     value={singlePropertyData.language}
                     onClick={(e) => alterSinglePropertyData(e, 'language')}
@@ -441,11 +425,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                 {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
                   ? <>
                     <FormControl size="small">
-                      <InputLabel
-                        id="domain-label">{t('common_text_data_field_of_research')}</InputLabel>
+                      <InputLabel>
+                        {t('common_text_data_field_of_research')}
+                      </InputLabel>
                       <Select
-                        sx={{ minWidth: selectWidth }}
-                        labelId="domain-label"
                         name="domain"
                         value={singlePropertyData.domain}
                         onClick={(e) => alterSinglePropertyData(e, 'domain')}
@@ -476,12 +459,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                   </>
                   : <>
                     <FormControl size="small">
-                      <InputLabel id="level-label">
+                      <InputLabel>
                         {t('query_text_data_level')}
                       </InputLabel>
                       <Select
-                        sx={{ minWidth: selectWidth }}
-                        labelId="level-label"
                         name="level"
                         value={singlePropertyData.level}
                         onClick={(e) => alterSinglePropertyData(e, 'level')}
@@ -492,12 +473,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                       </Select>
                     </FormControl>
                     <FormControl size="small">
-                      <InputLabel id="usedMaterials-label">
+                      <InputLabel>
                         {t('query_text_data_used_supporting_materials')}
                       </InputLabel>
                       <Select
-                        sx={{ minWidth: selectWidth }}
-                        labelId="usedMaterials-label"
                         name="usedMaterials"
                         value={singlePropertyData.usedMaterials}
                         onClick={(e) => alterSinglePropertyData(e, 'usedMaterials')}
@@ -574,17 +553,20 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                     pluralSelectedTranslationKey="select_multiple_ranges"
                   />
                 </FormControl>
-              </div>
-              <div>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={4}
+              >
                 <b>{t('common_author_data')}</b>
                 <br /><br />
                 <FormControl size="small">
-                  <InputLabel id="age-label">
+                  <InputLabel>
                     {t('query_author_data_age')}
                   </InputLabel>
                   <Select
-                    sx={{ minWidth: selectWidth }}
-                    labelId="age-label"
                     name="age"
                     value={singlePropertyData.age}
                     onClick={(e) => alterSinglePropertyData(e, 'age')}
@@ -595,12 +577,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                   </Select>
                 </FormControl>
                 <FormControl size="small">
-                  <InputLabel id="gender-label">
+                  <InputLabel>
                     {t('query_author_data_gender')}
                   </InputLabel>
                   <Select
-                    sx={{ minWidth: selectWidth }}
-                    labelId="gender-label"
                     name="gender"
                     value={singlePropertyData.gender}
                     onClick={(e) => alterSinglePropertyData(e, 'gender')}
@@ -614,12 +594,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                 {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
                   ? <>
                     <FormControl size="small">
-                      <InputLabel id="studyLevel-label">
+                      <InputLabel>
                         {t('query_author_data_level_of_study')}
                       </InputLabel>
                       <Select
-                        sx={{ minWidth: selectWidth }}
-                        labelId="studyLevel-label"
                         name="studyLevel"
                         value={singlePropertyData.studyLevel}
                         onClick={(e) => alterSinglePropertyData(e, 'studyLevel')}
@@ -631,12 +609,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                       </Select>
                     </FormControl>
                     <FormControl size="small">
-                      <InputLabel id="degree-label">
+                      <InputLabel>
                         {t('query_author_data_degree')}
                       </InputLabel>
                       <Select
-                        sx={{ minWidth: selectWidth }}
-                        labelId="degree-label"
                         name="degree"
                         value={singlePropertyData.degree}
                         onClick={(e) => alterSinglePropertyData(e, 'degree')}
@@ -649,12 +625,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                     </FormControl>
                   </>
                   : <FormControl size="small">
-                    <InputLabel id="education-label">
+                    <InputLabel>
                       {t('query_author_data_education')}
                     </InputLabel>
                     <Select
-                      sx={{ minWidth: selectWidth }}
-                      labelId="education-label"
                       name="education"
                       value={singlePropertyData.education}
                       onClick={(e) => alterSinglePropertyData(e, 'education')}
@@ -667,12 +641,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                   </FormControl>}
                 {checkIfOnlySpecificCorpusIsChecked('clWmOIrLa')
                   ? <FormControl size="small">
-                    <InputLabel id="nationality-label">
+                    <InputLabel>
                       {t('query_author_data_nationality')}
                     </InputLabel>
                     <Select
-                      sx={{ minWidth: selectWidth }}
-                      labelId="nationality-label"
                       name="nationality"
                       value={singlePropertyData.nationality}
                       onClick={(e) => alterSinglePropertyData(e, 'nationality')}
@@ -684,12 +656,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                     </Select>
                   </FormControl>
                   : <FormControl size="small">
-                    <InputLabel id="nativeLang-label">
+                    <InputLabel>
                       {t('query_author_data_native_language')}
                     </InputLabel>
                     <Select
-                      sx={{ minWidth: selectWidth }}
-                      labelId="nativeLang-label"
                       name="nativeLang"
                       value={singlePropertyData.nativeLang}
                       onClick={(e) => alterSinglePropertyData(e, 'nativeLang')}
@@ -704,12 +674,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                 {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
                   ? <>
                     <FormControl size="small">
-                      <InputLabel id="otherLang-label">
+                      <InputLabel>
                         {t('query_author_data_other_languages')}
                       </InputLabel>
                       <Select
-                        sx={{ minWidth: selectWidth }}
-                        labelId="otherLang-label"
                         name="otherLang"
                         value={singlePropertyData.otherLang}
                         onClick={(e) => alterSinglePropertyData(e, 'otherLang')}
@@ -723,12 +691,10 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                   </>
                   : <></>}
                 <FormControl size="small">
-                  <InputLabel id="country-label">
+                  <InputLabel>
                     {t('query_author_data_country')}
                   </InputLabel>
                   <Select
-                    sx={{ minWidth: selectWidth }}
-                    labelId="country-label"
                     name="country"
                     value={singlePropertyData.country}
                     onClick={(e) => alterSinglePropertyData(e, 'country')}
@@ -739,12 +705,12 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
                     ))}
                   </Select>
                 </FormControl>
-              </div>
-            </div>
-            <br /><br />
+              </Grid>
+            </Grid>
+            <br />
             {alert || noResultsError ?
               <>
-                <Alert style={{ width: '30%' }} severity="error">
+                <Alert severity="error">
                   {alert ? t('error_query_no_subcorpus_picked') : t('query_results_no_texts_found')}
                 </Alert>
                 <br />
@@ -759,81 +725,15 @@ export default function Query({ isQueryOpen, setIsQueryOpen, isOwnTextsOpen, set
             </Button>
           </form>
           :
-          <span>
-            <QueryResults
-              results={results}
-              setIsQueryAnswerPage={setIsQueryAnswerPage}
-              setPreviousSelectedIds={setPreviousSelectedIds}
-              previousSelectedIds={previousSelectedIds}
-              setIsQueryOpen={setIsQueryOpen}
-            />
-          </span>
+          <QueryResultsModal
+            results={results}
+            setIsQueryResponsePage={setIsQueryResponsePage}
+            setPreviousSelectedIds={setPreviousSelectedIds}
+            previousSelectedIds={previousSelectedIds}
+            setIsQueryOpen={setIsQueryOpen}
+          />
         }
       </ModalBase>
-      {/* todo move own texts to own component */}
-      <ModalBase
-        isOpen={isOwnTextsOpen}
-        setIsOpen={setIsOwnTextsOpen}
-        title="query_own_texts"
-      >
-        <div>
-          {t('textupload_primary_modal_title')}
-        </div>
-        <br />
-        <div>
-          <TextUpload sendTextFromFile={setTextInputValue} />
-          <textarea
-            spellCheck="false"
-            className="query-textinput"
-            value={textInputValue}
-            onChange={(e) => setTextInputValue(e.target.value)}
-          ></textarea>
-          <Button
-            variant="contained"
-            sx={DefaultButtonStyle}
-            disabled={textInputValue === ''}
-            onClick={handleSubmitOwnTexts}
-          >
-            {t('textupload_primary_modal_save')}
-          </Button>
-        </div>
-      </ModalBase>
-      {/* todo move selected text view to own component */}
-      {(corpusTextsSelected > 0 || ownTextsSelected) &&
-        <div className="query-chip-button shadow-sm">
-          <div className="tools-chips">
-            <div className="query-chip-header">{t('query_results_saved_for_analysis')}</div>
-            {corpusTextsSelected > 0 &&
-              <div>
-                <Chip
-                  sx={ElleDefaultChip}
-                  avatar={
-                    <div className="number-avatar">
-                      {corpusTextsSelected > 1 ? corpusTextsSelected : 1}
-                    </div>
-                  }
-                  label={corpusTextsSelected > 1 ? t('query_results_saved_for_analysis_corpus_plural', { amount: corpusTextsSelected }) : t('query_results_saved_for_analysis_corpus')}
-                  className="my-1"
-                  variant="outlined"
-                  onDelete={() => handleChipDelete(ChipDeleteType.CORPUS_TEXTS)}
-                />
-              </div>
-            }
-            {ownTextsSelected > 0 &&
-              <Chip
-                sx={ElleDefaultChip}
-                label={t('query_results_saved_for_analysis_own_texts')}
-                variant="outlined"
-                onDelete={() => handleChipDelete(ChipDeleteType.OWN_TEXTS)}
-              />
-            }
-          </div>
-        </div>}
     </>
   );
 }
-
-const ChipDeleteType = {
-  CORPUS_TEXTS: 'CORPUS_TEXTS',
-  OWN_TEXTS: 'OWN_TEXTS'
-};

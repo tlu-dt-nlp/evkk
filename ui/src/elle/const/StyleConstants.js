@@ -3,10 +3,6 @@ import { styled, tooltipClasses } from '@mui/material';
 import { HashLink } from 'react-router-hash-link';
 
 export const useStyles = makeStyles((_theme) => ({
-  formControl: {
-    margin: 1,
-    width: 300
-  },
   indeterminateColor: {
     color: '#f50057'
   },

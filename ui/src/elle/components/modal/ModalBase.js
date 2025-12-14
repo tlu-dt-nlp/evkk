@@ -14,6 +14,7 @@ export default function ModalBase({
                                     titleTooltip,
                                     disableComfortClosing = false,
                                     disableCloseButton = false,
+                                    modalRef,
                                     children
                                   }) {
 
@@ -34,6 +35,7 @@ export default function ModalBase({
       <Box
         sx={modalStyle}
         className={`modal-base-root ${innerClassName ?? ''}`.trim()}
+        ref={modalRef}
       >
         <div className="modal-head">
           {t(title)}
