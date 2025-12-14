@@ -184,6 +184,7 @@ export default function Collocates() {
       setShowTable(false);
       getCollocatesResult(generateRequestData())
         .then(response => {
+          if (!response.collocateList) return;
           loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START_SHRINK_DISABLED);
           setTimeout(() => { // for a visual cue when rendering takes longer
             setLastKeyword(keyword);
@@ -357,7 +358,7 @@ export default function Collocates() {
           })}
         </Alert>
       </>}
-      {showTable && <>
+      {showTable && data && <>
         <TableHeaderButtons leftComponent={<GraphView data={data} keyword={lastKeyword} />}
                             downloadData={data}
                             downloadTableType={TableType.COLLOCATES}

@@ -174,6 +174,7 @@ export default function WordContext() {
       setShowTable(false);
       getWordContextResult(generateRequestData())
         .then(response => {
+          if (!response.contextList) return;
           loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START_SHRINK_DISABLED);
           setTimeout(() => { // for a visual cue when rendering takes longer
             setLemmatizedKeywordResult(null);

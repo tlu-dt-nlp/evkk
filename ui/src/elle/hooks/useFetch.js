@@ -8,6 +8,12 @@ const ErrorCode400 = {
   'UnsupportedMimeType': ErrorSnackbarEventType.UNSUPPORTED_MIMETYPE
 };
 
+const statusHandlers = {
+  401: ErrorSnackbarEventType.UNAUTHORIZED,
+  403: ErrorSnackbarEventType.FORBIDDEN,
+  429: ErrorSnackbarEventType.TOO_MANY_REQUESTS
+};
+
 const hasNonExpiredToken = (token) => {
   if (!token) return false;
   return Date.now() < JSON.parse(atob(token.split('.')[1])).exp * 1000;
@@ -26,6 +32,25 @@ const parseByType = async (res, type) => {
   }
 };
 
+const handleError = async (res, finalOptions) => {
+  if (statusHandlers[res.status]) {
+    errorEmitter.emit(statusHandlers[res.status]);
+    return;
+  }
+
+  if (res.status === 400) {
+    const body = await res.json();
+    errorEmitter.emit(ErrorCode400[body[0].code]);
+    return;
+  }
+
+  if (res.status === 404 && finalOptions.ignoreNotFoundError) {
+    return;
+  }
+
+  errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR);
+};
+
 export const useFetch = () => {
   const { accessToken } = useContext(RootContext) || {};
   const [response, setResponse] = useState(null);
@@ -42,45 +67,38 @@ export const useFetch = () => {
 
     loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START);
 
-    if (!finalOptions.disableContentTypeJson) {
-      params.headers = {
-        ...params.headers,
-        'Content-Type': 'application/json'
-      };
-    }
+    try {
+      const fetchParams = { ...params };
 
-    if (hasNonExpiredToken(accessToken)) {
-      params.headers = {
-        ...params.headers,
-        Authorization: `Bearer ${accessToken}`
-      };
-    }
-
-    const res = await fetch(url, params);
-
-    loadingEmitter.emit(LoadingSpinnerEventType.LOADER_END);
-
-    if (!finalOptions.disableErrorHandling && !res.ok) {
-      if (res.status === 401) {
-        errorEmitter.emit(ErrorSnackbarEventType.UNAUTHORIZED);
-      } else if (res.status === 403) {
-        errorEmitter.emit(ErrorSnackbarEventType.FORBIDDEN);
-      } else if (res.status === 429) {
-        errorEmitter.emit(ErrorSnackbarEventType.TOO_MANY_REQUESTS);
-      } else if (res.status === 400) {
-        res.json().then(body => errorEmitter.emit(ErrorCode400[body[0].code]));
-      } else if (!(finalOptions.ignoreNotFoundError && res.status === 404)) {
-        errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR);
+      if (!finalOptions.disableContentTypeJson) {
+        fetchParams.headers = {
+          ...fetchParams.headers,
+          'Content-Type': 'application/json'
+        };
       }
-      return Promise.reject();
+
+      if (hasNonExpiredToken(accessToken)) {
+        fetchParams.headers = {
+          ...fetchParams.headers,
+          Authorization: `Bearer ${accessToken}`
+        };
+      }
+
+      const res = await fetch(url, fetchParams);
+
+      if (!finalOptions.disableErrorHandling && !res.ok) {
+        await handleError(res, finalOptions);
+      }
+
+      const result = finalOptions.disableResponseParsing
+        ? res
+        : await parseByType(res, finalOptions.parseType);
+
+      setResponse(result);
+      return result;
+    } finally {
+      loadingEmitter.emit(LoadingSpinnerEventType.LOADER_END);
     }
-
-    const result = finalOptions.disableResponseParsing
-      ? res
-      : await parseByType(res, finalOptions.parseType);
-    setResponse(result);
-
-    return result;
   }, [accessToken]);
 
   return { fetchData, response };
@@ -91,3 +109,4 @@ export const FetchParseType = {
   JSON: 'json',
   TEXT: 'text'
 };
+

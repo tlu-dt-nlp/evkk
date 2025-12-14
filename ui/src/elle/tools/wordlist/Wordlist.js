@@ -61,6 +61,7 @@ export default function Wordlist() {
 
   useEffect(() => {
     const wordlistState = toolAnalysisStore.getState().wordlist;
+    if (!wordlistState.analysis) return;
     if (wordlistState !== null && wordlistState.analysis.length > 0) {
       const params = wordlistState.parameters;
       setTypeValue(params.typeValue);
@@ -301,7 +302,7 @@ export default function Wordlist() {
           </form>
         </AccordionDetails>
       </Accordion>
-      {showTable && <>
+      {showTable && data && <>
         <TableHeaderButtons leftComponent={<WordcloudView data={data} />}
                             downloadData={data}
                             downloadTableType={TableType.WORDLIST}

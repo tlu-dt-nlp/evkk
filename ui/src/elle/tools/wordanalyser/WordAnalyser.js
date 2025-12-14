@@ -106,6 +106,7 @@ function WordAnalyser() {
 
   // analyse text
   const analyseInput = (data) => {
+    if (!data.sonad) return;
     const words = data.sonad;
     const lemmas = data.lemmad;
     const syllables = data.silbid;
@@ -166,6 +167,7 @@ function WordAnalyser() {
   };
 
   const processWordsLowerCase = (words, wordTypes) => {
+    if (!words) return;
     for (let i = 0; i < words.length; i++) {
       if (wordTypes[i] !== 'nimisõna (pärisnimi)') {
         words[i] = words[i].toLowerCase();
@@ -175,6 +177,7 @@ function WordAnalyser() {
   };
 
   const processSyllableLowerCase = (syllables, analysedWordsLowerCase, wordTypes) => {
+    if (!syllables) return;
     for (let i = 0; i < syllables.length; i++) {
       if (wordTypes[i] === 'nimisõna (pärisnimi)') {
         if (analysedWordsLowerCase[i].includes('-')) {
@@ -204,6 +207,7 @@ function WordAnalyser() {
 
   // highlight selected syllable from syllable table
   useEffect(() => {
+    if (!analyseInput.words) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedWord = analysedInput.words[i];
@@ -232,6 +236,7 @@ function WordAnalyser() {
 
   // highlight selected syllable word from syllable table
   useEffect(() => {
+    if (!analyseInput.words) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedSyllable = analysedInput.syllables[i];
@@ -254,6 +259,7 @@ function WordAnalyser() {
 
   // highlight selected lemma from lemma table
   useEffect(() => {
+    if (!analyseInput.lemmas) return;
     let content = [];
     for (let i = 0; i < analysedInput.lemmas.length; i++) {
       let analysedLemma = analysedInput.lemmas[i];
@@ -283,6 +289,7 @@ function WordAnalyser() {
 
   // highlight selected word from lemma table and grammatical analysis table
   useEffect(() => {
+    if (!analyseInput.words) return;
     const index = analysedInput.ids.findIndex((element) => element === word);
     let content = [];
 
@@ -311,6 +318,7 @@ function WordAnalyser() {
 
   // highlight selected word form from grammatical analysis table
   useEffect(() => {
+    if (!analyseInput.words) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedWord = analysedInput.wordforms[i];
@@ -333,6 +341,7 @@ function WordAnalyser() {
 
   // highlight selected word type from grammatical analysis table
   useEffect(() => {
+    if (!analyseInput.words) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedWord = analysedInput.wordtypes[i];
@@ -356,6 +365,7 @@ function WordAnalyser() {
 
   // forward selected word from input to wordInfo
   function showInfo(selectedId) {
+    if (!analysedInput.words) return;
     let index = '';
     for (let i = 0; i < analysedInput.words.length; i++) {
       if (analysedInput.ids[i] === selectedId.toString()) {
