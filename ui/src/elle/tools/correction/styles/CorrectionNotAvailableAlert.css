@@ -1,0 +1,15 @@
+.correction-not-available-alert {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  text-align: center;
+}
+
+.correction-not-available-alert .MuiAlert-action {
+  justify-content: center;
+  width: 100%;
+  display: flex;
+}
