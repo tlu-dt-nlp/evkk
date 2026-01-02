@@ -19,15 +19,18 @@ export default function CorrectionNotAvailableAlert() {
   const { t } = useTranslation();
 
   return (
-    <Alert
-      icon={<InfoIcon fontSize="large" />}
-      action={<ActionButton>{t('corrector_test_version_na_action')}</ActionButton>}
-      severity="info"
-      className="correction-not-available-alert">
-      <div>
-        <b>{t('corrector_test_version_na_title')}</b>
+    <div className="global-page-content-container">
+      <div className="global-page-content-container-inner">
+        <Alert
+          icon={<InfoIcon fontSize="large" />}
+          action={<ActionButton><br />{t('corrector_test_version_not_available_action')}</ActionButton>}
+          severity="info"
+          className="correction-not-available-alert">
+          <b>{t('corrector_test_version_not_available_title')}</b>
+          <br /><br />
+          <div>{t('corrector_test_version_not_available_text')}</div>
+        </Alert>
       </div>
-      <div>{t('corrector_test_version_na_text')}</div>
-    </Alert>
+    </div>
   );
 }
