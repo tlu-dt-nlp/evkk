@@ -10,6 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { useGetCorrectorResult } from '../../hooks/service/ToolsService';
 import { queryCaller } from './util/Utils';
 import { GRAMMARCHECKER_TEST, SPELLCHECKER } from './const/Constants';
+import CorrectionNotAvailableAlert from './components/CorrectionNotAvailableAlert';
+import { featureFlags } from '../../../config/featureFlags';
 
 export default function Correction() {
   const { t } = useTranslation();
@@ -39,6 +41,10 @@ export default function Correction() {
       queryCaller(textBoxRef, inputText, setRequestingText, setGrammarAnswer, setSpellerAnswer, setInputText, newRef, setComplexityAnswer, setAbstractWords, getCorrectorResult, false, setGrammarErrorList, setSpellerErrorList, correctionModel);
     }
   };
+
+  if (correctionModel === GRAMMARCHECKER_TEST && !featureFlags.isCorrectorTestVersionEnabled) {
+    return <CorrectionNotAvailableAlert />;
+  }
 
   return (
     <Box className="global-page-content-container">

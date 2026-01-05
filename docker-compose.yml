@@ -28,6 +28,10 @@ services:
     container_name: evkk-stanza-server
     profiles: [ "all", "stanza" ]
     restart: unless-stopped
+    environment:
+      PYCHARM_DEBUG: 1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     build:
       context: .
       dockerfile: docker/images/evkk-stanza-server.Dockerfile

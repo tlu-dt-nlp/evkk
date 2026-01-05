@@ -271,22 +271,26 @@ export const textPublishSubTextTypesOptions = {
 
 export const usedMaterialsMultiOptions = {
   'query_text_data_used_study_or_supporting_materials_yes': {
+    'tehisintellekt': 'query_text_data_used_study_or_supporting_materials_generative_ai',
+    'keeleoppematerjalid': 'query_text_data_used_study_or_supporting_materials_language_learning_materials',
+    'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
     'tolkesonastik': 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation',
     'ykskeelnesonastik': 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary',
     'terminisonastik': 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base',
     'kasiraamat': 'query_text_data_used_study_or_supporting_materials_professional_handbook',
-    'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
     'muu': 'common_other'
   },
   'ei': 'query_text_data_used_study_or_supporting_materials_no'
 };
 
 export const usedMaterialsMultiList = {
+  'tehisintellekt': 'query_text_data_used_study_or_supporting_materials_generative_ai',
+  'keeleoppematerjalid': 'query_text_data_used_study_or_supporting_materials_language_learning_materials',
+  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'tolkesonastik': 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation',
   'ykskeelnesonastik': 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary',
   'terminisonastik': 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base',
   'kasiraamat': 'query_text_data_used_study_or_supporting_materials_professional_handbook',
-  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'muu': 'common_other',
   'ei': 'query_text_data_used_study_or_supporting_materials_no'
 };
@@ -354,8 +358,8 @@ export const educationOptions = {
 };
 
 export const textPublishMainTextTypesOptions = {
-  'akadeemiline': 'publish_your_text_text_data_main_text_type_academic',
-  'mitteakadeemiline': 'publish_your_text_text_data_main_text_type_non_academic'
+  'mitteakadeemiline': 'publish_your_text_text_data_main_text_type_non_academic',
+  'akadeemiline': 'publish_your_text_text_data_main_text_type_academic'
 };
 
 export const textPublishAcademicCategoryOptions = {
@@ -384,11 +388,13 @@ export const textPublishAcademicResearchSubtypeOptions = {
 };
 
 export const textPublishUsedMaterialsOptions = {
+  'tehisintellekt': 'query_text_data_used_study_or_supporting_materials_generative_ai',
+  'keeleoppematerjalid': 'query_text_data_used_study_or_supporting_materials_language_learning_materials',
+  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'tolkesonastik': 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation',
   'ykskeelnesonastik': 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary',
   'terminisonastik': 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base',
   'kasiraamat': 'query_text_data_used_study_or_supporting_materials_professional_handbook',
-  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'muu': 'common_other'
 };
 

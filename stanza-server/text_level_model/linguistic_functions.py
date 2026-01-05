@@ -74,7 +74,7 @@ def curl_request(data):
         (vt Mikk jt 2003; http://hdl.handle.net/10062/50110),
         Sagedusandmed põhinevad Tartu Ülikooli tasakaalus korpusel.'''
 
-    chars_to_remove = ['_', '=', '\(', ')', '"', '&']
+    chars_to_remove = ['_', '=', '(', ')', '\\', '"', '&']
     for char in chars_to_remove:
         data.loc[:, 'Lemma'] = data['Lemma'].str.replace(char, '', regex=True)
     data['Lemma'] = data['Lemma'].str.replace("'", "")

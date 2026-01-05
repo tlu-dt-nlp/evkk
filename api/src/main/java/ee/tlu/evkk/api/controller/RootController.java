@@ -29,7 +29,7 @@ public class RootController {
   private final ServiceLocator serviceLocator;
   private final DtoMapper dtoMapper;
 
-  private static final String ELLE_VERSION = "25.10.1";
+  private static final String ELLE_VERSION = "26.1.1";
 
   @GetMapping("/status")
   @Transactional
