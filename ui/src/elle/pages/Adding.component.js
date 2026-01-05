@@ -174,7 +174,6 @@ class Adding extends Component {
                   onChange={this.handleChange}
                   slotProps={{
                     input: {
-                      notched: false,
                       endAdornment: <TextUpload
                         sendTextFromFile={this.sendTextFromFile}
                         outerClassName="adding-text-upload-component" />

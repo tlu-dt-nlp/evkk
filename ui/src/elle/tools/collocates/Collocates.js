@@ -225,10 +225,14 @@ export default function Collocates() {
 
   return (
     <>
-      <h2 className="tool-title">{t('common_neighbouring_words')}</h2>
-      <Accordion sx={AccordionStyle}
-                 expanded={paramsExpanded}
-                 onChange={() => setParamsExpanded(!paramsExpanded)}>
+      <h2 className="tool-title">
+        {t('common_neighbouring_words')}
+      </h2>
+      <Accordion
+        sx={AccordionStyle}
+        expanded={paramsExpanded}
+        onChange={() => setParamsExpanded(!paramsExpanded)}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           id="collocates-filters-header"
@@ -241,9 +245,11 @@ export default function Collocates() {
           <form onSubmit={handleSubmit}>
             <div className="tool-accordion">
               <div>
-                <FormControl sx={{ m: 3 }}
-                             error={typeError}
-                             variant="standard">
+                <FormControl
+                  sx={{ m: 3 }}
+                  error={typeError}
+                  variant="standard"
+                >
                   <FormLabel id="type-radios">{t('common_search')}</FormLabel>
                   <RadioGroup
                     aria-labelledby="type-radios"
@@ -251,54 +257,76 @@ export default function Collocates() {
                     value={typeValue}
                     onChange={handleTypeChange}
                   >
-                    <FormControlLabel value={CollocateType.WORDS}
-                                      control={<Radio />}
-                                      label={t('common_by_word_form')} />
-                    <FormControlLabel value={CollocateType.LEMMAS}
-                                      control={<Radio />}
-                                      label={t('common_by_base_form')} />
+                    <FormControlLabel
+                      value={CollocateType.WORDS}
+                      control={<Radio />}
+                      label={t('common_by_word_form')}
+                    />
+                    <FormControlLabel
+                      value={CollocateType.LEMMAS}
+                      control={<Radio />}
+                      label={t('common_by_base_form')}
+                    />
                   </RadioGroup>
-                  {typeError && <FormHelperText>{t('error_mandatory_field')}</FormHelperText>}
-                  <Button sx={DefaultButtonStyle}
-                          style={{ marginTop: '10vh !important' }}
-                          className="collocates-analyse-button"
-                          type="submit"
-                          variant="contained">
+                  {typeError &&
+                    <FormHelperText>
+                      {t('error_mandatory_field')}
+                    </FormHelperText>
+                  }
+                  <Button
+                    sx={DefaultButtonStyle}
+                    style={{ marginTop: '10vh !important' }}
+                    className="collocates-analyse-button"
+                    type="submit"
+                    variant="contained"
+                  >
                     {t('analyse_button')}
                   </Button>
                 </FormControl>
               </div>
               <div>
-                <FormControl sx={{ m: 3 }}
-                             variant="standard">
-                  <FormLabel id="keyword">{t('common_enter_search_word')}</FormLabel>
-                  <TextField size="small"
-                             required
-                             value={keyword}
-                             onChange={(e) => setKeyword(e.target.value)}
-                             style={{ width: '250px' }} />
+                <FormControl
+                  sx={{ m: 3 }}
+                  variant="standard"
+                >
+                  <FormLabel id="keyword">
+                    {t('common_enter_search_word')}
+                  </FormLabel>
+                  <TextField
+                    size="small"
+                    required
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    style={{ width: '250px' }}
+                  />
                 </FormControl>
                 <br />
-                <FormControl sx={{ m: 3 }}
-                             style={{ marginTop: '-1vh' }}
-                             variant="standard">
-                  <FormLabel id="display">{t('neighbouring_words_search_for_neighbouring_words')}</FormLabel>
+                <FormControl
+                  sx={{ m: 3 }}
+                  style={{ marginTop: '-1vh' }}
+                  variant="standard"
+                >
+                  <FormLabel id="display">
+                    {t('neighbouring_words_search_for_neighbouring_words')}
+                  </FormLabel>
                   <Grid container>
                     <Grid item>
-                      <TextField type="number"
-                                 slotProps={{
-                                   htmlInput: {
-                                     inputMode: 'numeric',
-                                     pattern: '[0-9]*',
-                                     min: '1',
-                                     max: '5'
-                                   }
-                                 }}
-                                 size="small"
-                                 required
-                                 value={searchCount}
-                                 onChange={(e) => setSearchCount(e.target.value)}
-                                 className="collocates-search-count-textfield" />
+                      <TextField
+                        type="number"
+                        slotProps={{
+                          htmlInput: {
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*',
+                            min: '1',
+                            max: '5'
+                          }
+                        }}
+                        size="small"
+                        required
+                        value={searchCount}
+                        onChange={(e) => setSearchCount(e.target.value)}
+                        className="collocates-search-count-textfield"
+                      />
                     </Grid>
                     <Grid
                       item
@@ -310,7 +338,10 @@ export default function Collocates() {
                 </FormControl>
               </div>
               <div>
-                <FormControl sx={{ m: 3 }} size="small">
+                <FormControl
+                  sx={{ m: 3 }}
+                  size="small"
+                >
                   <InputLabel id="formula">
                     {t('neighbouring_words_choose_statistic_measure')}
                     <TooltipButton>
@@ -323,30 +354,36 @@ export default function Collocates() {
                     value={formula}
                     onChange={(e) => setFormula(e.target.value)}
                   >
-                    <MenuItem
-                      value={StatisticMeasureFormula.LOGDICE}>{t('neighbouring_words_statistic_measure_logdice')}</MenuItem>
-                    <MenuItem
-                      value={StatisticMeasureFormula.T_SCORE}>{t('neighbouring_words_statistic_measure_t_score')}</MenuItem>
-                    <MenuItem
-                      value={StatisticMeasureFormula.MI_SCORE}>{t('neighbouring_words_statistic_measure_mi_score')}</MenuItem>
+                    <MenuItem value={StatisticMeasureFormula.LOGDICE}>
+                      {t('neighbouring_words_statistic_measure_logdice')}
+                    </MenuItem>
+                    <MenuItem value={StatisticMeasureFormula.T_SCORE}>
+                      {t('neighbouring_words_statistic_measure_t_score')}
+                    </MenuItem>
+                    <MenuItem value={StatisticMeasureFormula.MI_SCORE}>
+                      {t('neighbouring_words_statistic_measure_mi_score')}
+                    </MenuItem>
                   </Select>
                 </FormControl>
                 <br />
-                <FormControl sx={{ m: 3 }}
-                             variant="standard">
-                  <FormControlLabel control={
-                    <Checkbox
-                      checked={capitalizationChecked}
-                      disabled={typeValue === CollocateType.LEMMAS}
-                      onChange={(e) => setCapitalizationChecked(e.target.checked)}
-                    ></Checkbox>
-                  }
-                                    label={<>
-                                      {t('common_case_sensitive')}
-                                      <TooltipButton>
-                                        {t('neighbouring_words_case_sensitive_hover')}
-                                      </TooltipButton>
-                                    </>}
+                <FormControl
+                  sx={{ m: 3 }}
+                  variant="standard"
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={capitalizationChecked}
+                        disabled={typeValue === CollocateType.LEMMAS}
+                        onChange={(e) => setCapitalizationChecked(e.target.checked)}
+                      ></Checkbox>
+                    }
+                    label={<>
+                      {t('common_case_sensitive')}
+                      <TooltipButton>
+                        {t('neighbouring_words_case_sensitive_hover')}
+                      </TooltipButton>
+                    </>}
                   />
                 </FormControl>
               </div>
@@ -365,22 +402,25 @@ export default function Collocates() {
       </>}
       {showTable && data && <>
         <TableHeaderButtons
-            leftComponent={<GraphView data={data} keyword={lastKeyword} />}
-            downloadData={data}
-            downloadTableType={TableType.COLLOCATES}
-            downloadHeaders={tableToDownload}
-            downloadAccessors={accessors}
-            downloadSortByColAccessor={sortByColAccessor}
+          leftComponent={<GraphView data={data} keyword={lastKeyword} />}
+          downloadData={data}
+          downloadTableType={TableType.COLLOCATES}
+          downloadHeaders={tableToDownload}
+          downloadAccessors={accessors}
+          downloadSortByColAccessor={sortByColAccessor}
         />
         <GenericTable
-            tableClassname={'wordlist-table'}
-            columns={columns}
-            data={data}
-            sortByColAccessor={sortByColAccessor}
+          tableClassname={'wordlist-table'}
+          columns={columns}
+          data={data}
+          sortByColAccessor={sortByColAccessor}
         />
       </>}
       {showNoResultsError &&
-        <Alert severity="error">{t('error_no_matching_keywords')}</Alert>}
+        <Alert severity="error">
+          {t('error_no_matching_keywords')}
+        </Alert>
+      }
     </>
   );
 }

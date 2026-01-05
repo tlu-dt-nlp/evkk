@@ -154,6 +154,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
       getQueryResults(JSON.stringify(params))
         .then(response => {
+          if (!response) return;
           if (response.length > 0) {
             setNoResultsError(false);
             setResults(response);
@@ -290,9 +291,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
             >
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={4}
+                size={{ xs: 12, sm: 6, md: 4 }}
               >
                 <b>{t('query_subcorpus')}</b>
                 <br /><br />
@@ -382,9 +381,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
               </Grid>
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={4}
+                size={{ xs: 12, sm: 6, md: 4 }}
               >
                 <b>{t('common_text_data')}</b>
                 <br /><br />
@@ -556,9 +553,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
               </Grid>
               <Grid
                 item
-                xs={12}
-                sm={12}
-                md={4}
+                size={{ xs: 12, sm: 12, md: 4 }}
               >
                 <b>{t('common_author_data')}</b>
                 <br /><br />

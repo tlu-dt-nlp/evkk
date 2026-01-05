@@ -214,7 +214,9 @@ export default function WordContext() {
 
   return (
     <>
-      <h2 className="tool-title">{t('common_word_in_context')}</h2>
+      <h2 className="tool-title">
+        {t('common_word_in_context')}
+      </h2>
       <Accordion
         sx={AccordionStyle}
         expanded={paramsExpanded}
@@ -397,7 +399,10 @@ export default function WordContext() {
         />
       </>}
       {showNoResultsError &&
-        <Alert severity="error">{t('error_no_matching_keywords')}</Alert>}
+        <Alert severity="error">
+          {t('error_no_matching_keywords')}
+        </Alert>
+      }
     </>
   );
 }

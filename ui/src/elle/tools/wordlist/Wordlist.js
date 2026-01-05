@@ -195,7 +195,9 @@ export default function Wordlist() {
 
   return (
     <>
-      <h2 className="tool-title">{t('common_wordlist')}</h2>
+      <h2 className="tool-title">
+        {t('common_wordlist')}
+      </h2>
       <Accordion
         sx={AccordionStyle}
         expanded={paramsExpanded}

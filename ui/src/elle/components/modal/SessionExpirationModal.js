@@ -100,7 +100,7 @@ export default function SessionExpirationModal() {
       <Button
         style={SecondaryButtonStyle}
         size="small"
-        variant="contained"
+        variant="outlined"
         onClick={handleClose}
       >
         {t('session_expiration_modal_renew_no')}

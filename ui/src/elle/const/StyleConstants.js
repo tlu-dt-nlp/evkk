@@ -40,6 +40,7 @@ export const SecondaryButtonStyle = {
   color: '#9C27B0',
   borderColor: '#9C27B0',
   fontWeight: 'bold',
+  lineHeight: '30px',
   borderRadius: '15px'
 };
 
