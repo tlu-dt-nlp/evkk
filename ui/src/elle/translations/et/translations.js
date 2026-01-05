@@ -234,7 +234,7 @@ export const TRANSLATIONS_ET = {
   corrector_smog_index: 'SMOG indeks',
   corrector_spelling_errors_tooltip: 'Paranda sõnade õigekirja.',
   corrector_test_version_info: 'Teksti automaatkorrektuuri demorakendus on valminud Tartu ja Tallinna ülikooli koostöös hankeprojektis “Eesti keele kui teise keele automaatkorrektor õppijale ja õpetajale” (viitenumber 276704). Eesmärk on luua keeleõppija jaoks abivahend, mis suudab lisaks teksti parandamisele ka parandusi liigitada ja selgitada. Tööd on tellinud Eesti Keele Instituut “Eesti keele õppe ja keeleõppe arendamise” ehk Keelesammu programmist, mida kaasrahastab Haridus- ja Teadusministeerium ning Euroopa Liit.',
-  corrector_test_version_not_available_action: 'Külasta tekstihindaja toimivat versiooni',
+  corrector_test_version_not_available_action: 'Kasuta tekstihindaja korrektorit',
   corrector_test_version_not_available_text: 'Varsti paneme siia lehele üles rakenduse uue versiooni. Täname kannatlikkuse eest!',
   corrector_test_version_not_available_title: 'Korrektori ja veaselgitaja testversioon ei ole ajutiselt kättesaadav.',
   corrector_test_version_text: 'See on korrektori ja veaselgitaja testversioon. Rakenduse töös võib esineda vigu. Kui märkad probleeme või soovid anda tagasisidet, palun võta meiega ühendust.',

@@ -13,7 +13,7 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 - Docker Engine 24.x: https://docs.docker.com/get-docker/
 - Docker Compose 1.28+: https://docs.docker.com/compose/install/
 - NodeJS 20.x: https://nodejs.org
-- YARN (classic, 1.22.x): https://yarnpkg.com
+- YARN (classic, 1.22.x): https://classic.yarnpkg.com/lang/en/
 
 ### Getting started
 1. Make sure *docker-compose* is installed correctly: `docker-compose --version`
