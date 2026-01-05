@@ -1,9 +1,10 @@
-import { successEmitter } from '../../../App';
+import { errorEmitter, successEmitter } from '../../../App';
 import { SuccessSnackbarEventType } from '../../components/snackbar/SuccessSnackbar';
 import { useFetch } from '../useFetch';
 import { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RootContext from '../../context/RootContext';
+import { ErrorSnackbarEventType } from '../../components/snackbar/ErrorSnackbar';
 
 const AUTH_PATH = '/api/auth';
 
@@ -16,12 +17,15 @@ export const useLogout = () => {
     fetchData(`${AUTH_PATH}/logout`, {
       method: 'DELETE'
     }, {
-      disableResponseParsing: true
-    }).then(() => {
-      clearAuthContext();
-      navigate('/');
-      successEmitter.emit(forced ? SuccessSnackbarEventType.LOGOUT_FORCED_SUCCESS : SuccessSnackbarEventType.LOGOUT_SUCCESS);
-    });
+      disableResponseParsing: true,
+      disableErrorHandling: true
+    }).then(
+      () => {
+        clearAuthContext();
+        navigate('/');
+        successEmitter.emit(forced ? SuccessSnackbarEventType.LOGOUT_FORCED_SUCCESS : SuccessSnackbarEventType.LOGOUT_SUCCESS);
+      },
+      () => errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR));
   }, [clearAuthContext, fetchData, navigate]);
 
   return { logout };

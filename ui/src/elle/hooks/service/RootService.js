@@ -1,19 +1,23 @@
 import { useFetch } from '../useFetch';
 import { useCallback, useEffect } from 'react';
 
-export const useGetStatus = (setStatus, setDataSuccess) => {
+export const useGetStatus = (setStatus, setIsLoading, setDataSuccess) => {
   const { fetchData, response } = useFetch();
 
   const getStatus = useCallback(async () => {
     await fetchData('/api/status', {}, { disableErrorHandling: true })
-      .catch(() => setStatus(false));
-  }, [fetchData, setStatus]);
+      .catch(() => {
+        setStatus(false);
+        setIsLoading(false);
+      });
+  }, [fetchData, setStatus, setIsLoading]);
 
   useEffect(() => {
     if (response) {
       setDataSuccess(response);
     }
-  }, [response, setDataSuccess]);
+    setIsLoading(false);
+  }, [response, setIsLoading, setDataSuccess]);
 
   return { getStatus };
 };

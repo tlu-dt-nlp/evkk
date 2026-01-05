@@ -157,8 +157,9 @@ export default function Wordlist() {
         .then(response => {
           loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START_SHRINK_DISABLED);
           setTimeout(() => { // for a visual cue when rendering takes longer
-            setResponse(response.resultList);
+            setResponse(response?.resultList);
             setShowTable(true);
+            setParamsExpanded(false);
             setTypeValueToDisplay(typeValue);
             loadingEmitter.emit(LoadingSpinnerEventType.LOADER_END);
           }, 0);
@@ -321,7 +322,7 @@ export default function Wordlist() {
                       </>
                     }
                     type="number"
-                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: '1' }}
+                    slotProps={{ htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', min: '1' } }}
                     size="small"
                     value={minimumFrequency}
                     onChange={(e) => setMinimumFrequency(e.target.value)}
@@ -333,7 +334,7 @@ export default function Wordlist() {
           </form>
         </AccordionDetails>
       </Accordion>
-      {showTable && <>
+      {showTable && data && <>
         <TableHeaderButtons
           leftComponent={<WordcloudView data={data} />}
           downloadData={data}

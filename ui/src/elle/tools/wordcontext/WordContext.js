@@ -174,6 +174,7 @@ export default function WordContext() {
       setShowTable(false);
       getWordContextResult(generateRequestData())
         .then(response => {
+          if (!response) return;
           loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START_SHRINK_DISABLED);
           setTimeout(() => { // for a visual cue when rendering takes longer
             setLemmatizedKeywordResult(null);
@@ -301,7 +302,14 @@ export default function WordContext() {
                     <Grid item>
                       <TextField
                         type="number"
-                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: '1', max: '15' }}
+                        slotProps={{
+                          htmlInput: {
+                            inputMode: 'numeric',
+                            pattern: '[0-9]*',
+                            min: '1',
+                            max: '15'
+                          }
+                        }}
                         size="small"
                         required
                         value={displayCount}

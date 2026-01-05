@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -31,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private final AbstractAccessTokenService accessTokenService;
   private final AbstractJwtTokenService jwtTokenService;
+  private final HandlerExceptionResolver handlerExceptionResolver;
 
   @Override
   protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -48,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
           }
         } catch (Exception e) {
-          throw new UnauthorizedException();
+          handlerExceptionResolver.resolveException(request, response, null, new UnauthorizedException());
         }
       }
     }
