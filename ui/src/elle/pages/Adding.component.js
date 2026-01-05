@@ -68,7 +68,8 @@ class Adding extends Component {
       nousOlek: false,
       ennistusNupp: false,
       modalOpen: false,
-      isSubmitting: false
+      isSubmitting: false,
+      lastSubmitSuccessful: null
     };
     this.startingstate = { ...this.state };
     this.previous = { ...this.state };
@@ -80,6 +81,13 @@ class Adding extends Component {
 
   componentDidMount() {
     window.scrollTo(0, 0);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.lastSubmitSuccessful !== this.state.lastSubmitSuccessful && this.state.lastSubmitSuccessful === true) {
+      this.setState(this.startingstate);
+      this.setState({ ennistusnupp: true });
+    }
   }
 
   handleChange(event) {
@@ -94,8 +102,7 @@ class Adding extends Component {
     event.preventDefault();
     this.previous = { ...this.state };
     this.setState(({ request: this.state }));
-    this.setState(this.startingstate);
-    this.setState({ ennistusnupp: true, isSubmitting: true });
+    this.setState({ isSubmitting: true });
   }
 
   taastaVormiSisu() {
@@ -138,9 +145,7 @@ class Adding extends Component {
             >
               <Grid
                 item
-                xs={12}
-                sm={12}
-                md={6}
+                size={{ xs: 12, sm: 12, md: 6 }}
                 className="first-column"
               >
                 <TextField
@@ -161,7 +166,6 @@ class Adding extends Component {
                   name="kirjeldus"
                   value={this.state.kirjeldus}
                   onChange={this.handleChange}
-                  InputLabelProps={{ className: 'no-center-label' }}
                 />
                 <TextField
                   required
@@ -173,19 +177,18 @@ class Adding extends Component {
                   name="sisu"
                   value={this.state.sisu}
                   onChange={this.handleChange}
-                  InputProps={{
-                    endAdornment: <TextUpload
-                      sendTextFromFile={this.sendTextFromFile}
-                      outerClassName="adding-text-upload-component" />
+                  slotProps={{
+                    input: {
+                      endAdornment: <TextUpload
+                        sendTextFromFile={this.sendTextFromFile}
+                        outerClassName="adding-text-upload-component" />
+                    }
                   }}
-                  InputLabelProps={{ className: 'no-center-label' }}
                 />
               </Grid>
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={3}
+                size={{ xs: 12, sm: 6, md: 3 }}
               >
                 <h5>{t('common_text_data')}</h5>
                 <FormControl size="small">
@@ -417,9 +420,7 @@ class Adding extends Component {
               </Grid>
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={3}
+                size={{ xs: 12, sm: 6, md: 3 }}
               >
                 <h5>{t('common_author_data')}</h5>
                 <TextField
@@ -652,6 +653,8 @@ class Adding extends Component {
             <AddTextFetch
               request={JSON.stringify(this.state.request)}
               onComplete={() => this.setState({ isSubmitting: false })}
+              onSuccess={() => this.setState({ lastSubmitSuccessful: true })}
+              onFailure={() => this.setState({ lastSubmitSuccessful: false })}
             />
           )}
         </div>

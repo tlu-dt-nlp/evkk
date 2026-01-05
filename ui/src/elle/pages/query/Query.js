@@ -205,6 +205,7 @@ export default function Query(props) {
 
       getQueryResults(JSON.stringify(params))
         .then(response => {
+          if (!response) return;
           if (response.length > 0) {
             setNoResultsError(false);
             setResults(response);

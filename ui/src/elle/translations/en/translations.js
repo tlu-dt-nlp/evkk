@@ -295,6 +295,7 @@ export const TRANSLATIONS_EN = {
   error_id_code_missing: 'Login failed. Save your personal code to your HarID account before logging in to ELLE and try again.',
   error_login_failed: 'Login failed. Please try again later.',
   error_mandatory_field: 'This field is mandatory.',
+  error_no_internet_connection: 'Check your internet connection and try again.',
   error_no_matching_keywords: 'The keyword could not be found in the text. Change the analysis options and try again.',
   error_page_not_found: 'Page not found',
   error_query_no_subcorpus_picked: 'Choose at least one subcorpus.',

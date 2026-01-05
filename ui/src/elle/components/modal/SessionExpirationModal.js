@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { useLogout, useRenew } from '../../hooks/service/AuthService';
 import ModalBase from './ModalBase';
 import { useTranslation } from 'react-i18next';
-import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import { Button } from '@mui/material';
 import '../styles/SessionExpirationModal.css';
 import RootContext from '../../context/RootContext';
@@ -18,8 +18,10 @@ export default function SessionExpirationModal() {
   const { renew } = useRenew();
 
   const initTimeoutOrLogout = useCallback(() => {
+    clearTimeout(timeoutId.current);
+    setIsOpen(false);
+
     if (!accessToken) {
-      clearTimeout(timeoutId.current);
       return;
     }
 
@@ -59,18 +61,11 @@ export default function SessionExpirationModal() {
 
     return () => clearInterval(intervalId.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initTimeoutOrLogout, accessToken]);
+  }, [accessToken]);
 
   const updateMinutesLeft = (expirationTime) => {
     const minutes = Math.max(0, Math.ceil((expirationTime - Date.now()) / 60000));
     setMinutesLeft(minutes);
-  };
-
-  const handleExtendSession = async () => {
-    await renew();
-    setIsOpen(false);
-    clearTimeout(timeoutId.current);
-    initTimeoutOrLogout();
   };
 
   const handleClose = () => {
@@ -98,12 +93,12 @@ export default function SessionExpirationModal() {
         style={DefaultButtonStyle}
         size="small"
         variant="contained"
-        onClick={handleExtendSession}
+        onClick={renew}
       >
         {t('session_expiration_modal_renew_yes')}
       </Button>
       <Button
-        style={DefaultButtonStyle}
+        style={SecondaryButtonStyle}
         size="small"
         variant="contained"
         onClick={handleClose}

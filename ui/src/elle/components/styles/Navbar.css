@@ -133,7 +133,7 @@
 }
 
 .not-sticking {
-  background: linear-gradient(315deg, rgba(204, 168, 253, 1) 0%, rgba(204, 168, 253, 1) 9%, rgba(255, 208, 253, 1) 9%, rgba(255, 208, 253, 1) 22%, rgba(255, 255, 255, 1) 22%, rgba(255, 255, 255, 1) 100%);
+  background: linear-gradient(315deg, rgba(204, 168, 253, 1) 0%, rgba(204, 168, 253, 1) 9%, rgba(255, 208, 253, 1) 9%, rgba(255, 208, 253, 1) 22%, rgba(255, 255, 255, 1) 22%, rgba(255, 255, 255, 1) 100%) !important;
   box-shadow: 0 0 5px 0 rgba(156, 39, 176, 0.5) !important;
 }
 

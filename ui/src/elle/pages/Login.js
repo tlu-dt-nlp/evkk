@@ -3,6 +3,7 @@ import React from 'react';
 import './styles/Login.css';
 import i18n from 'i18next';
 import CookieAcknowledgementSnackbar from '../components/snackbar/CookieAcknowledgementSnackbar';
+import haridLogo from '../resources/images/misc/harid_logo.png';
 
 export default function Login() {
 
@@ -17,7 +18,7 @@ export default function Login() {
     <div>
       <h2 className="tool-title">{t('common_login_for_admins')}</h2>
       <img
-        src={require('../resources/images/misc/harid_logo.png').default}
+        src={haridLogo}
         alt="HarID logo"
         onClick={handleClick}
         className="harid-image"

@@ -5,7 +5,7 @@ import RootContext from '../../context/RootContext';
 export default function RequireAuth({ role }) {
   const { user } = useContext(RootContext);
 
-  if (user && user.roleName === role) return <Outlet />;
+  if (user?.roleName === role) return <Outlet />;
 
   return <Navigate to="/" />;
 };

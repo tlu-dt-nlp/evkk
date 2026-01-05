@@ -7,24 +7,26 @@ import { DefaultButtonStyle } from '../const/StyleConstants';
 
 export default function ServerOfflinePage({ retry }) {
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <div className="server-error-container">
       <div>
-        <Navbar/>
+        <Navbar />
         <span className="server-error-page">
           <Alert severity="error">
             {t('server_offline_page_error')}
           </Alert>
-          <Button variant="contained"
-                  sx={DefaultButtonStyle}
-                  onClick={retry}>
+          <Button
+            variant="contained"
+            sx={DefaultButtonStyle}
+            onClick={retry}
+          >
             {t('try_again')}
           </Button>
         </span>
       </div>
-      <FooterElement/>
+      <FooterElement />
     </div>
   );
 }
