@@ -66,7 +66,7 @@ export default function Navbar() {
     setOpen(!open);
   };
 
-  const handleLangClick = (event) => {
+  const handleLangOpen = (event) => {
     setLangAnchorEl(event.currentTarget);
   };
 
@@ -88,7 +88,7 @@ export default function Navbar() {
   const languageMenu = () => {
     return (
       <div>
-        <Language className="language-icon" onClick={handleLangClick} />
+        <Language className="language-icon" onClick={handleLangOpen} />
         <Menu
           anchorEl={langAnchorEl}
           open={langOpen}
