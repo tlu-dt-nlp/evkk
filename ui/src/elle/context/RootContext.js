@@ -3,7 +3,7 @@ import { successEmitter } from '../../App';
 import { SuccessSnackbarEventType } from '../components/snackbar/SuccessSnackbar';
 import { useGetStatus } from '../hooks/service/RootService';
 
-const RootContext = createContext();
+const RootContext = createContext(null);
 
 export const RootProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -14,7 +14,7 @@ export const RootProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [tokenRenewed, setTokenRenewed] = useState(false);
 
-  const setDataSuccess = useCallback((res) => {
+  const setDataSuccess = useCallback(res => {
     setUser(res.user);
     setAccessToken(res.accessToken);
     setIntegrationPaths(res.integrationPaths);
@@ -22,12 +22,11 @@ export const RootProvider = ({ children }) => {
     setStatus(true);
   }, []);
 
-  const { getStatus } = useGetStatus(setStatus, setDataSuccess);
+  const { getStatus } = useGetStatus(setStatus, setIsLoading, setDataSuccess);
 
   const loadData = useCallback(async (isTokenRenewed = false) => {
     setIsLoading(true);
     await getStatus();
-    setIsLoading(false);
     setTokenRenewed(isTokenRenewed);
   }, [getStatus, setIsLoading, setTokenRenewed]);
 
@@ -53,7 +52,8 @@ export const RootProvider = ({ children }) => {
 
   return (
     <RootContext.Provider
-      value={{ user, accessToken, status, integrationPaths, version, isLoading, setContext, clearAuthContext }}>
+      value={{ user, accessToken, status, integrationPaths, version, isLoading, setContext, clearAuthContext }}
+    >
       {children}
     </RootContext.Provider>
   );

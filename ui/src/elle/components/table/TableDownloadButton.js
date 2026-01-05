@@ -25,7 +25,6 @@ const DownloadType = {
   CSV: 'CSV'
 };
 
-
 export default function TableDownloadButton({ data, headers, accessors, tableType, sortByColAccessor }) {
 
   const { t } = useTranslation();

@@ -292,6 +292,7 @@ export const TRANSLATIONS_ET = {
   error_id_code_missing: 'Sisenemine ebaõnnestus. ELLE-sse sisenemiseks salvesta esmalt oma HarID kontole isikukood ning proovi uuesti.',
   error_login_failed: 'Sisenemine ebaõnnestus. Palun proovi hiljem uuesti.',
   error_mandatory_field: 'Väli on kohustuslik.',
+  error_no_internet_connection: 'Kontrolli internetiühendust ja proovi uuesti.',
   error_no_matching_keywords: 'Tekstist ei leitud otsisõna. Muuda analüüsi valikuid ja proovi uuesti.',
   error_page_not_found: 'Lehte ei leitud',
   error_query_no_subcorpus_picked: 'Vali vähemalt üks alamkorpus.',

@@ -57,7 +57,8 @@ class Adding extends Component {
       nousOlek: false,
       ennistusNupp: false,
       modalOpen: false,
-      isSubmitting: false
+      isSubmitting: false,
+      lastSubmitSuccessful: null
     };
     this.startingstate = { ...this.state };
     this.previous = { ...this.state };
@@ -69,6 +70,13 @@ class Adding extends Component {
 
   componentDidMount() {
     window.scrollTo(0, 0);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.lastSubmitSuccessful !== this.state.lastSubmitSuccessful && this.state.lastSubmitSuccessful === true) {
+      this.setState(this.startingstate);
+      this.setState({ ennistusnupp: true });
+    }
   }
 
   handleChange(event) {
@@ -83,8 +91,7 @@ class Adding extends Component {
     event.preventDefault();
     this.previous = { ...this.state };
     this.setState(({ request: this.state }));
-    this.setState(this.startingstate);
-    this.setState({ ennistusnupp: true, isSubmitting: true });
+    this.setState({ isSubmitting: true });
   }
 
   taastaVormiSisu() {
@@ -607,6 +614,8 @@ class Adding extends Component {
             <AddTextFetch
               request={JSON.stringify(this.state.request)}
               onComplete={() => this.setState({ isSubmitting: false })}
+              onSuccess={() => this.setState({ lastSubmitSuccessful: true })}
+              onFailure={() => this.setState({ lastSubmitSuccessful: false })}
             />
           )}
         </div>

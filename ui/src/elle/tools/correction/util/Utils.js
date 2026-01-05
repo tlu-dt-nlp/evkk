@@ -77,6 +77,7 @@ export const queryCaller = (textBoxRef, inputText, setRequestingText, setGrammar
     setInputText(fetchInputText);
     getCorrectorResult(JSON.stringify({ tekst: processCorrectorText(fetchInputText), model: model }))
       .then(answer => {
+        if (!answer) return;
         setComplexityAnswer(answer);
         setGrammarAnswer(answer.grammatika);
         setSpellerAnswer(answer.speller);

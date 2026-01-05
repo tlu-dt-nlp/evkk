@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Navbar from './elle/components/Navbar';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, useNavigate, useSearchParams } from 'react-router-dom';
@@ -98,12 +98,7 @@ const theme = createTheme({
 function AppWithStatus() {
   const navigate = useNavigate();
   const [urlParams] = useSearchParams();
-  const [isOffline, setIsOffline] = useState(false);
   const { setContext, status } = useContext(RootContext);
-
-  useEffect(() => {
-    setIsOffline(!status);
-  }, [status]);
 
   useEffect(() => {
     if (urlParams.get('loginFailed')) {
@@ -117,7 +112,7 @@ function AppWithStatus() {
     }
   }, [urlParams, navigate]);
 
-  if (isOffline) {
+  if (!status) {
     return <ServerOfflinePage retry={setContext} />;
   }
 

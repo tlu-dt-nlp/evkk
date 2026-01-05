@@ -22,7 +22,6 @@ function TableComponent() {
 
   const [value, setValue] = useState(0);
 
-
   return (
     <Box>
       <Grid

@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { Box } from '@mui/material';
 import './styles/FooterElement.css';
-import dti_et from '../resources/images/footer/dti_et.svg';
-import dti_en from '../resources/images/footer/dti_en.svg';
+import dtiEt from '../resources/images/footer/dti_et.svg';
+import dtiEn from '../resources/images/footer/dti_en.svg';
 import { useTranslation } from 'react-i18next';
 import { FooterLink } from '../const/StyleConstants';
 import { aboutValues, linksValues, referencesValues, toolsValues } from '../const/FooterConstants';
@@ -15,10 +15,10 @@ import { EVKK_GITHUB_RELEASE_BASE_PATH } from '../const/PathConstants';
 export default function FooterElement() {
   const { t } = useTranslation();
   const { version } = useContext(RootContext);
-  const [dtiLogo, setDtiLogo] = useState(i18n.language === Languages.ESTONIAN ? dti_et : dti_en);
+  const [dtiLogo, setDtiLogo] = useState(i18n.language === Languages.ESTONIAN ? dtiEt : dtiEn);
 
   i18n.on('languageChanged', () => {
-    setDtiLogo(i18n.language === Languages.ESTONIAN ? dti_et : dti_en);
+    setDtiLogo(i18n.language === Languages.ESTONIAN ? dtiEt : dtiEn);
   });
 
   const renderBlock = (values) => {

@@ -1,4 +1,4 @@
-import Logo from '../resources/images/header/elle_logo.png';
+import elleLogo from '../resources/images/header/elle_logo.png';
 import { AppBar, Box, Drawer, IconButton, Link, List, ListItem, Menu, MenuItem, styled, Toolbar } from '@mui/material';
 import { Close, Language, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
@@ -13,6 +13,8 @@ import { UserRoles } from '../const/Constants';
 import { useLogout } from '../hooks/service/AuthService';
 import { RouteConstants } from '../../AppRoutes';
 import TextToSpeechMenu from './text-to-speech/TextToSpeechMenu';
+import flagEst from '../resources/images/flags/est.png';
+import flagEng from '../resources/images/flags/eng.png';
 
 const pages = [
   { id: 1, title: 'common_corrector', target: RouteConstants.CORRECTOR },
@@ -94,14 +96,14 @@ export default function Navbar() {
         >
           <MenuItem onClick={() => handleLangSelect(Languages.ESTONIAN)}>
             <img
-              src={require('../resources/images/flags/est.png').default}
+              src={flagEst}
               className="lang-icon"
               alt="Eesti"
             />Eesti
           </MenuItem>
           <MenuItem onClick={() => handleLangSelect(Languages.ENGLISH)}>
             <img
-              src={require('../resources/images/flags/eng.png').default}
+              src={flagEng}
               className="lang-icon"
               alt="English"
             />English
@@ -156,7 +158,7 @@ export default function Navbar() {
                 component="img"
                 className="elle-nav-logo"
                 alt="Logo"
-                src={Logo}
+                src={elleLogo}
               />
             </NavLink>
           </div>
@@ -197,9 +199,7 @@ export default function Navbar() {
         open={open}
         anchor="left"
         onClose={toggleDrawer}
-        PaperProps={{
-          sx: { width: '100%' }
-        }}
+        slotProps={{ paper: { sx: { width: '100%' } } }}
       >
         <div className="nav-drawer-container">
           <div className="d-flex flex-column w-50">
@@ -209,7 +209,7 @@ export default function Navbar() {
                   component="img"
                   className="elle-nav-logo"
                   alt="Logo"
-                  src={Logo}
+                  src={elleLogo}
                 />
               </NavLink>
             </div>
