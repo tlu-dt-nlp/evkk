@@ -414,8 +414,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     onClick={(e) => alterSinglePropertyData(e, 'language')}
                   >
                     {Object.keys(textLanguageOptions).map((lang) => (
-                      <MenuItem key={lang}
-                                value={lang}>{t(textLanguageOptions[lang])}</MenuItem>
+                      <MenuItem
+                        key={lang}
+                        value={lang}
+                      >
+                        {t(textLanguageOptions[lang])}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -431,8 +435,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                         onClick={(e) => alterSinglePropertyData(e, 'domain')}
                       >
                         {Object.keys(domainDisplayOptions).map((domain) => (
-                          <MenuItem key={domain}
-                                    value={domain}>{t(domainDisplayOptions[domain])}</MenuItem>
+                          <MenuItem
+                            key={domain}
+                            value={domain}
+                          >
+                            {t(domainDisplayOptions[domain])}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -465,7 +473,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                         onClick={(e) => alterSinglePropertyData(e, 'level')}
                       >
                         {textLevelOptions.map((level) => (
-                          <MenuItem key={level} value={level}>{level}</MenuItem>
+                          <MenuItem
+                            key={level}
+                            value={level}
+                          >
+                            {level}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -479,8 +492,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                         onClick={(e) => alterSinglePropertyData(e, 'usedMaterials')}
                       >
                         {Object.keys(usedMaterialsDisplayOptions).map((material) => (
-                          <MenuItem key={material}
-                                    value={material}>{t(usedMaterialsDisplayOptions[material])}</MenuItem>
+                          <MenuItem
+                            key={material}
+                            value={material}
+                          >
+                            {t(usedMaterialsDisplayOptions[material])}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -567,7 +584,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     onClick={(e) => alterSinglePropertyData(e, 'age')}
                   >
                     {Object.keys(ageOptions).map((age) => (
-                      <MenuItem key={age} value={age}>{t(ageOptions[age])}</MenuItem>
+                      <MenuItem
+                        key={age}
+                        value={age}
+                      >
+                        {t(ageOptions[age])}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -581,8 +603,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     onClick={(e) => alterSinglePropertyData(e, 'gender')}
                   >
                     {Object.keys(genderOptions).map((gender) => (
-                      <MenuItem key={gender}
-                                value={gender}>{t(genderOptions[gender])}</MenuItem>
+                      <MenuItem
+                        key={gender}
+                        value={gender}
+                      >
+                        {t(genderOptions[gender])}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -598,8 +624,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                         onClick={(e) => alterSinglePropertyData(e, 'studyLevel')}
                       >
                         {Object.keys(studyLevelOptions).map((level) => (
-                          <MenuItem key={level}
-                                    value={level}>{t(studyLevelOptions[level])}</MenuItem>
+                          <MenuItem
+                            key={level}
+                            value={level}
+                          >
+                            {t(studyLevelOptions[level])}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -613,8 +643,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                         onClick={(e) => alterSinglePropertyData(e, 'degree')}
                       >
                         {Object.keys(degreeOptions).map((degree) => (
-                          <MenuItem key={degree}
-                                    value={degree}>{t(degreeOptions[degree])}</MenuItem>
+                          <MenuItem
+                            key={degree}
+                            value={degree}
+                          >
+                            {t(degreeOptions[degree])}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -629,8 +663,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                       onClick={(e) => alterSinglePropertyData(e, 'education')}
                     >
                       {Object.keys(educationOptions).map((education) => (
-                        <MenuItem key={education}
-                                  value={education}>{t(educationOptions[education])}</MenuItem>
+                        <MenuItem
+                          key={education}
+                          value={education}
+                        >
+                          {t(educationOptions[education])}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>}
@@ -645,8 +683,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                       onClick={(e) => alterSinglePropertyData(e, 'nationality')}
                     >
                       {Object.keys(nationalityOptions).map((nationality) => (
-                        <MenuItem key={nationality}
-                                  value={nationality}>{t(nationalityOptions[nationality])}</MenuItem>
+                        <MenuItem
+                          key={nationality}
+                          value={nationality}
+                        >
+                          {t(nationalityOptions[nationality])}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -660,8 +702,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                       onClick={(e) => alterSinglePropertyData(e, 'nativeLang')}
                     >
                       {Object.keys(languageOptionsForNativeLangs).map((lang) => (
-                        <MenuItem key={lang}
-                                  value={lang}>{t(languageOptionsForNativeLangs[lang])}</MenuItem>
+                        <MenuItem
+                          key={lang}
+                          value={lang}
+                        >
+                          {t(languageOptionsForNativeLangs[lang])}
+                        </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
@@ -678,8 +724,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                         onClick={(e) => alterSinglePropertyData(e, 'otherLang')}
                       >
                         {Object.keys(languageOptionsForOtherLangs).map((lang) => (
-                          <MenuItem key={lang}
-                                    value={lang}>{t(languageOptionsForOtherLangs[lang])}</MenuItem>
+                          <MenuItem
+                            key={lang}
+                            value={lang}
+                          >
+                            {t(languageOptionsForOtherLangs[lang])}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -695,8 +745,12 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     onClick={(e) => alterSinglePropertyData(e, 'country')}
                   >
                     {Object.keys(countryOptionsForQuery).map((country) => (
-                      <MenuItem key={country}
-                                value={country}>{t(countryOptionsForQuery[country])}</MenuItem>
+                      <MenuItem
+                        key={country}
+                        value={country}
+                      >
+                        {t(countryOptionsForQuery[country])}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
