@@ -216,7 +216,7 @@ export default function GraphView({ data, keyword }) {
           spacing={2}
           alignItems="center"
         >
-          <Grid item xs>
+          <Grid size="grow">
             <Slider
               sx={DefaultSliderStyle}
               value={sliderValue}
@@ -227,7 +227,10 @@ export default function GraphView({ data, keyword }) {
               marks
             />
           </Grid>
-          <Grid item className="input-grid-item">
+          <Grid
+            size="auto"
+            className="input-grid-item"
+          >
             <Input
               sx={DefaultInputStyle}
               disableUnderline

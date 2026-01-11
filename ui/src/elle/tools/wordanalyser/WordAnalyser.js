@@ -240,7 +240,8 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [syllable, analysedInput]);
+    // eslint-disable-next-line
+  }, [syllable]);
 
   // highlight selected syllable word from the syllable table
   useEffect(() => {
@@ -263,7 +264,8 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [syllableWord, analysedInput]);
+    // eslint-disable-next-line
+  }, [syllableWord]);
 
   // highlight selected lemma from lemma table
   useEffect(() => {
@@ -293,7 +295,8 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [lemma, analysedInput]);
+    // eslint-disable-next-line
+  }, [lemma]);
 
   // highlight selected word from the lemma table and grammatical analysis table
   useEffect(() => {
@@ -321,8 +324,8 @@ function WordAnalyser() {
     };
 
     setWordInfo(wordInfoObj);
-
-  }, [word, analysedInput]);
+    // eslint-disable-next-line
+  }, [word]);
 
   // highlight selected word form from the grammatical analysis table
   useEffect(() => {
@@ -345,7 +348,8 @@ function WordAnalyser() {
       form: form
     };
     setWordInfo(wordInfoObj);
-  }, [form, analysedInput]);
+    // eslint-disable-next-line
+  }, [form]);
 
   // highlight selected word type from grammatical analysis table
   useEffect(() => {
@@ -368,7 +372,8 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [type, analysedInput]);
+    // eslint-disable-next-line
+  }, [type]);
 
 
   // forward selected word from input to wordInfo

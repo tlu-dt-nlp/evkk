@@ -3,6 +3,7 @@
   width: 80vw;
   padding: 25px;
   align-items: flex-end;
+  box-sizing: unset;
 }
 
 .breadcrumb-menu-link {
