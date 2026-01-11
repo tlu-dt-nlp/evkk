@@ -210,6 +210,7 @@ export default function Navbar() {
                   className="elle-nav-logo"
                   alt="Logo"
                   src={elleLogo}
+                  onClick={() => setOpen(false)}
                 />
               </NavLink>
             </div>
