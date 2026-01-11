@@ -290,7 +290,13 @@ export default function Wordlist() {
                     </TooltipButton>
                   </>}
                              type="number"
-                             slotProps={{ htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', min: '1' } }}
+                             slotProps={{
+                               htmlInput: {
+                                 inputMode: 'numeric',
+                                 pattern: '[0-9]*',
+                                 min: '1'
+                               }
+                             }}
                              variant="outlined"
                              size="small"
                              value={minimumFrequency}

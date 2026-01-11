@@ -199,7 +199,13 @@ export default function Navbar() {
         open={open}
         anchor="left"
         onClose={toggleDrawer}
-        slotProps={{ paper: { sx: { width: '100%' } } }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: '100%'
+            }
+          }
+        }}
       >
         <div className="nav-drawer-container">
           <div className="d-flex flex-column w-50">

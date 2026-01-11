@@ -86,7 +86,9 @@ export default function TablePagination({
           gotoPage(e.target.value ? Number(e.target.value) - 1 : 0);
         }}
         slotProps={{
-          inputLabel: { shrink: true },
+          inputLabel: {
+            shrink: true
+          },
           htmlInput: {
             inputMode: 'numeric',
             pattern: '[0-9]*',
