@@ -78,6 +78,7 @@ export default function Navbar() {
     i18n.changeLanguage(lang).then(r => r);
     localStorage.setItem('language', lang);
     setLangAnchorEl(false);
+    setOpen(false);
   };
 
   const handleLogout = () => {
@@ -188,7 +189,7 @@ export default function Navbar() {
             </Box>
             <IconButton
               onClick={() => toggleDrawer()}
-              className="navBar-icon-button mr-2"
+              className="navbar-icon-button mr-2"
             >
               <MenuIcon className="burger-menu-icon" />
             </IconButton>

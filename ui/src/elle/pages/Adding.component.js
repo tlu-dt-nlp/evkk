@@ -25,7 +25,7 @@ import {
   textPublishAcademicResearchSubtypeOptions,
   textPublishAcademicStudiesSubtypeOptions,
   textPublishMainTextTypesOptions,
-  textPublishSubTextTypesOptions,
+  textPublishTextSubtypesOptions,
   textPublishUsedMaterialsOptions,
   usedMaterialsSaveOptions
 } from '../const/Constants';
@@ -196,7 +196,7 @@ class Adding extends Component {
                     required
                     onChange={this.handleChange}
                   >
-                    {Object.keys(textPublishMainTextTypesOptions).map((type) => (
+                    {Object.keys(textPublishMainTextTypesOptions).map(type => (
                       <MenuItem
                         key={type}
                         value={type}
@@ -217,7 +217,7 @@ class Adding extends Component {
                       required
                       onChange={this.handleChange}
                     >
-                      {Object.keys(domainSaveOptions).map((domain) => (
+                      {Object.keys(domainSaveOptions).map(domain => (
                         <MenuItem
                           key={domain}
                           value={domain}
@@ -238,13 +238,18 @@ class Adding extends Component {
                       value={this.state.mitteakadAlamliik}
                       onChange={this.handleChange}
                     >
-                      {Object.keys(textPublishSubTextTypesOptions).map((type) => (
+                      {Object.keys(textPublishTextSubtypesOptions).map(type => (
                         <MenuItem
                           key={type}
-                          value={type}
-                          disabled={type.includes('_disabled')}
+                          value={type.replace(/_child$/, '')}
+                          disabled={type.endsWith('_disabled')}
+                          sx={
+                            type.endsWith('_child')
+                              ? { paddingLeft: '2rem' }
+                              : undefined
+                          }
                         >
-                          {t(textPublishSubTextTypesOptions[type])}
+                          {t(textPublishTextSubtypesOptions[type])}
                         </MenuItem>
                       ))}
                     </Select>
@@ -261,7 +266,7 @@ class Adding extends Component {
                       required
                       onChange={this.handleChange}
                     >
-                      {Object.keys(textPublishAcademicCategoryOptions).map((category) => (
+                      {Object.keys(textPublishAcademicCategoryOptions).map(category => (
                         <MenuItem
                           key={category}
                           value={category}
@@ -283,7 +288,7 @@ class Adding extends Component {
                       onChange={this.handleChange}
                     >
                       {this.state.akadKategooria === 'ak_erialaopingud' &&
-                        Object.keys(textPublishAcademicStudiesSubtypeOptions).map((type) => (
+                        Object.keys(textPublishAcademicStudiesSubtypeOptions).map(type => (
                           <MenuItem
                             key={type}
                             value={type}
@@ -292,7 +297,7 @@ class Adding extends Component {
                           </MenuItem>
                         ))}
                       {this.state.akadKategooria === 'ak_uurimused' &&
-                        Object.keys(textPublishAcademicResearchSubtypeOptions).map((type) => (
+                        Object.keys(textPublishAcademicResearchSubtypeOptions).map(type => (
                           <MenuItem
                             key={type}
                             value={type}
@@ -347,7 +352,7 @@ class Adding extends Component {
                     value={this.state.oppematerjal}
                     onChange={this.handleChange}
                   >
-                    {Object.keys(usedMaterialsSaveOptions).map((material) => (
+                    {Object.keys(usedMaterialsSaveOptions).map(material => (
                       <MenuItem
                         key={material}
                         value={material}
@@ -407,7 +412,7 @@ class Adding extends Component {
                     value={this.state.autoriSugu}
                     onChange={this.handleChange}
                   >
-                    {Object.keys(genderOptions).map((gender) => (
+                    {Object.keys(genderOptions).map(gender => (
                       <MenuItem
                         key={gender}
                         value={gender}
@@ -451,7 +456,7 @@ class Adding extends Component {
                     onChange={this.handleChange}
                     name="autoriElukohariik"
                   >
-                    {Object.keys(countryOptionsForAddingText).map((country) => (
+                    {Object.keys(countryOptionsForAddingText).map(country => (
                       <MenuItem
                         key={country}
                         value={country}
@@ -471,7 +476,7 @@ class Adding extends Component {
                       value={this.state.autoriOppeaste}
                       onChange={this.handleChange}
                     >
-                      {Object.keys(studyLevelOptions).map((level) => (
+                      {Object.keys(studyLevelOptions).map(level => (
                         <MenuItem
                           key={level}
                           value={level}
@@ -492,7 +497,7 @@ class Adding extends Component {
                       value={this.state.autoriTeaduskraad}
                       onChange={this.handleChange}
                     >
-                      {Object.keys(degreeOptions).map((degree) => (
+                      {Object.keys(degreeOptions).map(degree => (
                         <MenuItem
                           key={degree}
                           value={degree}
@@ -513,7 +518,7 @@ class Adding extends Component {
                       value={this.state.autoriHaridus}
                       onChange={this.handleChange}
                     >
-                      {Object.keys(educationOptions).map((education) => (
+                      {Object.keys(educationOptions).map(education => (
                         <MenuItem
                           key={education}
                           value={education}

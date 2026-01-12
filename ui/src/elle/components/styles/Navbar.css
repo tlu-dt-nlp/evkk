@@ -1,5 +1,5 @@
 @media (max-width: 1023px) {
-  .navBar-icon-button {
+  .navbar-icon-button {
     display: flex !important;
   }
 
@@ -21,7 +21,7 @@
 }
 
 @media (min-width: 1024px) {
-  .navBar-icon-button {
+  .navbar-icon-button {
     display: none !important;
   }
 
