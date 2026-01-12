@@ -61,7 +61,7 @@ export default function Wordlist() {
 
   useEffect(() => {
     const wordlistState = toolAnalysisStore.getState().wordlist;
-    if (wordlistState !== null && wordlistState.analysis.length > 0) {
+    if (wordlistState?.analysis?.length > 0) {
       const params = wordlistState.parameters;
       setTypeValue(params.typeValue);
       setTypeValueToDisplay(params.typeValue);
@@ -290,7 +290,13 @@ export default function Wordlist() {
                     </TooltipButton>
                   </>}
                              type="number"
-                             slotProps={{ htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', min: '1' } }}
+                             slotProps={{
+                               htmlInput: {
+                                 inputMode: 'numeric',
+                                 pattern: '[0-9]*',
+                                 min: '1'
+                               }
+                             }}
                              variant="outlined"
                              size="small"
                              value={minimumFrequency}
