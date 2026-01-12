@@ -74,7 +74,7 @@ export default function Collocates() {
 
   useEffect(() => {
     const collocateState = toolAnalysisStore.getState().collocates;
-    if (collocateState !== null && collocateState.analysis.length > 0) {
+    if (collocateState?.analysis?.length > 0) {
       const params = collocateState.parameters;
       setTypeValue(params.typeValue);
       setKeyword(params.keyword);
