@@ -3,7 +3,7 @@
 
   @media (min-width: 900px) {
     .first-column {
-      padding-top: 4.5em !important;
+      padding-top: 3em !important;
     }
   }
 
@@ -59,6 +59,7 @@
   justify-content: end;
   padding: 0;
   margin-top: 10em;
+  width: auto;
 
   & svg {
     margin: 0;

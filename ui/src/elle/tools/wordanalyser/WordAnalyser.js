@@ -2,7 +2,7 @@ import { memo, useContext, useEffect, useRef, useState } from 'react';
 import { Input } from './textinput/Input';
 import { WordInfo } from './WordInfo';
 import './styles/WordAnalyser.css';
-import { Alert, Box, Fade, Grid, IconButton, Typography } from '@mui/material';
+import { Alert, Box, Button, Fade, Grid, IconButton, Typography } from '@mui/material';
 import '../../translations/i18n';
 import i18n from 'i18next';
 import {
@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetWordAnalyserResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
+import { DefaultButtonStyle } from '../../const/StyleConstants';
 
 function WordAnalyser() {
   const [analysedInput, setAnalysedInput] = useContext(AnalyseContext);
@@ -32,6 +33,7 @@ function WordAnalyser() {
   const [wordInfo, setWordInfo] = useState('');
   const [isTextTooLong, setIsTextTooLong] = useState(false);
   const [isFinishedLoading, setIsFinishedLoading] = useState(false);
+  const [noData, setNoData] = useState(false);
   const setTableValue = useContext(TabContext)[1];
   const type = useContext(TypeContext);
   const form = useContext(FormContext);
@@ -106,6 +108,13 @@ function WordAnalyser() {
 
   // analyse text
   const analyseInput = (data) => {
+    setNoData(false);
+
+    if (!data) {
+      setNoData(true);
+      return;
+    }
+
     const words = data.sonad;
     const lemmas = data.lemmad;
     const syllables = data.silbid;
@@ -135,7 +144,7 @@ function WordAnalyser() {
     setModifiedAnalysedInput(createModifiedInputObj(inputObj));
     setTableValue(1);
 
-    // select first word and show wordInfo after loading, if the wordcount limit has not been exceeded
+    // select the first word and show wordInfo after loading, if the wordcount limit has not been exceeded
     if (!textTooLong) {
       setSelectedWords([inputObj.ids[0]]);
 
@@ -166,6 +175,7 @@ function WordAnalyser() {
   };
 
   const processWordsLowerCase = (words, wordTypes) => {
+    if (!words) return;
     for (let i = 0; i < words.length; i++) {
       if (wordTypes[i] !== 'nimisõna (pärisnimi)') {
         words[i] = words[i].toLowerCase();
@@ -175,6 +185,7 @@ function WordAnalyser() {
   };
 
   const processSyllableLowerCase = (syllables, analysedWordsLowerCase, wordTypes) => {
+    if (!syllables) return;
     for (let i = 0; i < syllables.length; i++) {
       if (wordTypes[i] === 'nimisõna (pärisnimi)') {
         if (analysedWordsLowerCase[i].includes('-')) {
@@ -202,8 +213,9 @@ function WordAnalyser() {
     setSelectedWords(content);
   };
 
-  // highlight selected syllable from syllable table
+  // highlight selected syllable from the syllable table
   useEffect(() => {
+    if (!analysedInput) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedWord = analysedInput.words[i];
@@ -228,10 +240,12 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [syllable, analysedInput]);
+    // eslint-disable-next-line
+  }, [syllable]);
 
-  // highlight selected syllable word from syllable table
+  // highlight selected syllable word from the syllable table
   useEffect(() => {
+    if (!analysedInput) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedSyllable = analysedInput.syllables[i];
@@ -250,10 +264,12 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [syllableWord, analysedInput]);
+    // eslint-disable-next-line
+  }, [syllableWord]);
 
   // highlight selected lemma from lemma table
   useEffect(() => {
+    if (!analysedInput) return;
     let content = [];
     for (let i = 0; i < analysedInput.lemmas.length; i++) {
       let analysedLemma = analysedInput.lemmas[i];
@@ -279,10 +295,12 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [lemma, analysedInput]);
+    // eslint-disable-next-line
+  }, [lemma]);
 
-  // highlight selected word from lemma table and grammatical analysis table
+  // highlight selected word from the lemma table and grammatical analysis table
   useEffect(() => {
+    if (!analysedInput) return;
     const index = analysedInput.ids.findIndex((element) => element === word);
     let content = [];
 
@@ -306,11 +324,12 @@ function WordAnalyser() {
     };
 
     setWordInfo(wordInfoObj);
+    // eslint-disable-next-line
+  }, [word]);
 
-  }, [word, analysedInput]);
-
-  // highlight selected word form from grammatical analysis table
+  // highlight selected word form from the grammatical analysis table
   useEffect(() => {
+    if (!analysedInput) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedWord = analysedInput.wordforms[i];
@@ -329,10 +348,12 @@ function WordAnalyser() {
       form: form
     };
     setWordInfo(wordInfoObj);
-  }, [form, analysedInput]);
+    // eslint-disable-next-line
+  }, [form]);
 
   // highlight selected word type from grammatical analysis table
   useEffect(() => {
+    if (!analysedInput) return;
     let content = [];
     for (let i = 0; i < analysedInput.words.length; i++) {
       let analysedWord = analysedInput.wordtypes[i];
@@ -351,11 +372,13 @@ function WordAnalyser() {
       form: '–'
     };
     setWordInfo(wordInfoObj);
-  }, [type, analysedInput]);
+    // eslint-disable-next-line
+  }, [type]);
 
 
   // forward selected word from input to wordInfo
   function showInfo(selectedId) {
+    if (!analysedInput) return;
     let index = '';
     for (let i = 0; i < analysedInput.words.length; i++) {
       if (analysedInput.ids[i] === selectedId.toString()) {
@@ -391,6 +414,20 @@ function WordAnalyser() {
     setShowResults(false);
   };
 
+  if (noData) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <Button
+          variant="contained"
+          sx={DefaultButtonStyle}
+          onClick={getResponse}
+        >
+          {t('try_again')}
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <Box component="section"
          className="container"
@@ -401,16 +438,16 @@ function WordAnalyser() {
     >
       <Fade in={open}>
         <Box
-          paddingX={'10px'}
-          width={'65%'}
-          borderRadius={5}
-          bgcolor={'#E1F5FE'}
-          marginTop={'-50px'}
-          marginLeft={'auto'}
-          marginRight={'auto'}
+          paddingX="10px"
+          width="65%"
+          borderRadius="5"
+          bgcolor="#E1F5FE"
+          marginTop="-50px"
+          marginLeft="auto"
+          marginRight="auto"
         >
           <Alert
-            severity={'info'}
+            severity="info"
             action={
               <IconButton
                 aria-label="close"
@@ -441,16 +478,12 @@ function WordAnalyser() {
             {t('word_analyser_text_too_long_infobox')}
           </Alert>
         }
-        <Grid item
-              xs={12}
-              md={12}>
+        <Grid item size={12}>
           <Box display={'flex'}
                justifyContent={'flex-start'}>
           </Box>
         </Grid>
-        <Grid item
-              xs={12}
-              md={6}>
+        <Grid item size={{ xs: 12, md: 6 }}>
           <Input isTextTooLong={isTextTooLong}
                  isFinishedLoading={isFinishedLoading}
                  onSubmit={getResponse}
@@ -461,9 +494,7 @@ function WordAnalyser() {
                  ref={inputRef}
           />
         </Grid>
-        <Grid item
-              xs={12}
-              md={6}>
+        <Grid item size={{ xs: 12, md: 6 }}>
           {showResults && !isTextTooLong &&
             <WordInfo onWordInfo={wordInfo} />
           }

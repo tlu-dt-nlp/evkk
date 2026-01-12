@@ -140,12 +140,13 @@ export default function QueryResults(props) {
   function previewText(id) {
     getTextAndMetadata(id)
       .then(response => {
+        if (!response) return;
         setText(response.text);
         response.properties.forEach(param => {
           setIndividualMetadata(param.propertyName, param.propertyValue);
         });
+        setModalOpen(true);
       });
-    setModalOpen(true);
   }
 
   const setIndividualMetadata = (keyName, valueName) => {

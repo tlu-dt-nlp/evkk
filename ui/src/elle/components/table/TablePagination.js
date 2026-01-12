@@ -9,7 +9,18 @@ import '../../translations/i18n';
 import '../styles/TablePagination.css';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
 
-export default function TablePagination(props) {
+export default function TablePagination({
+                                          gotoPage,
+                                          previousPage,
+                                          canPreviousPage,
+                                          nextPage,
+                                          canNextPage,
+                                          pageIndex,
+                                          pageOptions,
+                                          pageSize,
+                                          setPageSize,
+                                          pageCount
+                                        }) {
   const { t } = useTranslation();
 
   return (
@@ -26,8 +37,8 @@ export default function TablePagination(props) {
             sx={DefaultButtonStyle}
             className="table-pagination-button"
             variant="contained"
-            onClick={() => props.gotoPage(0)}
-            disabled={!props.canPreviousPage}
+            onClick={() => gotoPage(0)}
+            disabled={!canPreviousPage}
           >
             {<FirstPageIcon />}
           </Button>
@@ -35,8 +46,8 @@ export default function TablePagination(props) {
             sx={DefaultButtonStyle}
             className="table-pagination-button"
             variant="contained"
-            onClick={() => props.previousPage()}
-            disabled={!props.canPreviousPage}
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
           >
             {<NavigateBeforeIcon />}
           </Button>
@@ -44,16 +55,16 @@ export default function TablePagination(props) {
             sx={DefaultButtonStyle}
             className="table-pagination-button"
             variant="contained"
-            onClick={() => props.nextPage()}
-            disabled={!props.canNextPage}
+            onClick={() => nextPage()}
+            disabled={!canNextPage}
           >
             {<NavigateNextIcon />}
           </Button>
           <Button
             sx={DefaultButtonStyle}
             variant="contained"
-            onClick={() => props.gotoPage(props.pageCount - 1)}
-            disabled={!props.canNextPage}
+            onClick={() => gotoPage(pageCount - 1)}
+            disabled={!canNextPage}
           >
             {<LastPageIcon />}
           </Button>
@@ -62,31 +73,39 @@ export default function TablePagination(props) {
       </div>
       <span className="fontStyle">
         {t('pagination_page')}{' '}
-        <strong>{props.pageIndex + 1} / {props.pageOptions.length}</strong>
+        <strong>{pageIndex + 1} / {pageOptions.length}</strong>
       </span>
       <TextField
         size="small"
         id="outlined-number"
         label={t('pagination_go_to_page')}
         type="number"
-        defaultValue={props.pageIndex + 1}
+        defaultValue={pageIndex + 1}
         className="pagination-textarea"
         onChange={e => {
-          props.gotoPage(e.target.value ? Number(e.target.value) - 1 : 0);
+          gotoPage(e.target.value ? Number(e.target.value) - 1 : 0);
         }}
-        InputLabelProps={{
-          shrink: true
+        slotProps={{
+          inputLabel: {
+            shrink: true
+          },
+          htmlInput: {
+            inputMode: 'numeric',
+            pattern: '[0-9]*',
+            min: '1',
+            max: pageOptions.length
+          }
         }}
       />
       <FormControl>
         <InputLabel>{t('pagination_rows_on_page')}</InputLabel>
         <Select
           size="small"
-          value={props.pageSize}
+          value={pageSize}
           variant="outlined"
           className="pagination-textarea"
           onChange={e => {
-            props.setPageSize(Number(e.target.value));
+            setPageSize(Number(e.target.value));
           }}
         >
           {[5, 10, 20, 30, 40, 50, 100].map(pageSizeNo => (

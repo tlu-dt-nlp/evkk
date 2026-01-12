@@ -143,5 +143,4 @@ public class TextController {
   public String lisatekst(@Valid @RequestBody AddingRequestDto andmed) {
     return textService.lisatekst(andmed);
   }
-
 }

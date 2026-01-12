@@ -8,7 +8,7 @@ export default function SingleLink({ name, siteLink, text, image, tags }) {
   return (
     <Box className="single-link-container">
       <Grid container spacing={2}>
-        <Grid item xs={12} container alignItems="center" spacing={1}>
+        <Grid item size={12} container alignItems="center" spacing={1}>
           <Grid item>
             <img src={image} className="link-image" alt={`${name} logo`} />
           </Grid>
@@ -21,11 +21,11 @@ export default function SingleLink({ name, siteLink, text, image, tags }) {
           </Grid>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item size={12}>
           <Typography>{text}</Typography>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item size={12}>
           {tags.map(tag => (
             <Chip key={tag} label={tag} className="link-tab-chip" />
           ))}

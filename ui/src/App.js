@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Navbar from './elle/components/Navbar';
 import { Provider } from 'react-redux';
-import thunkMiddleware from 'redux-thunk';
 import { BrowserRouter as Router, useNavigate, useSearchParams } from 'react-router-dom';
 import { createTheme } from '@mui/material/styles';
 import AppRoutes from './AppRoutes';
@@ -25,8 +24,7 @@ export const loadingEmitter = new EventEmitter();
 export const successEmitter = new EventEmitter();
 
 const store = configureStore({
-  reducer: (state = {}, _) => state,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunkMiddleware)
+  reducer: (state = {}, _) => state
 });
 
 const theme = createTheme({
@@ -74,8 +72,10 @@ const theme = createTheme({
       }
     },
     MuiTextField: {
-      defaultProps: {
-        InputProps: { notched: false }
+      slotProps: {
+        input: {
+          notched: false
+        }
       }
     },
     MuiInputLabel: {
@@ -98,12 +98,7 @@ const theme = createTheme({
 function AppWithStatus() {
   const navigate = useNavigate();
   const [urlParams] = useSearchParams();
-  const [isOffline, setIsOffline] = useState(false);
   const { setContext, status } = useContext(RootContext);
-
-  useEffect(() => {
-    setIsOffline(!status);
-  }, [status]);
 
   useEffect(() => {
     if (urlParams.get('loginFailed')) {
@@ -117,7 +112,7 @@ function AppWithStatus() {
     }
   }, [urlParams, navigate]);
 
-  if (isOffline) {
+  if (!status) {
     return <ServerOfflinePage retry={setContext} />;
   }
 

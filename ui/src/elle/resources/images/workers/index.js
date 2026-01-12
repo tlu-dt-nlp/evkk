@@ -1,11 +1,21 @@
+import pille from './pille.png';
+import harli from './harli.png';
+import jaagup from './jaagup.png';
+import kais from './kais.png';
+import kaisa from './kaisa.png';
+import karina from './karina.png';
+import mikk from './mikk.png';
+import silvia from './silvia.png';
+import taavi from './taavi.png';
+
 export const WORKER_IMAGES = {
-  pille: require('./pille.png').default,
-  harli: require('./harli.png').default,
-  jaagup: require('./jaagup.png').default,
-  kais: require('./kais.png').default,
-  kaisa: require('./kaisa.png').default,
-  karina: require('./karina.png').default,
-  mikk: require('./mikk.png').default,
-  silvia: require('./silvia.png').default,
-  taavi: require('./taavi.png').default
+  pille,
+  harli,
+  jaagup,
+  kais,
+  kaisa,
+  karina,
+  mikk,
+  silvia,
+  taavi
 };

@@ -65,5 +65,3 @@ export const useGetCorrectorResult = () => {
 
   return { getCorrectorResult };
 };
-
-

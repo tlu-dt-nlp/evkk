@@ -74,7 +74,7 @@ export default function Collocates() {
 
   useEffect(() => {
     const collocateState = toolAnalysisStore.getState().collocates;
-    if (collocateState !== null && collocateState.analysis.length > 0) {
+    if (collocateState?.analysis?.length > 0) {
       const params = collocateState.parameters;
       setTypeValue(params.typeValue);
       setKeyword(params.keyword);
@@ -184,6 +184,7 @@ export default function Collocates() {
       setShowTable(false);
       getCollocatesResult(generateRequestData())
         .then(response => {
+          if (!response) return;
           loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START_SHRINK_DISABLED);
           setTimeout(() => { // for a visual cue when rendering takes longer
             setLastKeyword(keyword);
@@ -287,7 +288,14 @@ export default function Collocates() {
                     <Grid item>
                       <TextField variant="outlined"
                                  type="number"
-                                 inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', min: '1', max: '5' }}
+                                 slotProps={{
+                                   htmlInput: {
+                                     inputMode: 'numeric',
+                                     pattern: '[0-9]*',
+                                     min: '1',
+                                     max: '5'
+                                   }
+                                 }}
                                  size="small"
                                  required
                                  value={searchCount}
@@ -357,7 +365,7 @@ export default function Collocates() {
           })}
         </Alert>
       </>}
-      {showTable && <>
+      {showTable && data && <>
         <TableHeaderButtons leftComponent={<GraphView data={data} keyword={lastKeyword} />}
                             downloadData={data}
                             downloadTableType={TableType.COLLOCATES}
