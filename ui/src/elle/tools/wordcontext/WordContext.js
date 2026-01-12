@@ -70,7 +70,7 @@ export default function WordContext() {
 
   useEffect(() => {
     const wordContextState = toolAnalysisStore.getState().wordContext;
-    if (wordContextState !== null && wordContextState.analysis.length > 0) {
+    if (wordContextState?.analysis?.length > 0) {
       const params = wordContextState.parameters;
       setTypeValue(params.typeValue);
       setKeyword(params.keyword);
