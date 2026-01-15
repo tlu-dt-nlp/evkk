@@ -215,15 +215,16 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
     return results;
   }
 
-  const findNestedKeys = (object, key) => key in object
-    ? [[key]]
-    : Object.entries(object).flatMap(([k, v]) => {
-      if (!v || typeof v !== 'object') return [];
-      const nestedKeys = findNestedKeys(v, key);
-      return nestedKeys.length
-        ? nestedKeys.map(a => [k, ...a])
-        : [];
-    });
+  const findNestedKeys = (object, key) =>
+    key in object
+      ? [[key]]
+      : Object.entries(object).flatMap(([k, v]) => {
+        if (!v || typeof v !== 'object') return [];
+        const nestedKeys = findNestedKeys(v, key);
+        return nestedKeys.length
+          ? nestedKeys.map(a => [k, ...a])
+          : [];
+      });
 
   const alterCorpusCheckbox = (event) => {
     let newCorpusCheckboxStatus = { ...corpusCheckboxStatus };
@@ -424,85 +425,87 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                   </Select>
                 </FormControl>
                 {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
-                  ? <>
-                    <FormControl size="small">
-                      <InputLabel>
-                        {t('common_text_data_field_of_research')}
-                      </InputLabel>
-                      <Select
-                        name="domain"
-                        value={singlePropertyData.domain}
-                        onClick={(e) => alterSinglePropertyData(e, 'domain')}
+                  ? (
+                    <>
+                      <FormControl size="small">
+                        <InputLabel>
+                          {t('common_text_data_field_of_research')}
+                        </InputLabel>
+                        <Select
+                          name="domain"
+                          value={singlePropertyData.domain}
+                          onClick={(e) => alterSinglePropertyData(e, 'domain')}
+                        >
+                          {Object.keys(domainDisplayOptions).map((domain) => (
+                            <MenuItem
+                              key={domain}
+                              value={domain}
+                            >
+                              {t(domainDisplayOptions[domain])}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl
+                        className={classes.formControl}
+                        size="small"
                       >
-                        {Object.keys(domainDisplayOptions).map((domain) => (
-                          <MenuItem
-                            key={domain}
-                            value={domain}
-                          >
-                            {t(domainDisplayOptions[domain])}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl
-                      className={classes.formControl}
-                      size="small"
-                    >
-                      <InputLabel>
-                        {t('query_text_data_used_study_or_supporting_materials')}
-                      </InputLabel>
-                      <SelectMultiple
-                        name="usedMultiMaterials"
-                        selectedValues={usedMultiMaterials}
-                        setSelectedValues={setUsedMultiMaterials}
-                        type={SelectMultipleType.SIMPLE_HIERARCHICAL}
-                        optionList={usedMaterialsMultiOptions}
-                        valueList={usedMaterialsMultiList}
-                        pluralSelectedTranslationKey="select_multiple_materials"
-                      />
-                    </FormControl>
-                  </>
-                  : <>
-                    <FormControl size="small">
-                      <InputLabel>
-                        {t('query_text_data_level')}
-                      </InputLabel>
-                      <Select
-                        name="level"
-                        value={singlePropertyData.level}
-                        onClick={(e) => alterSinglePropertyData(e, 'level')}
-                      >
-                        {textLevelOptions.map((level) => (
-                          <MenuItem
-                            key={level}
-                            value={level}
-                          >
-                            {level}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl size="small">
-                      <InputLabel>
-                        {t('query_text_data_used_supporting_materials')}
-                      </InputLabel>
-                      <Select
-                        name="usedMaterials"
-                        value={singlePropertyData.usedMaterials}
-                        onClick={(e) => alterSinglePropertyData(e, 'usedMaterials')}
-                      >
-                        {Object.keys(usedMaterialsDisplayOptions).map((material) => (
-                          <MenuItem
-                            key={material}
-                            value={material}
-                          >
-                            {t(usedMaterialsDisplayOptions[material])}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </>
-                }
+                        <InputLabel>
+                          {t('query_text_data_used_study_or_supporting_materials')}
+                        </InputLabel>
+                        <SelectMultiple
+                          name="usedMultiMaterials"
+                          selectedValues={usedMultiMaterials}
+                          setSelectedValues={setUsedMultiMaterials}
+                          type={SelectMultipleType.SIMPLE_HIERARCHICAL}
+                          optionList={usedMaterialsMultiOptions}
+                          valueList={usedMaterialsMultiList}
+                          pluralSelectedTranslationKey="select_multiple_materials"
+                        />
+                      </FormControl>
+                    </>
+                  ) : (
+                    <>
+                      <FormControl size="small">
+                        <InputLabel>
+                          {t('query_text_data_level')}
+                        </InputLabel>
+                        <Select
+                          name="level"
+                          value={singlePropertyData.level}
+                          onClick={(e) => alterSinglePropertyData(e, 'level')}
+                        >
+                          {textLevelOptions.map((level) => (
+                            <MenuItem
+                              key={level}
+                              value={level}
+                            >
+                              {level}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl size="small">
+                        <InputLabel>
+                          {t('query_text_data_used_supporting_materials')}
+                        </InputLabel>
+                        <Select
+                          name="usedMaterials"
+                          value={singlePropertyData.usedMaterials}
+                          onClick={(e) => alterSinglePropertyData(e, 'usedMaterials')}
+                        >
+                          {Object.keys(usedMaterialsDisplayOptions).map((material) => (
+                            <MenuItem
+                              key={material}
+                              value={material}
+                            >
+                              {t(usedMaterialsDisplayOptions[material])}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </>
+                  )}
                 <FormControl
                   className={classes.formControl}
                   size="small"
@@ -613,128 +616,135 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                   </Select>
                 </FormControl>
                 {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
-                  ? <>
-                    <FormControl size="small">
-                      <InputLabel>
-                        {t('query_author_data_level_of_study')}
-                      </InputLabel>
-                      <Select
-                        name="studyLevel"
-                        value={singlePropertyData.studyLevel}
-                        onClick={(e) => alterSinglePropertyData(e, 'studyLevel')}
-                      >
-                        {Object.keys(studyLevelOptions).map((level) => (
-                          <MenuItem
-                            key={level}
-                            value={level}
-                          >
-                            {t(studyLevelOptions[level])}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl size="small">
-                      <InputLabel>
-                        {t('query_author_data_degree')}
-                      </InputLabel>
-                      <Select
-                        name="degree"
-                        value={singlePropertyData.degree}
-                        onClick={(e) => alterSinglePropertyData(e, 'degree')}
-                      >
-                        {Object.keys(degreeOptions).map((degree) => (
-                          <MenuItem
-                            key={degree}
-                            value={degree}
-                          >
-                            {t(degreeOptions[degree])}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </>
-                  : <FormControl size="small">
-                    <InputLabel>
-                      {t('query_author_data_education')}
-                    </InputLabel>
-                    <Select
-                      name="education"
-                      value={singlePropertyData.education}
-                      onClick={(e) => alterSinglePropertyData(e, 'education')}
-                    >
-                      {Object.keys(educationOptions).map((education) => (
-                        <MenuItem
-                          key={education}
-                          value={education}
+                  ? (
+                    <>
+                      <FormControl size="small">
+                        <InputLabel>
+                          {t('query_author_data_level_of_study')}
+                        </InputLabel>
+                        <Select
+                          name="studyLevel"
+                          value={singlePropertyData.studyLevel}
+                          onClick={(e) => alterSinglePropertyData(e, 'studyLevel')}
                         >
-                          {t(educationOptions[education])}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>}
+                          {Object.keys(studyLevelOptions).map((level) => (
+                            <MenuItem
+                              key={level}
+                              value={level}
+                            >
+                              {t(studyLevelOptions[level])}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl size="small">
+                        <InputLabel>
+                          {t('query_author_data_degree')}
+                        </InputLabel>
+                        <Select
+                          name="degree"
+                          value={singlePropertyData.degree}
+                          onClick={(e) => alterSinglePropertyData(e, 'degree')}
+                        >
+                          {Object.keys(degreeOptions).map((degree) => (
+                            <MenuItem
+                              key={degree}
+                              value={degree}
+                            >
+                              {t(degreeOptions[degree])}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </>
+                  ) : (
+                    <FormControl size="small">
+                      <InputLabel>
+                        {t('query_author_data_education')}
+                      </InputLabel>
+                      <Select
+                        name="education"
+                        value={singlePropertyData.education}
+                        onClick={(e) => alterSinglePropertyData(e, 'education')}
+                      >
+                        {Object.keys(educationOptions).map((education) => (
+                          <MenuItem
+                            key={education}
+                            value={education}
+                          >
+                            {t(educationOptions[education])}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
                 {checkIfOnlySpecificCorpusIsChecked('clWmOIrLa')
-                  ? <FormControl size="small">
-                    <InputLabel>
-                      {t('query_author_data_nationality')}
-                    </InputLabel>
-                    <Select
-                      name="nationality"
-                      value={singlePropertyData.nationality}
-                      onClick={(e) => alterSinglePropertyData(e, 'nationality')}
-                    >
-                      {Object.keys(nationalityOptions).map((nationality) => (
-                        <MenuItem
-                          key={nationality}
-                          value={nationality}
-                        >
-                          {t(nationalityOptions[nationality])}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  : <FormControl size="small">
-                    <InputLabel>
-                      {t('query_author_data_native_language')}
-                    </InputLabel>
-                    <Select
-                      name="nativeLang"
-                      value={singlePropertyData.nativeLang}
-                      onClick={(e) => alterSinglePropertyData(e, 'nativeLang')}
-                    >
-                      {Object.keys(languageOptionsForNativeLangs).map((lang) => (
-                        <MenuItem
-                          key={lang}
-                          value={lang}
-                        >
-                          {t(languageOptionsForNativeLangs[lang])}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                }
-                {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
-                  ? <>
+                  ? (
                     <FormControl size="small">
                       <InputLabel>
-                        {t('query_author_data_other_languages')}
+                        {t('query_author_data_nationality')}
                       </InputLabel>
                       <Select
-                        name="otherLang"
-                        value={singlePropertyData.otherLang}
-                        onClick={(e) => alterSinglePropertyData(e, 'otherLang')}
+                        name="nationality"
+                        value={singlePropertyData.nationality}
+                        onClick={(e) => alterSinglePropertyData(e, 'nationality')}
                       >
-                        {Object.keys(languageOptionsForOtherLangs).map((lang) => (
+                        {Object.keys(nationalityOptions).map((nationality) => (
+                          <MenuItem
+                            key={nationality}
+                            value={nationality}
+                          >
+                            {t(nationalityOptions[nationality])}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <FormControl size="small">
+                      <InputLabel>
+                        {t('query_author_data_native_language')}
+                      </InputLabel>
+                      <Select
+                        name="nativeLang"
+                        value={singlePropertyData.nativeLang}
+                        onClick={(e) => alterSinglePropertyData(e, 'nativeLang')}
+                      >
+                        {Object.keys(languageOptionsForNativeLangs).map((lang) => (
                           <MenuItem
                             key={lang}
                             value={lang}
                           >
-                            {t(languageOptionsForOtherLangs[lang])}
+                            {t(languageOptionsForNativeLangs[lang])}
                           </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
-                  </>
-                  : <></>}
+                  )}
+                {checkIfOnlySpecificCorpusIsChecked('cwUSEqQLt')
+                  ? (
+                    <>
+                      <FormControl size="small">
+                        <InputLabel>
+                          {t('query_author_data_other_languages')}
+                        </InputLabel>
+                        <Select
+                          name="otherLang"
+                          value={singlePropertyData.otherLang}
+                          onClick={(e) => alterSinglePropertyData(e, 'otherLang')}
+                        >
+                          {Object.keys(languageOptionsForOtherLangs).map((lang) => (
+                            <MenuItem
+                              key={lang}
+                              value={lang}
+                            >
+                              {t(languageOptionsForOtherLangs[lang])}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </>
+                  ) : <></>
+                }
                 <FormControl size="small">
                   <InputLabel>
                     {t('query_author_data_country')}
