@@ -1,0 +1,16 @@
+.react-component {
+  border: 2px solid var(--purple);
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.mark-view-content-wrapper {
+  border-radius: 0.2rem;
+  padding: 0 0.2rem;
+  cursor: pointer;
+}
+
+.mark-view-content-wrapper:hover {
+  filter: brightness(1.1);
+}

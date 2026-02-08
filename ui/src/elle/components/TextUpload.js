@@ -8,7 +8,7 @@ import { DefaultButtonStyle } from '../const/StyleConstants';
 import ModalBase from './modal/ModalBase';
 import { useGetTextFromFile } from '../hooks/service/TextService';
 
-export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
+export default function TextUpload({ sendTextFromFile, outerClassName = '', buttonClassName = '' }) {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [uploadButtonDisabled, setUploadButtonDisabled] = useState(true);
@@ -57,7 +57,7 @@ export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
         >
           <FileUploadIcon
             id="upload_button"
-            className="button-file"
+            className={`button-file ${buttonClassName}`}
             onClick={() => {
               setModalOpen(true);
             }}

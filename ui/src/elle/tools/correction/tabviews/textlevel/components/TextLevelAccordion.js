@@ -18,8 +18,6 @@ export default function TextLevelAccordion({ complexityAnswer, label, key }) {
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1-content"
-          id="panel1-header"
         >
           {t(label)}
         </AccordionSummary>

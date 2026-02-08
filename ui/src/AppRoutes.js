@@ -23,6 +23,7 @@ import RequireAuth from './elle/components/security/RequireAuth';
 import { aboutUsDrawerList, UserRoles } from './elle/const/Constants';
 import { useTranslation } from 'react-i18next';
 import ResponsiveDrawer from './elle/components/ResponsiveDrawer';
+import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
 
 export default function AppRoutes() {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ export default function AppRoutes() {
         <Route path={RouteConstants.ADDING}
                element={<Adding />} />
         <Route path={RouteConstants.CORRECTOR}
-               element={<Correction />} />
+               element={<CorrectionV2 />} />
         <Route path={RouteConstants.CORRECTOR_TEST}
                element={<Correction />} />
         <Route path={RouteConstants.TOOLS}

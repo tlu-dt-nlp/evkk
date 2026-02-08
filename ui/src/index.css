@@ -98,11 +98,20 @@ a:hover {
   padding: 7px;
   margin-bottom: 50px;
 
+  @media (max-width: 677px) {
+    border-radius: 0;
+    padding: 7px 0;
+  }
+
   .global-page-content-container-inner {
     background-color: white;
     border-radius: 15px;
     padding-top: 50px;
     padding-bottom: 50px;
+
+    @media (max-width: 677px) {
+      border-radius: 0;
+    }
   }
 }
 

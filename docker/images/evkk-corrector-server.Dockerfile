@@ -1,17 +1,23 @@
 FROM python:3.10.14
 
 RUN apt-get update \
-    && apt-get install -y libpcre3 locales \
+    && apt-get install -y build-essential libpcre3-dev wget locales \
     && apt-get clean
 
-RUN wget http://ftp.hr.debian.org/debian/pool/main/s/swig/swig3.0_3.0.12-2_amd64.deb -O swig3.deb \
-    && dpkg -i swig3.deb
+RUN wget https://sourceforge.net/projects/swig/files/swig/swig-3.0.12/swig-3.0.12.tar.gz \
+    && tar -xzf swig-3.0.12.tar.gz \
+    && cd swig-3.0.12 \
+    && ./configure \
+    && make \
+    && make install \
+    && cd .. \
+    && rm -rf swig-3.0.12 swig-3.0.12.tar.gz
 
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 RUN pip install jamspell
 RUN pip install Flask
