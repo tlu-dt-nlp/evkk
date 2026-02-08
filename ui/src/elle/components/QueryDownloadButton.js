@@ -31,7 +31,7 @@ export default function QueryDownloadButton({ selected }) {
   const { downloadQueryResults } = useDownloadQueryResults();
   const { t } = useTranslation();
 
-  const handleOptionsDialogOpenButtonClick = (event) => {
+  const handleOptionsDialogOpenButtonClick = event => {
     setDownloadForm(FileDownloadForm.BASIC_TEXT);
     setDownloadFileType(FileDownloadType.SINGLE_FILE);
     setAnchorEl(event.currentTarget);
@@ -41,11 +41,11 @@ export default function QueryDownloadButton({ selected }) {
     setAnchorEl(null);
   };
 
-  const changeDownloadForm = (event) => {
+  const changeDownloadForm = event => {
     setDownloadForm(event.target.value);
   };
 
-  const changeDownloadFileType = (event) => {
+  const changeDownloadFileType = event => {
     setDownloadFileType(event.target.value);
   };
 

@@ -8,7 +8,7 @@ import { Box, Button, FormControl, InputLabel, MenuItem, Select, Tooltip } from 
 import { useTranslation } from 'react-i18next';
 import '../../translations/i18n';
 import '../styles/TableDownloadButton.css';
-import { sortTableDataByCol } from '../../util/TableUtils';
+import { sortTableDataByColumn } from '../../util/TableUtils';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
 
 export const TableType = {
@@ -25,7 +25,13 @@ const DownloadType = {
   CSV: 'CSV'
 };
 
-export default function TableDownloadButton({ data, headers, accessors, tableType, sortByColAccessor }) {
+export default function TableDownloadButton({
+                                              data,
+                                              headers,
+                                              accessors,
+                                              tableType,
+                                              sortByColumnAccessor
+                                            }) {
 
   const { t } = useTranslation();
   const [fileType, setFileType] = useState(false);
@@ -39,7 +45,7 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
   let csvData = '';
   let tableHeaders = [];
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -53,14 +59,6 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
   for (let i = 0; i < headers.length; i++) {
     const key = accessors ? accessors[i] : 'col' + [i + 1];
     tableHeaders.push({ label: headers[i], key: key });
-  }
-
-  function setFirstRow() {
-    if (tableType === TableType.LEMMA_VIEW && csvData === '') {
-      for (const element of modifiedData) {
-        element.col1 = element.col1.props.children;
-      }
-    }
   }
 
   const setGrammaticalAnalysisData = () => {
@@ -109,14 +107,12 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
   };
 
   useEffect(() => {
-    if (sortByColAccessor) {
-      const sortedData = sortTableDataByCol(data, sortByColAccessor);
-      setModifiedData(sortedData);
-    }
-    setFirstRow();
-    setData();
+    const newData = sortByColumnAccessor
+      ? sortTableDataByColumn(data, sortByColumnAccessor)
+      : data;
+    setModifiedData(newData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, sortByColAccessor]);
+  }, [data, sortByColumnAccessor]);
 
   function setData() {
     if (tableType === TableType.GRAMMATICAL_ANALYSIS) {
@@ -288,7 +284,7 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
     setData();
     showButton();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fileType, data, headers]);
+  }, [fileType, modifiedData, headers]);
 
   async function itemClickTrue() {
     await setFileType(true);
@@ -324,9 +320,11 @@ export default function TableDownloadButton({ data, headers, accessors, tableTyp
         }}
       >
         <Box className="download-dialog">
-          <Box className="download-dialog-inner"
-               id="fileDownload"
-               ref={fileDownloadElement}>
+          <Box
+            className="download-dialog-inner"
+            id="fileDownload"
+            ref={fileDownloadElement}
+          >
             <FormControl fullWidth>
               <InputLabel>{t('common_download')}</InputLabel>
               <Select

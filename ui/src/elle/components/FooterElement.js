@@ -1,16 +1,21 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box } from '@mui/material';
 import './styles/FooterElement.css';
 import dtiEt from '../resources/images/footer/dti_et.svg';
 import dtiEn from '../resources/images/footer/dti_en.svg';
 import { useTranslation } from 'react-i18next';
 import { FooterLink } from '../const/StyleConstants';
-import { aboutValues, linksValues, referencesValues, toolsValues } from '../const/FooterConstants';
 import i18n from 'i18next';
 import { Languages } from '../translations/i18n';
 import RootContext from '../context/RootContext';
 import NewTabHyperlink from './NewTabHyperlink';
 import { EVKK_GITHUB_RELEASE_BASE_PATH } from '../const/PathConstants';
+import {
+  FooterAboutValues,
+  FooterLinksValues,
+  FooterReferencesValues,
+  FooterToolsValues
+} from '../const/RouteConstants';
 
 export default function FooterElement() {
   const { t } = useTranslation();
@@ -54,19 +59,19 @@ export default function FooterElement() {
         <Box className="footer-inner-right">
           <Box className="footer-middle-box">
             <p className="font-weight-bold">{t('footer_references')}</p>
-            {renderBlock(referencesValues)}
+            {renderBlock(FooterReferencesValues)}
           </Box>
           <Box className="footer-middle-box">
             <p className="font-weight-bold">{t('footer_tools')}</p>
-            {renderBlock(toolsValues)}
+            {renderBlock(FooterToolsValues)}
           </Box>
           <Box className="footer-middle-box">
             <p className="font-weight-bold">{t('common_links')}</p>
-            {renderBlock(linksValues)}
+            {renderBlock(FooterLinksValues)}
           </Box>
           <Box className="footer-box-right">
             <p className="font-weight-bold">{t('common_about')}</p>
-            {renderBlock(aboutValues)}
+            {renderBlock(FooterAboutValues)}
           </Box>
         </Box>
       </Box>

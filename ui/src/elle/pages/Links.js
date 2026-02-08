@@ -1,20 +1,18 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
 import SingleLink from '../components/SingleLink';
 import '@fontsource/exo-2/600.css';
 import { IMAGES } from '../resources/images/link-images';
-import { HashFragmentRouteConstants } from '../../AppRoutes';
 import { useTranslation } from 'react-i18next';
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
-import { linksDrawerList } from '../const/Constants';
 import './styles/Links.css';
+import { HashFragmentRouteConstants, LinksDrawerList } from '../const/RouteConstants';
 
 export default function Links() {
   const { t } = useTranslation();
 
   return (
     <div className="links">
-      <ResponsiveDrawer lists={linksDrawerList}>
+      <ResponsiveDrawer lists={LinksDrawerList}>
         <Box className="text-justify">
           <Typography id={HashFragmentRouteConstants.LINKS_INTRODUCTION}>
             ELLE eesmärk on eesti keele õpet igati toetada, mistõttu oleme

@@ -1,4 +1,3 @@
-import React from 'react';
 import Accordion from '@mui/material/Accordion';
 import { CorrectorAccordionStyle } from '../../../../../const/StyleConstants';
 import AccordionSummary from '@mui/material/AccordionSummary';

@@ -1,6 +1,15 @@
-.tool-page-container-inner {
+.tool-page-wrapper {
   display: flex;
   justify-content: center;
+}
+
+.tool-page-inner-wrapper {
+  width: 100%;
+}
+
+.tool-intro-container {
+  max-width: 590px;
+  margin: auto auto 10px;
 }
 
 .alert-max-width {
@@ -15,7 +24,6 @@
 }
 
 .tool-card-container {
-  max-width: 590px;
   height: 200px;
   border-radius: 20px;
   margin: auto auto 10px;
@@ -62,10 +70,6 @@
 .tool-title {
   text-align: center;
   padding-bottom: 2vh;
-}
-
-.tool-wrapper {
-  margin-top: 5vh;
 }
 
 .tool-accordion {

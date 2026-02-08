@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Box } from '@mui/material';
 import '../../styles/CorrectionTab.css';
 import ErrorAccordion from './components/ErrorAccordion';
@@ -11,10 +11,10 @@ import { CORRECTION_TAB_LINK } from '../../const/PathConstants';
 import { CORRECTION, GRAMMARCHECKER_TEST, SPELLCHECKER } from '../../const/Constants';
 import NewTabHyperlink from '../../../../components/NewTabHyperlink';
 import { ELLE_PATH } from '../../../../const/PathConstants';
-import { RouteConstants } from '../../../../../AppRoutes';
 import { featureFlags } from '../../../../../config/featureFlags';
 import ekiLogo from '../../../../resources/images/misc/eki_logo.png';
 import elEstDualLogo from '../../../../resources/images/misc/el_est_dual_logo.png';
+import { RouteConstants } from '../../../../const/RouteConstants';
 
 export default function CorrectionTab(
   {

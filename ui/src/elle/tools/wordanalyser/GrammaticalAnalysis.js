@@ -1,17 +1,15 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useFilters, usePagination, useSortBy, useTable } from 'react-table';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { Box, FormControl, InputLabel } from '@mui/material';
-import './styles/GrammaticalAnalysis.css';
-import TablePagination from '../../components/table/TablePagination';
 import { useTranslation } from 'react-i18next';
 import '../../translations/i18n';
 import { AnalyseContextWithoutMissingData, SetFormContext, SetTypeContext, SetWordContext } from './Contexts';
-import ToggleCell from './ToggleCell';
 import { TableType } from '../../components/table/TableDownloadButton';
 import TableHeaderButtons from '../../components/table/TableHeaderButtons';
 import TableAppliedFilters from '../../components/table/filter/TableAppliedFilters';
 import TableFilterButton from '../../components/table/filter/TableFilterButton';
 import SelectMultiple, { SelectMultipleType } from '../../components/SelectMultiple';
+import { generateWordExampleCell } from '../../util/TableUtils';
+import GenericTable from '../../components/table/GenericTable';
 
 export default function GrammaticalAnalysis() {
   const { t } = useTranslation();
@@ -27,12 +25,13 @@ export default function GrammaticalAnalysis() {
   const [col1, setCol1] = useState([]);
   const [col2, setCol2] = useState([]);
   const [filtersInUse, setFiltersInUse] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
   const [analyzerFilterPopoverAnchorEl, setAnalyzerFilterPopoverAnchorEl] = useState(null);
   const analyzerFilterPopoverToggle = Boolean(analyzerFilterPopoverAnchorEl);
   const analyzerFilterPopoverID = analyzerFilterPopoverToggle ? 'analyzer-filter-popover' : undefined;
   let wordArray = [];
 
-  const handlePopoverOpen = (event) => {
+  const handlePopoverOpen = event => {
     setAnalyzerFilterPopoverAnchorEl(event.currentTarget);
   };
 
@@ -50,25 +49,18 @@ export default function GrammaticalAnalysis() {
     return list;
   }
 
-  function multiSelectFilter(rows, columnIds, filterValue) {
-    return filterValue.length === 0
-      ? rows
-      : rows.filter((row) =>
-        filterValue.includes(String(row.original[columnIds]))
-      );
-  }
-
   function multiSelect(name, values, label, disableValue, translationKey) {
-    const handleChange = (value) => {
+    const handleChange = value => {
       setFilterValue(prev => {
         const next = { ...prev, [name]: value };
-        setFiltersInUse(Object.values(next).flat());
+        const allFilterValues = Object.values(next).flat();
+        setFiltersInUse(allFilterValues);
+        setColumnFilters([
+          { id: 'col1', value: checkFilters(allFilterValues, col1) },
+          { id: 'col2', value: checkFilters(allFilterValues, col2) }
+        ]);
         return next;
       });
-      setAllFilters([
-        { id: 'col1', value: checkFilters(value, col1) },
-        { id: 'col2', value: checkFilters(value, col2) }
-      ]);
     };
 
     return (
@@ -191,127 +183,56 @@ export default function GrammaticalAnalysis() {
     setCol2(list);
   }
 
-  function handleTypeClick(e) {
-    setType(e);
-  }
-
-  function handleFormClick(e) {
-    setForm(e);
-  }
-
   const columns = useMemo(
     () => [
       {
-        Header: () => {
-          return (<span>{t('common_wordtype')}</span>);
-        },
-        accessor: 'col1', // accessor is the "key" in the data
         id: 'col1',
-        Cell: (props) => {
-          const word = props.value;
-          return (
-            <span key={props.id}
-                  className="word"
-                  onClick={() => handleTypeClick(word)}>{word}</span>
-          );
-        },
-        filter: multiSelectFilter,
-        className: 'user',
-        width: 400
+        header: t('common_wordtype'),
+        accessorKey: 'col1',
+        cell: info => (
+          <span
+            className="word"
+            onClick={() => setType(info.getValue())}
+          >
+            {info.getValue()}
+          </span>
+        )
       },
       {
-        Header: () => {
-          return (<span>{t('common_form')}</span>);
-        },
-        accessor: 'col2',
         id: 'col2',
-        Cell: (props) => {
-          const word = props.value;
-          return (
-            <span className="word"
-                  onClick={() => handleFormClick(word)}>{word}</span>
-          );
-        },
-        filter: multiSelectFilter,
-        width: 400,
-        className: 'col2',
-        disableSortBy: true,
-        sortable: false
+        header: t('common_form'),
+        accessorKey: 'col2',
+        cell: info => (
+          <span
+            className="word"
+            onClick={() => setForm(info.getValue())}
+          >
+            {info.getValue()}
+          </span>
+        ),
+        enableSorting: false
       },
       {
-        Header: t('common_words_in_text'),
         id: 'tekstisonad',
-        accessor: 'col3',
-        Cell: (props) => {
-          const items = props.value;
-          let cellContent = [];
-          for (let i = 0; i < items[0].length; i++) {
-            let word = items[0][i];
-            let count = items[1][i];
-            let id = items[3][i];
-            let content = (
-              <span key={id}>
-                <span key={props.id}
-                      className="word"
-                      onClick={() => setWord(id)}>{word}
-                </span>
-                {String.fromCharCode(160)}{count}
-              </span>
-            );
-            cellContent.push(content);
-          }
-          return <ToggleCell onCellContent={cellContent} />;
-        },
-        width: 700,
-        disableFilters: true,
-        disableSortBy: true,
-        sortable: false
+        header: t('common_words_in_text'),
+        accessorKey: 'col3',
+        cell: info => generateWordExampleCell(info.getValue(), setWord),
+        enableSorting: false
       },
       {
-        Header: t('common_header_frequency'),
         id: 'sagedus',
-        accessor: 'col4', // accessor is the "key" in the data
-        width: 300,
-        disableFilters: true
+        header: t('common_header_frequency'),
+        accessorKey: 'col4'
       },
       {
-        Header: t('common_header_percentage'),
         id: 'protsent',
-        accessor: 'col5',
-        width: 300,
-        disableFilters: true
+        header: t('common_header_percentage'),
+        accessorKey: 'col5'
       }
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [setWord]
   );
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    setAllFilters,
-    state: { pageIndex, pageSize }
-  } = useTable({
-    columns, data, initialState: {
-      sortBy: [
-        {
-          id: 'sagedus',
-          desc: true
-        }
-      ]
-    }
-  }, useFilters, useSortBy, usePagination);
 
   const renderFilterButton = () => {
     return (
@@ -348,62 +269,14 @@ export default function GrammaticalAnalysis() {
         downloadData={data}
         downloadTableType={TableType.GRAMMATICAL_ANALYSIS}
         downloadHeaders={tableToDownload}
-        downloadSortByColAccessor={'col4'}
+        downloadSortByColumnAccessor="col4"
       />
-      <table className="analyserTable" {...getTableProps()}>
-        <thead>
-        {headerGroups.map(headerGroup => (
-          <tr className="tableRow" {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th className="tableHead" key={column.id}>
-                {<span>{column.render('Header')}</span>}
-                <span className="sortIcon" {...column.getHeaderProps(column.getSortByToggleProps({ title: '' }))}>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' ▼'
-                        : ' ▲'
-                      : ' ▼▲'}
-                  </span>
-              </th>
-            ))}
-          </tr>
-        ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-        {page.map((row, _i) => {
-          prepareRow(row);
-          return (
-            <tr className="tableRow" {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return (
-                  <td
-                    {...cell.getCellProps()}
-                    style={{
-                      padding: '10px',
-                      width: cell.column.width
-                    }}
-                    className="border tableData"
-                  >
-                    {cell.render('Cell')}
-                  </td>
-                );
-              })}
-            </tr>
-          );
-        })}
-        </tbody>
-      </table>
-      <TablePagination
-        gotoPage={gotoPage}
-        previousPage={previousPage}
-        canPreviousPage={canPreviousPage}
-        nextPage={nextPage}
-        canNextPage={canNextPage}
-        pageIndex={pageIndex}
-        pageOptions={pageOptions}
-        pageSize={pageSize}
-        setPageSize={setPageSize}
-        pageCount={pageCount}
+      <GenericTable
+        columns={columns}
+        data={data}
+        sortByColumnId="sagedus"
+        columnFilters={columnFilters}
+        onColumnFiltersChange={setColumnFilters}
       />
     </Box>
   );

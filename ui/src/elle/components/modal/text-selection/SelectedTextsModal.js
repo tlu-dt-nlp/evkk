@@ -1,6 +1,6 @@
 import { Alert, Chip } from '@mui/material';
 import { ElleDefaultChip } from '../../../const/StyleConstants';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { changeCorpusTexts, changeOwnTexts, queryStore } from '../../../store/QueryStore';
 import { useTranslation } from 'react-i18next';
 import ModalBase from '../ModalBase';

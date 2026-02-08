@@ -1,5 +1,5 @@
 import { Backdrop, CircularProgress } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loadingEmitter } from '../../App';
 import { DefaultCircularProgressStyle } from '../const/StyleConstants';
 import blueLight from '../resources/images/misc/blue_light.gif';

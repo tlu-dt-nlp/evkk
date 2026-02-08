@@ -1,6 +1,5 @@
 import { Box, IconButton, Modal } from '@mui/material';
 import { modalStyle } from '../../const/StyleConstants';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import '../styles/ModalBase.css';
@@ -30,6 +29,7 @@ export default function ModalBase({
         setIsOpen(false);
       }}
       disableAutoFocus
+      disableRestoreFocus
       disableEscapeKeyDown={disableComfortClosing}
     >
       <Box

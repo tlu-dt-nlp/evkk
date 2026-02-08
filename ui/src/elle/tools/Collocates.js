@@ -1,5 +1,4 @@
-import './Collocates.css';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Accordion from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
@@ -21,20 +20,20 @@ import {
 } from '@mui/material';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import { TableType } from '../../components/table/TableDownloadButton';
-import { queryStore } from '../../store/QueryStore';
+import { TableType } from '../components/table/TableDownloadButton';
+import { queryStore } from '../store/QueryStore';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import WordlistMenu from '../wordlist/components/WordlistMenu';
-import GenericTable from '../../components/GenericTable';
-import { changeCollocatesResult, toolAnalysisStore } from '../../store/ToolAnalysisStore';
+import WordlistMenu from './wordlist/components/WordlistMenu';
+import GenericTable from '../components/table/GenericTable';
+import { changeCollocatesResult, toolAnalysisStore } from '../store/ToolAnalysisStore';
 import { useTranslation } from 'react-i18next';
-import TableHeaderButtons from '../../components/table/TableHeaderButtons';
-import GraphView from '../wordcontext/components/GraphView';
-import { AccordionStyle, DefaultButtonStyle } from '../../const/StyleConstants';
-import { useGetCollocatesResult } from '../../hooks/service/ToolsService';
-import { loadingEmitter } from '../../../App';
-import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
-import TooltipButton from '../../components/tooltip/TooltipButton';
+import TableHeaderButtons from '../components/table/TableHeaderButtons';
+import GraphView from './wordcontext/components/GraphView';
+import { AccordionStyle, DefaultButtonStyle } from '../const/StyleConstants';
+import { useGetCollocatesResult } from '../hooks/service/ToolsService';
+import { loadingEmitter } from '../../App';
+import { LoadingSpinnerEventType } from '../components/LoadingSpinner';
+import TooltipButton from '../components/tooltip/TooltipButton';
 
 export default function Collocates() {
 
@@ -52,13 +51,13 @@ export default function Collocates() {
   const [lemmatizedKeywordResult, setLemmatizedKeywordResult] = useState(null);
   const [initialKeywordResult, setInitialKeywordResult] = useState(null);
   const [showTable, setShowTable] = useState(false);
-  const tableToDownload = [t('neighbouring_words_collocation'), t('neighbouring_words_score'), t('neighbouring_words_number_of_co_occurrences'), t('neighboring_words_frequency_in_text'), t('neighboring_words_percentage_in_text')];
+  const tableToDownload = [t('neighbouring_words_collocation'), t('neighbouring_words_score'), t('neighbouring_words_number_of_co_occurrences'), t('neighbouring_words_frequency_in_text'), t('neighbouring_words_percentage_in_text')];
   const accessors = ['collocate', 'score', 'coOccurrences', 'frequencyCount', 'frequencyPercentage'];
   const [response, setResponse] = useState([]);
   const data = useMemo(() => response, [response]);
   const [showNoResultsError, setShowNoResultsError] = useState(false);
   const { getCollocatesResult } = useGetCollocatesResult();
-  const sortByColAccessor = 'score';
+  const defaultSortColumn = 'score';
 
   useEffect(() => {
     if (urlParams.get('word') && urlParams.get('type') && urlParams.get('keepCapitalization')) {
@@ -110,67 +109,52 @@ export default function Collocates() {
 
   const columns = useMemo(() => [
     {
-      Header: t('common_header_number'),
-      accessor: 'id',
-      disableSortBy: true,
-      Cell: (cellProps) => {
-        return cellProps.sortedFlatRows.findIndex(item => item.id === cellProps.row.id) + 1;
-      }
+      id: 'collocate',
+      header: t('neighbouring_words_collocation'),
+      accessorKey: 'collocate'
     },
     {
-      Header: t('neighbouring_words_collocation'),
-      accessor: 'collocate',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      }
+      id: 'score',
+      header: t('neighbouring_words_score'),
+      accessorKey: 'score'
     },
     {
-      Header: t('neighbouring_words_score'),
-      accessor: 'score',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      }
+      id: 'coOccurrences',
+      header: t('neighbouring_words_number_of_co_occurrences'),
+      accessorKey: 'coOccurrences'
     },
     {
-      Header: t('neighbouring_words_number_of_co_occurrences'),
-      accessor: 'coOccurrences',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      }
+      id: 'frequencyCount',
+      header: t('neighbouring_words_frequency_in_text'),
+      accessorKey: 'frequencyCount'
     },
     {
-      Header: t('neighbouring_words_frequency_in_text'),
-      accessor: 'frequencyCount',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      }
+      id: 'frequencyPercentage',
+      header: t('neighbouring_words_percentage_in_text'),
+      accessorKey: 'frequencyPercentage',
+      cell: info => `${info.getValue()}%`
     },
     {
-      Header: t('neighbouring_words_percentage_in_text'),
-      accessor: 'frequencyPercentage',
-      Cell: (cellProps) => {
-        return `${cellProps.value}%`;
-      }
-    },
-    {
-      Header: '',
-      accessor: 'menu',
-      disableSortBy: true,
-      Cell: (cellProps) => {
-        return (
-          <WordlistMenu word={cellProps.row.original.collocate} type={typeValue}
-                        keepCapitalization={capitalizationChecked} />
-        );
-      }
+      id: 'menu',
+      header: '',
+      accessorKey: 'menu',
+      enableSorting: false,
+      meta: { className: 'row-action-button' },
+      cell: info =>
+        <WordlistMenu
+          word={info.row.original.collocate}
+          type={typeValue}
+          keepCapitalization={capitalizationChecked}
+        />
     }
   ], [typeValue, capitalizationChecked, t]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     sendRequest();
   };
 
-  const handleTypeChange = (event) => {
+  const handleTypeChange = event => {
     setTypeValue(event.target.value);
     setTypeError(false);
     if (event.target.value === CollocateType.LEMMAS) {
@@ -246,7 +230,7 @@ export default function Collocates() {
             <div className="tool-accordion">
               <div>
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   error={typeError}
                   variant="standard"
                 >
@@ -275,8 +259,6 @@ export default function Collocates() {
                   }
                   <Button
                     sx={DefaultButtonStyle}
-                    style={{ marginTop: '10vh !important' }}
-                    className="collocates-analyse-button"
                     type="submit"
                     variant="contained"
                   >
@@ -286,7 +268,7 @@ export default function Collocates() {
               </div>
               <div>
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   variant="standard"
                 >
                   <FormLabel id="keyword">
@@ -297,13 +279,11 @@ export default function Collocates() {
                     required
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    style={{ width: '250px' }}
                   />
                 </FormControl>
                 <br />
                 <FormControl
-                  sx={{ m: 3 }}
-                  style={{ marginTop: '-1vh' }}
+                  sx={{ m: 7 }}
                   variant="standard"
                 >
                   <FormLabel id="display">
@@ -325,13 +305,9 @@ export default function Collocates() {
                         required
                         value={searchCount}
                         onChange={(e) => setSearchCount(e.target.value)}
-                        className="collocates-search-count-textfield"
                       />
                     </Grid>
-                    <Grid
-                      item
-                      className="collocates-explanation"
-                    >
+                    <Grid item>
                       {t('neighbouring_words_search_within_preceding_and_following_words')}
                     </Grid>
                   </Grid>
@@ -339,7 +315,7 @@ export default function Collocates() {
               </div>
               <div>
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   size="small"
                 >
                   <InputLabel id="formula">
@@ -349,7 +325,6 @@ export default function Collocates() {
                     </TooltipButton>
                   </InputLabel>
                   <Select
-                    sx={{ width: '140px' }}
                     name="formula"
                     value={formula}
                     onChange={(e) => setFormula(e.target.value)}
@@ -367,7 +342,7 @@ export default function Collocates() {
                 </FormControl>
                 <br />
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   variant="standard"
                 >
                   <FormControlLabel
@@ -407,13 +382,13 @@ export default function Collocates() {
           downloadTableType={TableType.COLLOCATES}
           downloadHeaders={tableToDownload}
           downloadAccessors={accessors}
-          downloadSortByColAccessor={sortByColAccessor}
+          downloadSortByColumnAccessor={defaultSortColumn}
         />
         <GenericTable
-          tableClassname={'wordlist-table'}
           columns={columns}
           data={data}
-          sortByColAccessor={sortByColAccessor}
+          sortByColumnId={defaultSortColumn}
+          showRowNumbers={true}
         />
       </>}
       {showNoResultsError &&

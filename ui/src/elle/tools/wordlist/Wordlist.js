@@ -1,7 +1,6 @@
 import { queryStore } from '../../store/QueryStore';
 import { useNavigate } from 'react-router-dom';
-import React, { useEffect, useMemo, useState } from 'react';
-import './styles/Wordlist.css';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -21,10 +20,9 @@ import { STOPWORDS_DATADOI_PATH } from '../../const/PathConstants';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import WordlistMenu from './components/WordlistMenu';
 import { TableType } from '../../components/table/TableDownloadButton';
-import GenericTable from '../../components/GenericTable';
+import GenericTable from '../../components/table/GenericTable';
 import { changeWordlistResult, toolAnalysisStore } from '../../store/ToolAnalysisStore';
 import { useTranslation } from 'react-i18next';
-import { sortTableCol } from '../../util/TableUtils';
 import NewTabHyperlink from '../../components/NewTabHyperlink';
 import WordcloudView from './components/WordcloudView';
 import TableHeaderButtons from '../../components/table/TableHeaderButtons';
@@ -52,7 +50,7 @@ export default function Wordlist() {
   const accessors = ['word', 'frequencyCount', 'frequencyPercentage'];
   const data = useMemo(() => response, [response]);
   const { getWordlistResult } = useGetWordlistResult();
-  const sortByColAccessor = 'frequencyCount';
+  const defaultSortColumn = 'frequencyCount';
 
   useEffect(() => {
     const type = typeValueToDisplay === WordlistType.WORDS ? t('wordlist_word_column') : t('wordlist_lemma_column');
@@ -98,57 +96,40 @@ export default function Wordlist() {
 
   const columns = useMemo(() => [
     {
-      Header: t('common_header_number'),
-      accessor: 'id',
-      disableSortBy: true,
-      Cell: (cellProps) => {
-        return cellProps.sortedFlatRows.findIndex(item => item.id === cellProps.row.id) + 1;
-      }
+      id: 'word',
+      header: () => typeValueToDisplay === WordlistType.WORDS
+        ? t('wordlist_word_column')
+        : t('wordlist_lemma_column'),
+      accessorKey: 'word'
     },
     {
-      Header: () => {
-        return typeValueToDisplay === WordlistType.WORDS ? t('wordlist_word_column') : t('wordlist_lemma_column');
-      },
-      accessor: 'word',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      },
-      sortType: (rowA, rowB) => {
-        return sortTableCol(rowA, rowB, 'word');
-      }
+      id: 'frequencyCount',
+      header: t('common_header_frequency'),
+      accessorKey: 'frequencyCount'
     },
     {
-      Header: t('common_header_frequency'),
-      accessor: 'frequencyCount',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      }
+      id: 'frequencyPercentage',
+      header: t('common_header_percentage'),
+      accessorKey: 'frequencyPercentage',
+      cell: info => `${info.getValue()}%`
     },
     {
-      Header: t('common_header_percentage'),
-      accessor: 'frequencyPercentage',
-      Cell: (cellProps) => {
-        return `${cellProps.value}%`;
-      }
-    },
-    {
-      Header: '',
-      accessor: 'menu',
-      disableSortBy: true,
-      Cell: (cellProps) => {
-        return (
-          <WordlistMenu
-            word={cellProps.row.original.word}
-            type={typeValue}
-            keepCapitalization={capitalizationChecked}
-            showCollocatesButton={true}
-          />
-        );
-      }
+      id: 'menu',
+      header: '',
+      accessorKey: 'menu',
+      enableSorting: false,
+      meta: { className: 'row-action-button' },
+      cell: info =>
+        <WordlistMenu
+          word={info.row.original.word}
+          type={typeValue}
+          keepCapitalization={capitalizationChecked}
+          showCollocatesButton={true}
+        />
     }
   ], [typeValue, typeValueToDisplay, capitalizationChecked, t]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     setTypeError(!typeValue);
     if (typeValue) {
@@ -167,7 +148,7 @@ export default function Wordlist() {
     }
   };
 
-  const handleTypeChange = (event) => {
+  const handleTypeChange = event => {
     setTypeValue(event.target.value);
     setTypeError(false);
   };
@@ -247,7 +228,6 @@ export default function Wordlist() {
                   }
                   <Button
                     sx={DefaultButtonStyle}
-                    className="wordlist-analyse-button"
                     type="submit"
                     variant="contained"
                   >
@@ -257,7 +237,7 @@ export default function Wordlist() {
               </div>
               <div>
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   variant="standard"
                 >
                   <FormLabel id="stopwords">
@@ -289,7 +269,6 @@ export default function Wordlist() {
                     size="small"
                     value={customStopwords}
                     onChange={(e) => setCustomStopwords(e.target.value)}
-                    style={{ width: '350px' }}
                   />
                 </FormControl>
               </div>
@@ -334,7 +313,6 @@ export default function Wordlist() {
                     size="small"
                     value={minimumFrequency}
                     onChange={(e) => setMinimumFrequency(e.target.value)}
-                    style={{ width: '310px' }}
                   />
                 </FormControl>
               </div>
@@ -349,13 +327,13 @@ export default function Wordlist() {
           downloadTableType={TableType.WORDLIST}
           downloadHeaders={tableToDownload}
           downloadAccessors={accessors}
-          downloadSortByColAccessor={sortByColAccessor}
+          downloadSortByColumnAccessor={defaultSortColumn}
         />
         <GenericTable
-          tableClassname={'wordlist-table'}
           columns={columns}
           data={data}
-          sortByColAccessor={sortByColAccessor}
+          sortByColumnId={defaultSortColumn}
+          showRowNumbers={true}
         />
       </>}
     </>

@@ -3,26 +3,17 @@ import { AppBar, Box, Drawer, IconButton, Link, List, ListItem, Menu, MenuItem, 
 import { Close, Language, Logout, Menu as MenuIcon } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import '@fontsource/exo-2/600.css';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './styles/Navbar.css';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { Languages } from '../translations/i18n';
 import Can from './security/Can';
-import { UserRoles } from '../const/Constants';
 import { useLogout } from '../hooks/service/AuthService';
-import { RouteConstants } from '../../AppRoutes';
 import TextToSpeechMenu from './text-to-speech/TextToSpeechMenu';
 import flagEst from '../resources/images/flags/est.png';
 import flagEng from '../resources/images/flags/eng.png';
-
-const pages = [
-  { id: 1, title: 'common_corrector', target: RouteConstants.CORRECTOR },
-  { id: 2, title: 'common_tools', target: RouteConstants.TOOLS },
-  { id: 3, title: 'common_links', target: RouteConstants.LINKS },
-  { id: 4, title: 'common_about', target: RouteConstants.ABOUT },
-  { id: 5, title: 'common_admin_panel', target: '/admin', role: UserRoles.ADMIN }
-];
+import { NavbarPages } from '../const/RouteConstants';
 
 const MenuLink = styled(Link)({
   fontWeight: 600,
@@ -66,7 +57,7 @@ export default function Navbar() {
     setOpen(!open);
   };
 
-  const handleLangOpen = (event) => {
+  const handleLangOpen = event => {
     setLangAnchorEl(event.currentTarget);
   };
 
@@ -164,7 +155,7 @@ export default function Navbar() {
             </NavLink>
           </div>
           <div className="nav-menu-link-container">
-            {pages.map((page) => {
+            {NavbarPages.map((page) => {
               return (
                 <Can role={page.role} key={page.id}>
                   <span style={{ height: '100%' }}>
@@ -222,7 +213,7 @@ export default function Navbar() {
               </NavLink>
             </div>
             <List>
-              {pages.map((page) => {
+              {NavbarPages.map((page) => {
                 return (
                   <Can role={page.role} key={page.id}>
                     <ListItem sx={{ pl: 0 }}>

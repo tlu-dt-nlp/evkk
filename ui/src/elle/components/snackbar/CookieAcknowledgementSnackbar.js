@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Snackbar } from '@mui/material';
 import { DefaultButtonStyle } from '../../const/StyleConstants';

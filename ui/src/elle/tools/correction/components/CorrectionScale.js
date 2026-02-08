@@ -1,4 +1,3 @@
-import React from 'react';
 import { toDecimalScale2OrInteger } from '../util/Utils';
 
 export default function CorrectionScale({ title, startValue, endValue, value, startText, endText, percentage }) {

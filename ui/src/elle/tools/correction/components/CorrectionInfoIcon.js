@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import { IconButton } from '@mui/material';
 import ModalBase from '../../../components/modal/ModalBase';

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Box } from '@mui/material';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import QueryModal from '../components/modal/text-selection/QueryModal';
 import { useTranslation } from 'react-i18next';
 import './styles/Tools.css';
@@ -10,11 +10,10 @@ import WordContextIcon from '../resources/images/tools/sona_kontekstis.png';
 import CollocatesIcon from '../resources/images/tools/naabersonad.png';
 import WordAnalyserIcon from '../resources/images/tools/sonaanalyys.png';
 import ClusterfinderIcon from '../resources/images/tools/mustrileidja.png';
-import { RouteConstants, RouteFullPathConstants } from '../../AppRoutes';
-import { toolsDrawerList } from '../const/Constants';
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
 import OwnTextsModal from '../components/modal/text-selection/OwnTextsModal';
 import SelectedTextsModal from '../components/modal/text-selection/SelectedTextsModal';
+import { RouteFullPathConstants, ToolsDrawerList } from '../const/RouteConstants';
 
 const ToolIconCard = ({ image, text }) => {
   const { t } = useTranslation();
@@ -41,50 +40,41 @@ const TabOutlet = ({ textsSelected, image, text, outletPath }) => {
   const { t } = useTranslation();
   const current = useLocation();
 
-  return (
-    current.pathname === outletPath
-      ? (
-        textsSelected
-          ? (
-            <div className="tool-wrapper">
-              <Outlet />
-            </div>
-          ) : (
-            <>
-              <ToolIconCard
-                image={image}
-                text={text}
-              />
-              <Alert severity="warning">
-                {t('tools_warning_text')}
-              </Alert>
-            </>
-          )
-      ) : null
-  );
+  return current.pathname === outletPath
+    ? (
+      <div
+        style={{ display: textsSelected ? 'none' : 'block' }}
+        className="tool-intro-container"
+      >
+        <ToolIconCard
+          image={image}
+          text={text}
+        />
+        <Alert severity="warning">
+          {t('tools_warning_text')}
+        </Alert>
+      </div>
+    ) : null;
 };
 
 export default function Tools() {
   const current = useLocation();
-  const navigate = useNavigate();
   const [isQueryOpen, setIsQueryOpen] = useState(false);
   const [isOwnTextsOpen, setIsOwnTextsOpen] = useState(false);
   const [textsSelected, setTextsSelected] = useState(false);
   const [isSelectedTextsOpen, setIsSelectedTextsOpen] = useState(false);
 
   useEffect(() => {
-    if (current.pathname === `/${RouteConstants.TOOLS}`) navigate(RouteConstants.WORDLIST, { replace: true });
-    if (current.state?.scrollToTop) window.scrollTo(0, 0);
-    if (current.state?.target) navigate(current.state.target);
-  }, [current.pathname, current.state, navigate]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
     const storeState = queryStore.getState();
     setTextsSelected(storeState.corpusTextIds !== null || storeState.ownTexts !== null);
-    setIsQueryOpen(current.state && current.state.pageNo === 'queryOpen' ? current.state.pageNo : null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (current?.state?.pageNo === 'queryOpen') {
+      setIsQueryOpen(true);
+    }
+  }, [current?.state?.pageNo]);
 
   queryStore.subscribe(() => {
     const storeState = queryStore.getState();
@@ -119,41 +109,44 @@ export default function Tools() {
       />
 
       <ResponsiveDrawer
-        lists={toolsDrawerList}
+        lists={ToolsDrawerList}
         onCustomActionClick={handleCustomActionClick}
         disableOutletRender
       >
-        <Box className="tool-page-container-inner">
-          <Box>
+        <Box className="tool-page-wrapper">
+          <Box className="tool-page-inner-wrapper">
+            <div style={{ display: textsSelected ? 'block' : 'none' }}>
+              <Outlet />
+            </div>
             <TabOutlet
               textsSelected={textsSelected}
               image={WordlistIcon}
               text={'tools_accordion_wordlist_explainer'}
-              outletPath={RouteFullPathConstants.WORDLIST}
+              outletPath={RouteFullPathConstants.TOOLS_WORDLIST}
             />
             <TabOutlet
               textsSelected={textsSelected}
               image={WordContextIcon}
               text={'tools_accordion_word_in_context_explainer'}
-              outletPath={RouteFullPathConstants.WORDCONTEXT}
+              outletPath={RouteFullPathConstants.TOOLS_WORDCONTEXT}
             />
             <TabOutlet
               textsSelected={textsSelected}
               image={CollocatesIcon}
               text={'tools_accordion_neighbouring_words_explainer'}
-              outletPath={RouteFullPathConstants.COLLOCATES}
+              outletPath={RouteFullPathConstants.TOOLS_COLLOCATES}
             />
             <TabOutlet
               textsSelected={textsSelected}
               image={WordAnalyserIcon}
               text={'tools_accordion_word_analysis_explainer'}
-              outletPath={RouteFullPathConstants.WORDANALYSER}
+              outletPath={RouteFullPathConstants.TOOLS_WORDANALYSER}
             />
             <TabOutlet
               textsSelected={textsSelected}
               image={ClusterfinderIcon}
               text={'tools_accordion_clusters_explainer'}
-              outletPath={RouteFullPathConstants.CLUSTERFINDER}
+              outletPath={RouteFullPathConstants.TOOLS_CLUSTERFINDER}
             />
           </Box>
         </Box>

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLogout, useRenew } from '../../hooks/service/AuthService';
 import ModalBase from './ModalBase';
 import { useTranslation } from 'react-i18next';

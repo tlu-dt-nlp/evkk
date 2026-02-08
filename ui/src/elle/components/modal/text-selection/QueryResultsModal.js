@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -8,7 +8,7 @@ import {
   CircularProgress,
   Typography
 } from '@mui/material';
-import { usePagination, useTable } from 'react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './styles/QueryResultsModal.css';
@@ -78,27 +78,36 @@ export default function QueryResultsModal({
 
   const columns = useMemo(() => [
       {
-        Header: '',
-        accessor: 'text_id',
-        Cell: (cellProps) => {
+        id: 'select',
+        header: '',
+        accessorKey: 'text_id',
+        cell: info => {
+          const id = info.getValue();
           return (
             <Checkbox
               style={{ color: '#9C27B0' }}
-              checked={checkboxStatuses.current.has(cellProps.value)}
-              id={cellProps.value}
-              onChange={() => alterCheckbox(cellProps.value)}
+              checked={checkboxStatuses.current.has(id)}
+              id={id}
+              onChange={() => alterCheckbox(id)}
             />
           );
         },
-        className: 'checkbox-row'
+        meta: { className: 'checkbox-row' }
       },
       {
-        Header: '',
-        accessor: 'property_value',
-        Cell: (cellProps) => {
+        id: 'value',
+        header: '',
+        accessorKey: 'property_value',
+        cell: info => {
+          const value = info.getValue();
+          const textId = info.row.original.text_id;
           return (
-            <span className="clickable-row"
-                  onClick={() => previewText(cellProps.row.original.text_id)}>{cellProps.value}</span>
+            <span
+              className="clickable-row"
+              onClick={() => previewText(textId)}
+            >
+              {value}
+            </span>
           );
         }
       }
@@ -107,23 +116,12 @@ export default function QueryResultsModal({
     []
   );
 
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    prepareRow,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize }
-  } =
-    useTable({ columns, data }, usePagination);
+  const table = useReactTable({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
+  });
 
   const allTextIds = data.map(item => {
     return item.text_id;
@@ -237,54 +235,44 @@ export default function QueryResultsModal({
             {t('query_results_save_texts_for_analysis')}
           </Button>
           <QueryDownloadButton selected={checkboxStatuses.current} />
-          <table className="result-table"
-                 {...getTableProps()}>
+          <table className="result-table">
             <thead>
-            {headerGroups.map(headerGroup => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+            {table.getHeaderGroups().map(headerGroup => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
                 ))}
               </tr>
             ))}
             </thead>
-            <tbody {...getTableBodyProps()}>
-            {page.map((row, _i) => {
-              prepareRow(row);
-              return (
-                <tr
-                  className="query-table-row border"
-                  {...row.getRowProps()}
-                  key={row.values.text_id}
-                  id={row.values.text_id}>
-                  {row.cells.map(cell => {
-                    return (
-                      <td{...cell.getCellProps({
-                        className: cell.column.className
-                      })}>
-
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
+            <tbody>
+            {table.getRowModel().rows.map(row => (
+              <tr
+                className="query-table-row border"
+                key={row.id}
+                id={row.original.text_id}
+              >
+                {row.getVisibleCells().map(cell => (
+                  <td
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.className}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
             </tbody>
           </table>
           <br />
-          <TablePagination
-            gotoPage={gotoPage}
-            previousPage={previousPage}
-            canPreviousPage={canPreviousPage}
-            nextPage={nextPage}
-            canNextPage={canNextPage}
-            pageIndex={pageIndex}
-            pageOptions={pageOptions}
-            pageSize={pageSize}
-            setPageSize={setPageSize}
-            pageCount={pageCount}
-          />
+          <TablePagination table={table} />
         </>
       }
       <ModalBase

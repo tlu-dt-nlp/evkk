@@ -1,11 +1,11 @@
 import { Alert, Button } from '@mui/material';
-import './styles/ServerOfflinePage.css';
+import '../styles/ServerOfflinePage.css';
 import { useTranslation } from 'react-i18next';
-import Navbar from './Navbar';
-import FooterElement from './FooterElement';
-import { DefaultButtonStyle } from '../const/StyleConstants';
+import Navbar from '../Navbar';
+import FooterElement from '../FooterElement';
+import { DefaultButtonStyle } from '../../const/StyleConstants';
 
-export default function ServerOfflinePage({ retry }) {
+export default function ServerOffline({ retry }) {
 
   const { t } = useTranslation();
 

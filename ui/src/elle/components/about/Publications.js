@@ -1,10 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import React from 'react';
 import SingleLinkedResourceList from './SingleLinkedResourceList';
 import { conferences_workshops, publications, theses } from '../../const/PublicationsAndGrantsConstants';
-import { HashFragmentRouteConstants } from '../../../AppRoutes';
 import { useTranslation } from 'react-i18next';
 import '../styles/Publications.css';
+import { HashFragmentRouteConstants } from '../../const/RouteConstants';
 
 export default function Publications() {
   const { t } = useTranslation();

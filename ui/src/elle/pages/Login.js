@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import React from 'react';
 import './styles/Login.css';
 import i18n from 'i18next';
 import CookieAcknowledgementSnackbar from '../components/snackbar/CookieAcknowledgementSnackbar';

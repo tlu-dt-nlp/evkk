@@ -1,4 +1,3 @@
-import React from 'react';
 import Accordion from '@mui/material/Accordion';
 import { CorrectorAccordionStyle, CorrectorErrorCircle } from '../../../../../const/StyleConstants';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -36,7 +35,7 @@ export default function ErrorAccordion(
           </AccordionSummary>
           <AccordionDetails>
             <div className="d-flex gap-1 flex-column">
-              {errorProperties[1].map((error, index) => (
+              {errorProperties[1].map(error => (
                 <SingleError
                   key={error.error_id}
                   error={error}

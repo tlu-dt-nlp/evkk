@@ -1,29 +1,13 @@
-import React from 'react';
-import { Box, Button, styled } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import '../styles/HeroElement.css';
 import heroImage from '../../resources/images/home/girl_with_laptop.png';
 import { useTranslation } from 'react-i18next';
-import { HashLink } from 'react-router-hash-link';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { useNavigate } from 'react-router-dom';
 
 export default function HeroElement() {
-
   const { t } = useTranslation();
-  const ToolsLink = styled(HashLink)({
-    fontWeight: 600,
-    fontSize: 16,
-    color: 'white',
-    textDecoration: 'none',
-    fontFamily: ['\'Exo 2\'', 'sans-serif'].join(','),
-    '&:hover': {
-      color: 'white',
-      textDecoration: 'none'
-    },
-    '&.active': {
-      color: 'white',
-      textDecoration: 'none'
-    }
-  });
+  const navigate = useNavigate();
 
   return (
     <Box className="hero-container">
@@ -36,18 +20,13 @@ export default function HeroElement() {
             {t('hero_main_text_not_highlighted')}
           </p>
           <Button
-            className="button-design"
+            className="tool-intro-button"
             sx={DefaultButtonStyle}
             size="large"
             variant="contained"
+            onClick={() => navigate('#tools')}
           >
-            <ToolsLink
-              key={'1'}
-              smooth
-              to="#tools"
-            >
-              {t('hero_tools_button')}
-            </ToolsLink>
+            {t('hero_tools_button')}
           </Button>
         </Box>
       </Box>
@@ -55,7 +34,7 @@ export default function HeroElement() {
         <img
           className="hero-img"
           src={heroImage}
-          alt="Heroimage"
+          alt="Hero"
         />
       </Box>
     </Box>

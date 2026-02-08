@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import React from 'react';
 import SingleLinkedResourceList from './SingleLinkedResourceList';
 import { grants } from '../../const/PublicationsAndGrantsConstants';
 

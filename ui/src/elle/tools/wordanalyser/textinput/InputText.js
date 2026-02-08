@@ -104,10 +104,10 @@ export const InputText = ({ onMarkWords, onWordSelect, onWordInfo }) => {
 
   return (
     <>
-      <div className="textInputDiv">
+      <div className="text-input-div">
         {updatedText}
       </div>
-      <span className="wordHighlightButtons">
+      <span className="word-highlight-buttons">
         {idNumber > 0 ? (
           <KeyboardArrowLeftIcon
             fontSize="large"

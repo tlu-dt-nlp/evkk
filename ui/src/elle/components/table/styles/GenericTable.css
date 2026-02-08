@@ -1,0 +1,33 @@
+.generic-table {
+  width: 100%;
+
+  td, th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+
+  th {
+    border-bottom: 1px solid black;
+    font-weight: bold;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tr.content-row:hover {
+    background-color: #ddd;
+  }
+
+  .sorting-handler {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .row-action-button {
+    background-color: white;
+    border: none !important;
+    text-align: start;
+    width: 0;
+  }
+}

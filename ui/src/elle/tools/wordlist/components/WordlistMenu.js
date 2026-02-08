@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MoreHoriz } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { RouteConstants } from '../../../../AppRoutes';
+import { RouteConstants } from '../../../const/RouteConstants';
 
 export default function WordlistMenu({ word, type, keepCapitalization, showCollocatesButton }) {
 
@@ -12,7 +12,7 @@ export default function WordlistMenu({ word, type, keepCapitalization, showCollo
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event) => {
+  const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -42,17 +42,32 @@ export default function WordlistMenu({ word, type, keepCapitalization, showCollo
 
   return (
     <>
-      <IconButton onClick={handleClick}>
+      <IconButton
+        onClick={handleClick}
+        style={{ padding: 0 }}
+      >
         <MoreHoriz />
       </IconButton>
 
-      <Menu anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}>
-        <MenuItem onClick={handleWordContext}>{t('concordances')}</MenuItem>
-        {showCollocatesButton && <MenuItem onClick={handleCollocates}>{t('common_neighbouring_words')}</MenuItem>}
-        <MenuItem onClick={handleWordMeaning}>{t('common_definition')}</MenuItem>
-        <MenuItem onClick={handleWordTranslation}>{t('common_translation')}</MenuItem>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleWordContext}>
+          {t('concordances')}
+        </MenuItem>
+        {showCollocatesButton &&
+          <MenuItem onClick={handleCollocates}>
+            {t('common_neighbouring_words')}
+          </MenuItem>
+        }
+        <MenuItem onClick={handleWordMeaning}>
+          {t('common_definition')}
+        </MenuItem>
+        <MenuItem onClick={handleWordTranslation}>
+          {t('common_translation')}
+        </MenuItem>
       </Menu>
     </>
   );

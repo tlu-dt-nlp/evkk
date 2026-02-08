@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button } from '@mui/material';
 import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import { useTranslation } from 'react-i18next';

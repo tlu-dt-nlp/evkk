@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Checkbox, FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
 import {
   addedYearOptions,
@@ -24,9 +24,8 @@ import {
   wordsOptions
 } from '../../../const/Constants';
 import QueryResultsModal from './QueryResultsModal';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { DefaultButtonStyle, useStyles } from '../../../const/StyleConstants';
+import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import { useGetQueryResults } from '../../../hooks/service/TextService';
 import TooltipOnText from '../../tooltip/TooltipOnText';
 import ModalBase from '../ModalBase';
@@ -35,10 +34,7 @@ import SelectMultiple, { SelectMultipleType } from '../../SelectMultiple';
 export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
   const { t } = useTranslation();
-  const classes = useStyles();
-  const navigate = useNavigate();
   const mainModalRef = useRef();
-  const [urlParams] = useSearchParams();
   const [results, setResults] = useState([]);
   const [addedYears, setAddedYears] = useState([]);
   const [characters, setCharacters] = useState([]);
@@ -103,12 +99,6 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [corpusCheckboxStatus]);
 
-  useEffect(() => {
-    if (urlParams.get('openQuery')) {
-      navigate('', { replace: true });
-    }
-  }, [urlParams, navigate]);
-
   const submitted = () => {
     const selectedCorpuses = getSelectedCorpusList();
 
@@ -121,7 +111,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
       params.corpuses = selectedCorpuses;
 
-      Object.entries(singlePropertyData).forEach((entry) => {
+      Object.entries(singlePropertyData).forEach(entry => {
         const [key, value] = entry;
         if (value !== '') {
           params[key] = value;
@@ -226,7 +216,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
           : [];
       });
 
-  const alterCorpusCheckbox = (event) => {
+  const alterCorpusCheckbox = event => {
     let newCorpusCheckboxStatus = { ...corpusCheckboxStatus };
     let trueCount = 0;
     newCorpusCheckboxStatus[event.target.id] = event.target.checked;
@@ -245,7 +235,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
     }
   };
 
-  const alterAllCorpusCheckboxes = (event) => {
+  const alterAllCorpusCheckboxes = event => {
     let newCorpusCheckboxStatus = { ...corpusCheckboxStatus };
     for (const checkbox in newCorpusCheckboxStatus) {
       newCorpusCheckboxStatus[checkbox] = event.target.checked;
@@ -386,10 +376,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
               >
                 <b>{t('common_text_data')}</b>
                 <br /><br />
-                <FormControl
-                  className={classes.formControl}
-                  size="small"
-                >
+                <FormControl size="small">
                   <InputLabel>
                     {t('query_text_data_type')}
                   </InputLabel>
@@ -446,10 +433,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                           ))}
                         </Select>
                       </FormControl>
-                      <FormControl
-                        className={classes.formControl}
-                        size="small"
-                      >
+                      <FormControl size="small">
                         <InputLabel>
                           {t('query_text_data_used_study_or_supporting_materials')}
                         </InputLabel>
@@ -506,10 +490,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                       </FormControl>
                     </>
                   )}
-                <FormControl
-                  className={classes.formControl}
-                  size="small"
-                >
+                <FormControl size="small">
                   <InputLabel>
                     {t('query_text_data_year_of_publication')}
                   </InputLabel>
@@ -522,10 +503,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     pluralSelectedTranslationKey="select_multiple_ranges"
                   />
                 </FormControl>
-                <FormControl
-                  className={classes.formControl}
-                  size="small"
-                >
+                <FormControl size="small">
                   <InputLabel>
                     {t('query_text_data_characters')}
                   </InputLabel>
@@ -538,10 +516,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     pluralSelectedTranslationKey="select_multiple_ranges"
                   />
                 </FormControl>
-                <FormControl
-                  className={classes.formControl}
-                  size="small"
-                >
+                <FormControl size="small">
                   <InputLabel>
                     {t('common_words')}
                   </InputLabel>
@@ -554,10 +529,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
                     pluralSelectedTranslationKey="select_multiple_ranges"
                   />
                 </FormControl>
-                <FormControl
-                  className={classes.formControl}
-                  size="small"
-                >
+                <FormControl size="small">
                   <InputLabel>
                     {t('common_sentences')}
                   </InputLabel>

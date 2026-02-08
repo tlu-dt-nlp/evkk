@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { postMasinoppeEnnustus } from '../../Api';
 
 class MasinoppeEnnustus extends Component {

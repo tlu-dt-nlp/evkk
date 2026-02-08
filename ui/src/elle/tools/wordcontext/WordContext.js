@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { queryStore } from '../../store/QueryStore';
 import Accordion from '@mui/material/Accordion';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -23,10 +23,10 @@ import {
 import AccordionDetails from '@mui/material/AccordionDetails';
 import './styles/WordContext.css';
 import { TableType } from '../../components/table/TableDownloadButton';
-import GenericTable from '../../components/GenericTable';
+import GenericTable from '../../components/table/GenericTable';
 import { changeWordContextResult, toolAnalysisStore } from '../../store/ToolAnalysisStore';
 import { useTranslation } from 'react-i18next';
-import { sortColByLastWord, sortTableCol } from '../../util/TableUtils';
+import { sortColumnByLastWord } from '../../util/TableUtils';
 import TableHeaderButtons from '../../components/table/TableHeaderButtons';
 import { AccordionStyle, DefaultButtonStyle } from '../../const/StyleConstants';
 import { useGetWordContextResult } from '../../hooks/service/ToolsService';
@@ -55,6 +55,7 @@ export default function WordContext() {
   const accessors = ['contextBefore', 'keyword', 'contextAfter'];
   const { getWordContextResult } = useGetWordContextResult();
   const data = useMemo(() => response, [response]);
+  const defaultSortColumn = 'originalId';
 
   useEffect(() => {
     if (urlParams.get('word') && urlParams.get('type') && urlParams.get('keepCapitalization')) {
@@ -106,61 +107,46 @@ export default function WordContext() {
 
   const columns = useMemo(() => [
     {
-      accessor: 'originalId',
-      Cell: (cellProps) => {
-        return cellProps.row.id;
+      id: 'originalId',
+      accessorKey: 'originalId',
+      cell: info => info.row.id
+    },
+    {
+      id: 'contextBefore',
+      header: t('concordances_preceding_context'),
+      accessorKey: 'contextBefore',
+      sortingFn: (rowA, rowB) => sortColumnByLastWord(rowA, rowB, 'contextBefore'),
+      meta: {
+        className: 'text-right',
+        classNameTd: 'wordcontext-context-before'
       }
     },
     {
-      Header: t('common_header_number'),
-      accessor: 'id',
-      disableSortBy: true,
-      Cell: (cellProps) => {
-        return cellProps.sortedFlatRows.findIndex(item => item.id === cellProps.row.id) + 1;
-      },
-      className: 'text-center'
+      id: 'keyword',
+      header: t('concordances_search_word'),
+      accessorKey: 'keyword',
+      meta: {
+        className: 'text-center',
+        classNameTd: 'wordcontext-keyword'
+      }
     },
     {
-      Header: t('concordances_preceding_context'),
-      accessor: 'contextBefore',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      },
-      sortType: (rowA, rowB) => {
-        return sortColByLastWord(rowA, rowB, 'contextBefore');
-      },
-      className: 'text-right'
-    },
-    {
-      Header: t('concordances_search_word'),
-      accessor: 'keyword',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      },
-      sortType: (rowA, rowB) => {
-        return sortTableCol(rowA, rowB, 'keyword');
-      },
-      className: 'wordcontext-keyword'
-    },
-    {
-      Header: t('concordances_following_context'),
-      accessor: 'contextAfter',
-      Cell: (cellProps) => {
-        return cellProps.value;
-      },
-      sortType: (rowA, rowB) => {
-        return sortTableCol(rowA, rowB, 'contextAfter');
-      },
-      className: 'text-left'
+      id: 'contextAfter',
+      header: t('concordances_following_context'),
+      accessorKey: 'contextAfter',
+      meta: {
+        className: 'text-left',
+        classNameTd: 'wordcontext-context-after'
+      }
     }
   ], [t]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     sendRequest();
   };
 
-  const handleTypeChange = (event) => {
+  const handleTypeChange = event => {
     setTypeValue(event.target.value);
     setTypeError(false);
     if (event.target.value === WordContextType.LEMMAS) {
@@ -235,7 +221,7 @@ export default function WordContext() {
             <div className="tool-accordion">
               <div>
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   error={typeError}
                   variant="standard"
                 >
@@ -266,8 +252,6 @@ export default function WordContext() {
                   }
                   <Button
                     sx={DefaultButtonStyle}
-                    style={{ marginTop: '10vh !important' }}
-                    className="wordcontext-analyse-button"
                     type="submit"
                     variant="contained"
                   >
@@ -277,7 +261,7 @@ export default function WordContext() {
               </div>
               <div>
                 <FormControl
-                  sx={{ m: 3 }}
+                  sx={{ m: 7 }}
                   variant="standard"
                 >
                   <FormLabel id="keyword">
@@ -288,13 +272,11 @@ export default function WordContext() {
                     required
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    style={{ width: '250px' }}
                   />
                 </FormControl>
                 <br />
                 <FormControl
-                  sx={{ m: 3 }}
-                  style={{ marginTop: '-1vh' }}
+                  sx={{ m: 7 }}
                   variant="standard"
                 >
                   <FormLabel id="display">
@@ -316,13 +298,11 @@ export default function WordContext() {
                         required
                         value={displayCount}
                         onChange={(e) => setDisplayCount(e.target.value)}
-                        className="wordcontext-display-count-textfield"
                       />
                     </Grid>
                     <Grid item>
                       <FormControl size="small">
                         <Select
-                          sx={{ width: '95px' }}
                           name="displayType"
                           value={displayType}
                           onChange={(e) => setDisplayType(e.target.value)}
@@ -336,10 +316,7 @@ export default function WordContext() {
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid
-                      item
-                      className="wordcontext-display-explanation"
-                    >
+                    <Grid item>
                       {t('concordances_before_and_after_selected_word')}
                     </Grid>
                   </Grid>
@@ -390,12 +367,12 @@ export default function WordContext() {
           downloadAccessors={accessors}
         />
         <GenericTable
-          tableClassname={'wordcontext-table'}
           columns={columns}
           data={data}
-          sortByColAccessor={'originalId'}
+          sortByColumnId={defaultSortColumn}
           sortByDesc={false}
-          hiddenCols={'originalId'}
+          hiddenColumn={defaultSortColumn}
+          showRowNumbers={true}
         />
       </>}
       {showNoResultsError &&

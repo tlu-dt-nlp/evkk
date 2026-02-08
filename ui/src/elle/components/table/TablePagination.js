@@ -3,42 +3,36 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import LastPageIcon from '@mui/icons-material/LastPage';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import '../../translations/i18n';
 import '../styles/TablePagination.css';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
 
-export default function TablePagination({
-                                          gotoPage,
-                                          previousPage,
-                                          canPreviousPage,
-                                          nextPage,
-                                          canNextPage,
-                                          pageIndex,
-                                          pageOptions,
-                                          pageSize,
-                                          setPageSize,
-                                          pageCount
-                                        }) {
+export default function TablePagination({ table }) {
   const { t } = useTranslation();
 
+  const {
+    pageIndex,
+    pageSize
+  } = table.getState().pagination;
+
+  const pageCount = table.getPageCount();
+
   return (
-    <div className="pagination">
-      <div className="buttongroup">
+    <div className="table-pagination">
+      <div className="button-group-wrapper">
         <ButtonGroup
           className="pagination-button-group"
           size="medium"
           fullWidth
           variant="contained"
-          aria-label="outlined primary button group"
         >
           <Button
             sx={DefaultButtonStyle}
             className="table-pagination-button"
             variant="contained"
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
           >
             {<FirstPageIcon />}
           </Button>
@@ -46,8 +40,8 @@ export default function TablePagination({
             sx={DefaultButtonStyle}
             className="table-pagination-button"
             variant="contained"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
           >
             {<NavigateBeforeIcon />}
           </Button>
@@ -55,25 +49,25 @@ export default function TablePagination({
             sx={DefaultButtonStyle}
             className="table-pagination-button"
             variant="contained"
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
           >
             {<NavigateNextIcon />}
           </Button>
           <Button
             sx={DefaultButtonStyle}
             variant="contained"
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
+            onClick={() => table.setPageIndex(pageCount - 1)}
+            disabled={!table.getCanNextPage()}
           >
             {<LastPageIcon />}
           </Button>
           {' '}
         </ButtonGroup>
       </div>
-      <span className="fontStyle">
+      <span className="page-info">
         {t('pagination_page')}{' '}
-        <strong>{pageIndex + 1} / {pageOptions.length}</strong>
+        <strong>{pageIndex + 1} / {pageCount}</strong>
       </span>
       <TextField
         size="small"
@@ -81,10 +75,8 @@ export default function TablePagination({
         label={t('pagination_go_to_page')}
         type="number"
         defaultValue={pageIndex + 1}
-        className="pagination-textarea"
-        onChange={e => {
-          gotoPage(e.target.value ? Number(e.target.value) - 1 : 0);
-        }}
+        className="pagination-input"
+        onChange={e => table.setPageIndex(e.target.value ? Number(e.target.value) - 1 : 0)}
         slotProps={{
           inputLabel: {
             shrink: true
@@ -93,7 +85,7 @@ export default function TablePagination({
             inputMode: 'numeric',
             pattern: '[0-9]*',
             min: '1',
-            max: pageOptions.length
+            max: pageCount
           }
         }}
       />
@@ -102,10 +94,8 @@ export default function TablePagination({
         <Select
           size="small"
           value={pageSize}
-          className="pagination-textarea"
-          onChange={e => {
-            setPageSize(Number(e.target.value));
-          }}
+          className="pagination-input"
+          onChange={e => table.setPageSize(Number(e.target.value))}
         >
           {[5, 10, 20, 30, 40, 50, 100].map(pageSizeNo => (
             <MenuItem key={pageSizeNo} value={pageSizeNo}>

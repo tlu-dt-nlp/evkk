@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Box, Divider } from '@mui/material';
 import { ContentEditableDiv, CorrectorAccordionStyle } from '../../../../const/StyleConstants';
 import AccordionSummary from '@mui/material/AccordionSummary';

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import './Correction.css';
 import { Box, Tab, Tabs, useMediaQuery } from '@mui/material';
 import { TabContext, TabPanel } from '@mui/lab';

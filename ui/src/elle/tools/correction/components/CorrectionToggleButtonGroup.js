@@ -1,4 +1,3 @@
-import React from 'react';
 import { queryCaller } from '../util/Utils';
 import { Box, Tab, Tabs, Tooltip } from '@mui/material';
 import { useGetCorrectorResult } from '../../../hooks/service/ToolsService';

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import { queryStore } from '../store/QueryStore';
 import { useGetSelectedTexts } from '../hooks/service/TextService';

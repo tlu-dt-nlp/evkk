@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component, createRef } from 'react';
 import {
   Alert,
   Box,
@@ -77,11 +77,7 @@ class Adding extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.sendTextFromFile = this.sendTextFromFile.bind(this);
-    this.formDataElement = React.createRef();
-  }
-
-  componentDidMount() {
-    window.scrollTo(0, 0);
+    this.formDataElement = createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {

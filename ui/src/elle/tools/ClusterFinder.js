@@ -1,4 +1,3 @@
-import React from 'react';
 import IntegrationFrame from '../components/IntegrationFrame';
 import { Box } from '@mui/material';
 

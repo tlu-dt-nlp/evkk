@@ -1,6 +1,6 @@
 // Original code by Reydan Niineorg
 
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
@@ -50,7 +50,7 @@ export default function TextToSpeechMenu() {
     setSelectedTextChecker(selectedText === '');
   }, [t, selectedText]);
 
-  const handlePopoverOpen = (event) => {
+  const handlePopoverOpen = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -58,7 +58,7 @@ export default function TextToSpeechMenu() {
     setAnchorEl(null);
   };
 
-  const handleTogglePopper = (event) => {
+  const handleTogglePopper = event => {
     if (anchorEl) {
       handlePopoverClose();
     } else {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { textLevelColors, textLevels } from '../../../const/TabValuesConstant';
 import { useTranslation } from 'react-i18next';
 

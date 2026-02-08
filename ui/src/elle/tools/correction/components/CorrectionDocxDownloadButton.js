@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import DownloadIcon from '@mui/icons-material/Download';
 import { Button, Tooltip } from '@mui/material';
@@ -12,7 +12,7 @@ import { GRAMMARCHECKER, SPELLCHECKER } from '../const/Constants';
 const CorrectionDocxDownloadButton = ({ innerHtml, modelValue, errorList, tab, textLevel }) => {
   const { t } = useTranslation();
   const labels = accordionDetails.map((detail) => t(detail.label));
-  const [grammarLabel, setGrammarLabel] = React.useState(null);
+  const [grammarLabel, setGrammarLabel] = useState(null);
 
   useEffect(() => {
     if (!errorList) return;

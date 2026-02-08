@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/InfoElement.css';
 import { Box, Tab, Tabs, useMediaQuery } from '@mui/material';
 import { useTranslation } from 'react-i18next';

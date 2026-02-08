@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Box,
   Button,
@@ -34,6 +34,7 @@ export default function ResponsiveDrawer({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMap, setOpenMap] = useState({});
   const [activeSection, setActiveSection] = useState('');
+  const [currentHash, setCurrentHash] = useState(() => window.location.hash);
   const manualScrollRef = useRef(false);
 
   const segments = location.pathname.split('/').filter(Boolean);
@@ -77,9 +78,10 @@ export default function ResponsiveDrawer({
         if (top <= 81) currentSection = id;
       });
       if (currentSection && currentSection !== window.location.hash.slice(1)) {
-        const path = location.pathname;
-        const newPath = `${path}#${currentSection}`;
-        navigate(newPath, { replace: true });
+        const newHash = `#${currentSection}`;
+        const newPath = `${location.pathname}${newHash}`;
+        window.history.replaceState(null, '', newPath);
+        setCurrentHash(newHash);
       }
       setActiveSection(currentSection);
     }, 10);
@@ -90,18 +92,18 @@ export default function ResponsiveDrawer({
       window.removeEventListener('scroll', onScroll);
       onScroll.cancel();
     };
-  }, [sectionIds, navigate, location.pathname]);
+  }, [sectionIds, location.pathname]);
 
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.slice(1);
+    if (currentHash) {
+      const id = currentHash.slice(1);
       const element = document.getElementById(id);
       if (element && manualScrollRef.current) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
       manualScrollRef.current = false; // smooth scroll on hash change only for manual clicks
     }
-  }, [location.hash]);
+  }, [currentHash]);
 
   const getNormalizedPath = (rawPath) => {
     const path = rawPath === baseSegment ? basePath : `${basePath}/${rawPath}`;
@@ -124,6 +126,7 @@ export default function ResponsiveDrawer({
 
     manualScrollRef.current = true; // allow smooth scroll with manual click
     navigate(fullPath);
+    setCurrentHash(rawHash ? `#${rawHash}` : '');
     setMobileOpen(false);
   };
 
@@ -133,7 +136,7 @@ export default function ResponsiveDrawer({
 
     const [rawPath, rawHash = ''] = navigateTo.split('#');
     if (rawHash) {
-      return location.hash === `#${rawHash}` || activeSection === rawHash;
+      return currentHash === `#${rawHash}` || activeSection === rawHash;
     }
 
     return location.pathname === getNormalizedPath(rawPath);

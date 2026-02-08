@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Chip, Grid, Typography } from '@mui/material';
 import './styles/SingleLink.css';
 import NewTabHyperlink from './NewTabHyperlink';

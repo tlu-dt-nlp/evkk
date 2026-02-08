@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/ServicesElement.css';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';

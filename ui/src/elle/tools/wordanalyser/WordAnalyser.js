@@ -473,7 +473,7 @@ function WordAnalyser() {
             columnSpacing={{ xs: 0, md: 4 }}>
         {isTextTooLong &&
           <Alert severity="info"
-                 className="textTooLongInfobox"
+                 className="text-too-long-infobox"
           >
             {t('word_analyser_text_too_long_infobox')}
           </Alert>

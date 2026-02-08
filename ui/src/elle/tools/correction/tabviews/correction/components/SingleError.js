@@ -1,4 +1,3 @@
-import React from 'react';
 import { Divider, IconButton, Paper } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { postMinitornPikkus } from '../../Api';
 
 class MinitornPikkus extends Component {

@@ -32,6 +32,7 @@ export const TRANSLATIONS_ET = {
   common_clusters: 'Mustrileidja',
   common_conferences_and_workshops: 'Konverentsid ja töötoad',
   common_corrector: 'Tekstihindaja',
+  common_corrector_test_version: 'Tekstihindaja (testversioon)',
   common_definition: 'Tähendus (Sõnaveeb)',
   common_dictionaries: 'Sõnastikud',
   common_different_word_count: 'erinevate sõnade arv',
@@ -315,7 +316,7 @@ export const TRANSLATIONS_ET = {
   footer_references_evkk_license: 'EVKK litsents',
   footer_tools: 'Tööriistad',
   forward: 'JÄRGMINE',
-  gram_anal_filename: 'gram_analyys',
+  gram_anal_filename: 'grammatiline_analüüs',
   hero_main_text_highlighted: 'Eesti keele õppe ja analüüsi keskkond',
   hero_main_text_not_highlighted: ' õppijatele, õpetajatele ja teadlastele.',
   hero_tools_button: 'Tutvu tööriistadega',
@@ -696,7 +697,7 @@ export const TRANSLATIONS_ET = {
   try_again: 'Proovi uuesti',
   word_analyser_text_too_long_infobox: 'Teksti analüüsimine sõna kaupa on võimalik kuni 1000-sõnalise teksti puhul.',
   word_analyser_word_with_foreign_characters_warning: 'Sõna sisaldab võõraid tähemärke.',
-  wordcontext_filename: 'sõnakontekstis',
+  wordcontext_filename: 'sõna_kontekstis',
   wordinfo_tutorial_text: 'Sõnadel klõpsates ilmub siia valitud sõna grammatiline info.',
   wordinfo_word: 'Sõna',
   wordlist_exclude_stopwords: 'Välista stoppsõnad',
@@ -715,6 +716,6 @@ export const TRANSLATIONS_ET = {
   wordlist_stopwords_textbox_hover_3: ').',
   wordlist_word_column: 'Sõnavorm',
   wordlist_wordcloud: 'Sõnapilv',
-  wordlist_wordcloud_filename: 'sonapilv',
+  wordlist_wordcloud_filename: 'sõnapilv',
   wordlist_wordcloud_loading: 'Laadin sõnapilve...'
 };

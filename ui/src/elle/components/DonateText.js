@@ -1,18 +1,16 @@
-import React from 'react';
 import { Button } from '@mui/material';
 import './styles/DonateText.css';
 import BackupIcon from '@mui/icons-material/Backup';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { RouteConstants } from '../../AppRoutes';
-import { donationSideButtonEnabledPaths } from '../const/Constants';
+import { DonationSideButtonEnabledPaths, RouteConstants } from '../const/RouteConstants';
 
 export default function DonateText() {
   const navigate = useNavigate();
   const current = useLocation();
   const { t } = useTranslation();
 
-  if (!Object.values(donationSideButtonEnabledPaths).includes(current.pathname)) {
+  if (!Object.values(DonationSideButtonEnabledPaths).includes(current.pathname)) {
     return null;
   }
 

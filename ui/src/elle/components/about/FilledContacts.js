@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import ContactCard from './ContactCard';
 import { WORKER_IMAGES } from '../../resources/images/workers';
 import i18n from 'i18next';
@@ -10,7 +10,7 @@ export default function FilledContacts() {
     return i18n.language === Languages.ESTONIAN ? 'est' : 'eng';
   };
 
-  const [etisLanguage, setEtisLanguage] = React.useState(getEtisLanguage());
+  const [etisLanguage, setEtisLanguage] = useState(getEtisLanguage());
 
   i18n.on('languageChanged', () => {
     setEtisLanguage(getEtisLanguage());

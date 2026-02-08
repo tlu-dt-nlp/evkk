@@ -1,28 +1,28 @@
-.pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    align-items: baseline;
-}
+.table-pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  align-items: baseline;
 
-.pagination-button-group {
+  .pagination-button-group {
     display: flex;
     border-radius: 15px !important;
-}
+  }
 
-.fontStyle {
+  .pagination-input {
+    width: 110px;
+  }
+
+  .page-info {
     font-size: large;
-}
+  }
 
-.pagination-textarea {
-  width: 110px;
-}
-
-.buttongroup {
+  .button-group-wrapper {
     width: 25%;
-}
+  }
 
-.table-pagination-button {
+  .table-pagination-button {
     border-right: solid 1px white !important;
+  }
 }

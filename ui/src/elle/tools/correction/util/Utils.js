@@ -9,7 +9,6 @@ import { accordionDetails, errorTypes } from '../const/TabValuesConstant';
 import { ARROW_KEYS, CORRECTION, SPELLCHECKER, TEXTSPAN } from '../const/Constants';
 import { Paper, Tooltip } from '@mui/material';
 import SingleError from '../tabviews/correction/components/SingleError';
-import React from 'react';
 
 export const handleCopy = (event) => {
   event.preventDefault();
