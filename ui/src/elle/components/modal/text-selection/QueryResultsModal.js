@@ -1,14 +1,5 @@
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Button,
-  Checkbox,
-  CircularProgress,
-  Typography
-} from '@mui/material';
-import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { useEffect, useMemo, useState } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './styles/QueryResultsModal.css';
@@ -23,13 +14,12 @@ import {
   textTypeList,
   usedMaterialsDisplayOptions
 } from '../../../const/Constants';
-import TablePagination from '../../table/TablePagination';
+import GenericTable from '../../table/GenericTable';
 import QueryDownloadButton from '../../QueryDownloadButton';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { changeCorpusTexts, queryStore } from '../../../store/QueryStore';
 import { useTranslation } from 'react-i18next';
 import ModalBase from '../ModalBase';
-import { DefaultButtonStyle, SecondaryButtonStyle } from '../../../const/StyleConstants';
+import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import { useGetTextAndMetadata } from '../../../hooks/service/TextService';
 
 export default function QueryResultsModal({
@@ -43,9 +33,7 @@ export default function QueryResultsModal({
   const [modalOpen, setModalOpen] = useState(false);
   const [modalAccordionExpanded, setModalAccordionExpanded] = useState(false);
   const [text, setText] = useState('');
-  const [isLoadingSelectAllTexts, setIsLoadingSelectAllTexts] = useState(false);
-  const checkboxStatuses = useRef(new Set());
-  const [update, forceUpdate] = useReducer(x => x + 1, 0);
+  const [rowSelection, setRowSelection] = useState({});
   const data = useMemo(() => results, [results]);
   const { getTextAndMetadata } = useGetTextAndMetadata();
   let paragraphCount = 0;
@@ -67,37 +55,22 @@ export default function QueryResultsModal({
 
   useEffect(() => {
     if (previousSelectedIds.size > 0) {
-      results.forEach((d) => {
-        if (previousSelectedIds.has(d.text_id)) {
-          checkboxStatuses.current.add(d.text_id);
+      const initial = {};
+      results.forEach(row => {
+        if (previousSelectedIds.has(row.text_id)) {
+          initial[row.text_id] = true;
         }
       });
+      setRowSelection(initial);
     }
-    forceUpdate();
   }, [results, previousSelectedIds]);
 
   const columns = useMemo(() => [
       {
-        id: 'select',
-        header: '',
-        accessorKey: 'text_id',
-        cell: info => {
-          const id = info.getValue();
-          return (
-            <Checkbox
-              style={{ color: '#9C27B0' }}
-              checked={checkboxStatuses.current.has(id)}
-              id={id}
-              onChange={() => alterCheckbox(id)}
-            />
-          );
-        },
-        meta: { className: 'checkbox-row' }
-      },
-      {
         id: 'value',
-        header: '',
+        header: t('query_results_text_title'),
         accessorKey: 'property_value',
+        enableSorting: false,
         cell: info => {
           const value = info.getValue();
           const textId = info.row.original.text_id;
@@ -116,28 +89,13 @@ export default function QueryResultsModal({
     []
   );
 
-  const table = useReactTable({
-    columns,
-    data,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
-  });
-
-  const allTextIds = data.map(item => {
-    return item.text_id;
-  });
+  const selectedIds = useMemo(
+    () => Object.keys(rowSelection).filter(id => rowSelection[id]),
+    [rowSelection]
+  );
 
   const changeModalAccordion = () => {
     setModalAccordionExpanded(!modalAccordionExpanded);
-  };
-
-  const alterCheckbox = (id) => {
-    if (checkboxStatuses.current.has(id)) {
-      checkboxStatuses.current.delete(id);
-    } else {
-      checkboxStatuses.current.add(id);
-    }
-    forceUpdate();
   };
 
   function previewText(id) {
@@ -161,31 +119,9 @@ export default function QueryResultsModal({
     });
   };
 
-  useEffect(() => {
-    setIsLoadingSelectAllTexts(false);
-  }, [update]);
-
-  useEffect(() => {
-    if (isLoadingSelectAllTexts) {
-      if (allTextsSelected()) {
-        checkboxStatuses.current.clear();
-      } else {
-        checkboxStatuses.current.clear();
-        allTextIds.forEach(item => {
-          checkboxStatuses.current.add(item);
-        });
-      }
-      forceUpdate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingSelectAllTexts]);
-
-  function allTextsSelected() {
-    return allTextIds.every(v => Array.from(checkboxStatuses.current).includes(v));
-  }
-
   const saveTexts = () => {
-    queryStore.dispatch(changeCorpusTexts(Array.from(checkboxStatuses.current).join(',')));
+    queryStore.dispatch(changeCorpusTexts(selectedIds.join(',')));
+    setPreviousSelectedIds(new Set(selectedIds));
     setIsQueryOpen(false);
   };
 
@@ -208,71 +144,30 @@ export default function QueryResultsModal({
               style={{ color: 'white' }} startIcon={<ArrowBackIcon />} sx={DefaultButtonStyle}
               onClick={() => {
                 setIsQueryResponsePage(prevState => !prevState);
-                setPreviousSelectedIds(checkboxStatuses.current);
+                setPreviousSelectedIds(new Set(selectedIds));
               }}
             >
               {t('query_change_chosen_corpuses')}
             </Button>
           </div>
-          <LoadingButton
-            variant="outlined"
-            sx={SecondaryButtonStyle}
-            loadingIndicator={<CircularProgress disableShrink color="inherit" size={16} />}
-            loading={isLoadingSelectAllTexts}
-            disabled={isLoadingSelectAllTexts}
-            className="select-all-button"
-            onClick={() => setIsLoadingSelectAllTexts(true)}
-          >
-            {allTextsSelected() ? t('query_results_unselect_all') : t('query_results_select_all')}
-          </LoadingButton>
           <Button
             sx={DefaultButtonStyle}
             variant="contained"
-            disabled={checkboxStatuses.current.size === 0}
+            disabled={selectedIds.length === 0}
             onClick={saveTexts}
-            className="save-texts-button"
           >
             {t('query_results_save_texts_for_analysis')}
           </Button>
-          <QueryDownloadButton selected={checkboxStatuses.current} />
-          <table className="result-table">
-            <thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-            </thead>
-            <tbody>
-            {table.getRowModel().rows.map(row => (
-              <tr
-                className="query-table-row border"
-                key={row.id}
-                id={row.original.text_id}
-              >
-                {row.getVisibleCells().map(cell => (
-                  <td
-                    key={cell.id}
-                    className={cell.column.columnDef.meta?.className}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-            </tbody>
-          </table>
-          <br />
-          <TablePagination table={table} />
+          {/* todo maybe querydownloadbutton needs to live inside TableHeaderButtons? */}
+          <QueryDownloadButton selected={new Set(selectedIds)} />
+          <GenericTable
+            columns={columns}
+            data={data}
+            enableRowSelection={true}
+            rowSelection={rowSelection}
+            onRowSelectionChange={setRowSelection}
+            getRowId={row => row.text_id}
+          />
         </>
       }
       <ModalBase

@@ -1,4 +1,5 @@
 import TablePagination from './TablePagination';
+import { Checkbox } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -20,7 +21,11 @@ export default function GenericTable({
                                        sortByDesc = true,
                                        columnFilters,
                                        onColumnFiltersChange,
-                                       showRowNumbers = false
+                                       showRowNumbers = false,
+                                       enableRowSelection = false,
+                                       rowSelection,
+                                       onRowSelectionChange,
+                                       getRowId
                                      }) {
   const { t } = useTranslation();
 
@@ -38,10 +43,35 @@ export default function GenericTable({
     }
   }), [t]);
 
-  const tableColumns = useMemo(
-    () => (showRowNumbers ? [rowNumberColumn, ...columns] : columns),
-    [showRowNumbers, rowNumberColumn, columns]
-  );
+  const selectionColumn = useMemo(() => ({
+    id: '_select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllRowsSelected()}
+        indeterminate={table.getIsSomeRowsSelected()}
+        onChange={table.getToggleAllRowsSelectedHandler()}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onChange={row.getToggleSelectedHandler()}
+      />
+    ),
+    enableSorting: false,
+    meta: { className: 'checkbox-column' }
+  }), []);
+
+  const tableColumns = useMemo(() => {
+    let cols = columns;
+    if (showRowNumbers) {
+      cols = [rowNumberColumn, ...cols];
+    }
+    if (enableRowSelection) {
+      cols = [selectionColumn, ...cols];
+    }
+    return cols;
+  }, [showRowNumbers, rowNumberColumn, enableRowSelection, selectionColumn, columns]);
 
   const table = useReactTable({
     columns: tableColumns,
@@ -49,13 +79,17 @@ export default function GenericTable({
     state: {
       sorting,
       columnVisibility,
-      columnFilters
+      columnFilters,
+      ...(enableRowSelection && { rowSelection })
     },
     defaultColumn: {
       sortDescFirst: false,
       sortingFn: sortTableColumn,
       filterFn: multiSelectFilter
     },
+    enableRowSelection,
+    onRowSelectionChange,
+    getRowId,
     onColumnFiltersChange,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,

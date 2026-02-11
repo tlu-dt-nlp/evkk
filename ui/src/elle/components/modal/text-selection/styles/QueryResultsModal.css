@@ -1,44 +1,9 @@
-.result-table {
-  margin-right: auto;
-  margin-left: auto;
-  width: 100%;
-}
-
-.query-table-row {
-  background-color: white;
-}
-
-.query-table-row:nth-child(even) {
-  background-color: #EBECF0;
-}
-
-.checkbox-row {
-  width: 4em;
-}
-
 .clickable-row {
   cursor: pointer;
-}
-
-.select-all-button {
-  margin-top: 1em !important;
-  margin-bottom: 1em !important;
 }
 
 .metainfo-subtitle {
   font-weight: bold;
   text-decoration: underline;
   padding-bottom: 0.75em;
-}
-
-.save-texts-button {
-  margin-left: 1em !important;
-}
-
-.accordionBorder {
-  border-radius: 0 0 4px 4px !important;
-}
-
-.openedResultsAccordion {
-  margin-bottom: 1em !important;
 }
