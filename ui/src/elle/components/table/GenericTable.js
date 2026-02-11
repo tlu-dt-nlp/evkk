@@ -157,7 +157,6 @@ export default function GenericTable({
         ))}
         </tbody>
       </table>
-      <br />
       <TablePagination table={table} />
     </>
   );

@@ -1,28 +1,43 @@
-.table-pagination {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  align-items: baseline;
+.MuiTablePagination-root {
+  p {
+    margin-bottom: 0;
+  }
 
-  .pagination-button-group {
+  .MuiTablePagination-toolbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    row-gap: 8px;
+    padding-left: 0;
+
+    .MuiTablePagination-select {
+      margin: 0 0 0 -8px;
+    }
+  }
+
+  .MuiTablePagination-spacer {
+    display: none;
+  }
+
+  .table-pagination-actions {
     display: flex;
-    border-radius: 15px !important;
+    align-items: center;
+    flex-shrink: 0;
   }
 
-  .pagination-input {
-    width: 110px;
-  }
+  .go-to-page-wrapper {
+    margin-left: 16px;
 
-  .page-info {
-    font-size: large;
-  }
+    label {
+      margin-right: 8px;
+    }
 
-  .button-group-wrapper {
-    width: 25%;
-  }
+    div {
+      font-size: 0.875rem;
 
-  .table-pagination-button {
-    border-right: solid 1px white !important;
+      input {
+        text-align: center;
+      }
+    }
   }
 }
