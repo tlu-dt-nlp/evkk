@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import TableDownloadButton from './TableDownloadButton';
-import '../styles/TableHeaderButtons.css';
+import './styles/TableHeaderButtons.css';
 
 export default function TableHeaderButtons({
                                              leftComponent,

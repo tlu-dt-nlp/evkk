@@ -7,7 +7,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import '../../translations/i18n';
-import '../styles/TableDownloadButton.css';
+import './styles/TableDownloadButton.css';
 import { sortTableDataByColumn } from '../../util/TableUtils';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
 

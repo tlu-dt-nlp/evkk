@@ -6,8 +6,8 @@ import { AnalyseContextWithoutMissingData, SetLemmaContext, SetWordContext } fro
 import { Box, FormControl, InputLabel } from '@mui/material';
 import { generateWordExampleCell } from '../../util/TableUtils';
 import TableHeaderButtons from '../../components/table/TableHeaderButtons';
-import TableAppliedFilters from '../../components/table/filter/TableAppliedFilters';
-import TableFilterButton from '../../components/table/filter/TableFilterButton';
+import TableAppliedFilters from '../../components/table/TableAppliedFilters';
+import TableFilterButton from '../../components/table/TableFilterButton';
 import SelectMultiple, { SelectMultipleType } from '../../components/SelectMultiple';
 import GenericTable from '../../components/table/GenericTable';
 

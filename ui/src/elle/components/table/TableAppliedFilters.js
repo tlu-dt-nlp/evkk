@@ -1,6 +1,6 @@
 import { Box, Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import '../styles/TableAppliedFilters.css';
+import './styles/TableAppliedFilters.css';
 
 export default function TableAppliedFilters({ appliedFilters }) {
   const { t } = useTranslation();
