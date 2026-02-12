@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Grid, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import './styles/QueryResultsModal.css';
@@ -139,9 +139,14 @@ export default function QueryResultsModal({
       {results.length > 0 ? <h4><strong>{t('query_results_found_texts')}</strong> {results.length}</h4> : <></>}
       {results.length > 0 &&
         <>
-          <div>
+          <Grid
+            container
+            spacing={2}
+          >
             <Button
-              style={{ color: 'white' }} startIcon={<ArrowBackIcon />} sx={DefaultButtonStyle}
+              startIcon={<ArrowBackIcon />}
+              sx={DefaultButtonStyle}
+              variant="contained"
               onClick={() => {
                 setIsQueryResponsePage(prevState => !prevState);
                 setPreviousSelectedIds(new Set(selectedIds));
@@ -149,15 +154,16 @@ export default function QueryResultsModal({
             >
               {t('query_change_chosen_corpuses')}
             </Button>
-          </div>
-          <Button
-            sx={DefaultButtonStyle}
-            variant="contained"
-            disabled={selectedIds.length === 0}
-            onClick={saveTexts}
-          >
-            {t('query_results_save_texts_for_analysis')}
-          </Button>
+            <Button
+              sx={DefaultButtonStyle}
+              variant="contained"
+              disabled={selectedIds.length === 0}
+              onClick={saveTexts}
+            >
+              {t('query_results_save_texts_for_analysis')}
+            </Button>
+          </Grid>
+
           {/* todo maybe querydownloadbutton needs to live inside TableHeaderButtons? */}
           <QueryDownloadButton selected={new Set(selectedIds)} />
           <GenericTable
