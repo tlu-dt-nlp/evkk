@@ -120,8 +120,12 @@ export default function TablePagination({ table, tableContainerRef }) {
   };
 
   const handleChangeRowsPerPage = event => {
+    const newPageSize = event.target.value;
+    const currentLastRowIndex = (pageIndex + 1) * pageSize - 1;
+    const newPageIndex = Math.floor(currentLastRowIndex / newPageSize);
+
     table.setPageSize(event.target.value);
-    table.setPageIndex(0);
+    table.setPageIndex(newPageIndex);
     setTimeout(scrollToTop, 50);
   };
 
