@@ -32,8 +32,7 @@
   }
 
   .checkbox-column {
-    width: 55px;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
+    width: 40px;
+    padding: 0 !important;
   }
 }

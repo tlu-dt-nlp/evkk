@@ -272,7 +272,8 @@ export default function Syllables() {
         display = display.slice(0, -2);
         return display;
       },
-      enableSorting: false
+      enableSorting: false,
+      meta: { minWidth: '200px' }
     },
     {
       id: 'sonadtekstis',

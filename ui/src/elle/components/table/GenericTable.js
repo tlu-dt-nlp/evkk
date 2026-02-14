@@ -121,9 +121,12 @@ export default function GenericTable({
                     key={header.id}
                     colSpan={header.colSpan}
                     className={`
-                    ${header.column.columnDef.meta?.className ?? ''}
-                    ${header.column.columnDef.meta?.classNameTh ?? ''}
-                  `}
+                      ${header.column.columnDef.meta?.className ?? ''}
+                      ${header.column.columnDef.meta?.classNameTh ?? ''}
+                    `}
+                    sx={{
+                      minWidth: header.column.columnDef.meta?.minWidth
+                    }}
                   >
                     {(() => {
                       const headerContent = header.isPlaceholder
@@ -157,9 +160,12 @@ export default function GenericTable({
                   <TableCell
                     key={cell.id}
                     className={`
-                    ${cell.column.columnDef.meta?.className ?? ''}
-                    ${cell.column.columnDef.meta?.classNameTd ?? ''}
-                  `}
+                      ${cell.column.columnDef.meta?.className ?? ''}
+                      ${cell.column.columnDef.meta?.classNameTd ?? ''}
+                    `}
+                    sx={{
+                      minWidth: cell.column.columnDef.meta?.minWidth
+                    }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

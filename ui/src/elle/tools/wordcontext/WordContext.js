@@ -118,7 +118,8 @@ export default function WordContext() {
       sortingFn: (rowA, rowB) => sortColumnByLastWord(rowA, rowB, 'contextBefore'),
       meta: {
         className: 'text-right',
-        classNameTd: 'wordcontext-context-before'
+        classNameTd: 'wordcontext-context-before',
+        minWidth: '300px'
       }
     },
     {
@@ -136,7 +137,8 @@ export default function WordContext() {
       accessorKey: 'contextAfter',
       meta: {
         className: 'text-left',
-        classNameTd: 'wordcontext-context-after'
+        classNameTd: 'wordcontext-context-after',
+        minWidth: '300px'
       }
     }
   ], [t]);
