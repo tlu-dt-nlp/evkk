@@ -126,3 +126,12 @@ h3, h4 {
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
 }
+
+/* Prevent MUI Select from scrolling viewport on focus */
+.MuiSelect-select:focus {
+  scroll-margin: 0;
+}
+
+.MuiSelect-select {
+  scroll-margin: 0;
+}

@@ -9,7 +9,7 @@ import {
   TableRow,
   TableSortLabel
 } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   flexRender,
@@ -40,6 +40,7 @@ export default function GenericTable({
 
   const [sorting, setSorting] = useState([{ id: sortByColumnId, desc: sortByDesc }]);
   const [columnVisibility, setColumnVisibility] = useState(() => (hiddenColumn ? { [hiddenColumn]: false } : {}));
+  const tableContainerRef = useRef(null);
 
   const rowNumberColumn = useMemo(() => ({
     id: '_rowNumber',
@@ -110,7 +111,7 @@ export default function GenericTable({
 
   return (
     <>
-      <TableContainer>
+      <TableContainer ref={tableContainerRef}>
         <Table className="generic-table">
           <TableHead>
             {table.getHeaderGroups().map(headerGroup => (
@@ -168,7 +169,10 @@ export default function GenericTable({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination table={table} />
+      <TablePagination
+        table={table}
+        tableContainerRef={tableContainerRef}
+      />
     </>
   );
 }

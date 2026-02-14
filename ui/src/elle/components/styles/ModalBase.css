@@ -1,4 +1,6 @@
 .modal-base-root {
+  scroll-behavior: smooth;
+
   @media (max-width: 1023px) {
     width: 80% !important;
   }

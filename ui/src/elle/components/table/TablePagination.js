@@ -86,7 +86,7 @@ function TablePaginationActions({ count, page, rowsPerPage, onPageChange }) {
   );
 }
 
-export default function TablePagination({ table }) {
+export default function TablePagination({ table, tableContainerRef }) {
   const { t } = useTranslation();
 
   const {
@@ -97,13 +97,32 @@ export default function TablePagination({ table }) {
   const totalRows = table.getPrePaginationRowModel().rows.length;
   const pageCount = table.getPageCount();
 
+  const scrollToTop = () => {
+    const modalBox = tableContainerRef.current.closest('.modal-base-root');
+
+    if (modalBox) {
+      requestAnimationFrame(() => {
+        const tableRect = tableContainerRef.current.getBoundingClientRect();
+        const modalRect = modalBox.getBoundingClientRect();
+        const tableTopInModal = tableRect.top - modalRect.top + modalBox.scrollTop;
+        modalBox.scrollTo({ top: tableTopInModal });
+      });
+    } else {
+      const navbarHeight = window.innerWidth < 600 ? 61 : 64;
+      const tableTop = tableContainerRef.current.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: Math.max(0, tableTop - navbarHeight) });
+    }
+  };
+
   const handleChangePage = (event, newPage) => {
     table.setPageIndex(newPage);
+    setTimeout(scrollToTop, 50);
   };
 
   const handleChangeRowsPerPage = event => {
     table.setPageSize(event.target.value);
     table.setPageIndex(0);
+    setTimeout(scrollToTop, 50);
   };
 
   return (
