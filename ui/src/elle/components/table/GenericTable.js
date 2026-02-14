@@ -1,5 +1,14 @@
 import TablePagination from './TablePagination';
-import { Checkbox } from '@mui/material';
+import {
+  Checkbox,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel
+} from '@mui/material';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -101,62 +110,64 @@ export default function GenericTable({
 
   return (
     <>
-      <table className="generic-table">
-        <thead>
-        {table.getHeaderGroups().map(headerGroup => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map(header => (
-              <th
-                key={header.id}
-                colSpan={header.colSpan}
-                className={`
-                  ${header.column.columnDef.meta?.className ?? ''}
-                  ${header.column.columnDef.meta?.classNameTh ?? ''}
-                `}
-              >
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(header.column.columnDef.header, header.getContext())}
-
-                {header.column.getCanSort() &&
-                  <span
-                    onClick={header.column.getToggleSortingHandler()}
-                    role="button"
-                    className="sorting-handler"
+      <TableContainer>
+        <Table className="generic-table">
+          <TableHead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableCell
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className={`
+                    ${header.column.columnDef.meta?.className ?? ''}
+                    ${header.column.columnDef.meta?.classNameTh ?? ''}
+                  `}
                   >
                     {(() => {
-                      const sorted = header.column.getIsSorted();
-                      if (!sorted) return ' ▼▲';
-                      return sorted === 'desc' ? ' ▼' : ' ▲';
+                      const headerContent = header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext());
+
+                      return header.column.getCanSort() ? (
+                        <TableSortLabel
+                          active={header.column.getIsSorted() !== false}
+                          direction={header.column.getIsSorted() || 'asc'}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          {headerContent}
+                        </TableSortLabel>
+                      ) : (
+                        headerContent
+                      );
                     })()}
-                  </span>
-                }
-              </th>
+                  </TableCell>
+                ))}
+              </TableRow>
             ))}
-          </tr>
-        ))}
-        </thead>
-        <tbody>
-        {table.getRowModel().rows.map(row => (
-          <tr
-            key={row.id}
-            className="content-row"
-          >
-            {row.getVisibleCells().map(cell => (
-              <td
-                key={cell.id}
-                className={`
-                  ${cell.column.columnDef.meta?.className ?? ''}
-                  ${cell.column.columnDef.meta?.classNameTd ?? ''}
-                `}
+          </TableHead>
+          <TableBody>
+            {table.getRowModel().rows.map(row => (
+              <TableRow
+                key={row.id}
+                className="content-row"
               >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
+                {row.getVisibleCells().map(cell => (
+                  <TableCell
+                    key={cell.id}
+                    className={`
+                    ${cell.column.columnDef.meta?.className ?? ''}
+                    ${cell.column.columnDef.meta?.classNameTd ?? ''}
+                  `}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
             ))}
-          </tr>
-        ))}
-        </tbody>
-      </table>
+          </TableBody>
+        </Table>
+      </TableContainer>
       <TablePagination table={table} />
     </>
   );
