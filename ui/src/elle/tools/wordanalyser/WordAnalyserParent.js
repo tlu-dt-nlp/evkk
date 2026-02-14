@@ -21,8 +21,7 @@ import GrammaticalAnalysis from './GrammaticalAnalysis';
 import TableComponent from './TableComponent';
 import Syllables from './Syllables';
 import LemmaView from './LemmaView';
-import { Alert, Box, Fade, IconButton, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box } from '@mui/material';
 import './styles/WordAnalyserParent.css';
 
 export default function WordAnalyserParent() {
@@ -30,8 +29,6 @@ export default function WordAnalyserParent() {
   const [wordValue, setWordValue] = useState('');
   const [formValue, setFormValue] = useState('');
   const [typeValue, setTypeValue] = useState('');
-  const [border, setBorder] = useState(0);
-  const [open, setOpen] = useState(false);
   const [analyseValue, setAnalyseValue] = useState({
     ids: [''],
     text: '',
@@ -78,7 +75,6 @@ export default function WordAnalyserParent() {
                                   <TabContext.Provider value={[tabValue, setTabValue]}>
                                     <Box
                                       className="wordAnalyserBox"
-                                      border={border}
                                       borderColor={'#E1F5FE'}
                                       borderRadius={10}
                                     >
@@ -89,40 +85,13 @@ export default function WordAnalyserParent() {
                                     </Box>
                                     <Box
                                       padding={'20px'}
-                                      border={border}
                                       borderColor={'#E1F5FE'}
                                       borderRadius={10}
                                     >
-                                      <Fade in={open}>
-                                        <Box className="alertBox">
-                                          <Alert
-                                            severity={'info'}
-                                            action={
-                                              <IconButton
-                                                aria-label="close"
-                                                color="inherit"
-                                                size="small"
-                                                onClick={() => {
-                                                  setOpen(false);
-                                                  setBorder(0);
-                                                }}
-                                              >
-                                                <CloseIcon fontSize="inherit" />
-                                              </IconButton>
-                                            }
-                                            sx={{ mb: 2 }}
-                                          >
-                                            <Typography color={'#1A237E'}><strong>Tabelis olevatel väärtustel klõpsides
-                                              märgitakse väärtused ära ülaoleva kasti tekstis</strong></Typography>
-                                          </Alert>
-                                        </Box>
-                                      </Fade>
                                       {tabValue === 1 ? <Syllables /> : null}
                                       {tabValue === 2 ? <LemmaView /> : null}
                                       {tabValue === 3 ? <GrammaticalAnalysis /> : null}
                                     </Box>
-                                    {/*TODO fix usage tutorial*/}
-                                    {/*{tabValue !== 0 ? <Tutorial/> : null}*/}
                                   </TabContext.Provider>
                                 </SetLemmaContext.Provider>
                               </LemmaContext.Provider>

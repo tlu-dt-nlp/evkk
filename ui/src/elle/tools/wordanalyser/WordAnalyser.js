@@ -2,7 +2,7 @@ import { memo, useContext, useEffect, useRef, useState } from 'react';
 import { Input } from './textinput/Input';
 import { WordInfo } from './WordInfo';
 import './styles/WordAnalyser.css';
-import { Alert, Box, Button, Fade, Grid, IconButton, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid } from '@mui/material';
 import '../../translations/i18n';
 import i18n from 'i18next';
 import {
@@ -16,7 +16,6 @@ import {
   TypeContext,
   WordContext
 } from './Contexts';
-import CloseIcon from '@mui/icons-material/Close';
 import { queryStore } from '../../store/QueryStore';
 import { WORDANALYSER_MAX_WORD_COUNT_FOR_WORDINFO } from '../../const/Constants';
 import { useTranslation } from 'react-i18next';
@@ -41,8 +40,6 @@ function WordAnalyser() {
   const syllable = useContext(SyllableContext);
   const syllableWord = useContext(SyllableWordContext);
   const lemma = useContext(LemmaContext);
-  const [open, setOpen] = useState(false);
-  const [border, setBorder] = useState(0);
   const inputRef = useRef();
   const previousStoreStateRef = useRef(queryStore.getState());
   const { t } = useTranslation();
@@ -429,48 +426,18 @@ function WordAnalyser() {
   }
 
   return (
-    <Box component="section"
-         className="container"
-         paddingTop={'20px'}
-         border={border}
-         borderColor={'#E1F5FE'}
-         borderRadius={10}
+    <Box
+      component="section"
+      className="container"
+      paddingTop={'20px'}
+      borderColor={'#E1F5FE'}
+      borderRadius={10}
     >
-      <Fade in={open}>
-        <Box
-          paddingX="10px"
-          width="65%"
-          borderRadius="5"
-          bgcolor="#E1F5FE"
-          marginTop="-50px"
-          marginLeft="auto"
-          marginRight="auto"
-        >
-          <Alert
-            severity="info"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setOpen(false);
-                  setBorder(0);
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-            sx={{ mb: 2 }}
-          >
-            <Typography color={'#1A237E'}>
-              <strong>Vasakus kastis sõnadel klõpastes ilmub paremale info antud sõna kohta</strong>
-            </Typography>
-          </Alert>
-        </Box>
-      </Fade>
-      <Grid className="position-relative" container
-            columnSpacing={{ xs: 0, md: 4 }}>
+      <Grid
+        className="position-relative"
+        container
+        columnSpacing={{ xs: 0, md: 4 }}
+      >
         {isTextTooLong &&
           <Alert severity="info"
                  className="text-too-long-infobox"
@@ -478,23 +445,35 @@ function WordAnalyser() {
             {t('word_analyser_text_too_long_infobox')}
           </Alert>
         }
-        <Grid item size={12}>
-          <Box display={'flex'}
-               justifyContent={'flex-start'}>
+        <Grid
+          item
+          size={12}
+        >
+          <Box
+            display={'flex'}
+            justifyContent={'flex-start'}
+          >
           </Box>
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
-          <Input isTextTooLong={isTextTooLong}
-                 isFinishedLoading={isFinishedLoading}
-                 onSubmit={getResponse}
-                 onMarkWords={selectedWords}
-                 onWordSelect={showThisWord}
-                 onWordInfo={showInfo}
-                 onReset={resetAnalyser}
-                 ref={inputRef}
+        <Grid
+          item
+          size={{ xs: 12, md: 6 }}
+        >
+          <Input
+            isTextTooLong={isTextTooLong}
+            isFinishedLoading={isFinishedLoading}
+            onSubmit={getResponse}
+            onMarkWords={selectedWords}
+            onWordSelect={showThisWord}
+            onWordInfo={showInfo}
+            onReset={resetAnalyser}
+            ref={inputRef}
           />
         </Grid>
-        <Grid item size={{ xs: 12, md: 6 }}>
+        <Grid
+          item
+          size={{ xs: 12, md: 6 }}
+        >
           {showResults && !isTextTooLong &&
             <WordInfo onWordInfo={wordInfo} />
           }
