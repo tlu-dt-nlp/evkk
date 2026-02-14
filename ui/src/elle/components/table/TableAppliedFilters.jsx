@@ -6,7 +6,7 @@ export default function TableAppliedFilters({ appliedFilters }) {
   const { t } = useTranslation();
 
   const getAppliedFilters = () => {
-    if (appliedFilters !== []) {
+    if (appliedFilters.length > 0) {
       return appliedFilters.map(value =>
         <Chip
           className="table-filter-chip"
@@ -17,7 +17,7 @@ export default function TableAppliedFilters({ appliedFilters }) {
     }
   };
 
-  return appliedFilters !== []
+  return appliedFilters.length > 0
     ? (
       <Box>
         {t('applied_filters')}: {getAppliedFilters()}

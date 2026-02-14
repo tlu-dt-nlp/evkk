@@ -10,7 +10,7 @@ export default function Login() {
 
   const handleClick = () => {
     const urlBase = `api/auth/login/harid?language=${i18n.language}`;
-    window.location.href = process.env.NODE_ENV === 'production' ? urlBase : `http://localhost:9090/${urlBase}`;
+    window.location.href = import.meta.env.MODE === 'production' ? urlBase : `http://localhost:9090/${urlBase}`;
   };
 
   return (
