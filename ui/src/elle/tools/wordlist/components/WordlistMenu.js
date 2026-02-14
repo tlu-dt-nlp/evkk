@@ -4,6 +4,8 @@ import { MoreHoriz } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { RouteConstants } from '../../../const/RouteConstants';
+import i18n from 'i18next';
+import { Languages } from '../../../translations/i18n';
 
 export default function WordlistMenu({ word, type, keepCapitalization, showCollocatesButton }) {
 
@@ -32,12 +34,16 @@ export default function WordlistMenu({ word, type, keepCapitalization, showCollo
 
   const handleWordMeaning = () => {
     handleClose();
-    window.open(`https://sonaveeb.ee/search/unif/dlall/dsall/${word}/1/est`);
+    window.open(`https://sonaveeb.ee/search/unif/dlall/dsall/${word}/1/est?uilang=${getSonaveebLanguage()}`);
   };
 
   const handleWordTranslation = () => {
     handleClose();
     window.open(`https://translate.google.com/?sl=et&text=${word}`);
+  };
+
+  const getSonaveebLanguage = () => {
+    return i18n.language === Languages.ESTONIAN ? 'et' : 'en';
   };
 
   return (
