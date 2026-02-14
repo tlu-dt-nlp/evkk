@@ -149,11 +149,11 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
             setNoResultsError(false);
             setResults(response);
             setIsQueryResponsePage(true);
-            mainModalRef.current?.scrollTo({ top: 0 });
+            setTimeout(() => mainModalRef.current?.scrollTo({ top: 0 }), 100);
           } else {
             setNoResultsError(true);
             setResults([]);
-            mainModalRef.current?.scrollTo({ top: 9999 });
+            setTimeout(() => mainModalRef.current?.scrollTo({ top: 9999 }), 100);
           }
         });
     }

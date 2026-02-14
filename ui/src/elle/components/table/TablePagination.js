@@ -116,7 +116,7 @@ export default function TablePagination({ table, tableContainerRef }) {
 
   const handleChangePage = (event, newPage) => {
     table.setPageIndex(newPage);
-    setTimeout(scrollToTop, 50);
+    setTimeout(scrollToTop, 100);
   };
 
   const handleChangeRowsPerPage = event => {
@@ -126,7 +126,7 @@ export default function TablePagination({ table, tableContainerRef }) {
 
     table.setPageSize(event.target.value);
     table.setPageIndex(newPageIndex);
-    setTimeout(scrollToTop, 50);
+    setTimeout(scrollToTop, 100);
   };
 
   return (
