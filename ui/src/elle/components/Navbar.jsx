@@ -174,7 +174,7 @@ export default function Navbar() {
           </div>
           <div className="nav-icons-container">
             {logoutItem(true)}
-            <Box className="language-menu-desktop">
+            <Box className="navbar-icons-desktop">
               {languageMenu()}
               <TextToSpeechMenu />
             </Box>

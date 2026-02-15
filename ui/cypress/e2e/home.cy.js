@@ -8,7 +8,7 @@ describe('Check homepage functionality', () => {
   });
 
   it('Change language', () => {
-    cy.get('.language-menu-desktop')
+    cy.get('.language-icon')
       .should('be.visible')
       .realClick();
 
