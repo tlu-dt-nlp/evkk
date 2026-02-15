@@ -41,15 +41,18 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
    under `.run`, however, you can also do it manually:
    1. UNIX-like (Linux, macOS): `./gradlew :db:bootRun --args 'clean migrate seed'`
    2. Windows: `.\gradlew.bat :db:bootRun --args 'clean migrate seed'`
-4. Make sure you have enabled annotation processing for IntelliJ IDEA: `Preferences -> Build, Execution, Deployment -> Compiler -> Annotation Processors -> Enable annotation processing`
+4. Make sure you have enabled annotation processing for IntelliJ IDEA:
+   `Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors -> Enable annotation processing`
 5. Before running the UI module for the first time, enable Corepack: `corepack enable`
-1. Corepack is included with NodeJS 18.x and newer
-2. Corepack handles installing the correct version of Yarn for the project
+  1. Corepack is included with NodeJS 18.x and newer. It handles installing the correct version of Yarn for the project
 6. Run UI module. The simplest way in IntelliJ is to use a suitable `ui` run config under `.run`, however, you can also
    do it manually:
    1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
-   2. Windows: `yarn --cwd .\ui install; yarn --cwd .\ui start`  
-7. Run API module. The simplest way in IntelliJ is to use the `ApiRunner` run config under `.run`. However, you can also
+   2. Windows: `yarn --cwd .\ui install; yarn --cwd .\ui start`
+7. If IntelliJ IDEA does not recognize Yarn packages installed using PnP (i.e. package.json shows all packages as not
+   installed), change the package manager in settings:
+   `Settings -> Languages & Frameworks -> JavaScript Runtime -> Package manager -> Choose Yarn`
+8. Run API module. The simplest way in IntelliJ is to use the `ApiRunner` run config under `.run`. However, you can also
    do it manually (other modules like `task-scheduler` work in similar fashion in terms of run configs and running
    manually):
    1. UNIX-like (Linux, macOS): `./gradlew :api:bootRun`
