@@ -51,7 +51,7 @@ export default function GenericTable({
       const allRows = table.getPrePaginationRowModel().rows;
       return allRows.findIndex(r => r.id === row.id) + 1;
     },
-    meta: { maxWidth: '20px' }
+    meta: { maxWidth: '60px' }
   }), [t]);
 
   const selectionColumn = useMemo(() => ({
