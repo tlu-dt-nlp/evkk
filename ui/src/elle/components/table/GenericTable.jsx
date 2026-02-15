@@ -50,7 +50,8 @@ export default function GenericTable({
     cell: ({ row, table }) => {
       const allRows = table.getPrePaginationRowModel().rows;
       return allRows.findIndex(r => r.id === row.id) + 1;
-    }
+    },
+    meta: { maxWidth: '20px' }
   }), [t]);
 
   const selectionColumn = useMemo(() => ({
@@ -125,7 +126,8 @@ export default function GenericTable({
                       ${header.column.columnDef.meta?.classNameTh ?? ''}
                     `}
                     sx={{
-                      minWidth: header.column.columnDef.meta?.minWidth
+                      minWidth: header.column.columnDef.meta?.minWidth,
+                      maxWidth: header.column.columnDef.meta?.maxWidth
                     }}
                   >
                     {(() => {
@@ -164,7 +166,8 @@ export default function GenericTable({
                       ${cell.column.columnDef.meta?.classNameTd ?? ''}
                     `}
                     sx={{
-                      minWidth: cell.column.columnDef.meta?.minWidth
+                      minWidth: cell.column.columnDef.meta?.minWidth,
+                      maxWidth: cell.column.columnDef.meta?.maxWidth
                     }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
