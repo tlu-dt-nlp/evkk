@@ -2,7 +2,7 @@
 // @ts-nocheck
 
 import fs from 'fs';
-import { fileURLToPath, pathToFileURL, URL as URL$1 } from 'url';
+import { URL as URL$1, fileURLToPath, pathToFileURL } from 'url';
 import path from 'path';
 import { createHash } from 'crypto';
 import { EOL } from 'os';
@@ -29,7 +29,7 @@ if (process.platform === `win32`) {
     }
   };
 }
-const contains = function (pathUtils, from, to) {
+const contains = function(pathUtils, from, to) {
   from = pathUtils.normalize(from);
   to = pathUtils.normalize(to);
   if (from === to)
@@ -82,15 +82,9 @@ async function copyPromise(destinationFs, destination, sourceFs, source, opts) {
   const normalizedSource = sourceFs.pathUtils.normalize(source);
   const prelayout = [];
   const postlayout = [];
-  const { atime, mtime } = opts.stableTime ? {
-    atime: defaultTime,
-    mtime: defaultTime
-  } : await sourceFs.lstatPromise(normalizedSource);
+  const { atime, mtime } = opts.stableTime ? { atime: defaultTime, mtime: defaultTime } : await sourceFs.lstatPromise(normalizedSource);
   await destinationFs.mkdirpPromise(destinationFs.pathUtils.dirname(destination), { utimes: [atime, mtime] });
-  await copyImpl(prelayout, postlayout, destinationFs, normalizedDestination, sourceFs, normalizedSource, {
-    ...opts,
-    didParentExist: true
-  });
+  await copyImpl(prelayout, postlayout, destinationFs, normalizedDestination, sourceFs, normalizedSource, { ...opts, didParentExist: true });
   for (const operation of prelayout)
     await operation();
   await Promise.all(postlayout.map((operation) => {
@@ -103,17 +97,20 @@ async function copyImpl(prelayout, postlayout, destinationFs, destination, sourc
   const { atime, mtime } = opts.stableTime ? { atime: defaultTime, mtime: defaultTime } : sourceStat;
   let updated;
   switch (true) {
-    case sourceStat.isDirectory(): {
-      updated = await copyFolder(prelayout, postlayout, destinationFs, destination, destinationStat, sourceFs, source, sourceStat, opts);
-    }
+    case sourceStat.isDirectory():
+      {
+        updated = await copyFolder(prelayout, postlayout, destinationFs, destination, destinationStat, sourceFs, source, sourceStat, opts);
+      }
       break;
-    case sourceStat.isFile(): {
-      updated = await copyFile(prelayout, postlayout, destinationFs, destination, destinationStat, sourceFs, source, sourceStat, opts);
-    }
+    case sourceStat.isFile():
+      {
+        updated = await copyFile(prelayout, postlayout, destinationFs, destination, destinationStat, sourceFs, source, sourceStat, opts);
+      }
       break;
-    case sourceStat.isSymbolicLink(): {
-      updated = await copySymlink(prelayout, postlayout, destinationFs, destination, destinationStat, sourceFs, source, sourceStat, opts);
-    }
+    case sourceStat.isSymbolicLink():
+      {
+        updated = await copySymlink(prelayout, postlayout, destinationFs, destination, destinationStat, sourceFs, source, sourceStat, opts);
+      }
       break;
     default: {
       throw new Error(`Unsupported file type (${sourceStat.mode})`);
@@ -186,8 +183,8 @@ async function copyFileViaIndex(prelayout, postlayout, destinationFs, destinatio
   const indexPath = destinationFs.pathUtils.join(linkStrategy.indexPath, sourceHash.slice(0, 2), `${indexFileName}.dat`);
   let AtomicBehavior;
   ((AtomicBehavior2) => {
-    AtomicBehavior2[AtomicBehavior2['Lock'] = 0] = 'Lock';
-    AtomicBehavior2[AtomicBehavior2['Rename'] = 1] = 'Rename';
+    AtomicBehavior2[AtomicBehavior2["Lock"] = 0] = "Lock";
+    AtomicBehavior2[AtomicBehavior2["Rename"] = 1] = "Rename";
   })(AtomicBehavior || (AtomicBehavior = {}));
   let atomicBehavior = 1 /* Rename */;
   let indexStat = await maybeLStat(destinationFs, indexPath);
@@ -293,8 +290,7 @@ class FakeFS {
   constructor(pathUtils) {
     this.pathUtils = pathUtils;
   }
-
-  async* genTraversePromise(init, { stableSort = false } = {}) {
+  async *genTraversePromise(init, { stableSort = false } = {}) {
     const stack = [init];
     while (stack.length > 0) {
       const p = stack.shift();
@@ -443,14 +439,7 @@ class FakeFS {
     }
     return createdDirectory;
   }
-
-  async copyPromise(destination, source, {
-    baseFs = this,
-    overwrite = true,
-    stableSort = false,
-    stableTime = false,
-    linkStrategy = null
-  } = {}) {
+  async copyPromise(destination, source, { baseFs = this, overwrite = true, stableSort = false, stableTime = false, linkStrategy = null } = {}) {
     return await copyPromise(this, destination, baseFs, source, { overwrite, stableSort, stableTime, linkStrategy });
   }
   copySync(destination, source, { baseFs = this, overwrite = true } = {}) {
@@ -460,10 +449,7 @@ class FakeFS {
       this.mkdirpSync(destination);
       const directoryListing = baseFs.readdirSync(source);
       for (const entry of directoryListing) {
-        this.copySync(this.pathUtils.join(destination, entry), baseFs.pathUtils.join(source, entry), {
-          baseFs,
-          overwrite
-        });
+        this.copySync(this.pathUtils.join(destination, entry), baseFs.pathUtils.join(source, entry), { baseFs, overwrite });
       }
     } else if (stat.isFile()) {
       if (!exists || overwrite) {
@@ -1560,7 +1546,7 @@ async function load$1(urlString, context, nextLoad) {
       )
     ).href;
     process.send({
-      'watch:import': WATCH_MODE_MESSAGE_USES_ARRAYS ? [pathToSend] : pathToSend
+      "watch:import": WATCH_MODE_MESSAGE_USES_ARRAYS ? [pathToSend] : pathToSend
     });
   }
   return {
@@ -1655,7 +1641,7 @@ function getPackageConfig(path, specifier, base, readFileSyncFn) {
       exists: false,
       main: void 0,
       name: void 0,
-      type: 'none',
+      type: "none",
       exports: void 0,
       imports: void 0
     };
@@ -1668,28 +1654,28 @@ function getPackageConfig(path, specifier, base, readFileSyncFn) {
   } catch (error) {
     throw new ERR_INVALID_PACKAGE_CONFIG(
       path,
-      (base ? `"${specifier}" from ` : '') + fileURLToPath(base || specifier),
+      (base ? `"${specifier}" from ` : "") + fileURLToPath(base || specifier),
       error.message
     );
   }
   let { imports, main, name, type } = filterOwnProperties(packageJSON, [
-    'imports',
-    'main',
-    'name',
-    'type'
+    "imports",
+    "main",
+    "name",
+    "type"
   ]);
-  const exports = ObjectPrototypeHasOwnProperty(packageJSON, 'exports') ? packageJSON.exports : void 0;
-  if (typeof imports !== 'object' || imports === null) {
+  const exports = ObjectPrototypeHasOwnProperty(packageJSON, "exports") ? packageJSON.exports : void 0;
+  if (typeof imports !== "object" || imports === null) {
     imports = void 0;
   }
-  if (typeof main !== 'string') {
+  if (typeof main !== "string") {
     main = void 0;
   }
-  if (typeof name !== 'string') {
+  if (typeof name !== "string") {
     name = void 0;
   }
-  if (type !== 'module' && type !== 'commonjs') {
-    type = 'none';
+  if (type !== "module" && type !== "commonjs") {
+    type = "none";
   }
   const packageConfig = {
     pjsonPath: path,
@@ -1704,10 +1690,10 @@ function getPackageConfig(path, specifier, base, readFileSyncFn) {
   return packageConfig;
 }
 function getPackageScopeConfig(resolved, readFileSyncFn) {
-  let packageJSONUrl = new URL('./package.json', resolved);
+  let packageJSONUrl = new URL("./package.json", resolved);
   while (true) {
     const packageJSONPath2 = packageJSONUrl.pathname;
-    if (StringPrototypeEndsWith(packageJSONPath2, 'node_modules/package.json')) {
+    if (StringPrototypeEndsWith(packageJSONPath2, "node_modules/package.json")) {
       break;
     }
     const packageConfig2 = getPackageConfig(
@@ -1720,7 +1706,7 @@ function getPackageScopeConfig(resolved, readFileSyncFn) {
       return packageConfig2;
     }
     const lastPackageJSONUrl = packageJSONUrl;
-    packageJSONUrl = new URL('../package.json', packageJSONUrl);
+    packageJSONUrl = new URL("../package.json", packageJSONUrl);
     if (packageJSONUrl.pathname === lastPackageJSONUrl.pathname) {
       break;
     }
@@ -1731,7 +1717,7 @@ function getPackageScopeConfig(resolved, readFileSyncFn) {
     exists: false,
     main: void 0,
     name: void 0,
-    type: 'none',
+    type: "none",
     exports: void 0,
     imports: void 0
   };
@@ -1742,12 +1728,12 @@ function getPackageScopeConfig(resolved, readFileSyncFn) {
 function throwImportNotDefined(specifier, packageJSONUrl, base) {
   throw new ERR_PACKAGE_IMPORT_NOT_DEFINED(
     specifier,
-    packageJSONUrl && fileURLToPath(new URL('.', packageJSONUrl)),
+    packageJSONUrl && fileURLToPath(new URL(".", packageJSONUrl)),
     fileURLToPath(base)
   );
 }
 function throwInvalidSubpath(subpath, packageJSONUrl, internal, base) {
-  const reason = `request is not a valid subpath for the "${internal ? 'imports' : 'exports'}" resolution of ${fileURLToPath(packageJSONUrl)}`;
+  const reason = `request is not a valid subpath for the "${internal ? "imports" : "exports"}" resolution of ${fileURLToPath(packageJSONUrl)}`;
   throw new ERR_INVALID_MODULE_SPECIFIER(
     subpath,
     reason,
@@ -1755,13 +1741,13 @@ function throwInvalidSubpath(subpath, packageJSONUrl, internal, base) {
   );
 }
 function throwInvalidPackageTarget(subpath, target, packageJSONUrl, internal, base) {
-  if (typeof target === 'object' && target !== null) {
-    target = JSONStringify(target, null, '');
+  if (typeof target === "object" && target !== null) {
+    target = JSONStringify(target, null, "");
   } else {
     target = `${target}`;
   }
   throw new ERR_INVALID_PACKAGE_TARGET(
-    fileURLToPath(new URL('.', packageJSONUrl)),
+    fileURLToPath(new URL(".", packageJSONUrl)),
     subpath,
     target,
     internal,
@@ -1771,10 +1757,10 @@ function throwInvalidPackageTarget(subpath, target, packageJSONUrl, internal, ba
 const invalidSegmentRegEx = /(^|\\|\/)((\.|%2e)(\.|%2e)?|(n|%6e|%4e)(o|%6f|%4f)(d|%64|%44)(e|%65|%45)(_|%5f)(m|%6d|%4d)(o|%6f|%4f)(d|%64|%44)(u|%75|%55)(l|%6c|%4c)(e|%65|%45)(s|%73|%53))(\\|\/|$)/i;
 const patternRegEx = /\*/g;
 function resolvePackageTargetString(target, subpath, match, packageJSONUrl, base, pattern, internal, conditions) {
-  if (subpath !== '' && !pattern && target[target.length - 1] !== '/')
+  if (subpath !== "" && !pattern && target[target.length - 1] !== "/")
     throwInvalidPackageTarget(match, target, packageJSONUrl, internal, base);
-  if (!StringPrototypeStartsWith(target, './')) {
-    if (internal && !StringPrototypeStartsWith(target, '../') && !StringPrototypeStartsWith(target, '/')) {
+  if (!StringPrototypeStartsWith(target, "./")) {
+    if (internal && !StringPrototypeStartsWith(target, "../") && !StringPrototypeStartsWith(target, "/")) {
       let isURL = false;
       try {
         new URL(target);
@@ -1795,12 +1781,12 @@ function resolvePackageTargetString(target, subpath, match, packageJSONUrl, base
     throwInvalidPackageTarget(match, target, packageJSONUrl, internal, base);
   const resolved = new URL(target, packageJSONUrl);
   const resolvedPath = resolved.pathname;
-  const packagePath = new URL('.', packageJSONUrl).pathname;
+  const packagePath = new URL(".", packageJSONUrl).pathname;
   if (!StringPrototypeStartsWith(resolvedPath, packagePath))
     throwInvalidPackageTarget(match, target, packageJSONUrl, internal, base);
-  if (subpath === '') return resolved;
+  if (subpath === "") return resolved;
   if (RegExpPrototypeExec(invalidSegmentRegEx, subpath) !== null) {
-    const request = pattern ? StringPrototypeReplace(match, '*', () => subpath) : match + subpath;
+    const request = pattern ? StringPrototypeReplace(match, "*", () => subpath) : match + subpath;
     throwInvalidSubpath(request, packageJSONUrl, internal, base);
   }
   if (pattern) {
@@ -1816,7 +1802,7 @@ function isArrayIndex(key) {
   return keyNum >= 0 && keyNum < 4294967295;
 }
 function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath, base, pattern, internal, conditions) {
-  if (typeof target === 'string') {
+  if (typeof target === "string") {
     return resolvePackageTargetString(
       target,
       subpath,
@@ -1846,7 +1832,7 @@ function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath, b
         );
       } catch (e) {
         lastException = e;
-        if (e.code === 'ERR_INVALID_PACKAGE_TARGET') {
+        if (e.code === "ERR_INVALID_PACKAGE_TARGET") {
           continue;
         }
         throw e;
@@ -1863,7 +1849,7 @@ function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath, b
     if (lastException === void 0 || lastException === null)
       return lastException;
     throw lastException;
-  } else if (typeof target === 'object' && target !== null) {
+  } else if (typeof target === "object" && target !== null) {
     const keys = ObjectGetOwnPropertyNames(target);
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
@@ -1877,7 +1863,7 @@ function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath, b
     }
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      if (key === 'default' || conditions.has(key)) {
+      if (key === "default" || conditions.has(key)) {
         const conditionalTarget = target[key];
         const resolveResult = resolvePackageTarget(
           packageJSONUrl,
@@ -1906,8 +1892,8 @@ function resolvePackageTarget(packageJSONUrl, target, subpath, packageSubpath, b
   );
 }
 function patternKeyCompare(a, b) {
-  const aPatternIndex = StringPrototypeIndexOf(a, '*');
-  const bPatternIndex = StringPrototypeIndexOf(b, '*');
+  const aPatternIndex = StringPrototypeIndexOf(a, "*");
+  const bPatternIndex = StringPrototypeIndexOf(b, "*");
   const baseLenA = aPatternIndex === -1 ? a.length : aPatternIndex + 1;
   const baseLenB = bPatternIndex === -1 ? b.length : bPatternIndex + 1;
   if (baseLenA > baseLenB) return -1;
@@ -1919,8 +1905,8 @@ function patternKeyCompare(a, b) {
   return 0;
 }
 function packageImportsResolve({ name, base, conditions, readFileSyncFn }) {
-  if (name === '#' || StringPrototypeStartsWith(name, '#/') || StringPrototypeEndsWith(name, '/')) {
-    const reason = 'is not a valid internal imports specifier name';
+  if (name === "#" || StringPrototypeStartsWith(name, "#/") || StringPrototypeEndsWith(name, "/")) {
+    const reason = "is not a valid internal imports specifier name";
     throw new ERR_INVALID_MODULE_SPECIFIER(name, reason, fileURLToPath(base));
   }
   let packageJSONUrl;
@@ -1929,11 +1915,11 @@ function packageImportsResolve({ name, base, conditions, readFileSyncFn }) {
     packageJSONUrl = pathToFileURL(packageConfig.pjsonPath);
     const imports = packageConfig.imports;
     if (imports) {
-      if (ObjectPrototypeHasOwnProperty(imports, name) && !StringPrototypeIncludes(name, '*')) {
+      if (ObjectPrototypeHasOwnProperty(imports, name) && !StringPrototypeIncludes(name, "*")) {
         const resolveResult = resolvePackageTarget(
           packageJSONUrl,
           imports[name],
-          '',
+          "",
           name,
           base,
           false,
@@ -1944,18 +1930,18 @@ function packageImportsResolve({ name, base, conditions, readFileSyncFn }) {
           return resolveResult;
         }
       } else {
-        let bestMatch = '';
+        let bestMatch = "";
         let bestMatchSubpath;
         const keys = ObjectGetOwnPropertyNames(imports);
         for (let i = 0; i < keys.length; i++) {
           const key = keys[i];
-          const patternIndex = StringPrototypeIndexOf(key, '*');
+          const patternIndex = StringPrototypeIndexOf(key, "*");
           if (patternIndex !== -1 && StringPrototypeStartsWith(
             name,
             StringPrototypeSlice(key, 0, patternIndex)
           )) {
             const patternTrailer = StringPrototypeSlice(key, patternIndex + 1);
-            if (name.length >= key.length && StringPrototypeEndsWith(name, patternTrailer) && patternKeyCompare(bestMatch, key) === 1 && StringPrototypeLastIndexOf(key, '*') === patternIndex) {
+            if (name.length >= key.length && StringPrototypeEndsWith(name, patternTrailer) && patternKeyCompare(bestMatch, key) === 1 && StringPrototypeLastIndexOf(key, "*") === patternIndex) {
               bestMatch = key;
               bestMatchSubpath = StringPrototypeSlice(
                 name,
@@ -2083,7 +2069,7 @@ if (!HAS_LAZY_LOADED_TRANSLATORS) {
   const binding = process.binding(`fs`);
   const originalReadFile = binding.readFileUtf8 || binding.readFileSync;
   if (originalReadFile) {
-    binding[originalReadFile.name] = function (...args) {
+    binding[originalReadFile.name] = function(...args) {
       try {
         return fs.readFileSync(args[0], {
           encoding: `utf8`,
@@ -2101,7 +2087,7 @@ if (!HAS_LAZY_LOADED_TRANSLATORS) {
     const originalfstat = binding2.fstat;
     const ZIP_MASK = 4278190080;
     const ZIP_MAGIC = 704643072;
-    binding2.fstat = function (...args) {
+    binding2.fstat = function(...args) {
       const [fd, useBigint, req] = args;
       if ((fd & ZIP_MASK) === ZIP_MAGIC && useBigint === false && req === void 0) {
         try {
