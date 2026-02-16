@@ -37,14 +37,6 @@
   max-width: 80%;
 }
 
-.text-too-long-infobox {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 .filter-class {
   width: 330px;
 }

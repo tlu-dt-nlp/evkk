@@ -429,9 +429,9 @@ function WordAnalyser() {
     <Box
       component="section"
       className="container"
-      paddingTop={'20px'}
-      borderColor={'#E1F5FE'}
-      borderRadius={10}
+      paddingTop="20px"
+      borderColor="#E1F5FE"
+      borderRadius="10"
     >
       <Grid
         className="position-relative"
@@ -439,22 +439,15 @@ function WordAnalyser() {
         columnSpacing={{ xs: 0, md: 4 }}
       >
         {isTextTooLong &&
-          <Alert severity="info"
-                 className="text-too-long-infobox"
+          <Grid
+            item
+            size={12}
           >
-            {t('word_analyser_text_too_long_infobox')}
-          </Alert>
+            <Alert severity="info">
+              {t('word_analyser_text_too_long_infobox')}
+            </Alert>
+          </Grid>
         }
-        <Grid
-          item
-          size={12}
-        >
-          <Box
-            display={'flex'}
-            justifyContent={'flex-start'}
-          >
-          </Box>
-        </Grid>
         <Grid
           item
           size={{ xs: 12, md: 6 }}
