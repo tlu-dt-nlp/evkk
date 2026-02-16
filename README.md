@@ -43,7 +43,7 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 4. Make sure you have enabled annotation processing for IntelliJ IDEA:
    `Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors -> Enable annotation processing`
 5. Before running the UI module for the first time, enable Corepack: `corepack enable`
-  1. Corepack is included with NodeJS 18.x and newer. It handles installing the correct version of Yarn for the project
+   1. Corepack is included with NodeJS 18.x and newer. It handles installing the correct version of Yarn for the project
 6. Run UI module. The simplest way in IntelliJ is to use a suitable `ui` run config under `.run`, however, you can also
    do it manually:
    1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
@@ -66,8 +66,8 @@ Only Stanza server currently has built-in support for local debugging. The simpl
 
 1. Create a new Python Debug Server run configuration
 2. Make sure it listens to localhost:5310 and that the paths are correctly mapped:
-  1. Local path should point to the stanza-server project path, for example `/home/user/IdeaProjects/evkk/stanza-server`
-  2. Remote path should be `/app`
+   1. Local path should point to the stanza-server project path, for example `/home/user/IdeaProjects/evkk/stanza-server`
+   2. Remote path should be `/app`
 3. **Start the Python Debug Server before running the container!**
 
 ### Database migrations
