@@ -1,4 +1,3 @@
-
 # ELLE / EVKK
 
 ELLE - Estonian Language Learning and Analysis Environment is a development of the user interface of the Estonian Interlanguage Corpus (Eesti vahekeele korpus - EVKK).
@@ -48,7 +47,9 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 6. Run UI module. The simplest way in IntelliJ is to use a suitable `ui` run config under `.run`, however, you can also
    do it manually:
    1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
-   2. Windows: `yarn --cwd .\ui install; yarn --cwd .\ui start`
+   2. Windows: `cd ui; yarn install; yarn start`  
+      Running each command directly in `ui` like in UNIX can cause issues with Corepack not respecting the necessary
+      Yarn version defined in `package.json`
 7. If IntelliJ IDEA does not recognize Yarn packages installed using PnP (i.e. package.json shows all packages as not
    installed), change the package manager in settings:
    `Settings -> Languages & Frameworks -> JavaScript Runtime -> Package manager -> Choose Yarn`

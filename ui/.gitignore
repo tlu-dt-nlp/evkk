@@ -10,6 +10,8 @@
 !.yarn/versions
 .yarn/install-state.gz
 .yarn/unplugged
+.pnp.cjs
+.pnp.loader.mjs
 
 # testing
 /coverage
