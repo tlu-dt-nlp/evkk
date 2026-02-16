@@ -22,7 +22,6 @@ import TableComponent from './TableComponent';
 import Syllables from './Syllables';
 import LemmaView from './LemmaView';
 import { Box } from '@mui/material';
-import './styles/WordAnalyserParent.css';
 
 export default function WordAnalyserParent() {
 
@@ -74,19 +73,19 @@ export default function WordAnalyserParent() {
                                 <SetLemmaContext.Provider value={setLemmaValue}>
                                   <TabContext.Provider value={[tabValue, setTabValue]}>
                                     <Box
-                                      className="wordAnalyserBox"
-                                      borderColor={'#E1F5FE'}
-                                      borderRadius={10}
+                                      borderColor="#E1F5FE"
+                                      borderRadius="10"
+                                      marginBottom="-3rem"
                                     >
                                       <WordAnalyser />
                                     </Box>
-                                    <Box component={'span'}>
+                                    <Box component="span">
                                       {tabValue === 1 || tabValue === 2 || tabValue === 3 ? <TableComponent /> : null}
                                     </Box>
                                     <Box
-                                      padding={'20px'}
-                                      borderColor={'#E1F5FE'}
-                                      borderRadius={10}
+                                      padding="20px"
+                                      borderColor="#E1F5FE"
+                                      borderRadius="10"
                                     >
                                       {tabValue === 1 ? <Syllables /> : null}
                                       {tabValue === 2 ? <LemmaView /> : null}

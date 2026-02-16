@@ -35,8 +35,7 @@ export default function TextLevelTab(
     setSpellerErrorList,
     setHoveredId,
     hoveredId,
-    setNoQuery,
-    tabsVariant
+    setNoQuery
   }) {
   const { t } = useTranslation();
 
@@ -59,7 +58,6 @@ export default function TextLevelTab(
             toggleButtons={CorrectionAndTextLevelToggleButtons}
             setGrammarErrorList={setGrammarErrorList}
             setSpellerErrorList={setSpellerErrorList}
-            tabsVariant={tabsVariant}
           />
           :
           <Alert severity="warning" className="mb-2">

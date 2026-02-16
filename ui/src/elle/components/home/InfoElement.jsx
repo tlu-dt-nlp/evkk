@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import '../styles/InfoElement.css';
-import { Box, Tab, Tabs, useMediaQuery } from '@mui/material';
+import { Box, Tab } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
 import { Languages } from '../../translations/i18n';
@@ -21,6 +21,7 @@ import {
   WRITING_EVALUATOR_VIDEO_ID_EN,
   WRITING_EVALUATOR_VIDEO_ID_ET
 } from '../../const/VideoIdConstants';
+import GenericTabs from '../GenericTabs';
 
 export default function InfoElement() {
 
@@ -33,9 +34,6 @@ export default function InfoElement() {
   const [clusterCatcherVideoId, setClusterCatcherVideoId] = useState(i18n.language === Languages.ESTONIAN ? CLUSTER_CATCHER_VIDEO_ID_ET : CLUSTER_CATCHER_VIDEO_ID_EN);
   const [wordAnalyserVideoId, setWordAnalyserVideoId] = useState(i18n.language === Languages.ESTONIAN ? WORD_ANALYSER_VIDEO_ID_ET : WORD_ANALYSER_VIDEO_ID_EN);
   const [value, setValue] = useState(0);
-
-  const isBelow1300 = useMediaQuery('(max-width:1299px)');
-  const tabsVariant = isBelow1300 ? 'scrollable' : 'fullWidth';
 
   i18n.on('languageChanged', () => {
     if (i18n.language === Languages.ESTONIAN) {
@@ -64,14 +62,12 @@ export default function InfoElement() {
   return (
     <Box className="global-page-content-container info-element-container-outer">
       <Box className="global-page-content-container-inner info-element-container-inner">
-        <Tabs
-          orientation="horizontal"
-          variant={tabsVariant}
-          value={value}
-          onChange={handleChange}
-          scrollButtons
-          allowScrollButtonsMobile
+        <GenericTabs
           className="info-element-tabs"
+          value={value}
+          handleChange={handleChange}
+          mobileViewMaxWidth="1225px"
+          secondaryVariant="fullWidth"
         >
           <Tab label={t('common_corrector')} />
           <Tab label={t('common_query')} />
@@ -80,7 +76,7 @@ export default function InfoElement() {
           <Tab label={t('common_neighbouring_words')} />
           <Tab label={t('common_clusters')} />
           <Tab label={t('common_word_analyser')} />
-        </Tabs>
+        </GenericTabs>
         <TabPanel value={value} index={0} videoId={writingEvaluatorVideoId}
                   title="homepage_box_writing_evaluator_title"
                   content="homepage_box_writing_evaluator_content" />

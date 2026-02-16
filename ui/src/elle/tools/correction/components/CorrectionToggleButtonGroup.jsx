@@ -1,7 +1,8 @@
 import { queryCaller } from '../util/Utils';
-import { Box, Tab, Tabs, Tooltip } from '@mui/material';
+import { Box, Tab, Tooltip } from '@mui/material';
 import { useGetCorrectorResult } from '../../../hooks/service/ToolsService';
 import { useTranslation } from 'react-i18next';
+import GenericTabs from '../../../components/GenericTabs';
 
 export default function CorrectionToggleButtonGroup(
   {
@@ -19,28 +20,25 @@ export default function CorrectionToggleButtonGroup(
     setAbstractWords,
     setGrammarErrorList,
     setSpellerErrorList,
-    noQuery,
-    tabsVariant
+    noQuery
   }) {
 
   const { getCorrectorResult } = useGetCorrectorResult();
   const { t } = useTranslation();
 
+  const handleChange = (_, newValue) => {
+    if (!noQuery) {
+      queryCaller(textBoxRef, inputText, setRequestingText, setGrammarAnswer, setSpellerAnswer, setInputText, newRef, setComplexityAnswer, setAbstractWords, getCorrectorResult, false, setGrammarErrorList, setSpellerErrorList, correctionModel);
+    }
+    setCorrectionModel(newValue);
+  };
+
   return (
     <Box className="d-flex">
-      <Tabs
+      <GenericTabs
         className="correction-toggle-button-group"
-        orientation="horizontal"
-        variant={tabsVariant}
         value={correctionModel}
-        scrollButtons
-        allowScrollButtonsMobile
-        onChange={(_, newValue) => {
-          if (!noQuery) {
-            queryCaller(textBoxRef, inputText, setRequestingText, setGrammarAnswer, setSpellerAnswer, setInputText, newRef, setComplexityAnswer, setAbstractWords, getCorrectorResult, false, setGrammarErrorList, setSpellerErrorList, correctionModel);
-          }
-          setCorrectionModel(newValue);
-        }}
+        handleChange={handleChange}
       >
         {toggleButtons.map((button) => (
           <Tab
@@ -57,7 +55,7 @@ export default function CorrectionToggleButtonGroup(
             }
           />
         ))}
-      </Tabs>
+      </GenericTabs>
     </Box>
   );
 };

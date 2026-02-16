@@ -1,7 +1,8 @@
-import { Box, Grid, Tab, Tabs } from '@mui/material';
+import { Box, Grid, Tab } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TabContext } from './Contexts';
+import GenericTabs from '../../components/GenericTabs';
 
 export default function TableComponent() {
 
@@ -25,14 +26,14 @@ export default function TableComponent() {
       >
         <h2>{t('text_analysis')}</h2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs
+          <GenericTabs
             value={value}
-            onChange={handleChange}
+            handleChange={handleChange}
           >
             <Tab label={t('common_syllables')} />
             <Tab label={t('common_lemmas')} />
             <Tab label={t('tab_gram_anal')} />
-          </Tabs>
+          </GenericTabs>
         </Box>
       </Grid>
     </Box>);

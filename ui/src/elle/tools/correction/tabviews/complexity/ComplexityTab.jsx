@@ -37,8 +37,7 @@ export default function ComplexityTab(
     setGrammarErrorList,
     setSpellerErrorList,
     noQuery,
-    setNoQuery,
-    tabsVariant
+    setNoQuery
   }) {
   const { t } = useTranslation();
   const [model, setModel] = useState(LONG_SENTENCE);
@@ -78,7 +77,6 @@ export default function ComplexityTab(
           setGrammarErrorList={setGrammarErrorList}
           setSpellerErrorList={setSpellerErrorList}
           noQuery={noQuery}
-          tabsVariant={tabsVariant}
         />
         <CorrectionInfoIcon>
           <div>

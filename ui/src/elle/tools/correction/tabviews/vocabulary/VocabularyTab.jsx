@@ -43,8 +43,7 @@ export default function VocabularyTab(
     setGrammarErrorList,
     setSpellerErrorList,
     noQuery,
-    setNoQuery,
-    tabsVariant
+    setNoQuery
   }) {
   const { t } = useTranslation();
   const [model, setModel] = useState(WORD_REPETITION);
@@ -74,7 +73,6 @@ export default function VocabularyTab(
           setGrammarErrorList={setGrammarErrorList}
           setSpellerErrorList={setSpellerErrorList}
           noQuery={noQuery}
-          tabsVariant={tabsVariant}
         />
         <CorrectionInfoIcon>
           <div>

@@ -41,8 +41,7 @@ export default function CorrectionTab(
     hoveredId,
     setHoveredId,
     noQuery,
-    setNoQuery,
-    tabsVariant
+    setNoQuery
   }) {
   const { t } = useTranslation();
   const [totalErrors, setTotalErrors] = useState(null);
@@ -73,7 +72,6 @@ export default function CorrectionTab(
             setGrammarErrorList={setGrammarErrorList}
             setSpellerErrorList={setSpellerErrorList}
             noQuery={noQuery}
-            tabsVariant={tabsVariant}
           />
           :
           <Alert severity="warning" className="mb-2">
