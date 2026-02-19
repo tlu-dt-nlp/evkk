@@ -210,28 +210,29 @@ export default function WordContext() {
         expanded={paramsExpanded}
         onChange={() => setParamsExpanded(!paramsExpanded)}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          id="wordcontext-filters-header"
-        >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>
             {t('common_analysis_options')}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <form onSubmit={handleSubmit}>
-            <div className="tool-accordion">
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  error={typeError}
-                  variant="standard"
-                >
-                  <FormLabel id="type-radios">
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' }
+              }}
+            >
+              <Grid
+                item
+                size={{ xs: 12, sm: 4, md: 3.5 }}
+              >
+                <FormControl error={typeError}>
+                  <FormLabel>
                     {t('common_search')}
                   </FormLabel>
                   <RadioGroup
-                    aria-labelledby="type-radios"
                     name="type"
                     value={typeValue}
                     onChange={handleTypeChange}
@@ -252,39 +253,32 @@ export default function WordContext() {
                       {t('error_mandatory_field')}
                     </FormHelperText>
                   }
-                  <Button
-                    sx={DefaultButtonStyle}
-                    type="submit"
-                    variant="contained"
-                  >
-                    {t('analyse_button')}
-                  </Button>
                 </FormControl>
-              </div>
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
-                  <FormLabel id="keyword">
+              </Grid>
+              <Grid
+                item
+                size={{ xs: 12, sm: 8, md: 5 }}
+              >
+                <FormControl>
+                  <FormLabel>
                     {t('common_enter_search_word')}
                   </FormLabel>
                   <TextField
                     size="small"
                     required
                     value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
+                    onChange={e => setKeyword(e.target.value)}
                   />
                 </FormControl>
-                <br />
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
-                  <FormLabel id="display">
+                <FormControl>
+                  <FormLabel>
                     {t('common_view')}
                   </FormLabel>
-                  <Grid container>
+                  <Grid
+                    container
+                    spacing={1}
+                    alignItems="center"
+                  >
                     <Grid item>
                       <TextField
                         type="number"
@@ -299,43 +293,47 @@ export default function WordContext() {
                         size="small"
                         required
                         value={displayCount}
-                        onChange={(e) => setDisplayCount(e.target.value)}
+                        onChange={e => setDisplayCount(e.target.value)}
+                        className="tool-inline-textfield"
                       />
                     </Grid>
                     <Grid item>
-                      <FormControl size="small">
-                        <Select
-                          name="displayType"
-                          value={displayType}
-                          onChange={(e) => setDisplayType(e.target.value)}
-                        >
-                          <MenuItem value={DisplayType.WORD}>
-                            {t('concordances_words')}
-                          </MenuItem>
-                          <MenuItem value={DisplayType.SENTENCE}>
-                            {t('concordances_sentences')}
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
+                      <Select
+                        name="displayType"
+                        size="small"
+                        value={displayType}
+                        onChange={e => setDisplayType(e.target.value)}
+                        className="tool-inline-select"
+                      >
+                        <MenuItem value={DisplayType.WORD}>
+                          {t('concordances_words')}
+                        </MenuItem>
+                        <MenuItem value={DisplayType.SENTENCE}>
+                          {t('concordances_sentences')}
+                        </MenuItem>
+                      </Select>
                     </Grid>
                     <Grid item>
                       {t('concordances_before_and_after_selected_word')}
                     </Grid>
                   </Grid>
                 </FormControl>
-              </div>
-              <div>
-                <FormControl
-                  sx={{ m: 6 }}
-                  variant="standard"
-                >
+              </Grid>
+              <Grid
+                item
+                size={{ xs: 12, sm: 12, md: 3.5 }}
+              >
+                <FormControl>
+                  <FormLabel>
+                    {t('common_other_options')}
+                  </FormLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={capitalizationChecked}
                         disabled={typeValue === WordContextType.LEMMAS}
-                        onChange={(e) => setCapitalizationChecked(e.target.checked)}
-                      ></Checkbox>
+                        onChange={e => setCapitalizationChecked(e.target.checked)}
+                      />
                     }
                     label={
                       <>
@@ -347,8 +345,15 @@ export default function WordContext() {
                     }
                   />
                 </FormControl>
-              </div>
-            </div>
+              </Grid>
+            </Grid>
+            <Button
+              sx={DefaultButtonStyle}
+              type="submit"
+              variant="contained"
+            >
+              {t('analyse_button')}
+            </Button>
           </form>
         </AccordionDetails>
       </Accordion>

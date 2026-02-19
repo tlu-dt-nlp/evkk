@@ -63,6 +63,7 @@ export const TRANSLATIONS_ET = {
   common_long_word_count: 'pikkade sõnade arv',
   common_neighbouring_words: 'Naabersõnad',
   common_other: 'muu',
+  common_other_options: 'Muud valikud',
   common_people: 'Töötajad',
   common_polysyllabic_words: 'paljusilbiliste sõnade arv',
   common_publications: 'Üllitised',

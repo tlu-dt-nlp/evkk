@@ -217,26 +217,29 @@ export default function Collocates() {
         expanded={paramsExpanded}
         onChange={() => setParamsExpanded(!paramsExpanded)}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          id="collocates-filters-header"
-        >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>
             {t('common_analysis_options')}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <form onSubmit={handleSubmit}>
-            <div className="tool-accordion">
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  error={typeError}
-                  variant="standard"
-                >
-                  <FormLabel id="type-radios">{t('common_search')}</FormLabel>
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' }
+              }}
+            >
+              <Grid
+                item
+                size={{ xs: 12, sm: 4, md: 3.5 }}
+              >
+                <FormControl error={typeError}>
+                  <FormLabel>
+                    {t('common_search')}
+                  </FormLabel>
                   <RadioGroup
-                    aria-labelledby="type-radios"
                     name="type"
                     value={typeValue}
                     onChange={handleTypeChange}
@@ -257,39 +260,32 @@ export default function Collocates() {
                       {t('error_mandatory_field')}
                     </FormHelperText>
                   }
-                  <Button
-                    sx={DefaultButtonStyle}
-                    type="submit"
-                    variant="contained"
-                  >
-                    {t('analyse_button')}
-                  </Button>
                 </FormControl>
-              </div>
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
-                  <FormLabel id="keyword">
+              </Grid>
+              <Grid
+                item
+                size={{ xs: 12, sm: 8, md: 5 }}
+              >
+                <FormControl>
+                  <FormLabel>
                     {t('common_enter_search_word')}
                   </FormLabel>
                   <TextField
                     size="small"
                     required
                     value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
+                    onChange={e => setKeyword(e.target.value)}
                   />
                 </FormControl>
-                <br />
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
-                  <FormLabel id="display">
+                <FormControl>
+                  <FormLabel>
                     {t('neighbouring_words_search_for_neighbouring_words')}
                   </FormLabel>
-                  <Grid container>
+                  <Grid
+                    container
+                    spacing={1}
+                    alignItems="center"
+                  >
                     <Grid item>
                       <TextField
                         type="number"
@@ -304,7 +300,8 @@ export default function Collocates() {
                         size="small"
                         required
                         value={searchCount}
-                        onChange={(e) => setSearchCount(e.target.value)}
+                        onChange={e => setSearchCount(e.target.value)}
+                        className="tool-inline-textfield"
                       />
                     </Grid>
                     <Grid item>
@@ -312,22 +309,21 @@ export default function Collocates() {
                     </Grid>
                   </Grid>
                 </FormControl>
-              </div>
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  size="small"
-                >
-                  <InputLabel id="formula">
+              </Grid>
+              <Grid
+                item
+                size={{ xs: 12, sm: 12, md: 3.5 }}
+              >
+                <FormControl size="small">
+                  <InputLabel>
                     {t('neighbouring_words_choose_statistic_measure')}
                     <TooltipButton>
                       {t('neighbouring_words_statistic_measure_hover')}
                     </TooltipButton>
                   </InputLabel>
                   <Select
-                    name="formula"
                     value={formula}
-                    onChange={(e) => setFormula(e.target.value)}
+                    onChange={e => setFormula(e.target.value)}
                   >
                     <MenuItem value={StatisticMeasureFormula.LOGDICE}>
                       {t('neighbouring_words_statistic_measure_logdice')}
@@ -340,18 +336,17 @@ export default function Collocates() {
                     </MenuItem>
                   </Select>
                 </FormControl>
-                <br />
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
+                <FormControl>
+                  <FormLabel>
+                    {t('common_other_options')}
+                  </FormLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={capitalizationChecked}
                         disabled={typeValue === CollocateType.LEMMAS}
-                        onChange={(e) => setCapitalizationChecked(e.target.checked)}
-                      ></Checkbox>
+                        onChange={e => setCapitalizationChecked(e.target.checked)}
+                      />
                     }
                     label={<>
                       {t('common_case_sensitive')}
@@ -361,8 +356,15 @@ export default function Collocates() {
                     </>}
                   />
                 </FormControl>
-              </div>
-            </div>
+              </Grid>
+            </Grid>
+            <Button
+              sx={DefaultButtonStyle}
+              type="submit"
+              variant="contained"
+            >
+              {t('analyse_button')}
+            </Button>
           </form>
         </AccordionDetails>
       </Accordion>

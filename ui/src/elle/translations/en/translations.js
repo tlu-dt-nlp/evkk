@@ -63,6 +63,7 @@ export const TRANSLATIONS_EN = {
   common_long_word_count: 'number of long words',
   common_neighbouring_words: 'Neighbouring Words',
   common_other: 'other',
+  common_other_options: 'Other options',
   common_people: 'Employees',
   common_polysyllabic_words: 'number of polysyllabic words',
   common_publications: 'Publications',

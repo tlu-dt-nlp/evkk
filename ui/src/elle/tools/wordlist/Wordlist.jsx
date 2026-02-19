@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   FormHelperText,
   FormLabel,
+  Grid,
   Radio,
   RadioGroup,
   TextField,
@@ -170,7 +171,7 @@ export default function Wordlist() {
     });
   };
 
-  const listifyCustomStopwords = (stopwords) => {
+  const listifyCustomStopwords = stopwords => {
     return stopwords.replace(/ /g, '').split(',');
   };
 
@@ -184,28 +185,29 @@ export default function Wordlist() {
         expanded={paramsExpanded}
         onChange={() => setParamsExpanded(!paramsExpanded)}
       >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          id="wordlist-filters-header"
-        >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>
             {t('common_analysis_options')}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <form onSubmit={handleSubmit}>
-            <div className="tool-accordion">
-              <div>
-                <FormControl
-                  sx={{ m: 3 }}
-                  error={typeError}
-                  variant="standard"
-                >
-                  <FormLabel id="type-radios">
+            <Grid
+              container
+              spacing={2}
+              sx={{
+                flexDirection: { xs: 'column', sm: 'row' }
+              }}
+            >
+              <Grid
+                item
+                size={{ xs: 12, sm: 6, md: 3 }}
+              >
+                <FormControl error={typeError}>
+                  <FormLabel>
                     {t('common_search')}
                   </FormLabel>
                   <RadioGroup
-                    aria-labelledby="type-radios"
                     name="type"
                     value={typeValue}
                     onChange={handleTypeChange}
@@ -226,29 +228,22 @@ export default function Wordlist() {
                       {t('error_mandatory_field')}
                     </FormHelperText>
                   }
-                  <Button
-                    sx={DefaultButtonStyle}
-                    type="submit"
-                    variant="contained"
-                  >
-                    {t('analyse_button')}
-                  </Button>
                 </FormControl>
-              </div>
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
-                  <FormLabel id="stopwords">
+              </Grid>
+              <Grid
+                item
+                size={{ xs: 12, sm: 6, md: 4.5 }}
+              >
+                <FormControl>
+                  <FormLabel>
                     {t('wordlist_exclude_stopwords')}
                   </FormLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={stopwordsChecked}
-                        onChange={(e) => setStopwordsChecked(e.target.checked)}
-                      ></Checkbox>
+                        onChange={e => setStopwordsChecked(e.target.checked)}
+                      />
                     }
                     label={
                       <>
@@ -268,21 +263,24 @@ export default function Wordlist() {
                     label={t('wordlist_stopwords_textbox')}
                     size="small"
                     value={customStopwords}
-                    onChange={(e) => setCustomStopwords(e.target.value)}
+                    onChange={e => setCustomStopwords(e.target.value)}
                   />
                 </FormControl>
-              </div>
-              <div>
-                <FormControl
-                  sx={{ m: 7 }}
-                  variant="standard"
-                >
+              </Grid>
+              <Grid
+                item
+                size={{ xs: 12, sm: 12, md: 4.5 }}
+              >
+                <FormControl>
+                  <FormLabel>
+                    {t('common_other_options')}
+                  </FormLabel>
                   <FormControlLabel
                     control={
                       <Checkbox
                         checked={capitalizationChecked}
-                        onChange={(e) => setCapitalizationChecked(e.target.checked)}
-                      ></Checkbox>
+                        onChange={e => setCapitalizationChecked(e.target.checked)}
+                      />
                     }
                     label={
                       <>
@@ -312,11 +310,18 @@ export default function Wordlist() {
                     }}
                     size="small"
                     value={minimumFrequency}
-                    onChange={(e) => setMinimumFrequency(e.target.value)}
+                    onChange={e => setMinimumFrequency(e.target.value)}
                   />
                 </FormControl>
-              </div>
-            </div>
+              </Grid>
+            </Grid>
+            <Button
+              sx={DefaultButtonStyle}
+              type="submit"
+              variant="contained"
+            >
+              {t('analyse_button')}
+            </Button>
           </form>
         </AccordionDetails>
       </Accordion>

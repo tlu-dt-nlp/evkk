@@ -12,17 +12,6 @@
   margin: auto auto 10px;
 }
 
-.alert-max-width {
-  max-width: 700px;
-}
-
-.cluster-tools-container {
-  height: auto;
-  width: 1000px;
-  display: flex;
-  justify-content: center;
-}
-
 .tool-card-container {
   height: 200px;
   border-radius: 20px;
@@ -72,15 +61,22 @@
   padding-bottom: 2vh;
 }
 
-.tool-accordion {
-  display: flex;
-  justify-content: space-between;
-}
-
 .tool-drawer-icon {
   height: 30px;
   width: 30px;
   filter: grayscale(100%);
   mix-blend-mode: multiply;
   clip-path: inset(2px 1px 2px 2px);
+}
+
+.tool-inline-textfield {
+  width: 65px;
+
+  .MuiInputBase-root {
+    margin-bottom: 0 !important;
+  }
+}
+
+.tool-inline-select {
+  margin-bottom: 0 !important;
 }

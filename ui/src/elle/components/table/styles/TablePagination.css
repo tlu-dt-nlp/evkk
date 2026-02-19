@@ -21,6 +21,10 @@
     display: none;
   }
 
+  .MuiInputBase-root {
+    margin-bottom: 0 !important;
+  }
+
   .table-pagination-actions {
     display: flex;
     align-items: center;

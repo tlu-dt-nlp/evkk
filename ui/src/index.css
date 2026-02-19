@@ -79,8 +79,17 @@ a:hover {
 
 .MuiFormControl-root {
   contain: inline-size;
-  margin-bottom: 1rem !important;
   width: 100%;
+}
+
+.MuiInputBase-root {
+  margin-bottom: 1rem !important;
+}
+
+/* to even labels without tooltips to those that have tooltips */
+.MuiFormLabel-root, .MuiInputLabel-root {
+  min-height: 25px;
+  margin-bottom: .25rem !important;
 }
 
 .global-page-container {
