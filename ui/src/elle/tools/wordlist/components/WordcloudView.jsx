@@ -16,8 +16,8 @@ export default function WordcloudView({ data }) {
   const [canvas, setCanvas] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const canvasHeight = 475;
-  const canvasWidth = 1275;
+  const canvasHeight = 500;
+  const canvasWidth = 1300;
 
   useEffect(() => {
     if (modalOpen && canvas) {
@@ -29,7 +29,6 @@ export default function WordcloudView({ data }) {
       WordCloud(canvas, {
         list: list,
         backgroundColor: '#FCFCFC',
-        drawOutOfBound: false,
         shrinkToFit: true,
         minSize: 12,
         gridSize: Math.round(16 * canvasWidth / 1024),
