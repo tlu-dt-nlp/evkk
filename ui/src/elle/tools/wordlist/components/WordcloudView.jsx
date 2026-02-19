@@ -67,7 +67,7 @@ export default function WordcloudView({ data }) {
       <ModalBase
         isOpen={modalOpen}
         setIsOpen={setModalOpen}
-        innerClassName="wordcloud-modal"
+        innerClassName="image-modal"
         title="wordlist_wordcloud"
       >
         {isLoading ? (

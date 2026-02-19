@@ -19,3 +19,28 @@
   top: 0.5em;
   right: 0.5em;
 }
+
+.image-modal {
+  width: 90% !important;
+  max-width: 84em;
+}
+
+@media (max-width: 1440px) {
+  .image-modal {
+    width: 95% !important;
+    padding: 16px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .image-modal {
+    width: 98% !important;
+  }
+}
+
+.image-modal canvas,
+.image-modal svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

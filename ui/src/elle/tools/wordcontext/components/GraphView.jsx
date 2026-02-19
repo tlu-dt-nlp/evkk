@@ -199,7 +199,7 @@ export default function GraphView({ data, keyword }) {
       <ModalBase
         isOpen={modalOpen}
         setIsOpen={setModalOpen}
-        innerClassName="graph-modal"
+        innerClassName="image-modal"
         title="collocates_graph"
         titleTooltip="collocates_graph_tooltip"
       >
@@ -247,8 +247,8 @@ export default function GraphView({ data, keyword }) {
         </Grid>
         <svg
           ref={setSvgState}
-          height={svgHeight}
-          width={svgWidth}
+          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+          preserveAspectRatio="xMidYMid meet"
         />
       </ModalBase>
     </Tooltip>
