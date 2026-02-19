@@ -43,3 +43,7 @@
   width: 500px;
   text-align: center;
 }
+
+.text-upload-modal {
+  max-width: 40em;
+}

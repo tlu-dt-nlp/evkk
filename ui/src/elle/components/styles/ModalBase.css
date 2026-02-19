@@ -19,19 +19,3 @@
   top: 0.5em;
   right: 0.5em;
 }
-
-.text-upload-modal {
-  max-width: 40em;
-}
-
-.wordcloud-modal {
-  width: 84em !important;
-}
-
-.graph-modal {
-  width: 84em !important;
-}
-
-.selected-texts-modal {
-  max-width: 30em;
-}

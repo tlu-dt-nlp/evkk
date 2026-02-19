@@ -7,3 +7,27 @@
     margin-left: 1rem;
   }
 }
+
+.wordcloud-modal {
+  width: 90% !important;
+  max-width: 84em;
+}
+
+@media (max-width: 1440px) {
+  .wordcloud-modal {
+    width: 95% !important;
+    padding: 16px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wordcloud-modal {
+    width: 98% !important;
+  }
+}
+
+.wordcloud-modal canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}

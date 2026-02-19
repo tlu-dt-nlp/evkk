@@ -78,6 +78,7 @@ export default function ImageDownloadButton({ element, sourceType, fileName }) {
           style={DefaultButtonStyle}
           variant="contained"
           onClick={handleClick}
+          size="small"
         >
           <DownloadIcon fontSize="large" />
         </Button>
