@@ -1,7 +1,6 @@
 import { Button, Tooltip } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { useTranslation } from 'react-i18next';
-import './styles/ImageDownloadButton.css';
 import { DefaultButtonStyle } from '../const/StyleConstants';
 
 export default function ImageDownloadButton({ element, sourceType, fileName }) {
@@ -69,21 +68,19 @@ export default function ImageDownloadButton({ element, sourceType, fileName }) {
   };
 
   return (
-    <div className="image-download-button-row">
-      <Tooltip
-        title={t('common_download')}
-        placement="top"
+    <Tooltip
+      title={t('common_download')}
+      placement="top"
+    >
+      <Button
+        style={DefaultButtonStyle}
+        variant="contained"
+        onClick={handleClick}
+        size="small"
       >
-        <Button
-          style={DefaultButtonStyle}
-          variant="contained"
-          onClick={handleClick}
-          size="small"
-        >
-          <DownloadIcon fontSize="large" />
-        </Button>
-      </Tooltip>
-    </div>
+        <DownloadIcon fontSize="large" />
+      </Button>
+    </Tooltip>
   );
 }
 

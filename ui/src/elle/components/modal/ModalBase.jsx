@@ -11,6 +11,7 @@ export default function ModalBase({
                                     innerClassName,
                                     title,
                                     titleTooltip,
+                                    headerActions,
                                     disableComfortClosing = false,
                                     disableCloseButton = false,
                                     modalRef,
@@ -38,11 +39,19 @@ export default function ModalBase({
         ref={modalRef}
       >
         <div className="modal-head">
-          {t(title)}
-          {titleTooltip &&
-            <TooltipButton>
-              {t(titleTooltip)}
-            </TooltipButton>}
+          <div className="modal-head-content">
+            {t(title)}
+            {titleTooltip && (
+              <TooltipButton>
+                {t(titleTooltip)}
+              </TooltipButton>
+            )}
+          </div>
+          {headerActions && (
+            <div className="modal-head-actions">
+              {headerActions}
+            </div>
+          )}
         </div>
         {!disableCloseButton && (
           <IconButton

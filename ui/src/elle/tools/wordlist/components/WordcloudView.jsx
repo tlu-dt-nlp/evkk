@@ -69,23 +69,24 @@ export default function WordcloudView({ data }) {
         setIsOpen={setModalOpen}
         innerClassName="image-modal"
         title="wordlist_wordcloud"
-      >
-        {isLoading ? (
-          <div className="wordcloud-loader-container">
-            <CircularProgress style={DefaultCircularProgressStyle} />
-            <span>
-            {t('wordlist_wordcloud_loading')}
-            </span>
-          </div>) : (
-          <>
+        headerActions={
+          !isLoading && (
             <ImageDownloadButton
               element={canvas}
               sourceType={ImageDownloadSourceType.CANVAS}
               fileName="wordlist_wordcloud_filename"
             />
-            <br />
-          </>)
+          )
         }
+      >
+        {isLoading && (
+          <div className="wordcloud-loader-container">
+            <CircularProgress style={DefaultCircularProgressStyle} />
+            <span>
+            {t('wordlist_wordcloud_loading')}
+            </span>
+          </div>
+        )}
         <canvas
           ref={setCanvas}
           height={canvasHeight}

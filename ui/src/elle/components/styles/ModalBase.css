@@ -12,6 +12,20 @@
 
 .modal-head {
   font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  padding-right: 2em;
+}
+
+.modal-head-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.modal-head-actions {
+  display: flex;
+  align-items: center;
 }
 
 .close-button {

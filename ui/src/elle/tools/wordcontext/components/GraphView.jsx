@@ -202,12 +202,14 @@ export default function GraphView({ data, keyword }) {
         innerClassName="image-modal"
         title="collocates_graph"
         titleTooltip="collocates_graph_tooltip"
+        headerActions={
+          <ImageDownloadButton
+            element={svgState}
+            sourceType={ImageDownloadSourceType.SVG}
+            fileName="collocates_graph_filename"
+          />
+        }
       >
-        <ImageDownloadButton
-          element={svgState}
-          sourceType={ImageDownloadSourceType.SVG}
-          fileName="collocates_graph_filename"
-        />
         <Typography>
           {t('collocates_graph_slider_title')}
         </Typography>
