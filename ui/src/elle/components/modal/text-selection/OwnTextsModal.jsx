@@ -25,7 +25,7 @@ export default function OwnTextsModal({ isOpen, setIsOpen }) {
     <ModalBase
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title="query_own_texts"
+      title="own_texts"
     >
       <div>
         {t('textupload_primary_modal_title')}
@@ -35,7 +35,7 @@ export default function OwnTextsModal({ isOpen, setIsOpen }) {
         <TextUpload sendTextFromFile={setTextInput} />
         <textarea
           spellCheck="false"
-          className="query-textinput"
+          className="own-texts-textarea"
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
         ></textarea>

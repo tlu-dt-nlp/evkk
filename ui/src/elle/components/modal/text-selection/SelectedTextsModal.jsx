@@ -39,7 +39,7 @@ export default function SelectedTextsModal({ isOpen, setIsOpen }) {
     <ModalBase
       isOpen={isOpen}
       setIsOpen={setIsOpen}
-      title="query_results_saved_for_analysis"
+      title="texts_saved_for_analysis"
       innerClassName="selected-texts-modal"
     >
       <span className="chip-container">
@@ -58,8 +58,8 @@ export default function SelectedTextsModal({ isOpen, setIsOpen }) {
             }
             label={
               corpusTextsSelected > 1
-                ? t('query_results_saved_for_analysis_corpus_plural', { amount: corpusTextsSelected })
-                : t('query_results_saved_for_analysis_corpus')
+                ? t('texts_saved_for_analysis_corpus_plural', { amount: corpusTextsSelected })
+                : t('texts_saved_for_analysis_corpus')
             }
             variant="outlined"
             onDelete={() => handleChipDelete(ChipDeleteType.CORPUS_TEXTS)}
@@ -68,7 +68,7 @@ export default function SelectedTextsModal({ isOpen, setIsOpen }) {
         {ownTextsSelected > 0 &&
           <Chip
             sx={ElleDefaultChip}
-            label={t('query_results_saved_for_analysis_own_texts')}
+            label={t('texts_saved_for_analysis_own_texts')}
             variant="outlined"
             onDelete={() => handleChipDelete(ChipDeleteType.OWN_TEXTS)}
           />

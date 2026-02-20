@@ -85,10 +85,10 @@ export default function Tools() {
     if (item.text === 'query_choose_texts') {
       setIsQueryOpen(true);
     }
-    if (item.text === 'query_own_texts') {
+    if (item.text === 'own_texts') {
       setIsOwnTextsOpen(true);
     }
-    if (item.text === 'query_results_saved_for_analysis') {
+    if (item.text === 'texts_saved_for_analysis') {
       setIsSelectedTextsOpen(true);
     }
   };

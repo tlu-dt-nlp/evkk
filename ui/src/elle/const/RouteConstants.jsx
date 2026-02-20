@@ -102,12 +102,12 @@ export const ToolsDrawerList = [
         customAction: true
       },
       {
-        text: 'query_own_texts',
+        text: 'own_texts',
         icon: <ReadMore />,
         customAction: true
       },
       {
-        text: 'query_results_saved_for_analysis',
+        text: 'texts_saved_for_analysis',
         icon: <ListAlt />,
         customAction: true
       },
