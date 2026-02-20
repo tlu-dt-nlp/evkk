@@ -426,13 +426,7 @@ function WordAnalyser() {
   }
 
   return (
-    <Box
-      component="section"
-      className="container"
-      paddingTop="20px"
-      borderColor="#E1F5FE"
-      borderRadius="10"
-    >
+    <Box>
       <Grid
         className="position-relative"
         container

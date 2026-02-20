@@ -194,7 +194,7 @@ export default function GraphView({ data, keyword }) {
         onMouseEnter={() => setTooltipOpen(true)}
         onMouseLeave={() => setTooltipOpen(false)}
       >
-        <Timeline fontSize="large" />
+        <Timeline />
       </Button>
       <ModalBase
         isOpen={modalOpen}

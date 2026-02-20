@@ -306,7 +306,7 @@ export default function TableDownloadButton({
           variant="contained"
           onClick={handleClick}
         >
-          <DownloadIcon fontSize="large" />
+          <DownloadIcon />
         </Button>
       </Tooltip>
       <Popover

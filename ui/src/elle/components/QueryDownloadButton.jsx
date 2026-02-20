@@ -76,10 +76,9 @@ export default function QueryDownloadButton({ selected }) {
           sx={DefaultButtonStyle}
           variant="contained"
           disabled={selected.size === 0}
-          className="query-download-modal-button"
           onClick={handleOptionsDialogOpenButtonClick}
         >
-          <DownloadIcon fontSize="medium" />
+          <DownloadIcon />
         </Button>
       </Tooltip>
       <Popover

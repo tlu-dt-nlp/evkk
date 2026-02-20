@@ -21,8 +21,7 @@ export default function TableComponent() {
       <Grid
         item
         size={12}
-        marginTop="100px"
-        marginBottom="50px"
+        marginTop="50px"
       >
         <h2>{t('text_analysis')}</h2>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

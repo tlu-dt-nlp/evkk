@@ -62,7 +62,7 @@ export default function WordcloudView({ data }) {
         onMouseEnter={() => setTooltipOpen(true)}
         onMouseLeave={() => setTooltipOpen(false)}
       >
-        <BrushIcon fontSize="large" />
+        <BrushIcon />
       </Button>
       <ModalBase
         isOpen={modalOpen}

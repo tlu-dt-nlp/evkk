@@ -72,21 +72,13 @@ export default function WordAnalyserParent() {
                               <LemmaContext.Provider value={lemmaValue}>
                                 <SetLemmaContext.Provider value={setLemmaValue}>
                                   <TabContext.Provider value={[tabValue, setTabValue]}>
-                                    <Box
-                                      borderColor="#E1F5FE"
-                                      borderRadius="10"
-                                      marginBottom="-3rem"
-                                    >
+                                    <Box marginBottom="-2rem">
                                       <WordAnalyser />
                                     </Box>
                                     <Box component="span">
                                       {tabValue === 1 || tabValue === 2 || tabValue === 3 ? <TableComponent /> : null}
                                     </Box>
-                                    <Box
-                                      padding="20px"
-                                      borderColor="#E1F5FE"
-                                      borderRadius="10"
-                                    >
+                                    <Box>
                                       {tabValue === 1 ? <Syllables /> : null}
                                       {tabValue === 2 ? <LemmaView /> : null}
                                       {tabValue === 3 ? <GrammaticalAnalysis /> : null}

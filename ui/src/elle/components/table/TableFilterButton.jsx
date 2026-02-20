@@ -21,7 +21,7 @@ export default function TableFilterButton({
         variant="contained"
         onClick={handlePopoverOpen}
       >
-        <FilterAltIcon fontSize="large" />
+        <FilterAltIcon />
       </Button>
       <Popover
         id={popoverId}
