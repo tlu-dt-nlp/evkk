@@ -46,15 +46,3 @@
     gap: 1rem;
   }
 }
-
-.adding-text-upload-component {
-  display: grid;
-  justify-content: end;
-  padding: 0;
-  margin-top: 10em;
-  width: auto;
-
-  & svg {
-    margin: 0;
-  }
-}

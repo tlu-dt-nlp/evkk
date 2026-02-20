@@ -169,9 +169,7 @@ class Adding extends Component {
                   onChange={this.handleChange}
                   slotProps={{
                     input: {
-                      endAdornment: <TextUpload
-                        sendTextFromFile={this.sendTextFromFile}
-                        outerClassName="adding-text-upload-component" />
+                      endAdornment: <TextUpload sendTextFromFile={this.sendTextFromFile} />
                     }
                   }}
                 />

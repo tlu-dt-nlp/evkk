@@ -1,11 +1,10 @@
 import ModalBase from '../ModalBase';
 import TextUpload from '../../TextUpload';
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { changeOwnTexts, queryStore } from '../../../store/QueryStore';
-import './styles/OwnTextsModal.css';
 
 export default function OwnTextsModal({ isOpen, setIsOpen }) {
 
@@ -27,27 +26,26 @@ export default function OwnTextsModal({ isOpen, setIsOpen }) {
       setIsOpen={setIsOpen}
       title="own_texts"
     >
-      <div>
-        {t('textupload_primary_modal_title')}
-      </div>
-      <br />
-      <div>
-        <TextUpload sendTextFromFile={setTextInput} />
-        <textarea
-          spellCheck="false"
-          className="own-texts-textarea"
-          value={textInput}
-          onChange={(e) => setTextInput(e.target.value)}
-        ></textarea>
-        <Button
-          variant="contained"
-          sx={DefaultButtonStyle}
-          disabled={textInput === ''}
-          onClick={handleSubmit}
-        >
-          {t('textupload_primary_modal_save')}
-        </Button>
-      </div>
+      <TextField
+        multiline
+        rows={8}
+        label={t('textupload_primary_modal_title')}
+        value={textInput}
+        onChange={e => setTextInput(e.target.value)}
+        slotProps={{
+          input: {
+            endAdornment: <TextUpload sendTextFromFile={setTextInput} />
+          }
+        }}
+      />
+      <Button
+        variant="contained"
+        sx={DefaultButtonStyle}
+        disabled={textInput === ''}
+        onClick={handleSubmit}
+      >
+        {t('textupload_primary_modal_save')}
+      </Button>
     </ModalBase>
   );
 }

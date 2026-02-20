@@ -8,7 +8,7 @@ import { DefaultButtonStyle } from '../const/StyleConstants';
 import ModalBase from './modal/ModalBase';
 import { useGetTextFromFile } from '../hooks/service/TextService';
 
-export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
+export default function TextUpload({ sendTextFromFile }) {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [uploadButtonDisabled, setUploadButtonDisabled] = useState(true);
@@ -50,7 +50,7 @@ export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
 
   return (
     <>
-      <div className={`container ${outerClassName}`}>
+      <div className="container textfield-upload-component">
         <Tooltip
           title={t('textupload_secondary_modal_tooltip')}
           placement="top"
@@ -75,12 +75,12 @@ export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
             id="form_data"
             ref={formDataElement}
           >
-            <div className="d-flex flex-column align-items-center justify-content-between mt-5">
+            <div className="d-flex flex-column align-items-center justify-content-between">
               <div>
                 <Button
                   sx={DefaultButtonStyle}
                   component="label"
-                  htmlFor="text_1"
+                  htmlFor="fileInput"
                   variant="contained"
                 >
                   {t('textupload_secondary_modal_choose_files')}
@@ -103,10 +103,10 @@ export default function TextUpload({ sendTextFromFile, outerClassName = '' }) {
                 {t('textupload_secondary_modal_upload')}
               </Button>
               <input
-                style={{ visibility: 'hidden' }}
                 type="file"
                 name="file"
-                id="text_1"
+                id="fileInput"
+                className="text-upload-file-input"
                 onChange={fileChange}
                 multiple={true}
                 accept=".txt,.pdf,.docx,.doc,.odt"

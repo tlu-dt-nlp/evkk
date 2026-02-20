@@ -92,6 +92,10 @@ a:hover {
   margin-bottom: .25rem !important;
 }
 
+.MuiFormHelperText-root {
+  margin-top: -.5rem !important;
+}
+
 .global-page-container {
   width: 80vw !important;
   margin-top: 20px;

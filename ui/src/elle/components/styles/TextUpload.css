@@ -40,10 +40,26 @@
 
 .file-name-element {
   height: 150px;
-  width: 500px;
   text-align: center;
 }
 
 .text-upload-modal {
   max-width: 40em;
+}
+
+.text-upload-file-input {
+  visibility: hidden;
+  width: 0;
+}
+
+.textfield-upload-component {
+  display: grid;
+  justify-content: end;
+  padding: 0;
+  margin-top: 10em;
+  width: auto;
+
+  & svg {
+    margin: 0;
+  }
 }
