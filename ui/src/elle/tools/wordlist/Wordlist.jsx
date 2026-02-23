@@ -32,6 +32,7 @@ import { useGetWordlistResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
 import TooltipButton from '../../components/tooltip/TooltipButton';
+import './styles/Wordlist.css';
 
 export default function Wordlist() {
 
@@ -176,7 +177,7 @@ export default function Wordlist() {
   };
 
   return (
-    <>
+    <span className="wordlist-app">
       <h2 className="tool-title">
         {t('common_wordlist')}
       </h2>
@@ -341,7 +342,7 @@ export default function Wordlist() {
           showRowNumbers={true}
         />
       </>}
-    </>
+    </span>
   );
 }
 

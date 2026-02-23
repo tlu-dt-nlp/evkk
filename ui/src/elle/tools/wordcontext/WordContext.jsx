@@ -118,7 +118,7 @@ export default function WordContext() {
       sortingFn: (rowA, rowB) => sortColumnByLastWord(rowA, rowB, 'contextBefore'),
       meta: {
         className: 'text-right',
-        classNameTd: 'wordcontext-context-before',
+        classNameTd: 'context-before',
         minWidth: '300px'
       }
     },
@@ -128,7 +128,7 @@ export default function WordContext() {
       accessorKey: 'keyword',
       meta: {
         className: 'text-center',
-        classNameTd: 'wordcontext-keyword'
+        classNameTd: 'keyword'
       }
     },
     {
@@ -137,7 +137,7 @@ export default function WordContext() {
       accessorKey: 'contextAfter',
       meta: {
         className: 'text-left',
-        classNameTd: 'wordcontext-context-after',
+        classNameTd: 'context-after',
         minWidth: '300px'
       }
     }
@@ -201,7 +201,7 @@ export default function WordContext() {
   };
 
   return (
-    <>
+    <span className="wordcontext-app">
       <h2 className="tool-title">
         {t('common_word_in_context')}
       </h2>
@@ -387,7 +387,7 @@ export default function WordContext() {
           {t('error_no_matching_keywords')}
         </Alert>
       }
-    </>
+    </span>
   );
 }
 

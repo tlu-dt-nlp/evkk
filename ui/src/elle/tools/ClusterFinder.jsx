@@ -7,9 +7,5 @@ export default function ClusterFinder() {
     <Box style={{width: window.innerWidth / 1.8}}>
       <IntegrationFrame integrationName={'clusterFinder'} />
     </Box>
-
   );
-
 }
-
-

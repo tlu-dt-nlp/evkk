@@ -1,13 +1,19 @@
-.wordcontext-keyword {
-  color: red !important;
-  border-right: 0 !important;
-  border-left: 0 !important;
-}
+.wordcontext-app {
+  .MuiFormControl-root {
+    max-width: 400px;
+  }
 
-.wordcontext-context-before {
-  border-right: 0 !important;
-}
+  .keyword {
+    color: red !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+  }
 
-.wordcontext-context-after {
-  border-left: 0 !important;
+  .context-before {
+    border-right: 0 !important;
+  }
+
+  .context-after {
+    border-left: 0 !important;
+  }
 }

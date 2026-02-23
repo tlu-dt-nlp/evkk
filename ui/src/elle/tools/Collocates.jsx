@@ -34,6 +34,7 @@ import { useGetCollocatesResult } from '../hooks/service/ToolsService';
 import { loadingEmitter } from '../../App';
 import { LoadingSpinnerEventType } from '../components/LoadingSpinner';
 import TooltipButton from '../components/tooltip/TooltipButton';
+import './styles/Collocates.css';
 
 export default function Collocates() {
 
@@ -208,7 +209,7 @@ export default function Collocates() {
   };
 
   return (
-    <>
+    <span className="collocates-app">
       <h2 className="tool-title">
         {t('common_neighbouring_words')}
       </h2>
@@ -398,7 +399,7 @@ export default function Collocates() {
           {t('error_no_matching_keywords')}
         </Alert>
       }
-    </>
+    </span>
   );
 }
 
