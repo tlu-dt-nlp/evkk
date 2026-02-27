@@ -208,7 +208,7 @@ export default function LemmaView() {
   return (
     <Box>
       <TableHeaderButtons
-        leftComponent={<TableAppliedFilters appliedFilters={appliedFilters} />}
+        leftComponent={appliedFilters.length > 0 ? <TableAppliedFilters appliedFilters={appliedFilters} /> : null}
         rightComponent={renderFilterButton()}
         downloadData={data}
         downloadTableType={TableType.LEMMA_VIEW}

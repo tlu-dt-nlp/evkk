@@ -16,7 +16,7 @@ export default function TableHeaderButtons({
     <Box
       className="table-header-button-row"
       style={{
-        justifyContent: leftComponent === undefined
+        justifyContent: !leftComponent
           ? 'flex-end'
           : 'space-between'
       }}

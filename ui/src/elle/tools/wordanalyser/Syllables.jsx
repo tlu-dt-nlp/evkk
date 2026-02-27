@@ -314,7 +314,7 @@ export default function Syllables() {
   return (
     <Box>
       <TableHeaderButtons
-        leftComponent={<TableAppliedFilters appliedFilters={appliedFilters} />}
+        leftComponent={appliedFilters.length > 0 ? <TableAppliedFilters appliedFilters={appliedFilters} /> : null}
         rightComponent={renderFilterButton()}
         downloadData={infoListNew}
         downloadTableType={TableType.SYLLABLES}

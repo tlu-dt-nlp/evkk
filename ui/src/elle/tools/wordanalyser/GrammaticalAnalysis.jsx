@@ -264,7 +264,7 @@ export default function GrammaticalAnalysis() {
   return (
     <Box>
       <TableHeaderButtons
-        leftComponent={<TableAppliedFilters appliedFilters={filtersInUse} />}
+        leftComponent={filtersInUse.length > 0 ? <TableAppliedFilters appliedFilters={filtersInUse} /> : null}
         rightComponent={renderFilterButton()}
         downloadData={data}
         downloadTableType={TableType.GRAMMATICAL_ANALYSIS}
