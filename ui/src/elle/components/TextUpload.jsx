@@ -14,11 +14,11 @@ export default function TextUpload({ sendTextFromFile }) {
   const [uploadButtonDisabled, setUploadButtonDisabled] = useState(true);
   const formDataElement = createRef();
   const fileNameElement = createRef();
-  const text1Element = createRef();
+  const fileInputRef = createRef();
   const { t } = useTranslation();
   const { getTextFromFile } = useGetTextFromFile();
 
-  function fileUpload() {
+  const handleFileUpload = () => {
     getTextFromFile(new FormData(formDataElement.current))
       .then(response => sendTextFromFile(response))
       .catch(() => sendTextFromFile(''));
@@ -27,7 +27,7 @@ export default function TextUpload({ sendTextFromFile }) {
     setModalOpen(false);
   }
 
-  function fileChange() {
+  const handleFileChange = () => {
     fileNameElement.current.textContent = '';
     const br = document.createElement('br');
     const b = document.createElement('b');
@@ -37,9 +37,9 @@ export default function TextUpload({ sendTextFromFile }) {
     div.appendChild(b);
     div.appendChild(br);
 
-    for (let i = 0; i < text1Element.current.files.length; i++) {
+    for (let i = 0; i < fileInputRef.current.files.length; i++) {
       const brElement = document.createElement('br');
-      const tempName = document.createTextNode(text1Element.current.files[i].name);
+      const tempName = document.createTextNode(fileInputRef.current.files[i].name);
       div.appendChild(tempName);
       div.appendChild(brElement);
     }
@@ -72,7 +72,6 @@ export default function TextUpload({ sendTextFromFile }) {
           <form
             encType="multipart/form-data"
             method="post"
-            id="form_data"
             ref={formDataElement}
           >
             <div className="d-flex flex-column align-items-center justify-content-between">
@@ -99,7 +98,7 @@ export default function TextUpload({ sendTextFromFile }) {
                   setModalOpen(false);
                 }}
                 disabled={uploadButtonDisabled}
-                onMouseDown={fileUpload}>
+                onMouseDown={handleFileUpload}>
                 {t('textupload_secondary_modal_upload')}
               </Button>
               <input
@@ -107,10 +106,10 @@ export default function TextUpload({ sendTextFromFile }) {
                 name="file"
                 id="fileInput"
                 className="text-upload-file-input"
-                onChange={fileChange}
+                onChange={handleFileChange}
                 multiple={true}
                 accept=".txt,.pdf,.docx,.doc,.odt"
-                ref={text1Element}
+                ref={fileInputRef}
               />
             </div>
           </form>
