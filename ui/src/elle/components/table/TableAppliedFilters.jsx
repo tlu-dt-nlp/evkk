@@ -19,8 +19,11 @@ export default function TableAppliedFilters({ appliedFilters }) {
 
   return appliedFilters.length > 0
     ? (
-      <Box>
-        {t('applied_filters')}: {getAppliedFilters()}
+      <Box className="table-applied-filters-container">
+        <span className="label">
+          {t('applied_filters')}:
+        </span>
+        {getAppliedFilters()}
       </Box>
     )
     : null;
