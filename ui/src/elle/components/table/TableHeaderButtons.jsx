@@ -23,6 +23,7 @@ export default function TableHeaderButtons({
     >
       {leftComponent}
       <Box
+        className="right-component-wrapper"
         style={
           rightComponent !== undefined
             ? { display: 'flex', gap: '10px' }
@@ -30,13 +31,15 @@ export default function TableHeaderButtons({
         }
       >
         {rightComponent}
-        <TableDownloadButton
-          data={downloadData}
-          tableType={downloadTableType}
-          headers={downloadHeaders}
-          accessors={downloadAccessors}
-          sortByColumnAccessor={downloadSortByColumnAccessor}
-        />
+        {downloadData && (
+          <TableDownloadButton
+            data={downloadData}
+            tableType={downloadTableType}
+            headers={downloadHeaders}
+            accessors={downloadAccessors}
+            sortByColumnAccessor={downloadSortByColumnAccessor}
+          />
+        )}
       </Box>
     </Box>
   );

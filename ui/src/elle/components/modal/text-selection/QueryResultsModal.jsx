@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import ModalBase from '../ModalBase';
 import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import { useGetTextAndMetadata } from '../../../hooks/service/TextService';
+import TableHeaderButtons from '../../table/TableHeaderButtons';
 
 export default function QueryResultsModal({
                                             results,
@@ -98,7 +99,7 @@ export default function QueryResultsModal({
     setModalAccordionExpanded(!modalAccordionExpanded);
   };
 
-  function previewText(id) {
+  const previewText = (id) => {
     getTextAndMetadata(id)
       .then(response => {
         if (!response) return;
@@ -108,7 +109,7 @@ export default function QueryResultsModal({
         });
         setModalOpen(true);
       });
-  }
+  };
 
   const setIndividualMetadata = (keyName, valueName) => {
     setMetadata(prevData => {
@@ -125,57 +126,63 @@ export default function QueryResultsModal({
     setIsQueryOpen(false);
   };
 
+  const actionButtons = () => (
+    <Grid
+      container
+      spacing={2}
+    >
+      <Button
+        startIcon={<ArrowBackIcon />}
+        sx={DefaultButtonStyle}
+        variant="contained"
+        size="small"
+        onClick={() => {
+          setIsQueryResponsePage(prevState => !prevState);
+          setPreviousSelectedIds(new Set(selectedIds));
+        }}
+      >
+        {t('query_change_chosen_corpuses')}
+      </Button>
+      <Button
+        sx={DefaultButtonStyle}
+        variant="contained"
+        size="small"
+        disabled={selectedIds.length === 0}
+        onClick={saveTexts}
+      >
+        {t('query_results_save_texts_for_analysis')}
+      </Button>
+    </Grid>
+  );
+
   const getParagraphKey = (item) => {
-    if (item) {
-      return item;
-    } else {
-      paragraphCount++;
-      return `empty_paragraph_${paragraphCount}`;
-    }
+    if (item) return item;
+
+    paragraphCount++;
+    return `empty_paragraph_${paragraphCount}`;
   };
+
+  if (results.length <= 0) return null;
 
   return (
     <>
-      {results.length > 0 ? <h4><strong>{t('query_results_found_texts')}</strong> {results.length}</h4> : <></>}
-      {results.length > 0 &&
-        <>
-          <Grid
-            container
-            spacing={2}
-          >
-            <Button
-              startIcon={<ArrowBackIcon />}
-              sx={DefaultButtonStyle}
-              variant="contained"
-              onClick={() => {
-                setIsQueryResponsePage(prevState => !prevState);
-                setPreviousSelectedIds(new Set(selectedIds));
-              }}
-            >
-              {t('query_change_chosen_corpuses')}
-            </Button>
-            <Button
-              sx={DefaultButtonStyle}
-              variant="contained"
-              disabled={selectedIds.length === 0}
-              onClick={saveTexts}
-            >
-              {t('query_results_save_texts_for_analysis')}
-            </Button>
-          </Grid>
-
-          {/* todo maybe querydownloadbutton needs to live inside TableHeaderButtons? */}
-          <QueryDownloadButton selected={new Set(selectedIds)} />
-          <GenericTable
-            columns={columns}
-            data={data}
-            enableRowSelection={true}
-            rowSelection={rowSelection}
-            onRowSelectionChange={setRowSelection}
-            getRowId={row => row.text_id}
-          />
-        </>
-      }
+      <>
+        <h4>
+          <strong>{t('query_results_found_texts')}:</strong> {results.length}
+        </h4>
+        <TableHeaderButtons
+          leftComponent={actionButtons()}
+          rightComponent={<QueryDownloadButton selected={new Set(selectedIds)} />}
+        />
+        <GenericTable
+          columns={columns}
+          data={data}
+          enableRowSelection={true}
+          rowSelection={rowSelection}
+          onRowSelectionChange={setRowSelection}
+          getRowId={row => row.text_id}
+        />
+      </>
       <ModalBase
         isOpen={modalOpen}
         setIsOpen={setModalOpen}

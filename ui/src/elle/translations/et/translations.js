@@ -511,7 +511,7 @@ export const TRANSLATIONS_ET = {
   query_download_zip: 'ZIP failina',
   query_filters: 'Otsingu filtrid',
   query_results_accordion_title: 'Otsingu tulemused',
-  query_results_found_texts: 'Leitud tekste:',
+  query_results_found_texts: 'Leitud tekste',
   query_results_no_texts_found: 'Ei leitud ühtegi teksti.',
   query_results_preview_metadata_modal_title: 'Teksti metainfo',
   query_results_save_texts_for_analysis: 'Salvesta tekstid analüüsiks',

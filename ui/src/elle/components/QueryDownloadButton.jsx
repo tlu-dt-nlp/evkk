@@ -67,7 +67,7 @@ export default function QueryDownloadButton({ selected }) {
   };
 
   return (
-    <span className="query-download-button-wrapper">
+    <span>
       <Tooltip
         title={t('common_download')}
         placement="top"
