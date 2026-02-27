@@ -48,8 +48,8 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
    do it manually:
    1. UNIX-like (Linux, macOS): `yarn --cwd=./ui install && yarn --cwd=./ui start`
    2. Windows: `cd ui; yarn install; yarn start`  
-      Running each command directly in `ui` like in UNIX can cause issues with Corepack not respecting the necessary
-      Yarn version defined in `package.json`
+      On Windows, running Yarn commands from outside the `ui` directory (even with `--cwd=./ui`) can cause Corepack
+      to not respect the Yarn version defined in `package.json`, so changing into the directory first is necessary
 7. If IntelliJ IDEA does not recognize Yarn packages installed using PnP (i.e. package.json shows all packages as not
    installed), change the package manager in settings:
    `Settings -> Languages & Frameworks -> JavaScript Runtime -> Package manager -> Choose Yarn`
