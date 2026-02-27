@@ -67,7 +67,7 @@ export default function QueryDownloadButton({ selected }) {
   };
 
   return (
-    <span className="query-download-button-span">
+    <span className="query-download-button-wrapper">
       <Tooltip
         title={t('common_download')}
         placement="top"
@@ -91,7 +91,7 @@ export default function QueryDownloadButton({ selected }) {
         }}
       >
         <Box className="query-download-dialog">
-          <Box className="download-dialog-inner" id="fileDownload">
+          <Box className="download-dialog-inner">
             <FormControl fullWidth>
               <InputLabel>
                 {t('query_download_form')}
@@ -101,14 +101,25 @@ export default function QueryDownloadButton({ selected }) {
                 defaultValue={FileDownloadForm.BASIC_TEXT}
                 onChange={changeDownloadForm}
               >
-                <MenuItem value={FileDownloadForm.BASIC_TEXT}>{t('query_download_basictext')}</MenuItem>
-                <MenuItem value={FileDownloadForm.ANNOTATE_TEI}>{t('query_download_tei')}</MenuItem>
-                <MenuItem value={FileDownloadForm.ANNOTATE_STANZA_CONLLU}>{t('query_download_stanza')}</MenuItem>
-                <MenuItem value={FileDownloadForm.ANNOTATE_ESTNLTK}>{t('query_download_vislcg3')}</MenuItem>
+                <MenuItem value={FileDownloadForm.BASIC_TEXT}>
+                  {t('query_download_basictext')}
+                </MenuItem>
+                <MenuItem value={FileDownloadForm.ANNOTATE_TEI}>
+                  {t('query_download_tei')}
+                </MenuItem>
+                <MenuItem value={FileDownloadForm.ANNOTATE_STANZA_CONLLU}>
+                  {t('query_download_stanza')}
+                </MenuItem>
+                <MenuItem value={FileDownloadForm.ANNOTATE_ESTNLTK}>
+                  {t('query_download_vislcg3')}
+                </MenuItem>
               </Select>
             </FormControl>
             <FormControl className="query-download-modal-radio-group">
-              <RadioGroup defaultValue={FileDownloadType.SINGLE_FILE} onChange={changeDownloadFileType}>
+              <RadioGroup
+                defaultValue={FileDownloadType.SINGLE_FILE}
+                onChange={changeDownloadFileType}
+              >
                 <FormControlLabel
                   value={FileDownloadType.SINGLE_FILE}
                   control={<Radio />}
@@ -123,8 +134,10 @@ export default function QueryDownloadButton({ selected }) {
             </FormControl>
             <div className="download-license-and-button">
               {t('query_download_license')}&nbsp;
-              <NewTabHyperlink path={CC_BY_4_0_LICENSE_PATH}
-                               content={t('common_license_cc_by_4_0')} />
+              <NewTabHyperlink
+                path={CC_BY_4_0_LICENSE_PATH}
+                content={t('common_license_cc_by_4_0')}
+              />
             </div>
             <div className="download-license-and-button">
               <Button
