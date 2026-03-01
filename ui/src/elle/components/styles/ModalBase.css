@@ -1,15 +1,31 @@
 .modal-base-root {
+  scroll-behavior: smooth;
+
   @media (max-width: 1023px) {
     width: 80% !important;
   }
 
   @media (max-width: 677px) {
-    width: 90% !important;
+    width: 95% !important;
   }
 }
 
 .modal-head {
   font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  padding-right: 2em;
+}
+
+.modal-head-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.modal-head-actions {
+  display: flex;
+  align-items: center;
 }
 
 .close-button {
@@ -18,14 +34,27 @@
   right: 0.5em;
 }
 
-.text-upload-modal {
-  max-width: 40em;
+.image-modal {
+  width: 90% !important;
+  max-width: 84em;
 }
 
-.wordcloud-modal {
-  width: 84em !important;
+@media (max-width: 1440px) {
+  .image-modal {
+    width: 95% !important;
+    padding: 16px !important;
+  }
 }
 
-.graph-modal {
-  width: 84em !important;
+@media (max-width: 768px) {
+  .image-modal {
+    width: 98% !important;
+  }
+}
+
+.image-modal canvas,
+.image-modal svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }

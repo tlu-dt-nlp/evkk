@@ -1,4 +1,4 @@
-@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "@fortawesome/fontawesome-free/css/all.css";
 @import url('https://fonts.googleapis.com/css?family=Mulish');
 @import url('https://fonts.googleapis.com/css?family=Exo+2');
 @import url('https://fonts.googleapis.com/css2?family=Material+Icons');
@@ -6,6 +6,7 @@
 html {
   position: relative;
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -77,13 +78,33 @@ a:hover {
 }
 
 .MuiFormControl-root {
-  /* todo comment-in this and remove same property from Adding.css */
-  /*contain: inline-size;*/
+  contain: inline-size;
+  width: 100%;
+}
+
+.MuiInputBase-root {
+  margin-bottom: 1rem !important;
+}
+
+/* to even labels without tooltips to those that have tooltips */
+.MuiFormLabel-root, .MuiInputLabel-root {
+  min-height: 25px;
+  margin-bottom: .25rem !important;
+}
+
+.MuiFormHelperText-root {
+  margin-top: -.5rem !important;
 }
 
 .global-page-container {
   width: 80vw !important;
   margin-top: 20px;
+}
+
+@media (max-width: 1399px) {
+  .global-page-container {
+    width: 90vw !important;
+  }
 }
 
 @media (max-width: 1023px) {
@@ -117,4 +138,13 @@ h3, h4 {
   hyphens: auto;
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
+}
+
+/* Prevent MUI Select from scrolling viewport on focus */
+.MuiSelect-select:focus {
+  scroll-margin: 0;
+}
+
+.MuiSelect-select {
+  scroll-margin: 0;
 }

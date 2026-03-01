@@ -1,0 +1,23 @@
+.table-applied-filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+
+  .label {
+    margin-right: 3px;
+    margin-bottom: 3px;
+  }
+}
+
+.table-filter-chip {
+  max-width: 100%;
+  height: auto !important;
+
+  .MuiChip-label {
+    white-space: normal;
+    word-break: break-word;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}

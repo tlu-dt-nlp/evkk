@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Aspect
@@ -26,7 +26,11 @@ public class RateLimitAspect {
   @Before("@annotation(rateLimit) && execution(public * *(..))")
   public void rateLimit(RateLimit rateLimit) throws RateLimitExceededException {
     String key = generateKey();
-    RateLimiter limiter = limiters.computeIfAbsent(key, k -> new RateLimiter(rateLimit.limit(), rateLimit.timeFrame(), TimeUnit.SECONDS));
+    RateLimiter limiter = limiters.computeIfAbsent(
+      key,
+      k -> new RateLimiter(rateLimit.limit(), rateLimit.timeFrame(), SECONDS)
+    );
+
     if (!limiter.tryAcquire()) {
       throw new RateLimitExceededException();
     }

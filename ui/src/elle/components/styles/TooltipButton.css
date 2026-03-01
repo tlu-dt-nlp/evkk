@@ -1,6 +1,5 @@
 .tooltip-button {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding: 0 !important;
   cursor: help !important;
 
   .tooltip-icon {

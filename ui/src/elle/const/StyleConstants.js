@@ -1,25 +1,74 @@
-import { makeStyles } from '@mui/styles';
 import { styled, tooltipClasses } from '@mui/material';
-import { HashLink } from 'react-router-hash-link';
+import { NavLink } from 'react-router-dom';
+import { createTheme } from '@mui/material/styles';
 
-export const useStyles = makeStyles((_theme) => ({
-  formControl: {
-    margin: 1,
-    width: 300
+export const theme = createTheme({
+  palette: {
+    primary: {
+      // light: will be calculated from palette.primary.main,
+      main: '#9C27B0'
+      // dark: will be calculated from palette.primary.main,
+      // contrastText: will be calculated to contrast with palette.primary.main
+    },
+    secondary: {
+      light: '#0066ff',
+      main: '#CC9AFC',
+      // dark: will be calculated from palette.secondary.main,
+      contrastText: '#ffcc00'
+    },
+    // Provide every color token (light, main, dark, and contrastText) when using
+    // custom colors for props in Material UI's components.
+    // Then you will be able to use it like this: `<Button color="custom">`
+    // (For TypeScript, you need to add module augmentation for the `custom` value)
+    custom: {
+      light: '#ffa726',
+      main: '#f57c00',
+      dark: '#ef6c00',
+      contrastText: 'rgba(0, 0, 0, 0.87)'
+    },
+    // Used by `getContrastText()` to maximize the contrast between
+    // the background and the text.
+    contrastThreshold: 3,
+    // Used by the functions below to shift a color's luminance by approximately
+    // two indexes within its tonal palette.
+    // E.g., shift from Red 500 to Red 300 or Red 700.
+    tonalOffset: 0.2
   },
-  indeterminateColor: {
-    color: '#f50057'
+  typography: {
+    fontFamily: `"Mulish", "sans-serif"`
   },
-  selectAllText: {
-    fontWeight: 500
-  },
-  selectedAll: {
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.08)'
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontSize: '1rem',
+          maxWidth: '400px'
+        }
+      }
+    },
+    MuiTextField: {
+      slotProps: {
+        input: {
+          notched: false
+        }
+      }
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          position: 'static',
+          transform: 'none',
+          marginBottom: '0.25em',
+          whiteSpace: 'normal',
+          overflowWrap: 'anywhere',
+          hyphens: 'auto',
+          contain: 'inline-size',
+          pointerEvents: 'auto'
+        }
+      }
     }
   }
-}));
+});
 
 export const AccordionStyle = {
   '&:before': {
@@ -41,16 +90,11 @@ export const DefaultButtonStyle = {
 };
 
 export const SecondaryButtonStyle = {
-  backgroundColor: '#CDA9FD',
+  color: '#9C27B0',
+  borderColor: '#9C27B0',
   fontWeight: 'bold',
   lineHeight: '30px',
-  borderRadius: '15px',
-  '&:hover': {
-    backgroundColor: '#B593E1'
-  },
-  '&:disabled': {
-    backgroundColor: 'lightgray'
-  }
+  borderRadius: '15px'
 };
 
 export const ToggleButtonGroupStyle = {
@@ -134,7 +178,7 @@ export const DefaultCircularProgressStyle = {
   color: '#9C27B0'
 };
 
-export const FooterLink = styled(HashLink)({
+export const FooterLink = styled(NavLink)({
   color: '#1B1B1BDD',
   fontSize: '0.9rem',
   fontWeight: 100,
@@ -145,74 +189,9 @@ export const FooterLink = styled(HashLink)({
     textDecoration: 'none'
   },
   '&.active': {
-    color: '#9C27B0',
     textDecoration: 'none'
   }
 });
-
-export const TabStyle = {
-  '& button:hover': { backgroundColor: 'rgba(204, 168, 253, 1)', transition: '0.5s' },
-  '& button:active': { backgroundColor: '#9C27B0' },
-  '& button': {
-    backgroundColor: 'rgba(255, 208, 253, 1)',
-    display: 'inline-block',
-    color: 'black',
-    fontWeight: 'bold',
-    height: '60px',
-    borderBottom: '4px solid #9C27B0',
-    borderTop: '4px solid #9C27B0',
-    transition: '0.5s'
-  },
-  '& button:first-of-type': {
-    borderRadius: '25px 0 0 25px',
-    paddingLeft: '25px',
-    borderLeft: '4px solid #9C27B0'
-  },
-  '& button:last-child': {
-    borderRadius: '0 25px 25px 0',
-    paddingRight: '25px',
-    borderRight: '4px solid #9C27B0'
-  },
-  '& button.Mui-selected': {
-    backgroundColor: '#9C27B0',
-    color: 'white',
-    borderColor: 'rgba(204, 168, 253, 1)',
-    transition: '0.5s'
-  },
-  '& .MuiTabs-flexContainer': {
-    border: 'none',
-    borderBottom: 'none'
-  },
-  '& .MuiTabs-root': {
-    border: 'none',
-    borderBottom: 'none'
-  },
-  '& .MuiTab-root': {
-    textTransform: 'none'
-  }
-};
-
-export const ITEM_HEIGHT = 48;
-
-export const ITEM_PADDING_TOP = 8;
-
-export const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 11.5 + ITEM_PADDING_TOP,
-      width: 425
-    }
-  },
-  anchorOrigin: {
-    vertical: 'bottom',
-    horizontal: 'center'
-  },
-  transformOrigin: {
-    vertical: 'top',
-    horizontal: 'center'
-  },
-  variant: 'menu'
-};
 
 export const ElleDefaultChip = {
   borderColor: '#9C27B0',

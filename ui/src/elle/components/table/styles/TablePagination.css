@@ -1,0 +1,49 @@
+.MuiTablePagination-root {
+  margin-top: 10px;
+
+  p {
+    margin-bottom: 0;
+  }
+
+  .MuiTablePagination-toolbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    row-gap: 8px;
+    padding-left: 0;
+
+    .MuiTablePagination-select {
+      margin: 0 0 0 -8px;
+    }
+  }
+
+  .MuiTablePagination-spacer {
+    display: none;
+  }
+
+  .MuiInputBase-root {
+    margin-bottom: 0 !important;
+  }
+
+  .table-pagination-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .go-to-page-wrapper {
+    margin-left: 16px;
+
+    label {
+      margin-right: 8px;
+    }
+
+    div {
+      font-size: 0.875rem;
+
+      input {
+        text-align: center;
+      }
+    }
+  }
+}

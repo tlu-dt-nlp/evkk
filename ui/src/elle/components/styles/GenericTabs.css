@@ -1,0 +1,12 @@
+.generic-tabs {
+  .MuiTabScrollButton-root {
+    width: 40px;
+    transition: width .35s ease, opacity .25s ease;
+  }
+
+  .MuiTabScrollButton-root.Mui-disabled {
+    width: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+}

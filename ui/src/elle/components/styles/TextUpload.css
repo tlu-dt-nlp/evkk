@@ -1,45 +1,37 @@
-.popup {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 3;
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.popup-inner {
-  position: absolute;
-  padding: 32px;
-  width: 100%;
-  max-width: 640px;
-  height: 400px;
-  border-radius: 1em;
-  background-color: #FFF;
-}
-
-#close {
-  position: absolute !important;
-  top: 0 !important;
-  right: 0 !important;
-}
-
-#file_name {
-  overflow-y: auto;
-}
-
-.button-file {
-  height: 30px;
-  width: 30px;
-  cursor: pointer;
-  margin: 0 0 1rem -.25rem
-}
-
-.file-name-element {
-  height: 150px;
-  width: 500px;
+.file-name-container {
+  min-height: 150px;
   text-align: center;
+
+  .chosen-files-title {
+    font-weight: bold;
+    text-decoration: underline;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
+
+  .file-name {
+    margin-bottom: .5rem;
+  }
+}
+
+.text-upload-modal {
+  max-width: 40em;
+}
+
+.text-upload-file-input {
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.textfield-upload-component {
+  display: grid;
+  justify-content: end;
+  padding: 0;
+  margin-top: 10em;
+  width: auto;
+
+  & svg {
+    margin: 0;
+  }
 }
