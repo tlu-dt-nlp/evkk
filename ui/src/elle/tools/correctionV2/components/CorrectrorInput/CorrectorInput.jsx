@@ -3,7 +3,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import React, { useEffect, useRef } from 'react';
 import MarkComponentExtension from './MarkuComponent/MarkComponentExtension.js';
-import { useEditorContext } from '../../providers/EditorProvider.js';
+import { useEditorContext } from '../../providers/EditorProvider.jsx';
 import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
 import TextUpload from '../../../../components/TextUpload';
 import { Paper } from '@mui/material';
@@ -99,7 +99,10 @@ export default function CorrectorInput() {
     <div className="position-relative">
       <EditorContent ref={contentRef} editor={editor} />
       <Paper className="corrector-input-icon-bar" elevation={3}>
-        <TextUpload sendTextFromFile={handleTextUpload} buttonClassName={'corrector-input-download-button'} />
+        <TextUpload
+          sendTextFromFile={handleTextUpload}
+          disableStyles={true}
+        />
       </Paper>
     </div>
   );

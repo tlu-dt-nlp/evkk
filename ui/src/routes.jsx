@@ -23,6 +23,7 @@ import { AboutUsDrawerList, RouteConstants, RouteFullPathConstants } from './ell
 import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
+import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
 
 export const routes = [
   {
@@ -80,7 +81,7 @@ export const routes = [
           },
           {
             path: RouteConstants.CORRECTOR,
-            element: <Correction />,
+            element: <CorrectionV2 />,
             handle: { crumb: () => ({ to: RouteConstants.CORRECTOR, translateKey: 'common_corrector' }) }
           },
           {
