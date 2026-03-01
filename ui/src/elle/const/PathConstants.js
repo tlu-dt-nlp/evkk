@@ -2,7 +2,7 @@ export const ELLE_PATH = 'https://elle.tlu.ee/';
 
 export const EVKK_VERS1_PATH = 'https://evkk.tlu.ee/vers1/';
 
-export const EVKK_GITHUB_PATH = 'https://github.com/centre-for-educational-technology/evkk';
+export const EVKK_GITHUB_PATH = 'https://github.com/tlu-dt-nlp/evkk';
 
 export const EVKK_GITHUB_RELEASE_BASE_PATH = `${EVKK_GITHUB_PATH}/releases/tag/`;
 
