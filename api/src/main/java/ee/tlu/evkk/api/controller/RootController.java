@@ -36,7 +36,13 @@ public class RootController {
   public StatusResponseDto status(HttpServletRequest request) throws TokenNotFoundException {
     User user = rootService.getUser(request);
     String accessToken = rootService.getAccessToken(user);
-    return dtoMapper.toStatusResponseDto(dtoMapper.toUserDto(user), accessToken, buildIntegrationPaths(), ELLE_VERSION);
+
+    return StatusResponseDto.builder()
+      .user(dtoMapper.toUserDto(user))
+      .accessToken(accessToken)
+      .integrationPaths(buildIntegrationPaths())
+      .version(ELLE_VERSION)
+      .build();
   }
 
   private Map<String, String> buildIntegrationPaths() {

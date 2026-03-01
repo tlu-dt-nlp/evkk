@@ -2,7 +2,6 @@ package ee.tlu.evkk.api.controller.tools;
 
 import ee.tlu.evkk.api.controller.tools.dto.MinitornPikkusRequestDto;
 import ee.tlu.evkk.api.controller.tools.dto.MinitornPikkusResponseDto;
-import ee.tlu.evkk.api.converter.DtoMapper;
 import ee.tlu.evkk.api.integration.MinitornPikkusClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,12 +21,10 @@ import javax.validation.Valid;
 public class MinitornPikkusController {
 
   private final MinitornPikkusClient client;
-  private final DtoMapper dtoMapper;
 
   @PostMapping
   public MinitornPikkusResponseDto post(@RequestBody @Valid MinitornPikkusRequestDto requestEntity) {
     long length = client.getStringLengthOfCharSequence(requestEntity.getInput());
-    return dtoMapper.toMinitornPikkusResponseDto(length);
+    return new MinitornPikkusResponseDto(length);
   }
-
 }
