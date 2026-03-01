@@ -31,8 +31,9 @@ public class TextUtils {
    * <code>&#x5C;u180E</code> — Mongolian vowel separator (obsolete spacing character) <br>
    * <code>&#x5C;uFEFF</code> — byte order mark (invisible marker sometimes at the start of text) <br>
    * <code>&#x5C;uFFF9</code>–<code>&#x5C;uFFFB</code> — interlinear annotation controls (invisible markers sometimes appearing in PDF or ePub text) <br>
+   * <code>&#x5C;u00B7</code> — middle dot symbol sometimes appearing in the middle of words
    */
-  private static final String INVISIBLE_CHARACTER_REGEX = "[\\u00AD\\u180E\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u206F\\uFEFF\\uFFF9-\\uFFFB]";
+  private static final String INVISIBLE_CHARACTER_REGEX = "[\\u00AD\\u180E\\u200B-\\u200F\\u202A-\\u202E\\u2060-\\u206F\\uFEFF\\uFFF9-\\uFFFB\\u00B7]";
 
   public static List<List<UUID>> getSortedPartitionedUUIDs(Set<UUID> ids) {
     List<UUID> sortedCorpusTextIds = ids.stream().sorted(comparing(UUID::toString)).collect(toList());

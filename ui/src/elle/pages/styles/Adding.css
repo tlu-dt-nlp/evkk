@@ -19,13 +19,6 @@
     font-weight: bold;
   }
 
-  .MuiFormControl-root {
-    margin-bottom: 1rem;
-    width: 100%;
-    /* todo remove property below and comment-in this globally in index.css */
-    contain: inline-size;
-  }
-
   .MuiAlert-root {
     margin-top: 2rem;
     margin-bottom: 1rem;
@@ -37,20 +30,19 @@
     }
   }
 
+  .terms-of-service {
+    .MuiAlert-icon {
+      display: none;
+    }
+
+    label {
+      display: inline;
+    }
+  }
+
   .button-container {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-  }
-}
-
-.adding-text-upload-component {
-  display: grid;
-  justify-content: end;
-  padding: 0;
-  margin-top: 10em;
-
-  & svg {
-    margin: 0;
   }
 }

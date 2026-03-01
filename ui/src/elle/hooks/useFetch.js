@@ -21,8 +21,10 @@ const hasNonExpiredToken = (token) => {
 
 const parseByType = async (res, type) => {
   switch (type) {
-    case FetchParseType.JSON:
-      return await res.json();
+    case FetchParseType.JSON: {
+      const text = await res.text();
+      return text ? JSON.parse(text) : null;
+    }
     case FetchParseType.TEXT:
       return await res.text();
     case FetchParseType.BLOB:
@@ -32,19 +34,28 @@ const parseByType = async (res, type) => {
   }
 };
 
-const handleError = async (res, finalOptions) => {
-  if (statusHandlers[res.status]) {
-    errorEmitter.emit(statusHandlers[res.status]);
+const handleError = async (res, options) => {
+  const statusHandler = statusHandlers[res.status];
+
+  if (statusHandler) {
+    errorEmitter.emit(statusHandler);
     return;
   }
 
   if (res.status === 400) {
-    const body = await res.json();
-    errorEmitter.emit(ErrorCode400[body[0].code]);
+    const body = await parseByType(res, FetchParseType.JSON);
+    const code = body?.[0]?.code;
+
+    const errorCode400Handler = ErrorCode400[code];
+    if (errorCode400Handler) {
+      errorEmitter.emit(errorCode400Handler);
+    } else {
+      errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR);
+    }
     return;
   }
 
-  if (res.status === 404 && finalOptions.ignoreNotFoundError) {
+  if (res.status === 404 && options.ignoreNotFoundError) {
     return;
   }
 
@@ -55,7 +66,7 @@ export const useFetch = () => {
   const { accessToken } = useContext(RootContext) || {};
   const [response, setResponse] = useState(null);
 
-  const fetchData = useCallback(async (url, params = {}, options = {}) => {
+  const fetchData = useCallback(async (url, params = {}, userOptions = {}) => {
     const defaultOptions = {
       disableErrorHandling: false,
       disableResponseParsing: false,
@@ -63,14 +74,14 @@ export const useFetch = () => {
       parseType: FetchParseType.JSON,
       ignoreNotFoundError: false
     };
-    const finalOptions = { ...defaultOptions, ...options };
+    const options = { ...defaultOptions, ...userOptions };
 
     loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START);
 
     try {
       const fetchParams = { ...params };
 
-      if (!finalOptions.disableContentTypeJson) {
+      if (!options.disableContentTypeJson) {
         fetchParams.headers = {
           ...fetchParams.headers,
           'Content-Type': 'application/json'
@@ -84,15 +95,30 @@ export const useFetch = () => {
         };
       }
 
-      const res = await fetch(url, fetchParams);
-
-      if (!finalOptions.disableErrorHandling && !res.ok) {
-        await handleError(res, finalOptions);
+      let res;
+      try {
+        res = await fetch(url, fetchParams);
+      } catch (e) {
+        if (navigator.onLine) {
+          errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR);
+        } else {
+          errorEmitter.emit(ErrorSnackbarEventType.NO_INTERNET_CONNECTION);
+        }
+        return;
       }
 
-      const result = finalOptions.disableResponseParsing
+      if (!res.ok) {
+        if (options.disableErrorHandling) {
+          throw new Error(`HTTP request failed: ${res}`);
+        }
+        await handleError(res, options);
+      }
+
+      const result = options.disableResponseParsing
         ? res
-        : await parseByType(res, finalOptions.parseType);
+        : res.ok
+          ? await parseByType(res, options.parseType)
+          : null;
 
       setResponse(result);
       return result;
@@ -109,4 +135,3 @@ export const FetchParseType = {
   JSON: 'json',
   TEXT: 'text'
 };
-

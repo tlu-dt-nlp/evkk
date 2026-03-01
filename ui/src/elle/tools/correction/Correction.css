@@ -66,19 +66,6 @@
 @media (max-width: 677px) {
   .corrector-border-box-inner {
     flex-wrap: wrap;
-
-    .MuiTabScrollButton-root {
-      --tab-btn-w: 40px;
-      width: var(--tab-btn-w);
-      overflow: hidden;
-      transition: width .35s ease, opacity .25s ease;
-    }
-
-    .MuiTabScrollButton-root.Mui-disabled {
-      width: 0;
-      opacity: 0;
-      pointer-events: none;
-    }
   }
 
   .corrector-border-box-inner > div:nth-child(1) {

@@ -1,0 +1,10 @@
+.table-header-button-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+
+  .right-component-wrapper {
+    padding-left: 5px;
+  }
+}

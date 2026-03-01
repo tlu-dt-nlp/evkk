@@ -2,8 +2,9 @@ import { queryStore } from '../../store/QueryStore';
 import { sanitizeTexts } from '../../util/TextUtils';
 import { FetchParseType, useFetch } from '../useFetch';
 import { useCallback } from 'react';
-import { successEmitter } from '../../../App';
+import { errorEmitter, successEmitter } from '../../../App';
 import { SuccessSnackbarEventType } from '../../components/snackbar/SuccessSnackbar';
+import { ErrorSnackbarEventType } from '../../components/snackbar/ErrorSnackbar';
 
 export const useGetSelectedTexts = setStoreData => {
   const { fetchData } = useFetch();
@@ -17,6 +18,7 @@ export const useGetSelectedTexts = setStoreData => {
       }, {
         parseType: FetchParseType.TEXT
       }).then(response => {
+        if (!response) return;
         const queryStoreState = queryStore.getState();
         let result = response;
         if (queryStoreState.ownTexts) {
@@ -51,16 +53,22 @@ export const useGetTextFromFile = () => {
 export const useAddText = () => {
   const { fetchData } = useFetch();
 
-  const addText = useCallback((body, onComplete) => {
+  const addText = useCallback((body, onComplete, onSuccess, onFailure) => {
     fetchData('/api/texts/lisatekst', {
       method: 'POST',
       body
     }, {
-      parseType: FetchParseType.TEXT
-    }).then(() => {
-      successEmitter.emit(SuccessSnackbarEventType.GENERIC_SUCCESS);
-      if (onComplete) onComplete();
-    });
+      parseType: FetchParseType.TEXT,
+      disableErrorHandling: true
+    }).then(
+      () => {
+        successEmitter.emit(SuccessSnackbarEventType.GENERIC_SUCCESS);
+        if (onSuccess) onSuccess();
+      },
+      () => {
+        errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR);
+        if (onFailure) onFailure();
+      }).finally(() => onComplete && onComplete());
   }, [fetchData]);
 
   return { addText };

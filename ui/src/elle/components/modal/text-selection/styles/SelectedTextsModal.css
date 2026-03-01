@@ -1,0 +1,21 @@
+.chip-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+
+.number-avatar {
+  background-color: #9C27B0;
+  color: white !important;
+  padding: 0 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+}
+
+.selected-texts-modal {
+  max-width: 30em;
+}

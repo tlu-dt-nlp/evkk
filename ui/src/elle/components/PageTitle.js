@@ -1,21 +1,20 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { breadcrumbNameMap } from '../const/Constants';
+import { useMatches } from 'react-router-dom';
 
-export default function PageTitle({ breadcrumbs }) {
-
+export default function PageTitle() {
   const { t } = useTranslation();
+  const matches = useMatches();
 
   useEffect(() => {
-    const lastSegmentKey = breadcrumbs[breadcrumbs.length - 1].key;
-    const dynamicTitle = t(breadcrumbNameMap[lastSegmentKey]) || t('error_page_not_found');
+    const matchWithCrumb = [...matches]
+      .reverse()
+      .find(m => m.handle?.crumb);
 
-    document.title = (
-      breadcrumbs.length === 1
-        ? t('page_title_homepage')
-        : dynamicTitle
-    ) + ' | ELLE';
-  }, [breadcrumbs, t]);
+    const titleKey = matchWithCrumb?.handle?.crumb()?.translateKey ?? 'page_title_homepage';
+
+    document.title = `${t(titleKey)} | ELLE`;
+  }, [matches, t]);
 
   return null;
 }

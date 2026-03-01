@@ -1,31 +1,3 @@
-import {
-  AccountBalance,
-  AccountBox,
-  Article,
-  Book,
-  CoPresent,
-  Devices,
-  Dvr,
-  Gamepad,
-  HistoryEdu,
-  Info,
-  Keyboard,
-  LibraryBooks,
-  Lightbulb,
-  MenuBook,
-  Movie,
-  Newspaper,
-  PermDeviceInformation,
-  PermMedia,
-  Radio,
-  School,
-  Science,
-  Source,
-  Spellcheck,
-  Translate
-} from '@mui/icons-material';
-import { HashFragmentRouteConstants, RouteConstants } from '../../AppRoutes';
-
 export const WORDANALYSER_MAX_WORD_COUNT_FOR_WORDINFO = 1000;
 
 export const replaceCombined = /<\/?span[^>]*>|<\/?div[^>]*>/g;
@@ -33,26 +5,6 @@ export const replaceSpaceTags = /&nbsp; ?/g;
 export const replaceQuotes = /&quot;/g;
 export const replaceDots = /\.{2,}/g;
 export const replaceSpaces = /\s\s+/g;
-
-export const breadcrumbNameMap = {
-  '/corrector': 'common_corrector',
-  '/tools': 'common_tools',
-  '/links': 'common_links',
-  '/about': 'common_about',
-  '/about/us': 'common_us',
-  '/about/people': 'common_people',
-  '/about/grants': 'common_grants',
-  '/about/publications': 'common_publications',
-  '/adding': 'common_publish_your_text',
-  '/login': 'common_login_for_admins',
-  '/tools/clusterfinder': 'common_clusters',
-  '/tools/wordanalyser': 'common_word_analyser',
-  '/tools/wordlist': 'common_wordlist',
-  '/tools/wordcontext': 'common_word_in_context',
-  '/tools/collocates': 'common_neighbouring_words',
-  '/admin': 'common_admin_panel',
-  '/corrector-test': 'common_corrector'
-};
 
 export const UserRoles = {
   USER: 'USER',
@@ -236,57 +188,61 @@ export const textTypesOptions = {
   }
 };
 
-export const textPublishSubTextTypesOptions = {
+export const textPublishTextSubtypesOptions = {
   'k2eesti_riiklik_eksamitoo': 'common_text_data_type_L2_proficiency_examination',
   'k2eesti_ol_loovkirjutis': 'common_text_data_type_L2_olympiade_creative_writing',
   'k2eesti_keeleope_disabled': 'query_subcorpus_L2_estonian',
-  'k2eesti_tolge': 'common_text_data_type_translation',
-  'k2eesti_eksamitoo': 'common_text_data_type_examination',
-  'k2eesti_kontrolltoo_test': 'common_text_data_type_test',
-  'k2eesti_loovkirjutis': 'common_text_data_type_creative_writing',
+  'k2eesti_tolge_child': 'common_text_data_type_translation',
+  'k2eesti_eksamitoo_child': 'common_text_data_type_examination',
+  'k2eesti_kontrolltoo_test_child': 'common_text_data_type_test',
+  'k2eesti_loovkirjutis_child': 'common_text_data_type_creative_writing',
   'k2eesti_kiri_disabled': 'query_text_data_type_L2_letter',
-  'k2eesti_kiri_isiklik': 'query_text_data_type_L2_letter_informal',
-  'k2eesti_kiri_poolametlik': 'query_text_data_type_L2_letter_semi_formal',
+  'k2eesti_kiri_isiklik_child': 'query_text_data_type_L2_letter_informal',
+  'k2eesti_kiri_poolametlik_child': 'query_text_data_type_L2_letter_semi_formal',
   'k2eesti_harjutus_disabled': 'query_text_data_type_L2_exercise',
-  'k2eesti_harjutus_dialoog': 'query_text_data_type_L2_exercise_dialogue',
-  'k2eesti_harjutus_etteutlus': 'query_text_data_type_L2_exercise_dictation',
-  'k2eesti_harjutus_juhend': 'query_text_data_type_L2_exercise_instruction',
-  'k2eesti_harjutus_kirjeldus': 'query_text_data_type_L2_exercise_description',
-  'k2eesti_harjutus_kuulutus': 'query_text_data_type_L2_exercise_announcement',
-  'k2eesti_harjutus_kone': 'query_text_data_type_L2_exercise_speech',
-  'k2eesti_harjutus_laused': 'query_text_data_type_L2_exercise_sentence_construction',
-  'k2eesti_harjutus_leping': 'query_text_data_type_L2_exercise_contract',
-  'k2eesti_harjutus_lunktekst': 'query_text_data_type_L2_exercise_fill_in_the_blanks',
-  'k2eesti_harjutus_menuu': 'query_text_data_type_L2_exercise_menu',
-  'k2eesti_harjutus_reklaam': 'query_text_data_type_L2_exercise_ad',
-  'k2eesti_harjutus_retsept': 'query_text_data_type_L2_exercise_recipe',
-  'k2eesti_harjutus_teejuht': 'query_text_data_type_L2_exercise_guide',
-  'k2eesti_harjutus_vastused': 'query_text_data_type_L2_exercise_answering_questions',
-  'k2eesti_harjutus_umberjutustus': 'query_text_data_type_L2_exercise_retelling',
+  'k2eesti_harjutus_dialoog_child': 'query_text_data_type_L2_exercise_dialogue',
+  'k2eesti_harjutus_etteutlus_child': 'query_text_data_type_L2_exercise_dictation',
+  'k2eesti_harjutus_juhend_child': 'query_text_data_type_L2_exercise_instruction',
+  'k2eesti_harjutus_kirjeldus_child': 'query_text_data_type_L2_exercise_description',
+  'k2eesti_harjutus_kuulutus_child': 'query_text_data_type_L2_exercise_announcement',
+  'k2eesti_harjutus_kone_child': 'query_text_data_type_L2_exercise_speech',
+  'k2eesti_harjutus_laused_child': 'query_text_data_type_L2_exercise_sentence_construction',
+  'k2eesti_harjutus_leping_child': 'query_text_data_type_L2_exercise_contract',
+  'k2eesti_harjutus_lunktekst_child': 'query_text_data_type_L2_exercise_fill_in_the_blanks',
+  'k2eesti_harjutus_menuu_child': 'query_text_data_type_L2_exercise_menu',
+  'k2eesti_harjutus_reklaam_child': 'query_text_data_type_L2_exercise_ad',
+  'k2eesti_harjutus_retsept_child': 'query_text_data_type_L2_exercise_recipe',
+  'k2eesti_harjutus_teejuht_child': 'query_text_data_type_L2_exercise_guide',
+  'k2eesti_harjutus_vastused_child': 'query_text_data_type_L2_exercise_answering_questions',
+  'k2eesti_harjutus_umberjutustus_child': 'query_text_data_type_L2_exercise_retelling',
   'k1eesti_disabled': 'query_subcorpus_L1_estonian',
-  'k1eesti_arvamuslugu': 'common_text_data_type_opinion_piece',
-  'k1eesti_eksamitoo': 'common_text_data_type_examination',
-  'k1eesti_harjutus': 'common_text_data_type_exercise'
+  'k1eesti_arvamuslugu_child': 'common_text_data_type_opinion_piece',
+  'k1eesti_eksamitoo_child': 'common_text_data_type_examination',
+  'k1eesti_harjutus_child': 'common_text_data_type_exercise'
 };
 
 export const usedMaterialsMultiOptions = {
   'query_text_data_used_study_or_supporting_materials_yes': {
+    'tehisintellekt': 'query_text_data_used_study_or_supporting_materials_generative_ai',
+    'keeleoppematerjalid': 'query_text_data_used_study_or_supporting_materials_language_learning_materials',
+    'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
     'tolkesonastik': 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation',
     'ykskeelnesonastik': 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary',
     'terminisonastik': 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base',
     'kasiraamat': 'query_text_data_used_study_or_supporting_materials_professional_handbook',
-    'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
     'muu': 'common_other'
   },
   'ei': 'query_text_data_used_study_or_supporting_materials_no'
 };
 
 export const usedMaterialsMultiList = {
+  'tehisintellekt': 'query_text_data_used_study_or_supporting_materials_generative_ai',
+  'keeleoppematerjalid': 'query_text_data_used_study_or_supporting_materials_language_learning_materials',
+  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'tolkesonastik': 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation',
   'ykskeelnesonastik': 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary',
   'terminisonastik': 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base',
   'kasiraamat': 'query_text_data_used_study_or_supporting_materials_professional_handbook',
-  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'muu': 'common_other',
   'ei': 'query_text_data_used_study_or_supporting_materials_no'
 };
@@ -354,8 +310,8 @@ export const educationOptions = {
 };
 
 export const textPublishMainTextTypesOptions = {
-  'akadeemiline': 'publish_your_text_text_data_main_text_type_academic',
-  'mitteakadeemiline': 'publish_your_text_text_data_main_text_type_non_academic'
+  'mitteakadeemiline': 'publish_your_text_text_data_main_text_type_non_academic',
+  'akadeemiline': 'publish_your_text_text_data_main_text_type_academic'
 };
 
 export const textPublishAcademicCategoryOptions = {
@@ -384,11 +340,13 @@ export const textPublishAcademicResearchSubtypeOptions = {
 };
 
 export const textPublishUsedMaterialsOptions = {
+  'tehisintellekt': 'query_text_data_used_study_or_supporting_materials_generative_ai',
+  'keeleoppematerjalid': 'query_text_data_used_study_or_supporting_materials_language_learning_materials',
+  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'tolkesonastik': 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation',
   'ykskeelnesonastik': 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary',
   'terminisonastik': 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base',
   'kasiraamat': 'query_text_data_used_study_or_supporting_materials_professional_handbook',
-  'automaatkontroll': 'query_text_data_used_study_or_supporting_materials_automated_correction',
   'muu': 'common_other'
 };
 
@@ -488,163 +446,6 @@ export const countryOptionsForAddingText = {
   'Inglismaa': 'query_common_country_en',
   'Ungari': 'query_common_country_hu'
 };
-
-export const donationSideButtonEnabledPaths = {
-  home: '/',
-  corrector: `/${RouteConstants.CORRECTOR}`,
-  correctorTest: `/${RouteConstants.CORRECTOR_TEST}`
-};
-
-export const aboutUsDrawerList = [
-  {
-    key: 'about',
-    items: [
-      {
-        text: 'common_us',
-        icon: <Info />,
-        navigateTo: RouteConstants.US
-      },
-      {
-        text: 'common_people',
-        icon: <AccountBox />,
-        navigateTo: RouteConstants.PEOPLE
-      },
-      {
-        text: 'common_grants',
-        icon: <AccountBalance />,
-        navigateTo: RouteConstants.GRANTS
-      },
-      {
-        text: 'common_publications',
-        icon: <HistoryEdu />,
-        navigateTo: RouteConstants.PUBLICATIONS,
-        children: [
-          {
-            text: 'common_graduation_papers',
-            icon: <School />,
-            navigateTo: `${RouteConstants.PUBLICATIONS}#${HashFragmentRouteConstants.PUBLICATIONS_GRADUATION_PAPERS}`
-          },
-          {
-            text: 'common_conferences_and_workshops',
-            icon: <CoPresent />,
-            navigateTo: `${RouteConstants.PUBLICATIONS}#${HashFragmentRouteConstants.PUBLICATIONS_CONFERENCES_AND_WORKSHOPS}`
-          },
-          {
-            text: 'common_articles',
-            icon: <Article />,
-            navigateTo: `${RouteConstants.PUBLICATIONS}#${HashFragmentRouteConstants.PUBLICATIONS_ARTICLES}`
-          }
-        ]
-      }
-    ]
-  }
-];
-
-export const linksDrawerList = [
-  {
-    key: 'links',
-    items: [
-      {
-        text: 'common_introduction',
-        icon: <PermDeviceInformation />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_INTRODUCTION}`
-      },
-      {
-        text: 'common_dictionaries',
-        icon: <MenuBook />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_DICTIONARIES}`
-      },
-      {
-        text: 'common_translation_tools',
-        icon: <Translate />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_TRANSLATION_TOOLS}`
-      },
-      {
-        text: 'common_estonian_texts',
-        icon: <LibraryBooks />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_ESTONIAN_TEXTS}`,
-        children: [
-          {
-            text: 'links_media_texts',
-            icon: <Newspaper />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_MEDIA_TEXTS}`
-          },
-          {
-            text: 'links_literature',
-            icon: <Book />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_LITERATURE}`
-          },
-          {
-            text: 'links_academic_texts',
-            icon: <Science />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_ACADEMIC_TEXTS}`
-          }
-        ]
-      },
-      {
-        text: 'common_audiovisual_media',
-        icon: <PermMedia />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_AUDIOVISUAL_MEDIA}`,
-        children: [
-          {
-            text: 'links_series_films_videos',
-            icon: <Movie />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_SERIES_FILMS_VIDEOS}`
-          },
-          {
-            text: 'links_radio_audio_podcasts',
-            icon: <Radio />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_RADIO_AUDIO_PODCASTS}`
-          }
-        ]
-      },
-      {
-        text: 'common_learning_resources',
-        icon: <Spellcheck />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_LEARNING_RESOURCES}`,
-        children: [
-          {
-            text: 'links_language_learning_materials_and_exercises',
-            icon: <Dvr />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_LANGUAGE_LEARNING_MATERIALS_AND_EXERCISES}`
-          },
-          {
-            text: 'links_language_learning_games',
-            icon: <Gamepad />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_LANGUAGE_LEARNING_GAMES}`
-          }
-        ]
-      },
-      {
-        text: 'common_learning_environments_and_courses',
-        icon: <Devices />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_LEARNING_ENVIRONMENTS_AND_COURSES}`,
-        children: [
-          {
-            text: 'links_language_learning_environments',
-            icon: <Keyboard />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_LANGUAGE_LEARNING_ENVIRONMENTS}`
-          },
-          {
-            text: 'links_language_courses',
-            icon: <School />,
-            navigateTo: `#${HashFragmentRouteConstants.LINKS_LANGUAGE_COURSES}`
-          }
-        ]
-      },
-      {
-        text: 'common_for_teachers',
-        icon: <Lightbulb />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_FOR_TEACHERS}`
-      },
-      {
-        text: 'common_estonian_language_corpora',
-        icon: <Source />,
-        navigateTo: `#${HashFragmentRouteConstants.LINKS_ESTONIAN_LANGUAGE_CORPORA}`
-      }
-    ]
-  }
-];
 
 export const textToSpeechVoices = {
   mari: 'Mari',
