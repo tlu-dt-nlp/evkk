@@ -38,7 +38,7 @@ export default function TextUpload({
 
   return (
     <>
-      <div className={`container ${!disableStyles && 'textfield-upload-component'}`}>
+      <div className={`container textfield-upload-component ${!disableStyles && 'default-styles'}`}>
         <Tooltip
           title={t('textupload_secondary_modal_tooltip')}
           placement="top"

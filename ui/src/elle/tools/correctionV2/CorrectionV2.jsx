@@ -5,5 +5,6 @@ export default function CorrectionV2() {
   return (
     <EditorProvider>
       <CorrectorPage />
-    </EditorProvider>);
+    </EditorProvider>
+  );
 }
