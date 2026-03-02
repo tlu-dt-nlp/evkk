@@ -1,6 +1,5 @@
 import { Mark } from '@tiptap/core';
 import { ReactMarkViewRenderer } from '@tiptap/react';
-
 import MarkupComponent from './MarkupComponent.jsx';
 
 const MarkComponentExtension = Mark.create({

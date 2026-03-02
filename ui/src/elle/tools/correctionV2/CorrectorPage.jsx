@@ -13,7 +13,6 @@ import TextLevelView from './views/TextLevelView/TextLevelView';
 import ComplexityView from './views/ComplexityView/ComplexityView';
 import VocabularyView from './views/VocabularyView/VocabularyView';
 
-
 export default function CorrectorPage() {
   const {
     setInitialText,
