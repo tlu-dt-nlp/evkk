@@ -45,8 +45,8 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 5. Run API module. The simplest way in IntelliJ is to use the `ApiRunner` run config under `.run`. However, you can also
    do it manually (other modules like `task-scheduler` work in similar fashion in terms of run configs and running
    manually):
-  1. UNIX-like (Linux, macOS): `./gradlew :api:bootRun`
-  2. Windows: `.\gradlew.bat :api:bootRun`
+   1. UNIX-like (Linux, macOS): `./gradlew :api:bootRun`
+   2. Windows: `.\gradlew.bat :api:bootRun`
 6. Before running the UI module for the first time, enable Corepack: `corepack enable`
    1. Corepack is included with NodeJS 18.x and newer. It handles installing the correct version of Yarn for the project
 7. Run UI module. The simplest way in IntelliJ is to use a suitable `ui` run config under `.run`, however, you can also
