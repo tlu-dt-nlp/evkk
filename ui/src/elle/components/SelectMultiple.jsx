@@ -16,15 +16,23 @@ export default function SelectMultiple({
                                        }) {
 
   const { t } = useTranslation();
+  const isFlatType = type === SelectMultipleType.FLAT || type === SelectMultipleType.FLAT_KEYS;
 
   const getRenderValue = (values) => {
     if (enableFullRenderValue) {
       return values.join(', ');
     }
 
-    return values.length > 1
-      ? t(pluralSelectedTranslationKey, { amount: values.length })
-      : t(valueList ? valueList[values[0]] : values[0]);
+    if (values.length > 1) {
+      return t(pluralSelectedTranslationKey, { amount: values.length });
+    }
+
+    if (type === SelectMultipleType.FLAT_KEYS && Array.isArray(optionList)) {
+      const item = optionList.find(option => option.key === values[0]);
+      return t(item?.label || item?.key || values[0]);
+    }
+
+    return t(valueList ? valueList[values[0]] : values[0]);
   };
 
   const alterHierarchyDropdown = (e, isParent = false, group = null) => {
@@ -59,10 +67,10 @@ export default function SelectMultiple({
     let indeterminate = false;
 
     Object.keys(baseKeys[name]).forEach(value => {
-      if (!selectedValues.includes(value)) {
-        checked = false;
-      } else {
+      if (selectedValues.includes(value)) {
         indeterminate = true;
+      } else {
+        checked = false;
       }
     });
 
@@ -72,7 +80,7 @@ export default function SelectMultiple({
   const renderSingleMenuItem = (value, label, group = null, indent = false, isParent = false) => {
     const status = isParent
       ? checkHierarchyCheckboxStatus(value, group)
-      : { checked: selectedValues.indexOf(value) > -1, indeterminate: false };
+      : { checked: selectedValues.includes(value), indeterminate: false };
 
     return (
       <MenuItem
@@ -81,9 +89,9 @@ export default function SelectMultiple({
         value={value}
         className={status.checked || status.indeterminate ? 'Mui-selected' : ''}
         onClick={
-          type !== SelectMultipleType.FLAT
-            ? (e) => alterHierarchyDropdown(e, isParent, group)
-            : null
+          isFlatType
+            ? null
+            : e => alterHierarchyDropdown(e, isParent, group)
         }
         sx={
           indent
@@ -106,7 +114,7 @@ export default function SelectMultiple({
     );
   };
 
-  const renderSelectWrapper = (children) => (
+  const renderSelectWrapper = children => (
     <Select
       multiple
       value={selectedValues}
@@ -115,8 +123,8 @@ export default function SelectMultiple({
       disabled={disabled}
       onClose={onClose}
       onChange={
-        type === SelectMultipleType.FLAT
-          ? (e) => setSelectedValues(e.target.value)
+        isFlatType
+          ? e => setSelectedValues(e.target.value)
           : null
       }
     >
@@ -130,10 +138,10 @@ export default function SelectMultiple({
         renderSingleMenuItem(value, value)
       ))
     );
-  } else if (type === SelectMultipleType.FLAT_VALUES) {
+  } else if (type === SelectMultipleType.FLAT_KEYS) {
     return renderSelectWrapper(
-      Object.keys(optionList).map(value => (
-        renderSingleMenuItem(value, optionList[value])
+      optionList.map(item => (
+        renderSingleMenuItem(item.key, item.label || item.key)
       ))
     );
   } else if (type === SelectMultipleType.SIMPLE_HIERARCHICAL) {
@@ -175,7 +183,7 @@ export default function SelectMultiple({
 
 export const SelectMultipleType = {
   FLAT: 'FLAT',
-  FLAT_VALUES: 'FLAT_VALUES',
+  FLAT_KEYS: 'FLAT_KEYS',
   SIMPLE_HIERARCHICAL: 'SIMPLE_HIERARCHICAL',
   GROUPED_HIERARCHICAL: 'GROUPED_HIERARCHICAL'
 };
