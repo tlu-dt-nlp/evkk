@@ -9,7 +9,7 @@ export const RootProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [status, setStatus] = useState(true);
-  const [integrationPaths, setIntegrationPaths] = useState();
+  const [clusterFinderIntegrationPath, setClusterFinderIntegrationPath] = useState();
   const [version, setVersion] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [tokenRenewed, setTokenRenewed] = useState(false);
@@ -17,7 +17,7 @@ export const RootProvider = ({ children }) => {
   const setDataSuccess = useCallback(res => {
     setUser(res.user);
     setAccessToken(res.accessToken);
-    setIntegrationPaths(res.integrationPaths);
+    setClusterFinderIntegrationPath(res.clusterFinderIntegrationPath);
     setVersion(res.version);
     setStatus(true);
   }, []);
@@ -52,7 +52,16 @@ export const RootProvider = ({ children }) => {
 
   return (
     <RootContext.Provider
-      value={{ user, accessToken, status, integrationPaths, version, isLoading, setContext, clearAuthContext }}
+      value={{
+        user,
+        accessToken,
+        status,
+        clusterFinderIntegrationPath,
+        version,
+        isLoading,
+        setContext,
+        clearAuthContext
+      }}
     >
       {children}
     </RootContext.Provider>
