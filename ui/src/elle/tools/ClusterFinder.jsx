@@ -4,7 +4,7 @@ import { queryStore } from '../store/QueryStore';
 import { useGetSelectedTexts } from '../hooks/service/TextService';
 import RootContext from '../context/RootContext';
 
-const ClusterFinder = () => {
+export default function ClusterFinder() {
   const { clusterFinderIntegrationPath } = useContext(RootContext);
   const [height, setHeight] = useState('');
   const iframeRef = useRef();
@@ -41,5 +41,3 @@ const ClusterFinder = () => {
     </Box>
   );
 };
-
-export default ClusterFinder;
