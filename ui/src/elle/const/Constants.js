@@ -1,4 +1,6 @@
 export const WORDANALYSER_MAX_WORD_COUNT_FOR_WORDINFO = 1000;
+export const STATISTICS_CORPUS_TEXT_COUNT = '14 000+';
+export const STATISTICS_CORPUS_WORD_COUNT = '3 000 000+';
 
 export const replaceCombined = /<\/?span[^>]*>|<\/?div[^>]*>/g;
 export const replaceSpaceTags = /&nbsp; ?/g;
@@ -355,15 +357,9 @@ export const textPublishAcademicResearchSubtypeOptions = {
 
 export const textPublishUsedMaterialsOptions = [
   { key: 'tehisintellekt', label: 'query_text_data_used_study_or_supporting_materials_generative_ai' },
-  {
-    key: 'keeleoppematerjalid',
-    label: 'query_text_data_used_study_or_supporting_materials_language_learning_materials'
-  },
+  { key: 'keeleoppematerjalid', label: 'query_text_data_used_study_or_supporting_materials_language_learning_materials' },
   { key: 'automaatkontroll', label: 'query_text_data_used_study_or_supporting_materials_automated_correction' },
-  {
-    key: 'tolkesonastik',
-    label: 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation'
-  },
+  { key: 'tolkesonastik', label: 'query_text_data_used_study_or_supporting_materials_translation_dictionary_or_machine_translation' },
   { key: 'ykskeelnesonastik', label: 'query_text_data_used_study_or_supporting_materials_monolingual_dictionary' },
   { key: 'terminisonastik', label: 'query_text_data_used_study_or_supporting_materials_term_glossary_or_base' },
   { key: 'kasiraamat', label: 'query_text_data_used_study_or_supporting_materials_professional_handbook' },
