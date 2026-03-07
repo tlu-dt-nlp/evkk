@@ -1,5 +1,6 @@
 package ee.tlu.evkk.api.controller;
 
+import ee.tlu.evkk.core.integration.StanzaServerClient;
 import ee.evkk.dto.CollocateRequestDto;
 import ee.evkk.dto.CollocateResponseDto;
 import ee.evkk.dto.WordAnalyserRequestDto;
@@ -25,8 +26,11 @@ import java.io.IOException;
 
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.COLLOCATES;
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDANALYSER;
+import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.SPELLCHECK;
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDCONTEXT;
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDLIST;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/tools")
@@ -37,6 +41,7 @@ public class ToolsController {
   private final WordContextService wordContextService;
   private final CollocateService collocateService;
   private final WordAnalyserService wordAnalyserService;
+  private final StanzaServerClient stanzaServerClient;
 
   @RateLimit
   @PostMapping(WORDLIST)
@@ -61,5 +66,11 @@ public class ToolsController {
   @PostMapping(WORDANALYSER)
   public WordAnalyserResponseDto getWordAnalyserResponse(@RequestBody @Valid WordAnalyserRequestDto dto) {
     return wordAnalyserService.getWordAnalyserResponse(dto);
+  }
+
+  @RateLimit
+  @PostMapping(SPELLCHECK)
+  public Object checkSpelling(@RequestBody Map<String, String> body) {
+    return stanzaServerClient.getSpeller(body.get("tekst"));
   }
 }

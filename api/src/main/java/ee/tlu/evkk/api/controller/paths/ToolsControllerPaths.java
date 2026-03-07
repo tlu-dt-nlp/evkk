@@ -11,4 +11,5 @@ public class ToolsControllerPaths {
   public static final String WORDCONTEXT = "wordcontext";
   public static final String COLLOCATES = "collocates";
   public static final String WORDANALYSER = "wordanalyser";
+  public static final String SPELLCHECK = "spellcheck";
 }
