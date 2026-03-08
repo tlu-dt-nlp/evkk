@@ -121,13 +121,14 @@ export default function Wordlist() {
       accessorKey: 'menu',
       enableSorting: false,
       meta: { className: 'row-action-button' },
-      cell: info =>
+      cell: info => (
         <WordlistMenu
           word={info.row.original.word}
           type={typeValue}
           keepCapitalization={capitalizationChecked}
           showCollocatesButton={true}
         />
+      )
     }
   ], [typeValue, typeValueToDisplay, capitalizationChecked, t]);
 
@@ -173,7 +174,7 @@ export default function Wordlist() {
   };
 
   const listifyCustomStopwords = stopwords => {
-    return stopwords.replace(/ /g, '').split(',');
+    return stopwords.replaceAll(' ', '').split(',');
   };
 
   return (
@@ -328,7 +329,7 @@ export default function Wordlist() {
       </Accordion>
       {showTable && data && <>
         <TableHeaderButtons
-          leftComponent={<WordcloudView data={data} />}
+          rightComponent={<WordcloudView data={data} />}
           downloadData={data}
           downloadTableType={TableType.WORDLIST}
           downloadHeaders={tableToDownload}
