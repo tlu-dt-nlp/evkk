@@ -89,7 +89,7 @@ public class TeiMappings {
       entry("k2eesti_kontrolltoo_test", "L2 test"),
       entry("k2eesti_loovkirjutis", "L2 creative writing"),
       entry("k2eesti_ol_loovkirjutis", "L2 olympiade creative writing"),
-      entry("k2eesti_riiklik_eksamitoo", "L2 proficiency exam writing"),
+      entry("k2eesti_riiklik_eksamitoo", "L2 proficiency examination"),
       entry("k2eesti_tolge", "L2 translation"),
       entry("k3vene_eksamitoo", "L3 Russian examination"),
       entry("k3vene_loovkirjutis", "L3 Russian creative writing")

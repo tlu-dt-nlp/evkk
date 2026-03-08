@@ -82,7 +82,7 @@ export const TRANSLATIONS_EN = {
   common_text_data_field_of_research_health: 'health',
   common_text_data_field_of_research_natural_sciences_and_engineering: 'natural sciences and engineering',
   common_text_data_type_L2_olympiade_creative_writing: 'L2 olympiade creative writing',
-  common_text_data_type_L2_proficiency_examination: 'L2 proficiency exam writing',
+  common_text_data_type_L2_proficiency_examination: 'L2 proficiency examination',
   common_text_data_type_creative_writing: 'Creative writing',
   common_text_data_type_examination: 'Examination',
   common_text_data_type_exercise: 'Exercise',
