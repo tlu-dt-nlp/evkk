@@ -157,3 +157,12 @@ h3, h4 {
 .MuiSelect-select {
   scroll-margin: 0;
 }
+
+/* Enable horizontal scrolling for Select menus with long text */
+.MuiMenu-paper {
+  overflow-x: auto;
+}
+
+.MuiMenu-paper .MuiMenuItem-root {
+  min-width: fit-content;
+}

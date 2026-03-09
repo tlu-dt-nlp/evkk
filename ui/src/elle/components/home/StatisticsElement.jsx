@@ -6,6 +6,7 @@ import { DefaultButtonStyle } from '../../const/StyleConstants';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { RouteConstants } from '../../const/RouteConstants';
+import { STATISTICS_CORPUS_TEXT_COUNT, STATISTICS_CORPUS_WORD_COUNT } from '../../const/Constants';
 
 const StatisticsIconContainer = (props) => {
   return (
@@ -27,12 +28,12 @@ export default function StatisticsElement() {
     <Box className="statistics-container">
       <StatisticsIconContainer
         text={t('corpus_texts')}
-        amount={t('corpus_text_count')}
+        amount={STATISTICS_CORPUS_TEXT_COUNT}
         icon={<CollectionsBookmarkIcon className="statistics-icon"/>}
       />
       <StatisticsIconContainer
         text={t('corpus_words')}
-        amount={t('corpus_word_count')}
+        amount={STATISTICS_CORPUS_WORD_COUNT}
         icon={<LibraryBooksIcon className="statistics-icon"/>}
       />
       <Box className="statistics-inner-container global-page-content-container">

@@ -1,5 +1,6 @@
 package ee.tlu.evkk.api.controller.tools.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class MasinoppeEnnustusResponseDto {
 
   private String result;

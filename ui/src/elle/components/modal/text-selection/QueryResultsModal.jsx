@@ -51,7 +51,8 @@ export default function QueryResultsModal({
     sugu: '',
     haridus: '',
     emakeel: '',
-    riik: ''
+    riik: '',
+    tulemus: ''
   });
 
   useEffect(() => {
@@ -201,20 +202,33 @@ export default function QueryResultsModal({
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div className="metainfo-subtitle">{t('common_text_data')}</div>
-            <strong>{t('query_subcorpus')}:</strong> {t(corpuses[metadata.korpus]) || '-'}<br />
-            <strong>{t('query_text_data_type')}:</strong> {t(textTypeList[metadata.tekstityyp]) || '-'}<br />
-            <strong>{t('query_text_data_language')}:</strong> {t(textLanguageOptions[metadata.tekstikeel]) || '-'}<br />
-            <strong>{t('query_text_data_level')}:</strong> {metadata.keeletase || '-'}<br />
-            <strong>{t('query_text_data_used_supporting_materials')}:</strong> {t(usedMaterialsDisplayOptions[metadata.abivahendid]) || '-'}<br />
-            <strong>{t('query_text_data_year_of_publication')}:</strong> {metadata.ajavahemik || '-'}<br />
-            <br />
-            <div className="metainfo-subtitle">{t('common_author_data')}</div>
-            <strong>{t('query_author_data_age')}:</strong> {t(ageOptions[metadata.vanusevahemik]) || '-'}<br />
-            <strong>{t('query_author_data_gender')}:</strong> {t(genderOptions[metadata.sugu]) || '-'}<br />
-            <strong>{t('query_author_data_education')}:</strong> {t(educationOptions[metadata.haridus]) || '-'}<br />
-            <strong>{t('query_author_data_native_language')}:</strong> {t(languageOptionsForNativeLangs[metadata.emakeel]) || '-'}<br />
-            <strong>{t('query_author_data_country')}:</strong> {t(countryOptionsForQueryResults[metadata.riik]) || '-'}<br />
+            <Grid container spacing={3}>
+              <Grid item size={{ xs: 12, sm: 6 }}>
+                <div className="metainfo-subtitle">{t('common_text_data')}</div>
+                <strong>{t('query_subcorpus')}:</strong> {t(corpuses[metadata.korpus]) || '-'}<br />
+                <strong>{t('query_text_data_type')}:</strong> {t(textTypeList[metadata.tekstityyp]) || '-'}<br />
+                <strong>{t('query_text_data_language')}:</strong> {t(textLanguageOptions[metadata.tekstikeel]) || '-'}<br />
+                {!metadata.tulemus ? (
+                  <>
+                    <strong>{t('query_text_data_level')}:</strong> {metadata.keeletase || '-'}<br />
+                  </>
+                ) : (
+                  <>
+                    <strong>{t('query_text_data_score')}:</strong> {metadata.tulemus + '%' || '-'}<br />
+                  </>
+                )}
+                <strong>{t('query_text_data_used_supporting_materials')}:</strong> {t(usedMaterialsDisplayOptions[metadata.abivahendid]) || '-'}<br />
+                <strong>{t('query_text_data_year_of_publication')}:</strong> {metadata.ajavahemik || '-'}<br />
+              </Grid>
+              <Grid item size={{ xs: 12, sm: 6 }}>
+                <div className="metainfo-subtitle">{t('common_author_data')}</div>
+                <strong>{t('query_author_data_age')}:</strong> {t(ageOptions[metadata.vanusevahemik]) || '-'}<br />
+                <strong>{t('query_author_data_gender')}:</strong> {t(genderOptions[metadata.sugu]) || '-'}<br />
+                <strong>{t('query_author_data_education')}:</strong> {t(educationOptions[metadata.haridus]) || '-'}<br />
+                <strong>{t('query_author_data_native_language')}:</strong> {t(languageOptionsForNativeLangs[metadata.emakeel]) || '-'}<br />
+                <strong>{t('query_author_data_country')}:</strong> {t(countryOptionsForQueryResults[metadata.riik]) || '-'}<br />
+              </Grid>
+            </Grid>
           </AccordionDetails>
         </Accordion>
         <br />
