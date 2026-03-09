@@ -44,6 +44,7 @@ public class CollocateService {
     String keyword = dto.isKeepCapitalization()
       ? dto.getKeyword()
       : dto.getKeyword().toLowerCase();
+
     return WORDS.equals(dto.getType())
       ? wordResponse(dto, keyword)
       : lemmaResponse(dto, keyword);
@@ -52,6 +53,7 @@ public class CollocateService {
   private CollocateResponseDto wordResponse(CollocateRequestDto dto, String keyword) throws IOException {
     WordlistResponseDto wordlistResponse = getWordlistResponse(dto, WORDS);
     Map<String, CollocateOccurrencesDto> collocates = getCollocates(wordlistResponse.getWordlist(), keyword, dto.getSearchCount());
+
     return combineFinalResult(collocates, wordlistResponse.getResultList(), keyword, dto.getFormula(), null);
   }
 
@@ -59,6 +61,7 @@ public class CollocateService {
     String initialKeyword = null;
     WordlistResponseDto wordlistResponse = getWordlistResponse(dto, LEMMAS);
     Map<String, CollocateOccurrencesDto> collocates = getCollocates(wordlistResponse.getWordlist(), keyword, dto.getSearchCount());
+
     if (collocates.isEmpty()) {
       initialKeyword = dto.getKeyword();
       keyword = sanitizeLemmaStrings(asList(stanzaServerClient.getLemmad(initialKeyword))).get(0);
@@ -66,11 +69,13 @@ public class CollocateService {
         collocates = getCollocates(wordlistResponse.getWordlist(), keyword, dto.getSearchCount());
       }
     }
+
     return combineFinalResult(collocates, wordlistResponse.getResultList(), keyword, dto.getFormula(), initialKeyword);
   }
 
   private CollocateResponseDto combineFinalResult(Map<String, CollocateOccurrencesDto> collocates, List<WordlistResponseEntryDto> wordlistAndFrequencies, String keyword, CollocateFormula formula, String initialKeyword) {
-    List<CollocateDto> finalCollocates = new ArrayList<>();
+    List<CollocateDto> results = new ArrayList<>();
+
     for (Map.Entry<String, CollocateOccurrencesDto> collocate : collocates.entrySet()) {
       WordlistResponseEntryDto keywordFromFrequencyList = wordlistAndFrequencies.stream()
         .filter(entry -> entry.getWord().equals(keyword))
@@ -79,10 +84,17 @@ public class CollocateService {
         .filter(entry -> entry.getWord().equals(collocate.getKey()))
         .collect(toList()).get(0);
 
-      finalCollocates.add(new CollocateDto(
+      BigDecimal score = calculateScore(
+        formula,
+        keywordFromFrequencyList.getFrequencyCount(),
+        collocateFromFrequencyList.getFrequencyCount(),
+        collocate.getValue().getOccurrences(),
+        wordlistAndFrequencies.size()
+      ).setScale(2, UP);
+
+      results.add(new CollocateDto(
         collocate.getKey(),
-        calculateScore(formula, keywordFromFrequencyList.getFrequencyCount(), collocateFromFrequencyList.getFrequencyCount(), collocate.getValue().getOccurrences(), wordlistAndFrequencies.size())
-          .setScale(4, UP),
+        score,
         collocate.getValue().getOccurrences(),
         collocateFromFrequencyList.getFrequencyCount(),
         collocateFromFrequencyList.getFrequencyPercentage(),
@@ -90,10 +102,12 @@ public class CollocateService {
         collocate.getValue().getRightOccurrences()
       ));
     }
+
     String lemmatizedKeyword = initialKeyword == null
       ? null
       : keyword;
-    return new CollocateResponseDto(finalCollocates, initialKeyword, lemmatizedKeyword);
+
+    return new CollocateResponseDto(results, initialKeyword, lemmatizedKeyword);
   }
 
   private Map<String, CollocateOccurrencesDto> getCollocates(List<String> wordlist, String keyword, int searchCount) {
@@ -143,14 +157,16 @@ public class CollocateService {
   }
 
   private WordlistResponseDto getWordlistResponse(CollocateRequestDto dto, WordType wordType) throws IOException {
-    WordlistRequestDto wordlistDto = new WordlistRequestDto();
-    wordlistDto.setCorpusTextIds(dto.getCorpusTextIds());
-    wordlistDto.setOwnTexts(dto.getOwnTexts());
-    wordlistDto.setType(wordType);
-    wordlistDto.setExcludeStopwords(false);
-    wordlistDto.setCustomStopwords(null);
-    wordlistDto.setKeepCapitalization(dto.isKeepCapitalization());
-    wordlistDto.setMinFrequency(1);
+    WordlistRequestDto wordlistDto = WordlistRequestDto.builder()
+      .corpusTextIds(dto.getCorpusTextIds())
+      .ownTexts(dto.getOwnTexts())
+      .type(wordType)
+      .excludeStopwords(false)
+      .customStopwords(null)
+      .keepCapitalization(dto.isKeepCapitalization())
+      .minFrequency(1)
+      .build();
+
     return wordlistService.getWordlistResponse(wordlistDto);
   }
 }
