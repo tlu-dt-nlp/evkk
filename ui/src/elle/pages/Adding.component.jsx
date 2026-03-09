@@ -365,9 +365,8 @@ class Adding extends Component {
                         name="akadOppematerjal"
                         selectedValues={this.state.akadOppematerjal}
                         setSelectedValues={v => this.setState({ akadOppematerjal: v })}
-                        type={SelectMultipleType.FLAT_VALUES}
+                        type={SelectMultipleType.FLAT_KEYS}
                         optionList={textPublishUsedMaterialsOptions}
-                        valueList={textPublishUsedMaterialsOptions}
                         pluralSelectedTranslationKey="select_multiple_materials"
                       />
                     </FormControl>

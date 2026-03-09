@@ -141,12 +141,13 @@ export default function Collocates() {
       accessorKey: 'menu',
       enableSorting: false,
       meta: { className: 'row-action-button' },
-      cell: info =>
+      cell: info => (
         <WordlistMenu
           word={info.row.original.collocate}
           type={typeValue}
           keepCapitalization={capitalizationChecked}
         />
+      )
     }
   ], [typeValue, capitalizationChecked, t]);
 
@@ -380,7 +381,7 @@ export default function Collocates() {
       </>}
       {showTable && data && <>
         <TableHeaderButtons
-          leftComponent={<GraphView data={data} keyword={lastKeyword} />}
+          rightComponent={<GraphView data={data} keyword={lastKeyword} />}
           downloadData={data}
           downloadTableType={TableType.COLLOCATES}
           downloadHeaders={tableToDownload}

@@ -43,5 +43,4 @@ public class ServiceLocator {
     KLASTERDAJA,
     CORRECTOR_SERVER
   }
-
 }

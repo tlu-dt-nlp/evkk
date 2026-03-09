@@ -34,11 +34,13 @@ public class TeiConstants {
   public static final String LEVEL = "level";
   public static final String LICENCE_TARGET = "https://creativecommons.org/licenses/by/4.0/";
   public static final String LICENCE_TEXT = "Distributed under CC BY 4.0 licence";
+  public static final String NAME = "n";
   public static final String PARAGRAPH = "p";
   public static final String PREPARED = "prepared";
   public static final String PUBLISHER = "publisher";
   public static final String PUBLISHER_TLU_DTI = "Tallinn University School of Digital Technologies";
   public static final String SENTENCE = "s";
+  public static final String SETTING_DESCRIPTION_PARAGRAPH = "Texts written at the trial e-exam of Estonian language.";
   public static final String SOURCE_DESCRIPTION_PARAGRAPH = "Database of Estonian Interlanguage Corpus, text ID ";
   public static final String SPONTANEOUS = "spontaneous";
   public static final String TEI_HEADER = "teiHeader";

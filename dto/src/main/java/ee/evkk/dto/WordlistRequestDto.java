@@ -1,8 +1,10 @@
 package ee.evkk.dto;
 
 import ee.evkk.dto.enums.WordType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -11,6 +13,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
+@Accessors(chain = true)
 public class WordlistRequestDto {
 
   private Set<UUID> corpusTextIds;

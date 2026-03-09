@@ -2,7 +2,6 @@ package ee.tlu.evkk.api.controller.tools;
 
 import ee.tlu.evkk.api.controller.tools.dto.MasinoppeEnnustusRequestDto;
 import ee.tlu.evkk.api.controller.tools.dto.MasinoppeEnnustusResponseDto;
-import ee.tlu.evkk.api.converter.DtoMapper;
 import ee.tlu.evkk.api.integration.MasinoppeEnnustusClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,12 +22,10 @@ import java.io.IOException;
 public class MasinoppeEnnustusController {
 
   private final MasinoppeEnnustusClient client;
-  private final DtoMapper dtoMapper;
 
   @PostMapping
   public MasinoppeEnnustusResponseDto post(@RequestBody @Valid MasinoppeEnnustusRequestDto requestEntity) throws IOException, InterruptedException {
     String result = client.execute(requestEntity.getInput());
-    return dtoMapper.toMasinoppeEnnustusResponseDto(result);
+    return new MasinoppeEnnustusResponseDto(result);
   }
-
 }
