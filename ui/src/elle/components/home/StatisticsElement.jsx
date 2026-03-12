@@ -1,0 +1,56 @@
+import { Box, Button } from '@mui/material';
+import '../styles/StatisticsElement.css';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { RouteConstants } from '../../const/RouteConstants';
+import { STATISTICS_CORPUS_TEXT_COUNT, STATISTICS_CORPUS_WORD_COUNT } from '../../const/Constants';
+
+const StatisticsIconContainer = (props) => {
+  return (
+    <Box className="statistics-inner-container global-page-content-container">
+      <Box className="statistics-box-inner text-center">
+        {props.icon}
+        <h1><b>{props.amount}</b></h1>
+        <p>{props.text}</p>
+      </Box>
+    </Box>
+  )
+}
+
+export default function StatisticsElement() {
+  const navigate = useNavigate();
+  const {t} = useTranslation();
+
+  return (
+    <Box className="statistics-container">
+      <StatisticsIconContainer
+        text={t('corpus_texts')}
+        amount={STATISTICS_CORPUS_TEXT_COUNT}
+        icon={<CollectionsBookmarkIcon className="statistics-icon"/>}
+      />
+      <StatisticsIconContainer
+        text={t('corpus_words')}
+        amount={STATISTICS_CORPUS_WORD_COUNT}
+        icon={<LibraryBooksIcon className="statistics-icon"/>}
+      />
+      <Box className="statistics-inner-container global-page-content-container">
+        <Box className="statistics-box-inner">
+          <p>{t('corpus_donation_text')}</p>
+          <Button
+            sx={DefaultButtonStyle}
+            className="align-self-start"
+            variant="contained"
+            onClick={() => {
+              navigate(RouteConstants.ADDING);
+            }}
+          >
+            {t('common_donate_text')}
+          </Button>
+        </Box>
+      </Box>
+    </Box>
+  );
+};

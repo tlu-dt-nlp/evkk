@@ -1,0 +1,5 @@
+.collocates-app {
+  .MuiFormControl-root {
+    max-width: 375px;
+  }
+}

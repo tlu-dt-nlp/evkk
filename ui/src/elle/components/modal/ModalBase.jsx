@@ -1,0 +1,74 @@
+import { Box, IconButton, Modal } from '@mui/material';
+import { modalStyle } from '../../const/StyleConstants';
+import { useTranslation } from 'react-i18next';
+import CloseIcon from '@mui/icons-material/Close';
+import '../styles/ModalBase.css';
+import TooltipButton from '../tooltip/TooltipButton';
+
+export default function ModalBase({
+                                    isOpen,
+                                    setIsOpen,
+                                    innerClassName,
+                                    title,
+                                    titleTooltip,
+                                    headerActions,
+                                    disableComfortClosing = false,
+                                    disableCloseButton = false,
+                                    modalRef,
+                                    children
+                                  }) {
+
+  const { t } = useTranslation();
+
+  return (
+    <Modal
+      open={isOpen}
+      onClose={(_, reason) => {
+        if (disableComfortClosing && reason === 'backdropClick') {
+          return;
+        }
+        setIsOpen(false);
+      }}
+      disableAutoFocus
+      disableRestoreFocus
+      disableEscapeKeyDown={disableComfortClosing}
+    >
+      <Box
+        sx={modalStyle}
+        className={`modal-base-root ${innerClassName ?? ''}`.trim()}
+        ref={modalRef}
+      >
+        <div className="modal-head">
+          <div className="modal-head-content">
+            {t(title)}
+            {titleTooltip && (
+              <TooltipButton>
+                {t(titleTooltip)}
+              </TooltipButton>
+            )}
+          </div>
+          {headerActions && (
+            <div className="modal-head-actions">
+              {headerActions}
+            </div>
+          )}
+        </div>
+        {!disableCloseButton && (
+          <IconButton
+            aria-label="close"
+            onClick={() => {
+              setIsOpen(false);
+            }}
+            className="close-button"
+          >
+            <CloseIcon />
+          </IconButton>
+        )}
+        <br />
+        <div>
+          {children}
+        </div>
+      </Box>
+    </Modal>
+  );
+}

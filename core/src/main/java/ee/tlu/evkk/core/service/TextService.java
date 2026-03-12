@@ -145,17 +145,20 @@ public class TextService {
     if (isNotBlank(corpusRequestDto.getCountry())) {
       singleParamHelpers.add(new TextQuerySingleParamHelper("p17", "riik", corpusRequestDto.getCountry()));
     }
+    if (corpusRequestDto.getScores() != null) {
+      multiParamHelpers.add(new TextQueryMultiParamHelper("p18", "tulemusvahemik", corpusRequestDto.getScores()));
+    }
     if (corpusRequestDto.getAddedYears() != null) {
-      multiParamHelpers.add(new TextQueryMultiParamHelper("p18", "ajavahemik", corpusRequestDto.getAddedYears()));
+      multiParamHelpers.add(new TextQueryMultiParamHelper("p19", "ajavahemik", corpusRequestDto.getAddedYears()));
     }
     if (corpusRequestDto.getCharacters() != null) {
-      rangeParamBaseHelpers.add(createRangeBaseHelper("p19", "charCount", corpusRequestDto.getCharacters()));
+      rangeParamBaseHelpers.add(createRangeBaseHelper("p20", "charCount", corpusRequestDto.getCharacters()));
     }
     if (corpusRequestDto.getWords() != null) {
-      rangeParamBaseHelpers.add(createRangeBaseHelper("p20", "wordCount", corpusRequestDto.getWords()));
+      rangeParamBaseHelpers.add(createRangeBaseHelper("p21", "wordCount", corpusRequestDto.getWords()));
     }
     if (corpusRequestDto.getSentences() != null) {
-      rangeParamBaseHelpers.add(createRangeBaseHelper("p21", "sentenceCount", corpusRequestDto.getSentences()));
+      rangeParamBaseHelpers.add(createRangeBaseHelper("p22", "sentenceCount", corpusRequestDto.getSentences()));
     }
 
     String daoResponse = textDao.detailedTextQueryByParameters(multiParamHelpers, singleParamHelpers, rangeParamBaseHelpers, studyLevelAndDegreeHelper, otherLangHelper, usedMultiMaterialsHelper);
@@ -167,51 +170,82 @@ public class TextService {
   }
 
   public byte[] tekstidfailina(CorpusDownloadDto corpusDownloadDto) throws IOException {
-    List<CorpusDownloadResponseEntity> contentsAndTitles;
-
-    if (BASIC_TEXT.equals(corpusDownloadDto.getForm())) {
-      contentsAndTitles = textDao.findTextContentsAndTitlesByIds(corpusDownloadDto.getFileList());
-    } else {
-      contentsAndTitles = textDao.findTextTitlesAndContentsWithStanzaTaggingByIds(corpusDownloadDto.getFileList(), corpusDownloadDto.getForm().toString());
-    }
+    List<CorpusDownloadResponseEntity> contentsAndTitles = BASIC_TEXT.equals(corpusDownloadDto.getForm())
+      ? textDao.findTextContentsAndTitlesByIds(corpusDownloadDto.getFileList())
+      : textDao.findTextTitlesAndContentsWithStanzaTaggingByIds(corpusDownloadDto.getFileList(), corpusDownloadDto.getForm().toString());
 
     if (ZIP.equals(corpusDownloadDto.getFileType())) {
-      File tempFile = createTempFile("corpusDownloadTempZip_", randomUUID().toString(), null);
-      String fileExtension = ANNOTATE_TEI.equals(corpusDownloadDto.getForm()) ? "xml" : "txt";
+      return buildZipOutput(corpusDownloadDto, contentsAndTitles);
+    }
+    return combineContents(contentsAndTitles, corpusDownloadDto.getForm());
+  }
 
-      try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(tempFile))) {
-        for (int i = 0; i < contentsAndTitles.size(); i++) {
-          String contents = replaceNewLinesAndTabs(corpusDownloadDto.getForm(), contentsAndTitles.get(i).getContents());
+  private byte[] buildZipOutput(CorpusDownloadDto corpusDownloadDto, List<CorpusDownloadResponseEntity> contentsAndTitles) throws IOException {
+    File tempFile = createTempFile("corpusDownloadTempZip_", randomUUID().toString(), null);
+    String fileExtension = ANNOTATE_TEI.equals(corpusDownloadDto.getForm()) ? "xml" : "txt";
 
-          String title = getSanitizedFileName(contentsAndTitles.get(i).getTitle());
-          UUID uuid = corpusDownloadDto.getFileList().get(i);
-          ZipEntry zipEntry = new ZipEntry(
-            isNotBlank(title)
-              ? format("%s (%s).%s", title.trim(), uuid, fileExtension)
-              : format("%s.%s", uuid, fileExtension)
-          );
-          zipOutputStream.putNextEntry(zipEntry);
-
-          String result = nonNull(contents) ? contents : "";
-          zipOutputStream.write(result.getBytes(UTF_8));
-          zipOutputStream.closeEntry();
-        }
-      } catch (IOException e) {
-        throw new IOException("Something went wrong while generating ZIP file.", e);
+    try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(tempFile))) {
+      for (int i = 0; i < contentsAndTitles.size(); i++) {
+        buildSingleZipEntry(corpusDownloadDto, contentsAndTitles, i, fileExtension, zipOutputStream);
       }
-
-      try (FileInputStream fileInputStream = new FileInputStream(tempFile)) {
-        return fileInputStream.readAllBytes();
-      }
+    } catch (IOException e) {
+      throw new IOException("Something went wrong while generating ZIP file.", e);
     }
 
+    try (FileInputStream fileInputStream = new FileInputStream(tempFile)) {
+      return fileInputStream.readAllBytes();
+    }
+  }
+
+  private void buildSingleZipEntry(CorpusDownloadDto corpusDownloadDto, List<CorpusDownloadResponseEntity> contentsAndTitles, int i, String fileExtension, ZipOutputStream zipOutputStream) throws IOException {
+    String contents = replaceNewLinesAndTabs(corpusDownloadDto.getForm(), contentsAndTitles.get(i).getContents());
+    String title = getSanitizedFileName(contentsAndTitles.get(i).getTitle());
+    UUID uuid = corpusDownloadDto.getFileList().get(i);
+
+    ZipEntry zipEntry = new ZipEntry(
+      isNotBlank(title)
+        ? format("%s (%s).%s", title.trim(), uuid, fileExtension)
+        : format("%s.%s", uuid, fileExtension)
+    );
+    zipOutputStream.putNextEntry(zipEntry);
+
+    String result = nonNull(contents) ? contents : "";
+    zipOutputStream.write(result.getBytes(UTF_8));
+    zipOutputStream.closeEntry();
+  }
+
+  private byte[] combineContents(List<CorpusDownloadResponseEntity> contentsAndTitles, CorpusDownloadForm formType) {
+    boolean isTeiFormat = ANNOTATE_TEI.equals(formType);
     StringBuilder contentsCombined = new StringBuilder();
+    boolean isFirstEntry = true;
+
     for (CorpusDownloadResponseEntity entry : contentsAndTitles) {
-      String contents = replaceNewLinesAndTabs(corpusDownloadDto.getForm(), entry.getContents());
-      contentsCombined.append(isNotBlank(contents) ? contents : "");
-      contentsCombined.append(lineSeparator()).append(lineSeparator());
+      String contents = replaceNewLinesAndTabs(formType, entry.getContents());
+      if (isNotBlank(contents)) {
+        if (isTeiFormat) {
+          contents = processTeiContent(contents, isFirstEntry);
+          isFirstEntry = false;
+        }
+        contentsCombined.append(contents);
+        contentsCombined.append(lineSeparator()).append(lineSeparator());
+      }
     }
+
+    if (isTeiFormat) {
+      contentsCombined.append(lineSeparator()).append("</teiCorpus>");
+    }
+
     return contentsCombined.toString().getBytes(UTF_8);
+  }
+
+  private String processTeiContent(String contents, boolean isFirstEntry) {
+    if (isFirstEntry) {
+      return contents.replaceFirst("</teiCorpus>\\s*$", "");
+    }
+    return contents
+      .replaceFirst("<\\?xml[^>]*\\?>\\s*", "")
+      .replaceFirst("<teiCorpus[^>]*>\\s*<teiHeader/>\\s*", "")
+      .replaceFirst("</teiCorpus>\\s*$", "");
   }
 
   public String combineCorpusTextIdsAndOwnText(Set<UUID> corpusTextIds, String ownTexts) {

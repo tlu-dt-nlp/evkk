@@ -1,3 +1,9 @@
+.tool-intro-button {
+  z-index: 1;
+  font-family: "Exo 2", sans-serif !important;
+  font-size: 16px !important;
+}
+
 @media (min-width: 3400px) {
   .hero-image-box {
     width: 40% !important;
@@ -31,13 +37,10 @@
     font-size: 25px !important;
     margin-bottom: 35%;
 
-    button {
+    .tool-intro-button {
       line-height: 20px;
       padding: 2% 5%;
-    }
-
-    a {
-      font-size: 10px;
+      font-size: 10px !important;
     }
   }
 
@@ -135,8 +138,3 @@
   max-width: 39em;
   object-fit: cover;
 }
-
-.button-design {
-  z-index: 1;
-}
-

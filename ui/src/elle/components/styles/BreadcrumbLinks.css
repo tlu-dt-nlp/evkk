@@ -4,12 +4,8 @@
   padding: 25px;
   align-items: flex-end;
   box-sizing: unset;
-}
 
-.breadcrumb-menu-link {
-  padding-right: 10px;
-}
-
-.breadcrumb-menu-link.regular {
-  padding-left: 10px;
+  .crumb {
+    cursor: pointer;
+  }
 }

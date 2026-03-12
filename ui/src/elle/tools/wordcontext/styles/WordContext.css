@@ -1,51 +1,19 @@
-.wordcontext-analyse-button {
-  margin-top: 7vh !important;
-}
+.wordcontext-app {
+  .MuiFormControl-root {
+    max-width: 400px;
+  }
 
-.wordcontext-display-explanation {
-  margin-left: 0.5vw !important;
-  margin-top: 7px !important;
-}
+  .keyword {
+    color: red !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+  }
 
-.wordcontext-display-count-textfield {
-  width: 70px;
-  margin-right: 0.5vw !important;
-}
+  .context-before {
+    border-right: 0 !important;
+  }
 
-.wordcontext-table {
-  border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.wordcontext-table td {
-  padding: 8px;
-}
-
-.wordcontext-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.wordcontext-table tr:hover {
-  background-color: #ddd;
-}
-
-.wordcontext-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-left: 10px;
-  text-align: center;
-  background-color: #ffffff;
-  border-bottom: solid 1px !important;
-  color: black;
-  font-weight: bold;
-}
-
-.wordcontext-table th:nth-child(3) {
-  min-width: 9em;
-}
-
-.wordcontext-keyword {
-  text-align: center;
-  color: red;
+  .context-after {
+    border-left: 0 !important;
+  }
 }

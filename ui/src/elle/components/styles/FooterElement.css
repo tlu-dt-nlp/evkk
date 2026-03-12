@@ -70,9 +70,14 @@
   text-decoration: none;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1399px) {
   .footer-inner {
     padding-left: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .footer-inner {
     padding-top: 1rem;
   }
 

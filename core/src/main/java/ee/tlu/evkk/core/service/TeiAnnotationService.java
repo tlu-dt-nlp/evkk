@@ -50,11 +50,13 @@ import static ee.tlu.evkk.core.service.constants.TeiConstants.METADATA_VALUE_FEM
 import static ee.tlu.evkk.core.service.constants.TeiConstants.METADATA_VALUE_L1_OPINION_PIECE;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.METADATA_VALUE_NO;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.METADATA_VALUE_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TeiConstants.NAME;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.PARAGRAPH;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.PREPARED;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.PUBLISHER;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.PUBLISHER_TLU_DTI;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.SENTENCE;
+import static ee.tlu.evkk.core.service.constants.TeiConstants.SETTING_DESCRIPTION_PARAGRAPH;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.SOURCE_DESCRIPTION_PARAGRAPH;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.SPONTANEOUS;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.TEI_HEADER;
@@ -72,6 +74,7 @@ public class TeiAnnotationService {
   private final TextDao textDao;
   private Document document;
 
+  private static final Map<String, String> typeMappings = TeiMappings.getType();
   private static final Map<String, String> languageMappings = TeiMappings.getLanguage();
   private static final Map<String, String> languageCodeMappings = TeiMappings.getLanguageCode();
   private static final Map<String, String> corpusMappings = TeiMappings.getCorpus();
@@ -197,9 +200,11 @@ public class TeiAnnotationService {
 
   private void createProfileDescription(Element teiHeader, HashMap<String, String> metadata) {
     Element profileDesc = document.createElement("profileDesc");
+    String score = metadata.get("tulemus");
 
     createLanguageUsage(profileDesc, metadata);
     createTextDescription(profileDesc, metadata);
+    createExamSpecificElements(profileDesc, score);
     createParticipationDescription(profileDesc, metadata);
 
     teiHeader.appendChild(profileDesc);
@@ -282,6 +287,10 @@ public class TeiAnnotationService {
   private void createTextDescription(Element profileDesc, HashMap<String, String> metadata) {
     Element textDesc = document.createElement("textDesc");
 
+    Attr attr = document.createAttribute(NAME);
+    attr.setValue(typeMappings.get(metadata.get(METADATA_KEY_TEXT_TYPE)));
+    textDesc.setAttributeNode(attr);
+
     if (metadata.containsKey(METADATA_KEY_CORPUS)) {
       createSingleDomain(textDesc, metadata.get(METADATA_KEY_CORPUS).equals(METADATA_VALUE_ACADEMIC_ESTONIAN_CORPUS_CODE) ? "academic" : "non-academic");
       createSingleDomain(textDesc, corpusMappings.get(metadata.get(METADATA_KEY_CORPUS)));
@@ -312,12 +321,46 @@ public class TeiAnnotationService {
     profileDesc.appendChild(particDesc);
   }
 
+  private void createExamSpecificElements(Element profileDesc, String score) {
+    if (isNotBlank(score)) {
+      profileDesc.appendChild(createTextClassification(score));
+      profileDesc.appendChild(createSettingDescription());
+    }
+  }
+
+  private Element createTextClassification(String score) {
+    Element textClass = document.createElement("textClass");
+    Element keywords = document.createElement("keywords");
+    Element term = document.createElement("term");
+
+    term.appendChild(document.createTextNode(score + "%"));
+
+    Attr attr = document.createAttribute(TYPE);
+    attr.setValue("score");
+    term.setAttributeNode(attr);
+
+    keywords.appendChild(term);
+    textClass.appendChild(keywords);
+
+    return textClass;
+  }
+
+  private Element createSettingDescription() {
+    Element settingDesc = document.createElement("settingDesc");
+    Element p = document.createElement(PARAGRAPH);
+
+    p.appendChild(document.createTextNode(SETTING_DESCRIPTION_PARAGRAPH));
+    settingDesc.appendChild(p);
+
+    return settingDesc;
+  }
+
   private TitleExtractionResult extractDataFromTitle(HashMap<String, String> metadata, UUID textId) {
     String title = metadata.getOrDefault(TITLE, textId.toString());
-    boolean opinionPiece = metadata.containsKey(METADATA_KEY_TEXT_TYPE) &&
-      metadata.get(METADATA_KEY_TEXT_TYPE).equals(METADATA_VALUE_L1_OPINION_PIECE);
     String author = "";
     String publisher = "";
+    boolean opinionPiece = metadata.containsKey(METADATA_KEY_TEXT_TYPE)
+      && metadata.get(METADATA_KEY_TEXT_TYPE).equals(METADATA_VALUE_L1_OPINION_PIECE);
 
     if (opinionPiece && metadata.containsKey(TITLE)) {
       String rawTitle = metadata.get(TITLE);
