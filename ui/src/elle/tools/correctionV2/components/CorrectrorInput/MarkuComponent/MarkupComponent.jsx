@@ -10,29 +10,27 @@ const WhiteTooltip = styled(({ className, ...props }) => (
   <Tooltip
     {...props}
     classes={{ popper: className }}
-    PopperProps={{
-      modifiers: [
-        {
-          name: 'offset',
-          options: {
-            offset: [0, -8]
+    slotProps={{
+      popper: {
+        modifiers: [
+          {
+            name: 'offset',
+            options: {
+              offset: [0, -8]
+            }
           }
-        }
-      ]
+        ]
+      }
     }}
   />
-))(({ theme }) => ({
+))(() => ({
   [`& .MuiTooltip-tooltip`]: {
     backgroundColor: '#fff',
-    color: '#222',
     border: '1px solid #eee',
     padding: 0,
     boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)',
-    position: 'relative'
   },
   [`& .MuiTooltip-arrow:before`]: {
-    border: '1px solid #eee',
-    boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)',
     color: '#fff'
   }
 }));
