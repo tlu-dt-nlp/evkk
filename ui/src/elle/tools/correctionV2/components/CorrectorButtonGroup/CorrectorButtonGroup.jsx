@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Tab, Tabs, Tooltip, useMediaQuery } from '@mui/material';
+import { Box, Tab, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToggleButtonCategories } from '../../const/ToggleButtonConstantsV2';
 import { useGetCorrectorResult } from '../../../../hooks/service/ToolsService';
 import { useEditorContext } from '../../providers/EditorProvider';
 import { GRAMMARCHECKER } from '../../../correction/const/Constants';
+import GenericTabs from '../../../../components/GenericTabs';
 
 export default function CorrectorButtonGroup({ selectedTab }) {
   const { getCorrectorResult } = useGetCorrectorResult();
@@ -25,9 +26,6 @@ export default function CorrectorButtonGroup({ selectedTab }) {
     setSelectedSubTab: state.setSelectedSubTab
   }));
 
-  const isMobileView = useMediaQuery('(max-width:677px)');
-  const tabsVariant = isMobileView ? 'scrollable' : '';
-
   const toggleButtons = ToggleButtonCategories[selectedTab];
 
   const [value, setValue] = useState(toggleButtons[0].value);
@@ -46,14 +44,10 @@ export default function CorrectorButtonGroup({ selectedTab }) {
 
   return (
     <Box className="d-flex">
-      <Tabs
+      <GenericTabs
         className="correction-toggle-button-group"
-        orientation="horizontal"
-        variant={tabsVariant}
         value={value}
-        scrollButtons
-        allowScrollButtonsMobile
-        onChange={handleChange}
+        handleChange={handleChange}
       >
         {toggleButtons.map((button) => (
           <Tab
@@ -70,7 +64,7 @@ export default function CorrectorButtonGroup({ selectedTab }) {
             }
           />
         ))}
-      </Tabs>
+      </GenericTabs>
     </Box>
   );
 };

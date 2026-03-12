@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Tab, Tabs } from '@mui/material';
+import { Box, Tab } from '@mui/material';
 import { TabContext, TabPanel } from '@mui/lab';
 import { useEditorContext } from './providers/EditorProvider';
 import CorrectorView from './views/CorrectorView/CorrectorView';
@@ -12,6 +12,7 @@ import CorrectorLayout from './views/CorrectorLayout/CorrectorLayout';
 import TextLevelView from './views/TextLevelView/TextLevelView';
 import ComplexityView from './views/ComplexityView/ComplexityView';
 import VocabularyView from './views/VocabularyView/VocabularyView';
+import GenericTabs from '../../components/GenericTabs';
 
 export default function CorrectorPage() {
   const {
@@ -63,15 +64,13 @@ export default function CorrectorPage() {
         <Box className="tab-context-wrapper" sx={{ width: '100%' }}>
           <TabContext value={value}>
             <Box className="correction-tab-group-box">
-              <Tabs
-                variant="scrollable"
+              <GenericTabs
                 value={value}
-                onChange={handleChange}
-                scrollButtons
-                allowScrollButtonsMobile
+                handleChange={handleChange}
+                leftPadding={true}
               >
                 {tabValues}
-              </Tabs>
+              </GenericTabs>
             </Box>
             <CorrectorLayout selectedTab={value} errorListSlot={errorBoxTabPanels} />
           </TabContext>

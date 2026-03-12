@@ -1,4 +1,5 @@
 /* this is necessary, otherwise the CSS minifier/optimizer will emit this specific style from prod build (although it works in dev environment) */
+/* TODO ELLE-386 all styles from here until the next TODO comment need to be preserved! */
 .correction-container-inner .correction-toggle-button-group,
 .correction-container-inner .correction-toggle-button-group .MuiTab-root {
   min-height: 26px;
@@ -16,6 +17,7 @@
     }
   }
 
+  /* TODO ELLE-386 this does not need to be preserved */
   .correction-tab-group button {
     text-transform: none;
     font-weight: bold;
@@ -56,6 +58,8 @@
     }
   }
 }
+
+/* TODO ELLE-386 below this line are styles that only apply to the old components, so they can be removed */
 
 .corrector-border-box-inner {
   display: flex;
