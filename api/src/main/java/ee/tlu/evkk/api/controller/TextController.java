@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.UUID.fromString;
@@ -142,5 +143,11 @@ public class TextController {
   @PostMapping("/lisatekst")
   public String lisatekst(@Valid @RequestBody AddingRequestDto andmed) {
     return textService.lisatekst(andmed);
+  }
+
+  @RateLimit
+  @PostMapping("/spellcheck")
+  public Object checkSpelling(@RequestBody Map<String, String> body) {
+    return stanzaServerClient.getSpeller(body.get("tekst"));
   }
 }
