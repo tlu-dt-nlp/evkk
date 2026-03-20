@@ -104,8 +104,8 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
   public WordAndPosInfoDto[][] getLemmadLausetenaJaPosInfo(String tekst) {
     Map<String, String> map = of(MAP_PARAMETER, tekst);
     HttpEntity<?> requestEntity = new HttpEntity<>(map);
-    ResponseEntity<WordAndPosInfoDto[][]> forEntity = retry().execute(
-      context -> rest.postForEntity("/lemmadlausetenajaposinfo", requestEntity, WordAndPosInfoDto[][].class));
+    ResponseEntity<WordAndPosInfoDto[][]> forEntity = retry()
+      .execute(context -> rest.postForEntity("/lemmadlausetenajaposinfo", requestEntity, WordAndPosInfoDto[][].class));
     return forEntity.getBody();
   }
 
