@@ -147,7 +147,7 @@ public class TextController {
 
   @RateLimit
   @PostMapping("/spellcheck")
-  public Object checkSpelling(@RequestBody Map<String, String> body) {
+  public Object spellcheck(@RequestBody Map<String, String> body) {
     return stanzaServerClient.getSpeller(body.get("tekst"));
   }
 }

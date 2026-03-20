@@ -32,8 +32,8 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
   public StanzaResponseDto getSonadLemmadSilbidSonaliigidVormimargendid(String tekst) {
     Map<String, String> map = of(MAP_PARAMETER, tekst);
     HttpEntity<?> requestEntity = new HttpEntity<>(map);
-    ResponseEntity<StanzaResponseDto> forEntity = retry().execute(context -> rest
-      .postForEntity("/sonad-lemmad-silbid-sonaliigid-vormimargendid", requestEntity, StanzaResponseDto.class));
+    ResponseEntity<StanzaResponseDto> forEntity = retry()
+      .execute(context -> rest.postForEntity("/sonad-lemmad-silbid-sonaliigid-vormimargendid", requestEntity, StanzaResponseDto.class));
     return forEntity.getBody();
   }
 
@@ -49,8 +49,7 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
     Map<String, String> map = of(MAP_PARAMETER, tekst);
     HttpEntity<?> requestEntity = new HttpEntity<>(map);
     ResponseEntity<List<String>> forEntity = retry()
-      .execute(context -> rest.exchange("/sonaliik", POST, requestEntity, new ParameterizedTypeReference<>() {
-      }));
+      .execute(context -> rest.exchange("/sonaliik", POST, requestEntity, new ParameterizedTypeReference<>() {}));
     return forEntity.getBody();
   }
 
@@ -66,8 +65,7 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
     Map<String, String> map = of(MAP_PARAMETER, tekst);
     HttpEntity<?> requestEntity = new HttpEntity<>(map);
     ResponseEntity<List<List<String>>> forEntity = retry()
-      .execute(context -> rest.exchange("/vormimargendid", POST, requestEntity, new ParameterizedTypeReference<>() {
-      }));
+      .execute(context -> rest.exchange("/vormimargendid", POST, requestEntity, new ParameterizedTypeReference<>() {}));
     return forEntity.getBody();
   }
 

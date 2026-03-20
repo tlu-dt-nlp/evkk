@@ -1,6 +1,5 @@
 package ee.tlu.evkk.api.controller;
 
-import ee.tlu.evkk.core.integration.StanzaServerClient;
 import ee.evkk.dto.CollocateRequestDto;
 import ee.evkk.dto.CollocateResponseDto;
 import ee.evkk.dto.WordAnalyserRequestDto;
@@ -29,8 +28,6 @@ import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDANALYSER
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDCONTEXT;
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDLIST;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/tools")
 @RequiredArgsConstructor
@@ -40,7 +37,6 @@ public class ToolsController {
   private final WordContextService wordContextService;
   private final CollocateService collocateService;
   private final WordAnalyserService wordAnalyserService;
-  private final StanzaServerClient stanzaServerClient;
 
   @RateLimit
   @PostMapping(WORDLIST)
