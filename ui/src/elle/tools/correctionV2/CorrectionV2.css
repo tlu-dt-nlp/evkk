@@ -1,0 +1,62 @@
+.tab-context-wrapper {
+  flex: 1;
+  width: 100%;
+}
+
+.correction-tab-group-box {
+  display: flex;
+  justify-content: center;
+}
+
+.correction-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'buttons info'
+    'editor  panels'
+    'submit  panels';
+  padding: 2rem;
+  column-gap: 2rem;
+  align-items: start;
+}
+
+.correction-area-buttons {
+  grid-area: buttons;
+}
+
+.correction-area-info {
+  grid-area: info;
+}
+
+.correction-area-editor {
+  grid-area: editor;
+}
+
+.correction-area-submit {
+  grid-area: submit;
+}
+
+.correction-area-panels {
+  grid-area: panels;
+}
+
+.correction-info-icon {
+  justify-content: flex-end !important;
+}
+
+@media (max-width: 677px) {
+  .correction-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'info'
+      'buttons'
+      'editor'
+      'submit'
+      'panels';
+    padding: 1rem;
+  }
+
+  .correction-info-icon {
+    justify-content: flex-start !important;
+  }
+}

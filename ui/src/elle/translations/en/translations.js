@@ -227,7 +227,7 @@ export const TRANSLATIONS_EN = {
   corrector_proficiency_level_spelling: 'Spelling',
   corrector_proofreading: 'Proofreading',
   corrector_proofreading_gray_box: 'Check for potential errors in the text and enhance spelling, sentence structure, and wording. In addition, you can see the number of errors for each error type.',
-  corrector_proofreading_gray_box_no_errors: 'No corrections were fround.',
+  corrector_proofreading_gray_box_no_errors: 'No corrections were found.',
   corrector_proofreading_gray_box_beta_advert_1: 'Try',
   corrector_proofreading_gray_box_beta_advert_2: 'the newer language corrector',
   corrector_proofreading_gray_box_beta_advert_3: 'that also offers explanations to corrections.',

@@ -24,6 +24,7 @@ import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
 import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
+import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
 
 export const routes = [
   {
@@ -81,7 +82,11 @@ export const routes = [
           },
           {
             path: RouteConstants.CORRECTOR,
-            element: <CorrectionV2 />,
+            element: (
+              <EditorProvider>
+                <CorrectionV2 />
+              </EditorProvider>
+            ),
             handle: { crumb: () => ({ to: RouteConstants.CORRECTOR, translateKey: 'common_corrector' }) }
           },
           {

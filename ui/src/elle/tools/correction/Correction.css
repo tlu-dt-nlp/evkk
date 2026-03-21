@@ -11,12 +11,6 @@
   align-items: flex-start;
   justify-content: flex-end;
 
-  @media (max-width: 650px) {
-    .MuiTabPanel-root {
-      padding: 12px;
-    }
-  }
-
   /* TODO ELLE-386 this does not need to be preserved */
   .correction-tab-group button {
     text-transform: none;
@@ -41,12 +35,12 @@
     }
 
     .Mui-selected {
-      background-color: #E1BEE7;
-      color: #6A1B9A;
+      background-color: #e1bee7;
+      color: #6a1b9a;
     }
 
     .Mui-selected:hover {
-      background-color: #D1A7E0;
+      background-color: #d1a7e0;
     }
 
     .MuiTabs-indicator {

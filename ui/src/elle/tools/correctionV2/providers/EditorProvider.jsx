@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 export const EditorContext = createContext();
 
@@ -13,50 +13,44 @@ export function EditorProvider({ children }) {
   });
 
   const setText = (newText) => {
-    setEditorValues(prev => ({ ...prev, text: newText }));
-  };
-
-  const setErrors = (newErrors) => {
-    setEditorValues(prev => ({ ...prev, errors: newErrors }));
+    setEditorValues((prev) => ({ ...prev, text: newText }));
   };
 
   const setEditor = (editor) => {
-    setEditorValues(prev => ({ ...prev, editor }));
+    setEditorValues((prev) => ({ ...prev, editor }));
   };
 
   const setInitialText = (initialText) => {
-    setEditorValues(prev => ({ ...prev, initialText }));
+    setEditorValues((prev) => ({ ...prev, initialText }));
   };
 
   const setSelectedSubTab = (selectedSubTab) => {
-    setEditorValues(prev => ({ ...prev, selectedSubTab }));
+    setEditorValues((prev) => ({ ...prev, selectedSubTab }));
   };
 
   const setErrorResponse = (errorResponse) => {
-    setEditorValues(prev => ({ ...prev, errorResponse }));
+    setEditorValues((prev) => ({ ...prev, errorResponse }));
   };
 
   const setContent = (content) => {
-    setEditorValues(prev => ({ ...prev, content }));
+    setEditorValues((prev) => ({ ...prev, content }));
   };
 
-  const value = useMemo(() => ({
-    editorValues,
-    setEditorValues,
-    setText,
-    setErrors,
-    setEditor,
-    setInitialText,
-    setSelectedSubTab,
-    setErrorResponse,
-    setContent
-  }), [editorValues]);
-
-  return (
-    <EditorContext.Provider value={value}>
-      {children}
-    </EditorContext.Provider>
+  const value = useMemo(
+    () => ({
+      editorValues,
+      setEditorValues,
+      setText,
+      setEditor,
+      setInitialText,
+      setSelectedSubTab,
+      setErrorResponse,
+      setContent
+    }),
+    [editorValues]
   );
+
+  return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;
 }
 
 export function useEditorContext(selector) {
@@ -66,41 +60,10 @@ export function useEditorContext(selector) {
     throw new Error('useEditorContext must be used within EditorProvider');
   }
 
-  const {
-    editorValues,
-    setText,
-    setErrors,
-    setEditorValues,
-    setEditor,
-    setInitialText,
-    setSelectedSubTab,
-    setErrorResponse,
-    setContent
-  } = context;
-
-  if (!selector) {
-    return {
-      ...editorValues,
-      setText,
-      setErrors,
-      setEditorValues,
-      setEditor,
-      setInitialText,
-      setSelectedSubTab,
-      setErrorResponse,
-      setContent
-    };
-  }
+  const { editorValues, ...setters } = context;
 
   return {
-    ...selector(editorValues),
-    setText,
-    setErrors,
-    setEditorValues,
-    setEditor,
-    setInitialText,
-    setSelectedSubTab,
-    setErrorResponse,
-    setContent
+    ...(selector ? selector(editorValues) : editorValues),
+    ...setters
   };
 }
