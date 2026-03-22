@@ -4,7 +4,8 @@ import { queryStore } from '../store/QueryStore';
 import { useGetSelectedTexts } from '../hooks/service/TextService';
 import RootContext from '../context/RootContext';
 
-export default function ClusterFinder() {
+// TODO: ELLE-330 | Remove after migration
+export default function ClusterFinderOld() {
   const { clusterFinderIntegrationPath } = useContext(RootContext);
   const [height, setHeight] = useState('');
   const iframeRef = useRef();
