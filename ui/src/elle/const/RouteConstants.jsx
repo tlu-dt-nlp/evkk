@@ -41,6 +41,7 @@ export const RouteConstants = {
   ADDING: 'adding',
   ADMIN: 'admin',
   CLUSTERFINDER: 'clusterfinder',
+  CLUSTERFINDER_OLD: 'clusterfinder-old', // TODO: ELLE-330 | Remove after migration
   COLLOCATES: 'collocates',
   CORRECTOR: 'corrector',
   CORRECTOR_TEST: 'corrector-test',
@@ -62,6 +63,7 @@ export const RouteFullPathConstants = {
   ABOUT_PUBLICATIONS: `/${RouteConstants.ABOUT}/${RouteConstants.PUBLICATIONS}`,
   ABOUT_US: `/${RouteConstants.ABOUT}/${RouteConstants.US}`,
   TOOLS_CLUSTERFINDER: `/${RouteConstants.TOOLS}/${RouteConstants.CLUSTERFINDER}`,
+  TOOLS_CLUSTERFINDER_OLD: `/${RouteConstants.TOOLS}/${RouteConstants.CLUSTERFINDER_OLD}`, // TODO: ELLE-330 | Remove after migration
   TOOLS_COLLOCATES: `/${RouteConstants.TOOLS}/${RouteConstants.COLLOCATES}`,
   TOOLS_WORDANALYSER: `/${RouteConstants.TOOLS}/${RouteConstants.WORDANALYSER}`,
   TOOLS_WORDCONTEXT: `/${RouteConstants.TOOLS}/${RouteConstants.WORDCONTEXT}`,
@@ -145,6 +147,12 @@ export const ToolsDrawerList = [
         text: 'common_clusters',
         icon: <img src={ClusterfinderIcon} className="tool-drawer-icon" alt="clusterfinder" />,
         navigateTo: RouteConstants.CLUSTERFINDER
+      },
+      // TODO: ELLE-330 | Remove after migration
+      {
+        text: 'common_clusters_old',
+        icon: <img src={ClusterfinderIcon} className="tool-drawer-icon" alt="clusterfinderOld" />,
+        navigateTo: RouteConstants.CLUSTERFINDER_OLD
       }
     ]
   }
@@ -367,6 +375,11 @@ export const FooterToolsValues = [
   {
     title: 'common_clusters',
     target: RouteFullPathConstants.TOOLS_CLUSTERFINDER
+  },
+  // TODO: ELLE-330 | Remove after migration
+  {
+    title: 'common_clusters_old',
+    target: RouteFullPathConstants.TOOLS_CLUSTERFINDER_OLD
   },
   {
     title: 'common_corrector',

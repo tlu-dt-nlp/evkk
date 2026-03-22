@@ -10,6 +10,7 @@
     "@mui/icons-material": "^7.3.7",
     "@mui/lab": "^7.0.1-beta.18",
     "@mui/material": "^7.3.7",
+    "@mui/x-tree-view": "^8.27.2",
     "@reduxjs/toolkit": "^2.11.2",
     "@tanstack/react-table": "^8.21.3",
     "@tiptap/core": "^3.14.0",
