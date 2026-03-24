@@ -3,23 +3,30 @@ import { RichTreeView } from "@mui/x-tree-view/RichTreeView";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { enrichClusterFinderTreeViewItems, getClusterFinderTreeViewDisplayItems } from "../util/ClusterFinderUtils";
+import {
+  addIdsToArray,
+  addIdToArray,
+  enrichClusterFinderTreeViewItems,
+  getClusterFinderTreeViewDisplayItems,
+  getClusterFinderTreeViewDisplayItemsIdSet,
+  pruneClusterFinderTreeViewHiddenIds,
+  removeIdFromArray,
+  removeIdsFromArray
+} from "../util/ClusterFinderUtils";
 import ClusterFinderTreeItem from "./ClusterFinderTreeItem";
 
-/** @typedef {import("../../const/ClusterFinderConstants").Option} Option */
+/** @typedef {import("../../const/ClusterFinderConstants").ClusterFinderTreeNode} ClusterFinderTreeNode */
 /** @typedef {import("react").Dispatch<import("react").SetStateAction<string[]>>} SetStringArrayState */
-/** @typedef {import("../util/ClusterFinderUtils").EnrichedOption} EnrichedOption */
 /** @typedef {import("@mui/x-tree-view/models").TreeViewDefaultItemModelProperties} TreeViewDefaultItemModelProperties */
-/** @typedef {TreeViewDefaultItemModelProperties & EnrichedOption} EnrichedTreeItem */
+/** @typedef {import("../util/ClusterFinderUtils").EnrichedClusterFinderTreeNode} EnrichedClusterFinderTreeNode */
+/** @typedef {TreeViewDefaultItemModelProperties & EnrichedClusterFinderTreeNode} EnrichedTreeItem */
 
 /* eslint-disable react/prop-types -- PropTypes dependency is not present */
 /**
- * ClusterFinder RichTreeView component
- * @param {boolean} disabled - Whether the tree view is disabled
- * @param {Option[]} items - Tree nodes
- * @param {string[]} selectedItems - Selected items
- * @param {SetStringArrayState} setSelectedItems - Set selected items
- * @return {React.JSX.Element}
+ * @param {boolean} disabled
+ * @param {ClusterFinderTreeNode[]} items
+ * @param {string[]} selectedItems
+ * @param {SetStringArrayState} setSelectedItems
  */
 export default function ClusterFinderTreeView({
   disabled,
@@ -37,50 +44,40 @@ export default function ClusterFinderTreeView({
     [items]
   );
   const displayItems = useMemo(() =>
-      getClusterFinderTreeViewDisplayItems(enrichedItems, selectedItems, apiRef),
-    [enrichedItems, selectedItems, apiRef]
+      getClusterFinderTreeViewDisplayItems(enrichedItems, selectedItems),
+    [enrichedItems, selectedItems]
   );
-  const displayItemsIds = useMemo(() => {
-    /**
-     * @param {EnrichedOption[]} nodes
-     * @return {string[]}
-     */
-    const collectIds = (nodes = []) =>
-      nodes.flatMap((node) => [node.id, ...collectIds(node.children)]);
-
-    return new Set(collectIds(displayItems));
-  }, [displayItems]);
+  const displayItemsIds = useMemo(() =>
+      getClusterFinderTreeViewDisplayItemsIdSet(displayItems),
+    [displayItems]
+  );
 
   useEffect(() => {
     if (disabled) {
       setExpandedItems([]);
       setSelectedItems([]);
+    }
+  }, [disabled]);
+
+  useEffect(() => {
+    if (disabled) {
       return;
     }
 
-    setSelectedItems([]);
+    const resetToDefault = () => {
+      setSelectedItems([]);
 
-    const rootId = enrichedItems[0]?.id;
-    if (rootId) {
-      setExpandedItems([rootId]);
+      const rootId = enrichedItems[0]?.id;
+      setExpandedItems(rootId ? [rootId] : []);
     }
-  }, [disabled, setSelectedItems, enrichedItems]);
+
+    resetToDefault();
+  }, [disabled, enrichedItems]);
 
   useEffect(() => {
-    const prune = (prev) => {
-      const next = prev.filter((id) => displayItemsIds.has(id));
-      return next.length === prev.length ? prev : next;
-    };
-
-    setSelectedItems(prune);
-    setExpandedItems(prune);
-  }, [displayItemsIds, setSelectedItems]);
-
-  /**
-   * @param {string} id
-   * @return {EnrichedTreeItem}
-   */
-  const getItem = (id) => apiRef.current.getItem(id);
+    setSelectedItems(prev => pruneClusterFinderTreeViewHiddenIds(prev, displayItemsIds));
+    setExpandedItems(prev => pruneClusterFinderTreeViewHiddenIds(prev, displayItemsIds));
+  }, [displayItemsIds]);
 
   /**
    * @param {string} id
@@ -88,122 +85,144 @@ export default function ClusterFinderTreeView({
    */
   const getChildIds = (id) => apiRef.current.getItemOrderedChildrenIds(id);
 
-  /**
-   * @param {string} id
-   * @return {string[]}
-   */
   const getDescendantIds = (id) => getChildIds(id).flatMap((childId) => [childId, ...getDescendantIds(childId)]);
 
-  /**
-   * @param {EnrichedTreeItem} node
-   * @return {boolean}
-   */
-  const isSelectableCheckbox = (node) => node && !node.isHeader && !node.isRadio;
+  const getFullSubtrees = (ids) => {
+    return new Set(ids.flatMap((id) => [id, ...getDescendantIds(id)]));
+  };
 
   /**
-   * @param {string[]} arr
    * @param {string} id
-   * @return {string[]}
+   * @return {EnrichedTreeItem}
    */
-  const addIfMissing = (arr, id) => (arr.includes(id) ? arr : [...arr, id]);
+  const getItem = (id) => apiRef.current.getItem(id);
 
-  /**
-   * @param {string[]} ids
-   * @param {string} fromItemId
-   * @return {string[]}
-   */
-  const syncParentCheckboxes = (ids, fromItemId) => {
-    let next = ids;
-    let parentId = getItem(fromItemId)?.parentId;
+  const getIdsToClearForRadioGroup = (itemId) => {
+    const item = getItem(itemId);
+    const siblingIds = item.parentId ? getChildIds(item.parentId) : [];
 
-    while (parentId) {
-      const parent = getItem(parentId);
+    const siblingRadioIds = siblingIds.filter((id) => id !== itemId && getItem(id).isRadio);
+    return getFullSubtrees(siblingRadioIds);
+  };
+
+  const handleRadioClick = (itemId) => {
+    const idsToClear = getIdsToClearForRadioGroup(itemId);
+
+    setSelectedItems((prev) => {
+      const cleared = removeIdsFromArray(prev, idsToClear);
+      return addIdToArray(cleared, itemId);
+    });
+
+    setExpandedItems((prev) => {
+      const cleared = removeIdsFromArray(prev, idsToClear);
+      return addIdToArray(cleared, itemId);
+    });
+  };
+
+  const isSelectableCheckbox = (node) => node && !node.isCategory && !node.isRadio;
+
+  const hasChildCheckboxes = (itemId) => {
+    return getDescendantIds(itemId).some((id) => isSelectableCheckbox(getItem(id)));
+  };
+
+  const handleGroupCheckboxClick = (itemId) => {
+    setExpandedItems((prev) => {
+      const isExpanded = prev.includes(itemId);
+      const isChecked = selectedItems.includes(itemId);
+      return (!isExpanded && !isChecked) ? [...prev, itemId] : prev;
+    });
+  };
+
+  const shouldParentBeSelected = (parentId, selectedIds) => {
+    const leafIds = getDescendantIds(parentId).filter((id) => {
+      const node = getItem(id);
+      return isSelectableCheckbox(node) && !node.children?.length;
+    })
+
+    return leafIds.length > 0 && leafIds.every((id) => selectedIds.includes(id));
+  };
+
+  const syncParentCheckboxes = (initialIds, fromItemId) => {
+    let updatedIds = initialIds;
+    let currentParentId = getItem(fromItemId)?.parentId;
+
+    while (currentParentId) {
+      const parent = getItem(currentParentId);
 
       if (isSelectableCheckbox(parent)) {
-        const selectableLeafDescendantIds = getDescendantIds(parentId).filter((id) => {
-          const node = getItem(id);
-          return isSelectableCheckbox(node) && !node.children?.length;
-        });
+        const allChildrenSelected = shouldParentBeSelected(currentParentId, updatedIds);
 
-        const allSelected = selectableLeafDescendantIds.length
-          && selectableLeafDescendantIds.every((id) => next.includes(id));
-
-        next = allSelected ? addIfMissing(next, parentId) : next.filter((id) => id !== parentId);
+        updatedIds = allChildrenSelected
+          ? addIdToArray(updatedIds, currentParentId)
+          : removeIdFromArray(updatedIds, currentParentId);
       }
 
-      parentId = parent?.parentId;
+      currentParentId = parent?.parentId;
     }
 
-    return next;
+    return updatedIds;
+  };
+
+  const handleLeafCheckboxClick = (itemId) => {
+    const isCurrentlySelected = selectedItems.includes(itemId);
+
+    setSelectedItems((prev) => {
+      const next = isCurrentlySelected ? removeIdFromArray(prev, itemId) : addIdToArray(prev, itemId);
+      return syncParentCheckboxes(next, itemId);
+    })
+
+    if (!isCurrentlySelected) {
+      setExpandedItems((prev) => addIdToArray(prev, itemId));
+    }
   };
 
   const handleItemClick = (_, itemId) => {
     const item = getItem(itemId);
-    if (!item || item.isHeader) {
+
+    if (!item || item.isCategory) {
       return;
     }
-
-    const siblings = item.parentId ? getChildIds(item.parentId) : [];
 
     if (item.isRadio) {
-      const siblingRadios = siblings.filter((id) => id !== itemId && getItem(id).isRadio);
-      const idsToRemove = new Set(siblingRadios.flatMap((id) => [id, ...getDescendantIds(id)]));
-
-      setSelectedItems((prev) => addIfMissing(prev.filter((id) => !idsToRemove.has(id)), itemId));
-      setExpandedItems((prev) => addIfMissing(prev.filter((id) => !idsToRemove.has(id)), itemId));
+      handleRadioClick(itemId);
       return;
     }
 
-    const hasChildCheckboxes = getDescendantIds(itemId).some((id) => {
-      const node = getItem(id);
-      return isSelectableCheckbox(node);
-    });
-
-    if (hasChildCheckboxes) {
-      setExpandedItems((prev) => {
-        const isExpanded = prev.includes(itemId);
-        const isChecked = selectedItems.includes(itemId);
-
-        return !isExpanded && !isChecked ? [...prev, itemId] : prev;
-      });
+    if (hasChildCheckboxes(itemId)) {
+      handleGroupCheckboxClick(itemId);
       return;
     }
 
-    setSelectedItems((prev) => {
-      const next = prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId];
-
-      return syncParentCheckboxes(next, itemId);
-    });
-
-    setExpandedItems((prev) =>
-      !prev.includes(itemId) && !selectedItems.includes(itemId) ? [...prev, itemId] : prev
-    );
-  };
-
-  const handleItemSelectionToggle = (_, itemId, isSelected) => {
-    const item = getItem(itemId);
-    if (!item || !isSelectableCheckbox(item) || !item.children?.length) {
-      return;
-    }
-
-    const descendantCheckboxIds = getDescendantIds(itemId).filter((id) => isSelectableCheckbox(getItem(id)));
-    const idsToToggle = [itemId, ...descendantCheckboxIds];
-
-    setSelectedItems((prev) => {
-      const toggled = isSelected
-        ? Array.from(new Set([...prev, ...idsToToggle]))
-        : prev.filter((id) => !idsToToggle.includes(id));
-
-      return syncParentCheckboxes(toggled, itemId);
-    });
+    handleLeafCheckboxClick(itemId);
   };
 
   const handleItemExpansionToggle = (_, itemId, isExpanded) => {
     setExpandedItems((prev) =>
-      isExpanded ? addIfMissing(prev, itemId) : prev.filter((id) => id !== itemId)
+      isExpanded ? addIdToArray(prev, itemId) : removeIdFromArray(prev, itemId)
     );
+  };
+
+  const getChildCheckboxIds = (itemId) => {
+    return getDescendantIds(itemId).filter((id) => isSelectableCheckbox(getItem(id)));
+  };
+
+  const handleItemSelectionToggle = (_, itemId, isSelected) => {
+    const item = getItem(itemId);
+
+    if (!item || !isSelectableCheckbox(item) || !item.children?.length) {
+      return;
+    }
+
+    const descendantCheckboxIds = getChildCheckboxIds(itemId);
+    const idsToToggle = new Set([itemId, ...descendantCheckboxIds]);
+
+    setSelectedItems((prev) => {
+      const next = isSelected
+        ? addIdsToArray(prev, idsToToggle)
+        : removeIdsFromArray(prev, idsToToggle);
+
+      return syncParentCheckboxes(next, itemId);
+    })
   };
 
   return (
@@ -211,8 +230,8 @@ export default function ClusterFinderTreeView({
       apiRef={apiRef}
       checkboxSelection
       expandedItems={expandedItems}
-      getItemLabel={(item) => t(item.translationKey)}
-      isItemSelectionDisabled={(item) => item.isHeader}
+      getItemLabel={(item) => t(item.labelKey)}
+      isItemSelectionDisabled={(item) => item.isCategory}
       itemChildrenIndentation={24}
       items={displayItems}
       multiSelect

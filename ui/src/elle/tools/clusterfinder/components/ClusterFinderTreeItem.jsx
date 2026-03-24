@@ -6,23 +6,20 @@ import { useTranslation } from "react-i18next";
 import TooltipButton from "../../../components/tooltip/TooltipButton";
 
 /** @typedef {import("@mui/x-tree-view/TreeItem").TreeItemProps} TreeItemProps */
-/** @typedef {import("../../const/ClusterFinderConstants").Option} Option */
-/** @typedef {import("../util/ClusterFinderUtils").EnrichedOption} EnrichedOption */
 /** @typedef {import("@mui/x-tree-view/models").TreeViewDefaultItemModelProperties} TreeViewDefaultItemModelProperties */
-/** @typedef {TreeViewDefaultItemModelProperties & EnrichedOption} EnrichedTreeItem */
+/** @typedef {import("../util/ClusterFinderUtils").EnrichedClusterFinderTreeNode} EnrichedClusterFinderTreeNode */
+/** @typedef {TreeViewDefaultItemModelProperties & EnrichedClusterFinderTreeNode} EnrichedTreeItem */
 
 /* eslint-disable react/prop-types -- PropTypes dependency is not present */
 /**
- * ClusterFinder RichTreeView TreeItem component
- * @param {TreeItemProps} props - TreeItem props
- * @return {React.JSX.Element}
+ * @param {TreeItemProps} props
  */
 export default function ClusterFinderTreeItem(props) {
   const {t, i18n} = useTranslation();
 
   /** @type {EnrichedTreeItem | null} */
   const item = useTreeItemModel(props.itemId);
-  const tooltipKey = item.tooltipTranslationKey ?? `${item?.translationKey}_tooltip`;
+  const tooltipKey = item.tooltipKey ?? `${item?.labelKey}_tooltip`;
   const showTooltip = i18n.exists(tooltipKey);
 
   return (
@@ -31,19 +28,19 @@ export default function ClusterFinderTreeItem(props) {
       label={
         item && (
           <>
-            {t(item.translationKey)}
+            {t(item.labelKey)}
             {showTooltip && <TooltipButton>{t(tooltipKey)}</TooltipButton>}
           </>
         )
       }
       slotProps={{
         content: {
-          sx: item?.isHeader && item?.parentId ? {ml: 2} : undefined
+          sx: item?.isCategory && item?.parentId ? {ml: 2} : undefined
         }
       }}
       slots={{
         checkbox: (slotProps) => {
-          if (item?.isHeader) {
+          if (item?.isCategory) {
             return null;
           }
 
