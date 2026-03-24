@@ -1,37 +1,22 @@
-/** @typedef {import("../../const/ClusterFinderConstants").Option} Option */
-/** @typedef {Option & {id: string; parentId: string | null}} EnrichedOption */
-/** @typedef {import("@mui/x-tree-view/RichTreeView").RichTreeViewApiRef} RichTreeViewApiRef */
+const generateNodeId = (node, fallbackKey) => {
+  const key = node.payloadKey ?? fallbackKey;
+  if (!key) {
+    throw new Error("ClusterFinder node missing payloadKey");
+  }
 
-/**
- * Add requestKeys, ids, and parentIds to tree nodes.
- * id format:
- * - `requestKey:requestValue` when requestValue is present
- * - `requestKey` when requestValue is missing
- *
- * @param {Option[]} items
- * @return {EnrichedOption[]}
- */
+  return node.payloadValue ? `${key}:${node.payloadValue}` : key;
+};
+
 export const enrichClusterFinderTreeViewItems = (items) => {
-  const walkNodes = (nodes = [], parentRequestKey = null, parentId = null) => {
-    if (!nodes.length) {
-      return [];
-    }
-
+  const walkNodes = (nodes = [], parentPayloadKey = null, parentId = null) => {
     return nodes.map((node) => {
-      const requestKey = node.requestKey ?? parentRequestKey;
-
-      if (!requestKey) {
-        throw new Error("ClusterFinder tree node is missing requestKey and has no parent requestKey to inherit.");
-      }
-
-      const id = node.requestValue
-        ? `${requestKey}:${node.requestValue}`
-        : requestKey;
+      const payloadKey = node.payloadKey ?? parentPayloadKey;
+      const id = generateNodeId(node, payloadKey);
 
       return {
         ...node,
-        requestKey,
-        children: walkNodes(node.children, requestKey, id),
+        payloadKey,
+        children: walkNodes(node.children, payloadKey, id),
         id,
         parentId
       };
@@ -41,31 +26,64 @@ export const enrichClusterFinderTreeViewItems = (items) => {
   return walkNodes(items);
 };
 
-/**
- * Get currently visible tree nodes.
- *
- * @param {EnrichedOption[]} items
- * @param {string[]} selectedItems
- * @param {RichTreeViewApiRef} apiRef
- * @return {EnrichedOption[]}
- */
-export const getClusterFinderTreeViewDisplayItems = (items, selectedItems, apiRef) => {
-  const selectedNodes = selectedItems
-    .map((id) => apiRef.current?.getItem(id))
-    .filter(Boolean);
+const isNodeVisible = (node, selectedIds) => {
+  const {visibleWhen} = node;
+  if (!visibleWhen) {
+    return true;
+  }
 
-  const hasToken = (token) =>
-    selectedNodes.some((node) => node.requestKey === token || node.requestValue === token);
+  const checkMatch = (id) => selectedIds.has(id);
 
-  const isVisible = (node) =>
-    !node.visibleWhen
-    || (!node.visibleWhen.anyOf || node.visibleWhen.anyOf.some(hasToken))
-    && (!node.visibleWhen.allOf || node.visibleWhen.allOf.every(hasToken));
+  const satisfiesAny = !visibleWhen.anyOf || visibleWhen.anyOf.some(checkMatch);
+  const satisfiesAll = !visibleWhen.allOf || visibleWhen.allOf.every(checkMatch);
 
-  const walkNodes = (nodes = []) =>
-    nodes.flatMap((node) => (
-      isVisible(node) ? [{...node, children: walkNodes(node.children)}] : []
-    ));
-
-  return walkNodes(items);
+  return satisfiesAny && satisfiesAll;
 };
+
+export const getClusterFinderTreeViewDisplayItems = (items, selectedIdsArray) => {
+  const selectedIds = new Set(selectedIdsArray);
+
+  const filterNodes = (nodes) =>
+    nodes
+      .filter(node => isNodeVisible(node, selectedIds))
+      .map(node => ({
+        ...node,
+        children: filterNodes(node.children || [])
+      }));
+
+  return filterNodes(items);
+};
+
+export const getClusterFinderTreeViewDisplayItemsIdSet = (items) => {
+  const ids = new Set();
+
+  const walkNodes = (nodes) => {
+    nodes.forEach(node => {
+      ids.add(node.id);
+
+      if (node.children) {
+        walkNodes(node.children);
+      }
+    });
+  }
+
+  walkNodes(items);
+  return ids;
+};
+
+export const pruneClusterFinderTreeViewHiddenIds = (ids, visibleIdsSet) => {
+  const pruned = ids.filter((id) => visibleIdsSet.has(id));
+  return pruned.length === ids.length ? ids : pruned;
+};
+
+export const addIdsToArray = (arr, idsToAddSet) =>
+  [...new Set([...arr, ...idsToAddSet])];
+
+export const removeIdsFromArray = (arr, idsToRemoveSet) =>
+  arr.filter((id) => !idsToRemoveSet.has(id));
+
+export const addIdToArray = (arr, id) =>
+  arr.includes(id) ? arr : [...arr, id];
+
+export const removeIdFromArray = (arr, id) =>
+  arr.filter((item) => item !== id);

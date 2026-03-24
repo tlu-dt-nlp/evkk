@@ -18,35 +18,32 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import TooltipButton from "../../components/tooltip/TooltipButton";
-import {
-  ClusterFinderType,
-  morphologicalWordTypeOptions,
-  syntacticClauseTypeOptions,
-  wordTypeOptions
-} from "../../const/ClusterFinderConstants";
+import { syntacticClauseTypeNodes } from "../../const/ClusterFinderClauseConstants";
+import { ClusterFinderTreeType } from "../../const/ClusterFinderConstants";
+import { morphologicalWordTypeNodes, wordTypeNodes } from "../../const/ClusterFinderWordConstants";
 import { AccordionStyle, DefaultButtonStyle } from "../../const/StyleConstants";
 import ClusterFinderTreeView from "./components/ClusterFinderTreeView";
 
 export default function ClusterFinder() {
   const {t, i18n} = useTranslation();
 
-  const [paramsExpanded, setParamsExpanded] = useState(true);
-  const [typeError, setTypeError] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [typeValue, setTypeValue] = useState({
-    [ClusterFinderType.MORPHOLOGICAL]: false,
-    [ClusterFinderType.SYNTACTIC]: false,
-    [ClusterFinderType.WORD_TYPE]: false
+    [ClusterFinderTreeType.MORPHOLOGICAL]: false,
+    [ClusterFinderTreeType.SYNTACTIC]: false,
+    [ClusterFinderTreeType.WORD_TYPE]: false
   });
+  const [typeError, setTypeError] = useState(false);
   const [wordSequenceLength, setWordSequenceLength] = useState(1);
   const [orderByNthWord, setOrderByNthWord] = useState(1);
   const [isPunctuationSensitiveChecked, setIsPunctuationSensitiveChecked] = useState(false);
   const [selectedClauseTypeItems, setSelectedClauseTypeItems] = useState([]);
   const [selectedWordTypeItems, setSelectedWordTypeItems] = useState([]);
 
-  const clusterFinderOptions = [
-    {key: "word_type", translationKey: "cluster_finder_word_type", value: ClusterFinderType.WORD_TYPE},
-    {key: "syntactic", translationKey: "cluster_finder_syntactic", value: ClusterFinderType.SYNTACTIC},
-    {key: "morphological", translationKey: "cluster_finder_morphological", value: ClusterFinderType.MORPHOLOGICAL}
+  const clusterFinderTypes = [
+    {labelKey: "cluster_finder_word_type", value: ClusterFinderTreeType.WORD_TYPE},
+    {labelKey: "cluster_finder_syntactic", value: ClusterFinderTreeType.SYNTACTIC},
+    {labelKey: "cluster_finder_morphological", value: ClusterFinderTreeType.MORPHOLOGICAL}
   ];
 
   /** @type {number[]} */
@@ -58,27 +55,39 @@ export default function ClusterFinder() {
 
     // TODO: Implement POST request
     console.log(event);
-  }
+  };
+
+  const applyTypeExclusionRules = (changedKey, isChecked) => {
+    const nextValues = {...typeValue, [changedKey]: isChecked};
+
+    // Rule: WordType is mutually exclusive with Morphological and Syntactic
+    if (changedKey === ClusterFinderTreeType.WORD_TYPE) {
+      nextValues[ClusterFinderTreeType.MORPHOLOGICAL] = false;
+      nextValues[ClusterFinderTreeType.SYNTACTIC] = false;
+    }
+
+    // Rule: If either Morphological or Syntactic is picked, then WordType must be off
+    if (changedKey === ClusterFinderTreeType.MORPHOLOGICAL || changedKey === ClusterFinderTreeType.SYNTACTIC) {
+      nextValues[ClusterFinderTreeType.WORD_TYPE] = false;
+    }
+
+    return nextValues;
+  };
 
   const handleTypeChange = (event) => {
     const {value, checked} = event.target;
-    const newValue = {...typeValue, [value]: checked};
 
-    if (value === ClusterFinderType.WORD_TYPE && checked) {
-      newValue[ClusterFinderType.MORPHOLOGICAL] = false;
-      newValue[ClusterFinderType.SYNTACTIC] = false;
-    } else if ((value === ClusterFinderType.MORPHOLOGICAL || value === ClusterFinderType.SYNTACTIC) && checked) {
-      newValue[ClusterFinderType.WORD_TYPE] = false;
-    }
+    const updatedValue = applyTypeExclusionRules(value, checked);
 
-    setTypeValue(newValue);
+    setTypeValue(updatedValue);
     setTypeError(false);
   };
 
   const handleWordSequenceLengthChange = (event) => {
     const newLength = event.target.value;
+    const isSelectedOrderByNthWordOutOfBounds = orderByNthWord > newLength;
 
-    if (orderByNthWord > newLength) {
+    if (isSelectedOrderByNthWordOutOfBounds) {
       setOrderByNthWord(1);
     }
 
@@ -102,8 +111,8 @@ export default function ClusterFinder() {
       </h2>
 
       <Accordion
-        expanded={paramsExpanded}
-        onChange={() => setParamsExpanded(!paramsExpanded)}
+        expanded={isAccordionExpanded}
+        onChange={() => setIsAccordionExpanded(!isAccordionExpanded)}
         sx={AccordionStyle}
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -124,22 +133,22 @@ export default function ClusterFinder() {
                 <FormControl error={typeError}>
                   <FormLabel>{t("cluster_finder_analysis")}</FormLabel>
 
-                  {clusterFinderOptions.map((option) => {
-                    const tooltipKey = option.tooltipTranslationKey ?? `${option.translationKey}_tooltip`;
+                  {clusterFinderTypes.map((type) => {
+                    const tooltipKey = `${type.labelKey}_tooltip`;
                     const showTooltip = i18n.exists(tooltipKey);
 
                     return (
                       <FormControlLabel
-                        control={<Checkbox checked={typeValue[option.value]} />}
-                        key={option.key}
+                        control={<Checkbox checked={typeValue[type.value]} />}
+                        key={type.value}
                         label={
                           <>
-                            {t(option.translationKey)}
+                            {t(type.labelKey)}
                             {showTooltip && (<TooltipButton>{t(tooltipKey)}</TooltipButton>)}
                           </>
                         }
                         onChange={handleTypeChange}
-                        value={option.value}
+                        value={type.value}
                       />
                     );
                   })}
@@ -234,8 +243,8 @@ export default function ClusterFinder() {
               <Grid item size={{xs: 12, sm: 6, md: 6}}>
                 <FormControl>
                   <ClusterFinderTreeView
-                    disabled={!typeValue[ClusterFinderType.SYNTACTIC]}
-                    items={syntacticClauseTypeOptions}
+                    disabled={!typeValue[ClusterFinderTreeType.SYNTACTIC]}
+                    items={syntacticClauseTypeNodes}
                     selectedItems={selectedClauseTypeItems}
                     setSelectedItems={setSelectedClauseTypeItems}
                   />
@@ -245,8 +254,8 @@ export default function ClusterFinder() {
               <Grid item size={{xs: 12, sm: 6, md: 6}}>
                 <FormControl>
                   <ClusterFinderTreeView
-                    disabled={!typeValue[ClusterFinderType.MORPHOLOGICAL] && !typeValue[ClusterFinderType.WORD_TYPE]}
-                    items={typeValue[ClusterFinderType.MORPHOLOGICAL] ? morphologicalWordTypeOptions : wordTypeOptions}
+                    disabled={!typeValue[ClusterFinderTreeType.MORPHOLOGICAL] && !typeValue[ClusterFinderTreeType.WORD_TYPE]}
+                    items={typeValue[ClusterFinderTreeType.MORPHOLOGICAL] ? morphologicalWordTypeNodes : wordTypeNodes}
                     selectedItems={selectedWordTypeItems}
                     setSelectedItems={setSelectedWordTypeItems}
                   />
