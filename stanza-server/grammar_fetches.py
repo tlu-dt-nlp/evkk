@@ -13,25 +13,25 @@ test_grammar_url = 'https://api.tartunlp.ai/grammar/v2'
 # TODO: add back grammar_url implementation when response parsing has been fixed
 def fetch_grammar(text):
     data = {data_text: text}
-    try:
-        response = requests.post(grammar_alt_url, headers=headers, json=data, timeout=10)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
-    except requests.exceptions.RequestException:
+    # response = requests.post(grammar_url, headers=headers, json=data)
+
+    # if response.status_code == 200:
+    #     return response.json()
+    # else:
+    response = requests.post(grammar_alt_url, headers=headers, json=data)
+    if response.status_code == 200:
+        return response.json()
+    else:
         return None
 
 
 def fetch_speller(text):
     data = {data_text: text}
-    try:
-        response = requests.post(speller_url, headers=headers, json=data, timeout=10)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
-    except requests.exceptions.RequestException:
+    response = requests.post(speller_url, headers=headers, json=data)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
         return None
 
 
