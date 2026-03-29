@@ -9,15 +9,28 @@ const alignmentMap = {
   right: 'flex-end'
 };
 
-export default function CorrectionInfoIcon({ children, fixedHeight = false, align = 'right', className = '' }) {
+export default function CorrectionInfoIcon({
+  children,
+  fixedHeight = false,
+  align = 'right',
+  className = ''
+}) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div
       className={className}
-      style={{ height: fixedHeight ? '44px' : 'auto', display: 'flex', justifyContent: alignmentMap[align] }}
+      style={{
+        height: fixedHeight ? '44px' : 'auto',
+        display: 'flex',
+        justifyContent: alignmentMap[align]
+      }}
     >
-      <IconButton aria-label="info" color="red" onClick={() => setModalOpen(true)}>
+      <IconButton
+        aria-label="info"
+        color="red"
+        onClick={() => setModalOpen(true)}
+      >
         <InfoIcon className="elle-dark-text" />
       </IconButton>
       <ModalBase isOpen={modalOpen} setIsOpen={setModalOpen}>

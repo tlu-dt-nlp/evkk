@@ -12,12 +12,21 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
 
   return (
     <div className="corrector-right">
-      <Accordion square={true} style={{ marginBottom: '0.5em' }} sx={CorrectorAccordionStyle} defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>{t('common_statistics')}</AccordionSummary>
+      <Accordion
+        square={true}
+        style={{ marginBottom: '0.5em' }}
+        sx={CorrectorAccordionStyle}
+        defaultExpanded
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          {t('common_statistics')}
+        </AccordionSummary>
         <AccordionDetails>
           <div>
             <div className="tab-table">
-              <div>{t('corrector_vocabulary_statistics_the_words_considered')}</div>
+              <div>
+                {t('corrector_vocabulary_statistics_the_words_considered')}
+              </div>
               <div>{complexityAnswer.sonad.length}</div>
             </div>
             <div className="tab-table">
@@ -25,7 +34,9 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
               <div>{complexityAnswer.mitmekesisus[11] || 0}</div>
             </div>
             <div className="tab-table">
-              <div>{t('corrector_vocabulary_statistics_low_frequency_words')}</div>
+              <div>
+                {t('corrector_vocabulary_statistics_low_frequency_words')}
+              </div>
               <div>{complexityAnswer.korrektoriLoendid.harvaesinevad || 0}</div>
             </div>
             <div className="tab-table">
@@ -42,7 +53,9 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
         </AccordionDetails>
       </Accordion>
       <Accordion square={true} sx={CorrectorAccordionStyle}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>{t('common_indexes')}</AccordionSummary>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          {t('common_indexes')}
+        </AccordionSummary>
         <AccordionDetails className="index-row">
           <CorrectionScale
             title={t('corrector_vocabulary_indexes_root_type_token_ratio')}
@@ -96,7 +109,10 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
             title={t('corrector_vocabulary_range')}
             startValue={0}
             endValue={10}
-            value={(complexityAnswer.korrektoriLoendid.harvaesinevad * 100) / complexityAnswer.mitmekesisus[10]}
+            value={
+              (complexityAnswer.korrektoriLoendid.harvaesinevad * 100) /
+              complexityAnswer.mitmekesisus[10]
+            }
             startText={t('corrector_vocabulary_more_frequent_vocabulary')}
             endText={t('corrector_vocabulary_less_frequent_vocabulary')}
             percentage={true}
@@ -106,7 +122,10 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
             title={t('corrector_vocabulary_lexical_density')}
             startValue={30}
             endValue={70}
-            value={(complexityAnswer.korrektoriLoendid.sisusonad * 100) / complexityAnswer.mitmekesisus[10]}
+            value={
+              (complexityAnswer.korrektoriLoendid.sisusonad * 100) /
+              complexityAnswer.mitmekesisus[10]
+            }
             startText={t('corrector_vocabulary_less_content_words')}
             endText={t('corrector_vocabulary_more_content_words')}
             percentage={true}

@@ -10,16 +10,21 @@ import GenericTabs from '../../../../components/GenericTabs';
 export default function CorrectorButtonGroup({ selectedTab }) {
   const { getCorrectorResult } = useGetCorrectorResult();
 
-  const { text, initialText, setInitialText, errorResponse, setErrorResponse, setSelectedSubTab } = useEditorContext(
-    (state) => ({
-      text: state.text,
-      initialText: state.initialText,
-      setInitialText: state.setInitialText,
-      errorResponse: state.errorResponse,
-      setErrorResponse: state.setErrorResponse,
-      setSelectedSubTab: state.setSelectedSubTab
-    })
-  );
+  const {
+    text,
+    initialText,
+    setInitialText,
+    errorResponse,
+    setErrorResponse,
+    setSelectedSubTab
+  } = useEditorContext(state => ({
+    text: state.text,
+    initialText: state.initialText,
+    setInitialText: state.setInitialText,
+    errorResponse: state.errorResponse,
+    setErrorResponse: state.setErrorResponse,
+    setSelectedSubTab: state.setSelectedSubTab
+  }));
 
   const toggleButtons = ToggleButtonCategories[selectedTab];
 
@@ -30,7 +35,10 @@ export default function CorrectorButtonGroup({ selectedTab }) {
   const handleChange = async (_, newValue) => {
     setValue(newValue);
     if (initialText !== text && Object.keys(errorResponse).length !== 0) {
-      const result = await getCorrectorResult({ tekst: text, model: GRAMMARCHECKER });
+      const result = await getCorrectorResult({
+        tekst: text,
+        model: GRAMMARCHECKER
+      });
       setErrorResponse(result);
       setInitialText(text);
     }
@@ -38,14 +46,22 @@ export default function CorrectorButtonGroup({ selectedTab }) {
   };
 
   return (
-    <Box className="d-flex">
-      <GenericTabs className="correction-toggle-button-group" value={value} handleChange={handleChange}>
-        {toggleButtons.map((button) => (
+    <Box className="d-flex" sx={{ minWidth: 0 }}>
+      <GenericTabs
+        className="correction-toggle-button-group"
+        value={value}
+        handleChange={handleChange}
+      >
+        {toggleButtons.map(button => (
           <Tab
             key={button.title}
             value={button.value}
             label={
-              <Tooltip key={button.title} placement="top" title={t(button.title)}>
+              <Tooltip
+                key={button.title}
+                placement="top"
+                title={t(button.title)}
+              >
                 <span>{t(button.text)}</span>
               </Tooltip>
             }

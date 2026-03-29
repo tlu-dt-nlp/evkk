@@ -9,8 +9,13 @@ export default function TextLevelAccordionV2({ complexityAnswer }) {
   return (
     <div className="corrector-right">
       <div className="level-accordion-overall-value-container">
-        <div className="level-accordion-overall-value-label">{t(accordionDetails[0].label)}</div>
-        <TextLevelAccordionInner complexityAnswer={complexityAnswer.mixed} key="mixed" />
+        <div className="level-accordion-overall-value-label">
+          {t(accordionDetails[0].label)}
+        </div>
+        <TextLevelAccordionInner
+          complexityAnswer={complexityAnswer.mixed}
+          key="mixed"
+        />
       </div>
       <div>
         <TextLevelAccordion

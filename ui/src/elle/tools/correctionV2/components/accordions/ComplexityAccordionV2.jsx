@@ -11,12 +11,14 @@ import CorrectionScale from '../../../correction/components/CorrectionScale';
 export default function ComplexityAccordionV2({ complexityAnswer }) {
   const { t } = useTranslation();
 
-  const generateComplexityAnswer = (answer) => {
+  const generateComplexityAnswer = answer => {
     return answer
       .split('/')
       .sort((a, b) => complexityValues.indexOf(a) - complexityValues.indexOf(b))
       .map(t)
-      .map((complexityWord, index, array) => (index === array.length - 1 ? complexityWord : `${complexityWord} / `));
+      .map((complexityWord, index, array) =>
+        index === array.length - 1 ? complexityWord : `${complexityWord} / `
+      );
   };
 
   return (
@@ -25,8 +27,15 @@ export default function ComplexityAccordionV2({ complexityAnswer }) {
         <span>{t('corrector_complexity_level')}</span>
         <span>{generateComplexityAnswer(complexityAnswer.keerukus[11])}</span>
       </div>
-      <Accordion square={true} style={{ marginBottom: '0.5em' }} sx={CorrectorAccordionStyle} defaultExpanded>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>{t('common_statistics')}</AccordionSummary>
+      <Accordion
+        square={true}
+        style={{ marginBottom: '0.5em' }}
+        sx={CorrectorAccordionStyle}
+        defaultExpanded
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          {t('common_statistics')}
+        </AccordionSummary>
         <AccordionDetails>
           <div>
             <div className="tab-table">
@@ -42,7 +51,9 @@ export default function ComplexityAccordionV2({ complexityAnswer }) {
               <div>{complexityAnswer.keerukus[3] || 0}</div>
             </div>
             <div className="tab-table">
-              <div>{t('corrector_complexity_statistics_polysyllabic_words')}</div>
+              <div>
+                {t('corrector_complexity_statistics_polysyllabic_words')}
+              </div>
               <div>{complexityAnswer.keerukus[2] || 0}</div>
             </div>
             <div className="tab-table">
@@ -57,7 +68,9 @@ export default function ComplexityAccordionV2({ complexityAnswer }) {
         </AccordionDetails>
       </Accordion>
       <Accordion square={true} sx={CorrectorAccordionStyle}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>{t('common_indexes')}</AccordionSummary>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          {t('common_indexes')}
+        </AccordionSummary>
         <AccordionDetails className="index-row">
           <CorrectionScale
             title={t('corrector_smog_index')}

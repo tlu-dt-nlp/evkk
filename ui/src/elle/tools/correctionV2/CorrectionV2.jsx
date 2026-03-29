@@ -29,23 +29,31 @@ const infoContentMap = {
 };
 
 export default function CorrectionV2() {
-  const { setInitialText, initialText, text, errorResponse, setErrorResponse, setSelectedSubTab } = useEditorContext(
-    (state) => ({
-      setInitialText: state.setInitialText,
-      initialText: state.initialText,
-      text: state.text,
-      errorResponse: state.errorResponse,
-      setErrorResponse: state.setErrorResponse,
-      setSelectedSubTab: state.setSelectedSubTab
-    })
-  );
+  const {
+    setInitialText,
+    initialText,
+    text,
+    errorResponse,
+    setErrorResponse,
+    setSelectedSubTab
+  } = useEditorContext(state => ({
+    setInitialText: state.setInitialText,
+    initialText: state.initialText,
+    text: state.text,
+    errorResponse: state.errorResponse,
+    setErrorResponse: state.setErrorResponse,
+    setSelectedSubTab: state.setSelectedSubTab
+  }));
   const { getCorrectorResult } = useGetCorrectorResult();
   const { t } = useTranslation();
   const [value, setValue] = useState(tabValueMap.CORRECTOR);
 
   const tabValues = [
     <Tab label={t('corrector_proofreading')} value={tabValueMap.CORRECTOR} />,
-    <Tab label={t('corrector_proficiency_level')} value={tabValueMap.PROFICIENCY_LEVEL} />,
+    <Tab
+      label={t('corrector_proficiency_level')}
+      value={tabValueMap.PROFICIENCY_LEVEL}
+    />,
     <Tab label={t('corrector_complexity')} value={tabValueMap.COMPLEXITY} />,
     <Tab label={t('corrector_vocabulary')} value={tabValueMap.VOCABULARY} />
   ];
@@ -70,7 +78,10 @@ export default function CorrectionV2() {
     setSelectedSubTab(ToggleButtonCategories[newValue][0].value);
     if (initialText !== text && Object.keys(errorResponse).length !== 0) {
       setInitialText(text);
-      const result = await getCorrectorResult({ tekst: text, model: GRAMMARCHECKER });
+      const result = await getCorrectorResult({
+        tekst: text,
+        model: GRAMMARCHECKER
+      });
       setErrorResponse(result);
     }
   };
@@ -78,29 +89,33 @@ export default function CorrectionV2() {
   return (
     <Box className="global-page-content-container">
       <div className="global-page-content-container-inner correction-container-inner">
-        <Box className="tab-context-wrapper">
+        <Box className="correction-tab-context-wrapper">
           <TabContext value={value}>
             <Box className="correction-tab-group-box">
-              <GenericTabs value={value} handleChange={handleChange} leftPadding={true}>
+              <GenericTabs
+                value={value}
+                handleChange={handleChange}
+                leftPadding={true}
+              >
                 {tabValues}
               </GenericTabs>
             </Box>
             <Box className="correction-layout">
-              <div className="correction-area-buttons">
+              <div className="correction-button-group">
                 <CorrectorButtonGroup key={value} selectedTab={value} />
-              </div>
-              <div className="correction-area-info">
-                <CorrectionInfoIcon fixedHeight className="correction-info-icon">
+                <CorrectionInfoIcon fixedHeight>
                   {infoContentMap[value]}
                 </CorrectionInfoIcon>
               </div>
-              <div className="correction-area-editor">
-                <CorrectorInput />
+              <div className="correction-input-group">
+                <div className="correction-input-group-inner">
+                  <CorrectorInput />
+                  <CorrectorButton />
+                </div>
+                <div className="correction-input-group-inner">
+                  {errorBoxTabPanels}
+                </div>
               </div>
-              <div className="correction-area-submit">
-                <CorrectorButton />
-              </div>
-              <div className="correction-area-panels">{errorBoxTabPanels}</div>
             </Box>
           </TabContext>
         </Box>

@@ -1,30 +1,39 @@
-import './CorrectorInput.css';
+import './styles.css';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef } from 'react';
 import MarkComponentExtension from './MarkComponentExtension.js';
 import { useEditorContext } from '../../providers/EditorProvider.jsx';
-import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
+import {
+  GRAMMARCHECKER,
+  SPELLCHECKER
+} from '../../../correction/const/Constants';
 import TextUpload from '../../../../components/TextUpload';
 
 export default function CorrectorInput() {
-  const { errorResponse, setEditor, setText, selectedSubTab, text, setErrorResponse, setContent } = useEditorContext(
-    (state) => ({
-      errorResponse: state.errorResponse,
-      setEditor: state.setEditor,
-      setText: state.setText,
-      selectedSubTab: state.selectedSubTab,
-      text: state.text,
-      setErrorResponse: state.setErrorResponse,
-      setContent: state.setContent
-    })
-  );
+  const {
+    errorResponse,
+    setEditor,
+    setText,
+    selectedSubTab,
+    text,
+    setErrorResponse,
+    setContent
+  } = useEditorContext(state => ({
+    errorResponse: state.errorResponse,
+    setEditor: state.setEditor,
+    setText: state.setText,
+    selectedSubTab: state.selectedSubTab,
+    text: state.text,
+    setErrorResponse: state.setErrorResponse,
+    setContent: state.setContent
+  }));
 
   const contentRef = useRef(null);
   const textRef = useRef(text);
   textRef.current = text;
 
-  const handleTextUpload = (uploadedText) => {
+  const handleTextUpload = uploadedText => {
     setErrorResponse({});
     setText(uploadedText);
   };
@@ -44,7 +53,7 @@ export default function CorrectorInput() {
     content: `<p>${text}</p>`
   });
 
-  const setEditorContent = (content) => {
+  const setEditorContent = content => {
     editor
       .chain()
       .command(({ tr }) => {
@@ -57,12 +66,12 @@ export default function CorrectorInput() {
     setContent(editor.getHTML());
   };
 
-  const buildErrorContent = (errors) => ({
+  const buildErrorContent = errors => ({
     type: 'doc',
     content: [
       {
         type: 'paragraph',
-        content: errors.map((error) =>
+        content: errors.map(error =>
           error.corrected
             ? {
                 type: 'text',
