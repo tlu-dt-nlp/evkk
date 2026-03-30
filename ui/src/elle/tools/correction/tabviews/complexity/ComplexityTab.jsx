@@ -11,13 +11,12 @@ import CorrectionScale from '../../components/CorrectionScale';
 import CorrectionButton from '../../components/CorrectionButton';
 import CorrectionInfoIcon from '../../components/CorrectionInfoIcon';
 import { MathJax } from 'better-react-mathjax';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import CorrectionToggleButtonGroup from '../../components/CorrectionToggleButtonGroup';
 import { LONG_SENTENCE } from '../../const/Constants';
 import { ComplexityToggleButtons } from '../../const/ToggleButtonConstants';
 import { COMPLEXITY_LIX_LINK, COMPLEXITY_LONG_WORD_LINK, COMPLEXITY_SMOG_LINK } from '../../const/PathConstants';
 import { complexityValues } from '../../const/TabValuesConstant';
-import NewTabHyperlink from '../../../../components/NewTabHyperlink';
 
 export default function ComplexityTab(
   {
@@ -80,45 +79,42 @@ export default function ComplexityTab(
         />
         <CorrectionInfoIcon>
           <div>
-            {t('corrector_complexity_infobox_intro')}
-            <br></br><br></br>
+            <p>{t('corrector_complexity_infobox_intro')}</p>
             <ul>
               <li>
-                <b>{t('corrector_complexity_infobox_lix_bold')}</b> {t('corrector_complexity_infobox_lix_value')}
-                <br></br>
-                {/* sõnade arv / lausete arv + pikkade sõnade arv * 100 / sõnade arv */}
-                <MathJax style={{ padding: '0.5rem' }}>
+                <Trans i18nKey="corrector_complexity_infobox_lix" components={{ bold: <b /> }} />
+                <MathJax className="vocabulary-mathjax">
                   {`\\(\\frac{\\text{${t('common_word_count')}}}{\\text{${t('common_sentence_count')}}}\\) + \\(\\frac{\\text{${t('common_long_word_count')}} \\times 100}{\\text{${t('common_word_count')}}}\\)`}
                 </MathJax>
               </li>
               <li>
-                <b>{t('corrector_complexity_infobox_smog_bold')}</b> {t('corrector_complexity_infobox_smog_value')}
-                <br></br>
-                {/* 1,043 * √paljusilbiliste sõnade arv * 30 / lausete arv + 3,1291 */}
-                <MathJax style={{ padding: '0.5rem' }}>
+                <Trans i18nKey="corrector_complexity_infobox_smog" components={{ bold: <b /> }} />
+                <MathJax className="vocabulary-mathjax">
                   {`\\(\\text{1.043} \\times \\sqrt{\\frac{\\text{${t('common_polysyllabic_words')}} \\times 30}{\\text{${t('common_sentence_count')}}}}\\) + \\(3.1291\\)`}
                 </MathJax>
               </li>
               <li>
-                <b>{t('corrector_complexity_infobox_flesch_kincaid_bold')}</b> {t('corrector_complexity_infobox_flesch_kincaid_value')}
-                <br></br>
-                {/* 0,39 * sõnade arv / lausete arv + 11,8 * silpide arv / sõnade arv - 15,59 */}
-                <MathJax style={{ padding: '0.5rem' }}>
+                <Trans i18nKey="corrector_complexity_infobox_flesch_kincaid" components={{ bold: <b /> }} />
+                <MathJax className="vocabulary-mathjax">
                   {`\\(\\text{0.39} \\times (\\frac{ \\text{${t('common_word_count')}}}{\\text{${t('common_sentence_count')}}})\\) + \\(11.8 \\times (\\frac{\\text{${t('common_syllable_count')}}}{\\text{${t('common_word_count')}}})- 15.59\\)`}
                 </MathJax>
               </li>
               <li>
-                <b>{t('corrector_complexity_infobox_noun_to_verb_bold')}</b> {t('corrector_complexity_infobox_noun_to_verb_value')}
+                <Trans i18nKey="corrector_complexity_infobox_noun_to_verb" components={{ bold: <b /> }} />
               </li>
             </ul>
-            {t('corrector_complexity_infobox_lix_outro')}&nbsp;
-            <NewTabHyperlink path={COMPLEXITY_LIX_LINK} content={t('common_here')} />,&nbsp;
-            {t('corrector_complexity_infobox_smog_outro')}&nbsp;
-            <NewTabHyperlink path={COMPLEXITY_SMOG_LINK} content={t('common_here')} />.&nbsp;
-            {t('corrector_complexity_infobox_smog_outro_extra')}
-            <br></br><br></br>
-            {t('corrector_complexity_infobox_word_length_outro')}&nbsp;
-            <NewTabHyperlink path={COMPLEXITY_LONG_WORD_LINK} content={t('common_here')} />).
+            <p>
+              <Trans
+                i18nKey="corrector_complexity_infobox_outro"
+                components={{ lixLink: <a href={COMPLEXITY_LIX_LINK} target="_blank" rel="noopener noreferrer" />, smogLink: <a href={COMPLEXITY_SMOG_LINK} target="_blank" rel="noopener noreferrer" /> }}
+              />
+            </p>
+            <p>
+              <Trans
+                i18nKey="corrector_complexity_infobox_word_length_outro"
+                components={{ link: <a href={COMPLEXITY_LONG_WORD_LINK} target="_blank" rel="noopener noreferrer" /> }}
+              />
+            </p>
           </div>
         </CorrectionInfoIcon>
       </Box>

@@ -45,6 +45,9 @@ subprojects {
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     //developmentOnly "org.springframework.boot:spring-boot-devtools"
     testImplementation project(":test")
+
+    // LatencyUtils for Micrometer/HikariCP metrics
+    implementation 'org.latencyutils:LatencyUtils:2.0.3'
   }
 
   tasks.withType(BootJar).configureEach {

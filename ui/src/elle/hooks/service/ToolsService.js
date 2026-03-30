@@ -59,7 +59,7 @@ export const useGetCorrectorResult = () => {
   const getCorrectorResult = useCallback(body => {
     return fetchData('/api/texts/keerukus-sonaliigid-mitmekesisus', {
       method: 'POST',
-      body
+      body: JSON.stringify(body)
     });
   }, [fetchData]);
 

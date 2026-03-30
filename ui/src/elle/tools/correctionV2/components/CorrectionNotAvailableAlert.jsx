@@ -1,7 +1,7 @@
 import { Alert, Button } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { useTranslation } from 'react-i18next';
-import '../styles/CorrectionNotAvailableAlert.css';
+import '../../correction/styles/CorrectionNotAvailableAlert.css';
 
 const ActionButton = ({ children }) => {
   return (

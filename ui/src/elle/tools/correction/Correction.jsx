@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useGetCorrectorResult } from '../../hooks/service/ToolsService';
 import { queryCaller } from './util/Utils';
 import { GRAMMARCHECKER_TEST, SPELLCHECKER } from './const/Constants';
-import CorrectionNotAvailableAlert from './components/CorrectionNotAvailableAlert';
+import CorrectionNotAvailableAlert from '../correctionV2/components/CorrectionNotAvailableAlert';
 import { featureFlags } from '../../../config/featureFlags';
 import GenericTabs from '../../components/GenericTabs';
 

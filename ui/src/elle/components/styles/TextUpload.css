@@ -24,7 +24,11 @@
   height: 0;
 }
 
-.textfield-upload-component {
+.textfield-upload-component svg {
+  cursor: pointer;
+}
+
+.textfield-upload-component.default-styles {
   display: grid;
   justify-content: end;
   padding: 0;
@@ -33,6 +37,5 @@
 
   & svg {
     margin: 0;
-    cursor: pointer;
   }
 }

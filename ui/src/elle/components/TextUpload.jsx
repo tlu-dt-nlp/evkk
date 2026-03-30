@@ -8,7 +8,10 @@ import { DefaultButtonStyle } from '../const/StyleConstants';
 import ModalBase from './modal/ModalBase';
 import { useGetTextFromFile } from '../hooks/service/TextService';
 
-export default function TextUpload({ sendTextFromFile }) {
+export default function TextUpload({
+                                     sendTextFromFile,
+                                     disableStyles = false
+                                   }) {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [uploadButtonDisabled, setUploadButtonDisabled] = useState(true);
@@ -35,7 +38,7 @@ export default function TextUpload({ sendTextFromFile }) {
 
   return (
     <>
-      <div className="container textfield-upload-component">
+      <div className={`container textfield-upload-component ${!disableStyles ? 'default-styles' : ''}`}>
         <Tooltip
           title={t('textupload_secondary_modal_tooltip')}
           placement="top"

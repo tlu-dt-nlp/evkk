@@ -23,6 +23,9 @@ import { AboutUsDrawerList, RouteConstants, RouteFullPathConstants } from './ell
 import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
+import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
+import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
+import CorrectionNotAvailableAlert from "./elle/tools/correctionV2/components/CorrectionNotAvailableAlert";
 
 export const routes = [
   {
@@ -80,12 +83,16 @@ export const routes = [
           },
           {
             path: RouteConstants.CORRECTOR,
-            element: <Correction />,
+            element: (
+              <EditorProvider>
+                <CorrectionV2 />
+              </EditorProvider>
+            ),
             handle: { crumb: () => ({ to: RouteConstants.CORRECTOR, translateKey: 'common_corrector' }) }
           },
           {
             path: RouteConstants.CORRECTOR_TEST,
-            element: <Correction />,
+            element: <CorrectionNotAvailableAlert />,
             handle: {
               crumb: () => ({
                 to: RouteConstants.CORRECTOR_TEST,
