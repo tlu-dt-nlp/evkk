@@ -1,4 +1,4 @@
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { MathJax } from 'better-react-mathjax';
 import {
   VOCABULARY_DATA_LINK,
@@ -8,8 +8,8 @@ import {
   VOCABULARY_REFERENCE_LINK_TWO,
   VOCABULARY_TOOL_LINK
 } from '../../../correction/const/PathConstants';
-
-const linkProps = { target: '_blank', rel: 'noopener noreferrer' };
+import Translate from '../../../../components/Translate';
+import NewTabHyperlink from '../../../../components/NewTabHyperlink';
 
 export default function VocabularyInfo() {
   const { t } = useTranslation();
@@ -19,62 +19,47 @@ export default function VocabularyInfo() {
       <p>{t('corrector_vocabulary_infobox_intro')}</p>
       <ul>
         <li>
-          <Trans
-            i18nKey="corrector_vocabulary_infobox_root_type_token"
-            components={{ bold: <b /> }}
-          />
+          <Translate i18nKey="corrector_vocabulary_infobox_root_type_token" />
           <MathJax className="vocabulary-mathjax">
             {`\\(\\frac{\\text{${t('common_different_word_count')}}}{\\sqrt{\\text{${t('common_word_count')}}}}\\)`}
           </MathJax>
         </li>
         <li>
-          <Trans
-            i18nKey="corrector_vocabulary_infobox_mtld"
-            components={{ bold: <b /> }}
-          />
+          <Translate i18nKey="corrector_vocabulary_infobox_mtld" />
         </li>
         <li>
-          <Trans
-            i18nKey="corrector_vocabulary_infobox_hdd"
-            components={{ bold: <b /> }}
-          />
+          <Translate i18nKey="corrector_vocabulary_infobox_hdd" />
         </li>
         <li>
-          <Trans
+          <Translate
             i18nKey="corrector_vocabulary_infobox_vocabulary_range"
-            components={{
-              bold: <b />,
-              rangeLink: <a href={VOCABULARY_RANGE_LINK} {...linkProps} />
-            }}
+            components={{ rangeLink: <NewTabHyperlink path={VOCABULARY_RANGE_LINK} /> }}
           />
         </li>
         <li>
-          <Trans
+          <Translate
             i18nKey="corrector_vocabulary_infobox_noun_abstractness"
             components={{
-              bold: <b />,
-              toolLink: <a href={VOCABULARY_TOOL_LINK} {...linkProps} />,
-              dataLink: <a href={VOCABULARY_DATA_LINK} {...linkProps} />
+              toolLink: <NewTabHyperlink path={VOCABULARY_TOOL_LINK} />,
+              dataLink: <NewTabHyperlink path={VOCABULARY_DATA_LINK} />
             }}
           />
         </li>
         <li>
-          <Trans
+          <Translate
             i18nKey="corrector_vocabulary_infobox_lexical_density"
             components={{
-              bold: <b />,
-              link: <a href={VOCABULARY_LEXICAL_DENSITY_LINK} {...linkProps} />
+              linkTag: <NewTabHyperlink path={VOCABULARY_LEXICAL_DENSITY_LINK} />
             }}
           />
         </li>
       </ul>
       <p>
-        <Trans
+        <Translate
           i18nKey="corrector_vocabulary_infobox_reference_links"
           components={{
-            bold: <b />,
-            link1: <a href={VOCABULARY_REFERENCE_LINK_ONE} {...linkProps} />,
-            link2: <a href={VOCABULARY_REFERENCE_LINK_TWO} {...linkProps} />
+            link1: <NewTabHyperlink path={VOCABULARY_REFERENCE_LINK_ONE} />,
+            link2: <NewTabHyperlink path={VOCABULARY_REFERENCE_LINK_TWO} />
           }}
         />
       </p>

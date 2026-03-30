@@ -51,9 +51,7 @@ export default function ComplexityAccordionV2({ complexityAnswer }) {
               <div>{complexityAnswer.keerukus[3] || 0}</div>
             </div>
             <div className="tab-table">
-              <div>
-                {t('corrector_complexity_statistics_polysyllabic_words')}
-              </div>
+              <div>{t('corrector_complexity_statistics_polysyllabic_words')}</div>
               <div>{complexityAnswer.keerukus[2] || 0}</div>
             </div>
             <div className="tab-table">

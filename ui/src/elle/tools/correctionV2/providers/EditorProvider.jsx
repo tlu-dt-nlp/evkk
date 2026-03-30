@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState
-} from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 
 export const EditorContext = createContext();
 
@@ -65,9 +60,7 @@ export function useEditorContext(selector) {
   const context = useContext(EditorContext);
 
   if (!context) {
-    throw new Error(
-      'useEditorContext must be used within EditorProvider'
-    );
+    throw new Error('useEditorContext must be used within EditorProvider');
   }
 
   const { editorValues, ...setters } = context;
