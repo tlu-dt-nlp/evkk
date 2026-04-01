@@ -1,0 +1,73 @@
+
+domain_distance:
+  Kokku unikaalseid väärtusi: 7
+    - 
+    - 0
+    - 1
+    - 1000
+    - 2
+    - 3
+    - 4
+
+genre:
+  Kokku unikaalseid väärtusi: 7
+    - academic
+    - blogs
+    - e-commerce
+    - encyclopedia
+    - fiction
+    - forums
+    - periodicals
+
+genre_src:
+  Kokku unikaalseid väärtusi: 3
+    - classifier
+    - site list
+    - url rule
+
+lang_old2:
+  Kokku unikaalseid väärtusi: 1
+    - estonian
+
+src:
+  Kokku unikaalseid väärtusi: 1
+    - Web 2013
+
+topic:
+  Kokku unikaalseid väärtusi: 31
+    - agriculture
+    - agriculture|politics & government
+    - beauty
+    - cars
+    - construction & real estate
+    - culture & entertainment
+    - economy, finance & business
+    - economy, finance & business|politics & government
+    - education
+    - education|politics & government
+    - food & drinks
+    - gambling & casinos
+    - health
+    - health|politics & government
+    - history
+    - history|culture & entertainment
+    - home, family & children
+    - law & justice
+    - law & justice|politics & government
+    - nature & environment
+    - nature & environment|politics & government
+    - pets and animals
+    - politics & government
+    - religion
+    - science
+    - sex
+    - sports
+    - technology & IT
+    - travel & tourism
+    - video games
+    - women
+
+topic_src:
+  Kokku unikaalseid väärtusi: 2
+    - classifier
+    - site list
