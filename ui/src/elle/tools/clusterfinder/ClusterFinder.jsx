@@ -75,14 +75,24 @@ export default function ClusterFinder() {
     const nextValues = {...typeValue, [changedKey]: isChecked};
 
     // Rule: WordType is mutually exclusive with Morphological and Syntactic
-    if (changedKey === ClusterFinderTreeType.WORD_TYPE) {
+    if (changedKey === ClusterFinderTreeType.WORD_TYPE && isChecked) {
       nextValues[ClusterFinderTreeType.MORPHOLOGICAL] = false;
       nextValues[ClusterFinderTreeType.SYNTACTIC] = false;
     }
 
-    // Rule: If either Morphological or Syntactic is picked, then WordType must be off
-    if (changedKey === ClusterFinderTreeType.MORPHOLOGICAL || changedKey === ClusterFinderTreeType.SYNTACTIC) {
+    // Rule: If either Morphological or Syntactic is checked, then WordType must be unchecked
+    if ((changedKey === ClusterFinderTreeType.MORPHOLOGICAL || changedKey === ClusterFinderTreeType.SYNTACTIC) && isChecked) {
       nextValues[ClusterFinderTreeType.WORD_TYPE] = false;
+    }
+
+    // Rule: If Syntactic is checked while Morphological is unchecked, then Punctuation must be unchecked
+    if (changedKey === ClusterFinderTreeType.SYNTACTIC && isChecked && !nextValues[ClusterFinderTreeType.MORPHOLOGICAL]) {
+      setIsPunctuationSensitiveChecked(false);
+    }
+
+    // Rule: If Morphological is unchecked, and both Syntactic and Punctuation are checked, then Punctuation must be unchecked
+    if (changedKey === ClusterFinderTreeType.MORPHOLOGICAL && !isChecked && nextValues[ClusterFinderTreeType.SYNTACTIC]) {
+      setIsPunctuationSensitiveChecked(false);
     }
 
     return nextValues;
@@ -91,9 +101,9 @@ export default function ClusterFinder() {
   const handleTypeChange = (event) => {
     const {value, checked} = event.target;
 
-    const updatedValue = applyTypeExclusionRules(value, checked);
+    const updatedTypeValue = applyTypeExclusionRules(value, checked);
 
-    setTypeValue(updatedValue);
+    setTypeValue(updatedTypeValue);
     setTypeError(false);
   };
 
@@ -115,8 +125,25 @@ export default function ClusterFinder() {
     /** @type {number[]} */
     Array.from({length: maxOptions}, (_, i) => i + 1);
 
-  const handlePunctuationSensitiveChange = (event) =>
-    setIsPunctuationSensitiveChecked(event.target.checked);
+  const applyPunctuationSensitiveExclusionRules = (isChecked) => {
+    const nextValues = {...typeValue};
+
+    // Rule: If Punctuation is checked and Morphological is unchecked, then Syntactic must be unchecked
+    if (isChecked && !typeValue[ClusterFinderTreeType.MORPHOLOGICAL]) {
+      nextValues[ClusterFinderTreeType.SYNTACTIC] = false;
+    }
+
+    return nextValues;
+  };
+
+  const handlePunctuationSensitiveChange = (event) => {
+    const {checked} = event.target;
+
+    const updatedTypeValue = applyPunctuationSensitiveExclusionRules(checked);
+
+    setIsPunctuationSensitiveChecked(checked);
+    setTypeValue(updatedTypeValue);
+  };
 
   return (
     <>
