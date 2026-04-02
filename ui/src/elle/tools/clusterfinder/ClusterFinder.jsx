@@ -14,7 +14,7 @@ import {
   Select,
   Typography
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import TooltipButton from "../../components/tooltip/TooltipButton";
@@ -22,6 +22,8 @@ import { syntacticClauseTypeNodes } from "../../const/ClusterFinderClauseConstan
 import { ClusterFinderTreeType } from "../../const/ClusterFinderConstants";
 import { morphologicalWordTypeNodes, wordTypeNodes } from "../../const/ClusterFinderWordConstants";
 import { AccordionStyle, DefaultButtonStyle } from "../../const/StyleConstants";
+import { useGetSelectedTexts } from "../../hooks/service/TextService";
+import { queryStore } from "../../store/QueryStore";
 import ClusterFinderTreeView from "./components/ClusterFinderTreeView";
 
 export default function ClusterFinder() {
@@ -40,6 +42,17 @@ export default function ClusterFinder() {
   const [selectedClauseTypeItems, setSelectedClauseTypeItems] = useState([]);
   const [selectedWordTypeItems, setSelectedWordTypeItems] = useState([]);
 
+  const [storeData, setStoreData] = useState("");
+  const {getSelectedTexts} = useGetSelectedTexts(setStoreData);
+
+  useEffect(() => {
+    getSelectedTexts();
+  }, [getSelectedTexts]);
+
+  queryStore.subscribe(() => {
+    getSelectedTexts();
+  });
+
   const clusterFinderTypes = [
     {labelKey: "cluster_finder_word_type", value: ClusterFinderTreeType.WORD_TYPE},
     {labelKey: "cluster_finder_syntactic", value: ClusterFinderTreeType.SYNTACTIC},
@@ -55,6 +68,7 @@ export default function ClusterFinder() {
 
     // TODO: Implement POST request
     console.log(event);
+    console.log(storeData);
   };
 
   const applyTypeExclusionRules = (changedKey, isChecked) => {
