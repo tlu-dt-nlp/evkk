@@ -1,3 +1,5 @@
+import { WordType } from "../../../const/ClusterFinderWordConstants";
+
 const generateNodeId = (node, fallbackKey) => {
   const key = node.payloadKey ?? fallbackKey;
   if (!key) {
@@ -87,3 +89,69 @@ export const addIdToArray = (arr, id) =>
 
 export const removeIdFromArray = (arr, id) =>
   arr.filter((item) => item !== id);
+
+const getActiveRadioNode = (rootNode, selectedIdsSet) =>
+  rootNode.children?.find((child) => {
+    if (!child.isRadio) {
+      return false;
+    }
+
+    const id = generateNodeId(child, child.payloadKey ?? rootNode.payloadKey);
+    return selectedIdsSet.has(id);
+  });
+
+const getVisibleCheckboxGroups = (node, selectedIdsSet, fallbackPayloadKey) => {
+  const groups = {};
+
+  const gather = (currentNode, parentPayloadKey) => {
+    if (!isNodeVisible(currentNode, selectedIdsSet)) {
+      return;
+    }
+
+    const payloadKey = currentNode.payloadKey ?? parentPayloadKey;
+
+    if (!currentNode.isCategory && !currentNode.isRadio) {
+      if (!groups[payloadKey]) {
+        groups[payloadKey] = [];
+      }
+
+      const id = generateNodeId(currentNode, payloadKey);
+      groups[payloadKey].push(id);
+    }
+
+    if (currentNode.children) {
+      currentNode.children.forEach((child) => gather(child, payloadKey));
+    }
+  };
+
+  if (node.children) {
+    const startPayloadKey = node.payloadKey ?? fallbackPayloadKey;
+    node.children.forEach((child) => gather(child, startPayloadKey));
+  }
+
+  return groups;
+};
+
+const hasAnyEmptyGroup = (groups, selectedIdsSet) =>
+  Object.values(groups).some((ids) => {
+    const hasChecked = ids.some((id) => selectedIdsSet.has(id));
+    return !hasChecked;
+  });
+
+export const hasPartialFilters = (items, selectedIdsArray) => {
+  if (!items?.length) {
+    return false;
+  }
+
+  const selectedIds = new Set(selectedIdsArray);
+  const rootNode = items[0];
+
+  const activeRadioNode = getActiveRadioNode(rootNode, selectedIds);
+  if (!activeRadioNode || activeRadioNode.payloadValue === WordType.ALL) {
+    return false;
+  }
+
+  const checkboxGroups = getVisibleCheckboxGroups(activeRadioNode, selectedIds, rootNode.payloadKey);
+
+  return hasAnyEmptyGroup(checkboxGroups, selectedIds);
+};
