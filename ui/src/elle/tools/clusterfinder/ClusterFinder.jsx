@@ -69,6 +69,10 @@ export default function ClusterFinder() {
     event.preventDefault();
     setTypeError(!Object.values(typeValue).some(Boolean));
 
+    if (!storeData) {
+      return;
+    }
+
     // TODO: Implement POST request
     console.log(event);
     console.log(storeData);
