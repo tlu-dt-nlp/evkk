@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 
 import TooltipButton from "../../components/tooltip/TooltipButton";
 import { syntacticClauseTypeNodes } from "../../const/ClusterFinderClauseConstants";
-import { ClusterFinderTreeType } from "../../const/ClusterFinderConstants";
+import { ClusterFinderSortingType, ClusterFinderTreeType } from "../../const/ClusterFinderConstants";
 import { morphologicalWordTypeNodes, wordTypeNodes } from "../../const/ClusterFinderWordConstants";
 import { AccordionStyle, DefaultButtonStyle } from "../../const/StyleConstants";
 import { useGetSelectedTexts } from "../../hooks/service/TextService";
@@ -37,7 +37,7 @@ export default function ClusterFinder() {
   });
   const [typeError, setTypeError] = useState(false);
   const [wordSequenceLength, setWordSequenceLength] = useState(1);
-  const [orderByNthWord, setOrderByNthWord] = useState(1);
+  const [orderBy, setOrderBy] = useState(ClusterFinderSortingType.BY_FREQUENCY);
   const [isPunctuationSensitiveChecked, setIsPunctuationSensitiveChecked] = useState(false);
   const [selectedClauseTypeItems, setSelectedClauseTypeItems] = useState([]);
   const [selectedWordTypeItems, setSelectedWordTypeItems] = useState([]);
@@ -61,6 +61,9 @@ export default function ClusterFinder() {
 
   /** @type {number[]} */
   const wordSequenceLengthOptions = Array.from({length: 5}, (_, i) => i + 1);
+
+  const ordinalSortingValues = Object.values(ClusterFinderSortingType)
+    .filter((value) => value !== ClusterFinderSortingType.BY_FREQUENCY);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -109,21 +112,33 @@ export default function ClusterFinder() {
 
   const handleWordSequenceLengthChange = (event) => {
     const newLength = event.target.value;
-    const isSelectedOrderByNthWordOutOfBounds = orderByNthWord > newLength;
+    const isSelectedOrderByOutOfBounds = ordinalSortingValues.indexOf(orderBy) >= newLength;
 
-    if (isSelectedOrderByNthWordOutOfBounds) {
-      setOrderByNthWord(1);
+    if (isSelectedOrderByOutOfBounds) {
+      setOrderBy(ClusterFinderSortingType.BY_FREQUENCY);
     }
 
     setWordSequenceLength(newLength);
   }
 
-  const handleOrderByNthWordChange = (event) =>
-    setOrderByNthWord(event.target.value);
+  const handleOrderByChange = (event) =>
+    setOrderBy(event.target.value);
 
-  const getOrderByNthWordOptions = (maxOptions) =>
-    /** @type {number[]} */
-    Array.from({length: maxOptions}, (_, i) => i + 1);
+  const getOrderByOptions = (maxOptions) => {
+    const options = [{
+      value: ClusterFinderSortingType.BY_FREQUENCY,
+      label: t("cluster_finder_order_by_frequency")
+    }];
+
+    for (let i = 0; i < maxOptions; i++) {
+      options.push({
+        value: ordinalSortingValues[i],
+        label: t("cluster_finder_order_by_nth_word", {ordinal: t("ordinal", {count: i + 1, ordinal: true})})
+      });
+    }
+
+    return options;
+  };
 
   const applyPunctuationSensitiveExclusionRules = (isChecked) => {
     const nextValues = {...typeValue};
@@ -221,31 +236,20 @@ export default function ClusterFinder() {
                 <FormControl>
                   <FormLabel>{t("cluster_finder_search_and_order")}</FormLabel>
 
-                  <Grid container
-                        spacing={1}
-                        alignItems="flex-start"
+                  <Select
+                    name="orderBy"
+                    onChange={handleOrderByChange}
+                    size="small"
+                    sx={{width: "200px"}}
+                    value={orderBy}
+                    variant="outlined"
                   >
-                    <Grid item>
-                      <Select
-                        name="orderByNthWord"
-                        onChange={handleOrderByNthWordChange}
-                        size="small"
-                        sx={{width: "100px"}}
-                        value={orderByNthWord}
-                        variant="outlined"
-                      >
-                        {getOrderByNthWordOptions(wordSequenceLength).map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {t("ordinal", {count: option, ordinal: true})}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </Grid>
-
-                    <Grid item sx={{pt: 1}}>
-                      {t("cluster_finder_order_by_nth_word")}
-                    </Grid>
-                  </Grid>
+                    {getOrderByOptions(wordSequenceLength).map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </FormControl>
               </Grid>
 
