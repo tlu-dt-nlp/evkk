@@ -25,6 +25,7 @@ import { AccordionStyle, DefaultButtonStyle } from "../../const/StyleConstants";
 import { useGetSelectedTexts } from "../../hooks/service/TextService";
 import { queryStore } from "../../store/QueryStore";
 import ClusterFinderTreeView from "./components/ClusterFinderTreeView";
+import { hasPartialFilters } from "./util/ClusterFinderUtils";
 
 export default function ClusterFinder() {
   const {t, i18n} = useTranslation();
@@ -73,9 +74,15 @@ export default function ClusterFinder() {
       return;
     }
 
+    let partialFilters = false;
+    if (typeValue[ClusterFinderTreeType.MORPHOLOGICAL]) {
+      partialFilters = hasPartialFilters(morphologicalWordTypeNodes, selectedWordTypeItems);
+    }
+
     // TODO: Implement POST request
-    console.log(event);
-    console.log(storeData);
+    console.log("event", event);
+    console.log("storeData", storeData);
+    console.log("partialFilters", partialFilters);
   };
 
   const applyTypeExclusionRules = (changedKey, isChecked) => {

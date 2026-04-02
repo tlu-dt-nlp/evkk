@@ -1,6 +1,6 @@
 import { ClusterFinderRootNodePayloadKey } from "./ClusterFinderConstants";
 
-const WordType = {
+export const WordType = {
   ALL: "ALL",
   VERB: "V",
   SUBJECT: "S",
