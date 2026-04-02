@@ -25,6 +25,15 @@ export const ClusterFinderTreeType = {
   WORD_TYPE: "WORD_TYPE"
 };
 
+export const ClusterFinderSortingType = {
+  BY_FREQUENCY: "freq",
+  BY_FIRST_WORD: "fwrd",
+  BY_SECOND_WORD: "swrd",
+  BY_THIRD_WORD: "twrd",
+  BY_FOURTH_WORD: "fowrd",
+  BY_FIFTH_WORD: "fiwrd"
+};
+
 export const ClusterFinderRootNodePayloadKey = {
   CLAUSE_TYPE: "clauseType",
   WORD_TYPE: "wordType"
