@@ -10,7 +10,8 @@ import { useGetTextFromFile } from '../hooks/service/TextService';
 
 export default function TextUpload({
                                      sendTextFromFile,
-                                     disableStyles = false
+                                     disableStyles = false,
+                                     className = ''
                                    }) {
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -37,77 +38,75 @@ export default function TextUpload({
   };
 
   return (
-    <>
-      <div className={`container textfield-upload-component ${!disableStyles ? 'default-styles' : ''}`}>
-        <Tooltip
-          title={t('textupload_secondary_modal_tooltip')}
-          placement="top"
+    <div className={`container textfield-upload-component ${!disableStyles ? 'default-styles' : ''} ${className}`}>
+      <Tooltip
+        title={t('textupload_secondary_modal_tooltip')}
+        placement="top"
+      >
+        <FileUploadIcon onClick={() => setModalOpen(true)} />
+      </Tooltip>
+      <ModalBase
+        isOpen={modalOpen}
+        setIsOpen={setModalOpen}
+        innerClassName="text-upload-modal"
+        title="textupload_secondary_modal_title"
+      >
+        <form
+          encType="multipart/form-data"
+          method="post"
+          ref={formDataElement}
         >
-          <FileUploadIcon onClick={() => setModalOpen(true)} />
-        </Tooltip>
-        <ModalBase
-          isOpen={modalOpen}
-          setIsOpen={setModalOpen}
-          innerClassName="text-upload-modal"
-          title="textupload_secondary_modal_title"
-        >
-          <form
-            encType="multipart/form-data"
-            method="post"
-            ref={formDataElement}
-          >
-            <div className="d-flex flex-column align-items-center justify-content-between">
-              <div>
-                <Button
-                  sx={DefaultButtonStyle}
-                  component="label"
-                  htmlFor="fileInput"
-                  variant="contained"
-                >
-                  {t('textupload_secondary_modal_choose_files')}
-                </Button>
-              </div>
-              <div className="file-name-container">
-                {selectedFiles.length > 0 && (
-                  <>
-                    <div className="chosen-files-title">
-                      {t('textupload_secondary_modal_chosen_files')}
-                    </div>
-                    {selectedFiles.map((fileName, index) => (
-                      <div
-                        key={index}
-                        className="file-name"
-                      >
-                        {fileName}
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
+          <div className="d-flex flex-column align-items-center justify-content-between">
+            <div>
               <Button
                 sx={DefaultButtonStyle}
-                type="button"
+                component="label"
+                htmlFor="fileInput"
                 variant="contained"
-                onClick={() => setModalOpen(false)}
-                disabled={uploadButtonDisabled}
-                onMouseDown={handleFileUpload}
               >
-                {t('textupload_secondary_modal_upload')}
+                {t('textupload_secondary_modal_choose_files')}
               </Button>
-              <input
-                type="file"
-                name="file"
-                id="fileInput"
-                className="text-upload-file-input"
-                onChange={handleFileChange}
-                multiple={true}
-                accept=".txt,.pdf,.docx,.doc,.odt"
-                ref={fileInputRef}
-              />
             </div>
-          </form>
-        </ModalBase>
-      </div>
-    </>
+            <div className="file-name-container">
+              {selectedFiles.length > 0 && (
+                <>
+                  <div className="chosen-files-title">
+                    {t('textupload_secondary_modal_chosen_files')}
+                  </div>
+                  {selectedFiles.map((fileName, index) => (
+                    <div
+                      key={index}
+                      className="file-name"
+                    >
+                      {fileName}
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+            <Button
+              sx={DefaultButtonStyle}
+              type="button"
+              variant="contained"
+              onClick={() => setModalOpen(false)}
+              disabled={uploadButtonDisabled}
+              onMouseDown={handleFileUpload}
+            >
+              {t('textupload_secondary_modal_upload')}
+            </Button>
+            <input
+              type="file"
+              name="file"
+              id="fileInput"
+              className="text-upload-file-input"
+              onChange={handleFileChange}
+              multiple={true}
+              accept=".txt,.pdf,.docx,.doc,.odt"
+              ref={fileInputRef}
+            />
+          </div>
+        </form>
+      </ModalBase>
+    </div>
   );
 }
