@@ -1,6 +1,6 @@
 import { ClusterFinderRootNodePayloadKey } from "./ClusterFinderConstants";
 
-const ClauseType = {
+export const ClauseType = {
   ALL: "ALL",
   PREDICATE: "F",
   BASIS: "@SUBJ",

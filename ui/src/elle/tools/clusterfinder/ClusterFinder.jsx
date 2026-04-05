@@ -18,17 +18,24 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import TooltipButton from "../../components/tooltip/TooltipButton";
-import { syntacticClauseTypeNodes } from "../../const/ClusterFinderClauseConstants";
-import { ClusterFinderSortingType, ClusterFinderTreeType } from "../../const/ClusterFinderConstants";
-import { morphologicalWordTypeNodes, wordTypeNodes } from "../../const/ClusterFinderWordConstants";
+import { ClauseType, syntacticClauseTypeNodes } from "../../const/ClusterFinderClauseConstants";
+import {
+  ClusterFinderSortingType,
+  ClusterFinderTreeType,
+  ClusterSearchForm,
+  ClusterSearchFormInputType
+} from "../../const/ClusterFinderConstants";
+import { morphologicalWordTypeNodes, WordType, wordTypeNodes } from "../../const/ClusterFinderWordConstants";
 import { AccordionStyle, DefaultButtonStyle } from "../../const/StyleConstants";
 import { useGetSelectedTexts } from "../../hooks/service/TextService";
+import { useGetClusterFinderResult } from "../../hooks/service/ToolsService";
 import { queryStore } from "../../store/QueryStore";
 import ClusterFinderTreeView from "./components/ClusterFinderTreeView";
 import { hasPartialFilters } from "./util/ClusterFinderUtils";
 
 export default function ClusterFinder() {
   const {t, i18n} = useTranslation();
+  const {getClusterFinderResult} = useGetClusterFinderResult();
 
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [typeValue, setTypeValue] = useState({
@@ -42,6 +49,7 @@ export default function ClusterFinder() {
   const [isPunctuationSensitiveChecked, setIsPunctuationSensitiveChecked] = useState(false);
   const [selectedClauseTypeItems, setSelectedClauseTypeItems] = useState([]);
   const [selectedWordTypeItems, setSelectedWordTypeItems] = useState([]);
+  const [response, setResponse] = useState(null);
 
   const [storeData, setStoreData] = useState("");
   const {getSelectedTexts} = useGetSelectedTexts(setStoreData);
@@ -66,6 +74,48 @@ export default function ClusterFinder() {
   const ordinalSortingValues = Object.values(ClusterFinderSortingType)
     .filter((value) => value !== ClusterFinderSortingType.BY_FREQUENCY);
 
+  const addSelectedItemsToParams = (params, selectedItems) =>
+    selectedItems.forEach((item) => {
+      const [key, value] = String(item).split(":");
+      if (!key || !value) {
+        return;
+      }
+      params.append(key, value);
+    });
+
+  const buildPayload = () => {
+    const params = new URLSearchParams();
+
+    let partialFilters = false;
+    if (typeValue[ClusterFinderTreeType.MORPHOLOGICAL]) {
+      partialFilters = hasPartialFilters(morphologicalWordTypeNodes, selectedWordTypeItems);
+    }
+
+    params.append(ClusterSearchForm.INPUT_TYPE, ClusterSearchFormInputType.FREE_TEXT)
+    params.append(ClusterSearchForm.USER_TEXT, storeData);
+    params.append(ClusterSearchForm.FORM_ID, crypto.randomUUID());
+    params.append(ClusterSearchForm.FILE_NAME, "");
+    params.append(ClusterSearchForm.ANALYSIS_LENGTH, wordSequenceLength.toString());
+    params.append(ClusterSearchForm.MORFO_ANALYSIS, typeValue[ClusterFinderTreeType.MORPHOLOGICAL].toString());
+    params.append(ClusterSearchForm.SYNTACTIC_ANALYSIS, typeValue[ClusterFinderTreeType.SYNTACTIC].toString());
+    params.append(ClusterSearchForm.INCLUDE_PUNCTUATION, isPunctuationSensitiveChecked.toString());
+    params.append(ClusterSearchForm.WORDTYPE_ANALYSIS, typeValue[ClusterFinderTreeType.WORD_TYPE].toString());
+    params.append(ClusterSearchForm.PARTIAL_FILTERS, partialFilters.toString());
+    params.append(ClusterSearchForm.SORTING_TYPE, orderBy);
+
+    addSelectedItemsToParams(params, selectedClauseTypeItems);
+    addSelectedItemsToParams(params, selectedWordTypeItems);
+
+    if (!params.has(ClusterSearchForm.CLAUSE_TYPE)) {
+      params.append(ClusterSearchForm.CLAUSE_TYPE, ClauseType.ALL);
+    }
+    if (!params.has(ClusterSearchForm.WORD_TYPE)) {
+      params.append(ClusterSearchForm.WORD_TYPE, WordType.ALL);
+    }
+
+    return params;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setTypeError(!Object.values(typeValue).some(Boolean));
@@ -74,15 +124,8 @@ export default function ClusterFinder() {
       return;
     }
 
-    let partialFilters = false;
-    if (typeValue[ClusterFinderTreeType.MORPHOLOGICAL]) {
-      partialFilters = hasPartialFilters(morphologicalWordTypeNodes, selectedWordTypeItems);
-    }
-
-    // TODO: Implement POST request
-    console.log("event", event);
-    console.log("storeData", storeData);
-    console.log("partialFilters", partialFilters);
+    const params = buildPayload();
+    getClusterFinderResult(params).then(setResponse);
   };
 
   const applyTypeExclusionRules = (changedKey, isChecked) => {
