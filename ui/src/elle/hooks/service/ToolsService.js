@@ -1,4 +1,4 @@
-import { useFetch } from '../useFetch';
+import { FetchParseType, useFetch } from '../useFetch';
 import { useCallback } from 'react';
 
 export const useGetWordlistResult = () => {
@@ -64,4 +64,20 @@ export const useGetCorrectorResult = () => {
   }, [fetchData]);
 
   return { getCorrectorResult };
+};
+
+export const useGetClusterFinderResult = () => {
+  const { fetchData } = useFetch();
+
+  const getClusterFinderResult = useCallback(body => {
+    return fetchData('/clusterfinder/cluster/text', {
+      method: 'POST',
+      body
+    }, {
+      parseType: FetchParseType.TEXT,
+      disableContentTypeJson: true
+    });
+  }, [fetchData]);
+
+  return { getClusterFinderResult };
 };

@@ -20,9 +20,9 @@
  */
 
 export const ClusterFinderTreeType = {
-  MORPHOLOGICAL: "MORPHOLOGICAL",
-  SYNTACTIC: "SYNTACTIC",
-  WORD_TYPE: "WORD_TYPE"
+  MORPHOLOGICAL: "morfological",
+  SYNTACTIC: "syntactic",
+  WORD_TYPE: "wordtype"
 };
 
 export const ClusterFinderSortingType = {
@@ -37,4 +37,25 @@ export const ClusterFinderSortingType = {
 export const ClusterFinderRootNodePayloadKey = {
   CLAUSE_TYPE: "clauseType",
   WORD_TYPE: "wordType"
+};
+
+export const ClusterSearchFormInputType = {
+  FREE_TEXT: "FREE_TEXT",
+  FILE_BASED_TEXT: "FILE_BASED_TEXT"
+};
+
+export const ClusterSearchForm = {
+  INPUT_TYPE: "inputType",
+  USER_TEXT: "userText",
+  FORM_ID: "formId",
+  FILE_NAME: "fileName",
+  ANALYSIS_LENGTH: "analysisLength",
+  MORFO_ANALYSIS: "morfological",
+  SYNTACTIC_ANALYSIS: "syntactic",
+  INCLUDE_PUNCTUATION: "punctuation",
+  WORDTYPE_ANALYSIS: "wordtype",
+  PARTIAL_FILTERS: "partialFilters",
+  SORTING_TYPE: "sorting",
+  WORD_TYPE: "wordType",
+  CLAUSE_TYPE: "clauseType"
 };
