@@ -17,7 +17,8 @@ export const TableType = {
   SYLLABLES: 'SYLLABLES',
   WORDLIST: 'WORDLIST',
   WORD_CONTEXT: 'WORD_CONTEXT',
-  COLLOCATES: 'COLLOCATES'
+  COLLOCATES: 'COLLOCATES',
+  CLUSTER_FINDER: 'CLUSTER_FINDER'
 };
 
 const DownloadType = {
@@ -121,7 +122,7 @@ export default function TableDownloadButton({
       setLemmaViewData();
     } else if (tableType === TableType.SYLLABLES) {
       setSyllablesData();
-    } else if (tableType === TableType.WORDLIST || tableType === TableType.WORD_CONTEXT || tableType === TableType.COLLOCATES) {
+    } else if (tableType === TableType.WORDLIST || tableType === TableType.WORD_CONTEXT || tableType === TableType.COLLOCATES || tableType === TableType.CLUSTER_FINDER) {
       csvData = JSON.parse(JSON.stringify(modifiedData));
     }
   }
@@ -187,6 +188,9 @@ export default function TableDownloadButton({
         break;
       case TableType.COLLOCATES:
         collocatesButton();
+        break;
+      case TableType.CLUSTER_FINDER:
+        clusterFinderButton();
         break;
       default:
         console.error('Unrecognized table type for downloading!');
@@ -277,6 +281,18 @@ export default function TableDownloadButton({
         { label: headers[4], value: 'frequencyPercentage' }
       ];
       setButtonType(excelButton('collocates_filename', columns));
+    }
+  };
+
+  const clusterFinderButton = () => {
+    if (fileType) {
+      setButtonType(csvButton('cluster_finder_filename'));
+    } else {
+      const columns = headers.map((header, i) => ({
+        label: header,
+        value: (row) => row[accessors[i]]
+      }));
+      setButtonType(excelButton('cluster_finder_filename', columns));
     }
   };
 

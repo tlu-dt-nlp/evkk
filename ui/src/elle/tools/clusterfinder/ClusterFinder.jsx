@@ -3,6 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Button,
   Checkbox,
   FormControl,
@@ -16,6 +17,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 import TooltipButton from "../../components/tooltip/TooltipButton";
 import { ClauseType, syntacticClauseTypeNodes } from "../../const/ClusterFinderClauseConstants";
@@ -30,12 +32,15 @@ import { AccordionStyle, DefaultButtonStyle } from "../../const/StyleConstants";
 import { useGetSelectedTexts } from "../../hooks/service/TextService";
 import { useGetClusterFinderResult } from "../../hooks/service/ToolsService";
 import { queryStore } from "../../store/QueryStore";
+import { changeClusterFinderResult, toolAnalysisStore } from "../../store/ToolAnalysisStore";
+import ClusterFinderTable from "./components/ClusterFinderTable";
 import ClusterFinderTreeView from "./components/ClusterFinderTreeView";
 import { hasPartialFilters } from "./util/ClusterFinderUtils";
 
 export default function ClusterFinder() {
   const {t, i18n} = useTranslation();
   const {getClusterFinderResult} = useGetClusterFinderResult();
+  const navigate = useNavigate();
 
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [typeValue, setTypeValue] = useState({
@@ -50,17 +55,58 @@ export default function ClusterFinder() {
   const [selectedClauseTypeItems, setSelectedClauseTypeItems] = useState([]);
   const [selectedWordTypeItems, setSelectedWordTypeItems] = useState([]);
   const [response, setResponse] = useState(null);
+  const [showTable, setShowTable] = useState(false);
+  const [showNoResultsError, setShowNoResultsError] = useState(false);
 
   const [storeData, setStoreData] = useState("");
   const {getSelectedTexts} = useGetSelectedTexts(setStoreData);
 
   useEffect(() => {
-    getSelectedTexts();
-  }, [getSelectedTexts]);
+    const clusterFinderState = toolAnalysisStore.getState().clusterFinder;
+    if (clusterFinderState?.analysis?.clusters?.length > 0) {
+      const params = clusterFinderState.parameters;
+      setTypeValue(params.typeValue);
+      setWordSequenceLength(params.wordSequenceLength);
+      setOrderBy(params.orderBy);
+      setIsPunctuationSensitiveChecked(params.isPunctuationSensitiveChecked);
+      setSelectedClauseTypeItems(params.selectedClauseTypeItems);
+      setSelectedWordTypeItems(params.selectedWordTypeItems);
+      setResponse(clusterFinderState.analysis);
+      setIsAccordionExpanded(false);
+      setShowTable(true);
+    }
+  }, [navigate]);
 
-  queryStore.subscribe(() => {
+  useEffect(() => {
+    toolAnalysisStore.dispatch(changeClusterFinderResult({
+      parameters: {
+        typeValue: typeValue,
+        wordSequenceLength: wordSequenceLength,
+        orderBy: orderBy,
+        isPunctuationSensitiveChecked: isPunctuationSensitiveChecked,
+        selectedClauseTypeItems: selectedClauseTypeItems,
+        selectedWordTypeItems: selectedWordTypeItems
+      },
+      analysis: response
+    }));
+  }, [response]);
+
+  useEffect(() => {
     getSelectedTexts();
-  });
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = queryStore.subscribe(() => {
+      getSelectedTexts();
+
+      toolAnalysisStore.dispatch(changeClusterFinderResult(null));
+      setResponse([]);
+      setIsAccordionExpanded(true);
+      setShowTable(false);
+    });
+
+    return () => unsubscribe();
+  }, [getSelectedTexts]);
 
   const clusterFinderTypes = [
     {labelKey: "cluster_finder_word_type", value: ClusterFinderTreeType.WORD_TYPE},
@@ -118,14 +164,31 @@ export default function ClusterFinder() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setTypeError(!Object.values(typeValue).some(Boolean));
 
-    if (!storeData) {
+    const noTypeValueSelected = !Object.values(typeValue).some(Boolean);
+    setTypeError(noTypeValueSelected);
+
+    if (noTypeValueSelected || !storeData) {
       return;
     }
 
+    setShowTable(false);
+
     const params = buildPayload();
-    getClusterFinderResult(params).then(setResponse);
+    getClusterFinderResult(params).then((result) => {
+      const parsedResult = JSON.parse(result);
+      setResponse(parsedResult);
+
+      if (parsedResult?.clusters?.length) {
+        setShowNoResultsError(false);
+        setShowTable(true);
+        setIsAccordionExpanded(false);
+      } else {
+        setShowTable(false);
+        setShowNoResultsError(true);
+        setIsAccordionExpanded(true);
+      }
+    });
   };
 
   const applyTypeExclusionRules = (changedKey, isChecked) => {
@@ -135,11 +198,15 @@ export default function ClusterFinder() {
     if (changedKey === ClusterFinderTreeType.WORD_TYPE && isChecked) {
       nextValues[ClusterFinderTreeType.MORPHOLOGICAL] = false;
       nextValues[ClusterFinderTreeType.SYNTACTIC] = false;
+      setSelectedWordTypeItems([]);
     }
 
     // Rule: If either Morphological or Syntactic is checked, then WordType must be unchecked
     if ((changedKey === ClusterFinderTreeType.MORPHOLOGICAL || changedKey === ClusterFinderTreeType.SYNTACTIC) && isChecked) {
       nextValues[ClusterFinderTreeType.WORD_TYPE] = false;
+      if (changedKey === ClusterFinderTreeType.MORPHOLOGICAL) {
+        setSelectedWordTypeItems([]);
+      }
     }
 
     // Rule: If Syntactic is checked while Morphological is unchecked, then Punctuation must be unchecked
@@ -342,7 +409,10 @@ export default function ClusterFinder() {
               <Grid item size={{xs: 12, sm: 6, md: 6}}>
                 <FormControl>
                   <ClusterFinderTreeView
-                    disabled={!typeValue[ClusterFinderTreeType.SYNTACTIC]}
+                    disabled={
+                      orderBy === ClusterFinderSortingType.BY_FREQUENCY
+                      || !typeValue[ClusterFinderTreeType.SYNTACTIC]
+                    }
                     items={syntacticClauseTypeNodes}
                     selectedItems={selectedClauseTypeItems}
                     setSelectedItems={setSelectedClauseTypeItems}
@@ -353,7 +423,10 @@ export default function ClusterFinder() {
               <Grid item size={{xs: 12, sm: 6, md: 6}}>
                 <FormControl>
                   <ClusterFinderTreeView
-                    disabled={!typeValue[ClusterFinderTreeType.MORPHOLOGICAL] && !typeValue[ClusterFinderTreeType.WORD_TYPE]}
+                    disabled={
+                      orderBy === ClusterFinderSortingType.BY_FREQUENCY
+                      || (!typeValue[ClusterFinderTreeType.MORPHOLOGICAL] && !typeValue[ClusterFinderTreeType.WORD_TYPE])
+                    }
                     items={typeValue[ClusterFinderTreeType.MORPHOLOGICAL] ? morphologicalWordTypeNodes : wordTypeNodes}
                     selectedItems={selectedWordTypeItems}
                     setSelectedItems={setSelectedWordTypeItems}
@@ -372,6 +445,14 @@ export default function ClusterFinder() {
           </form>
         </AccordionDetails>
       </Accordion>
+
+      {showTable && <ClusterFinderTable data={response} />}
+
+      {showNoResultsError && (
+        <Alert severity="error">
+          {t("error_no_matching_keywords")}
+        </Alert>
+      )}
     </>
   );
 };
