@@ -65,8 +65,6 @@ export default function ClusterFinderTreeView({
     }
 
     const resetToDefault = () => {
-      setSelectedItems([]);
-
       const rootId = enrichedItems[0]?.id;
       setExpandedItems(rootId ? [rootId] : []);
     }

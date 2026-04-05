@@ -19,6 +19,20 @@
  * Inheritance: Nodes use their own `payloadKey` if present. If missing, they inherit the `payloadKey` from the nearest ancestor.
  */
 
+/**
+ * @typedef {Object} ClusterEntry
+ * @property {number} frequency
+ * @property {string[]} markups
+ * @property {string[]} descriptions
+ * @property {string[]} usages
+ */
+
+/**
+ * @typedef {Object} ClusterResult
+ * @property {ClusterEntry[]} clusters
+ * @property {string} separator
+ */
+
 export const ClusterFinderTreeType = {
   MORPHOLOGICAL: "morfological",
   SYNTACTIC: "syntactic",
