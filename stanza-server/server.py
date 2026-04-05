@@ -96,16 +96,17 @@ def keerukus_sonaliigid_mitmekesisus():
     laused = []
     word_start_and_end = []
     linguistic_data = []
-    total_words = 0
+    word_count = 0
     list_checked_speller_errors = []
 
     for sentence in doc.sentences:
         laused.append(sentence.text)
         sentence_array = []
         for word in sentence.words:
-            total_words += 1
             data_row = [word.id, word.text, word.lemma, word.upos, word.xpos, word.feats]
             linguistic_data.append(data_row)
+            if word.xpos != 'Z':
+                word_count += 1
             corrected_word = common_errors_map.get(word.text.lower(), None)
             if corrected_word and word.text[0].isupper():
                 corrected_word = corrected_word.capitalize()
@@ -140,9 +141,13 @@ def keerukus_sonaliigid_mitmekesisus():
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
 
     if model_type == "grammarcheckerTest":
-        grammar_output = generate_test_grammar_output(tekst, fetch_test_grammar(tekst))
+        grammar_corrections = fetch_test_grammar(tekst)
+        grammar_output = generate_test_grammar_output(tekst, grammar_corrections)
+        raw_error_count = grammar_output["error_count"]
     else:
-        grammar_output = generate_grammar_output(tekst, fetch_grammar(tekst))
+        grammar_corrections = fetch_grammar(tekst)
+        grammar_output = generate_grammar_output(tekst, grammar_corrections)
+        raw_error_count = len(grammar_corrections['corrections']) if grammar_corrections else 0
 
     speller_output = generate_grammar_output(tekst, fetch_speller(tekst), list_checked_speller_errors)
 
@@ -162,8 +167,8 @@ def keerukus_sonaliigid_mitmekesisus():
         if word_syllable_count >= 3:
             polysyllabic_words += 1
 
-    errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
-    errors_per_word = grammar_output["error_count"] / total_words
+    errors_per_sentence = raw_error_count / len(doc.sentences) if len(doc.sentences) else 0
+    errors_per_word = raw_error_count / word_count if word_count else 0
 
     feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
                                    polysyllabic_words)
