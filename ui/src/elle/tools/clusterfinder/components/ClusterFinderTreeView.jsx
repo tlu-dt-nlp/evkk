@@ -121,9 +121,10 @@ export default function ClusterFinderTreeView({
 
   const isSelectableCheckbox = (node) => node && !node.isCategory && !node.isRadio;
 
-  const hasChildCheckboxes = (itemId) => {
-    return getDescendantIds(itemId).some((id) => isSelectableCheckbox(getItem(id)));
-  };
+  const hasChildCheckboxes = (itemId) =>
+    getChildIds(itemId).some((childId) =>
+      isSelectableCheckbox(getItem(childId)) || hasChildCheckboxes(childId)
+    );
 
   const handleGroupCheckboxClick = (itemId) => {
     setExpandedItems((prev) => {
@@ -133,28 +134,38 @@ export default function ClusterFinderTreeView({
     });
   };
 
-  const shouldParentBeSelected = (parentId, selectedIds) => {
-    const leafIds = getDescendantIds(parentId).filter((id) => {
-      const node = getItem(id);
-      return isSelectableCheckbox(node) && !node.children?.length;
-    })
+  const getSelectableChildren = (id) =>
+    getChildIds(id).flatMap((childId) => {
+      const node = getItem(childId);
+      if (isSelectableCheckbox(node)) {
+        return [childId];
+      }
+      return getSelectableChildren(childId);
+    });
 
-    return leafIds.length > 0 && leafIds.every((id) => selectedIds.includes(id));
+  const shouldParentBeSelected = (parentId, selectedIdsSet) => {
+    const childIds = getSelectableChildren(parentId);
+    return childIds.length > 0 && childIds.every((id) => selectedIdsSet.has(id));
   };
 
   const syncParentCheckboxes = (initialIds, fromItemId) => {
     let updatedIds = initialIds;
+    let updatedIdsSet = new Set(initialIds);
     let currentParentId = getItem(fromItemId)?.parentId;
 
     while (currentParentId) {
       const parent = getItem(currentParentId);
 
       if (isSelectableCheckbox(parent)) {
-        const allChildrenSelected = shouldParentBeSelected(currentParentId, updatedIds);
+        const allChildrenSelected = shouldParentBeSelected(currentParentId, updatedIdsSet);
 
-        updatedIds = allChildrenSelected
-          ? addIdToArray(updatedIds, currentParentId)
-          : removeIdFromArray(updatedIds, currentParentId);
+        if (allChildrenSelected) {
+          updatedIds = addIdToArray(updatedIds, currentParentId);
+          updatedIdsSet.add(currentParentId);
+        } else {
+          updatedIds = removeIdFromArray(updatedIds, currentParentId);
+          updatedIdsSet.delete(currentParentId);
+        }
       }
 
       currentParentId = parent?.parentId;
