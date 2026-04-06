@@ -329,6 +329,12 @@ def split_text_with_breaks(text, error_id_prefix):
 
 
 def generate_grammar_output(input_text, corrections, list_checked_spelling_errors=None):
+    if corrections is None:
+        return {
+            "corrector_results": [{"corrected": False, "text": input_text, "error_id": "0_unmarked"}],
+            "error_list": {},
+            "error_count": 0
+        }
     processed_corrections = process_corrections(corrections['corrections'])
     sorted_corrections = merge_corrections(processed_corrections, list_checked_spelling_errors)
 
@@ -415,6 +421,8 @@ def calculate_content_word(lemmas, word_types):
 def calculate_abstract_words(abstract_answer, word_types):
     abstract_count = 0
     for index, word in enumerate(abstract_answer):
+        if index >= len(word_types):
+            break
         if (word.get("abstractness") == 3
             and word_types[index] != PROPN
             and word_types[index] == NOUN):
@@ -440,6 +448,8 @@ def handle_uncommon_words_marking(text, word_types, lemmas, words):
 def handle_abstract_words_marking(text, abstract_answer, word_types, words):
     temp_text = replace_combined.sub('', text)
     for index, word in enumerate(abstract_answer):
+        if index >= len(word_types):
+            break
         if word['abstractness'] == 3 and word_types[index] != PROPN and \
             word_types[index] == NOUN:
             new_word = f'<span class="abstract-word-color">{words[index]}</span>'

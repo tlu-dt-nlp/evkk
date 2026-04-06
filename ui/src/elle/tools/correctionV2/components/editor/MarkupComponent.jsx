@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MarkViewContent } from '@tiptap/react';
 import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
-import './styles.css';
+import './styles/MarkupComponent.css';
 import { errorTypes } from '../../../correction/const/TabValuesConstant';
 import SingleErrorV2 from '../errors/SingleErrorV2';
 
@@ -36,8 +36,7 @@ const WhiteTooltip = styled(({ className, ...props }) => (
 }));
 
 export default function MarkupComponent(props) {
-  const { initialText, correctedText, errorType, errorId, classValue } =
-    props.HTMLAttributes;
+  const { initialText, correctedText, errorType, errorId, classValue } = props.HTMLAttributes;
 
   const [isClosed, setIsClosed] = useState(false);
 

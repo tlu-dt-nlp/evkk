@@ -20,7 +20,7 @@
   .correction-toggle-button-group {
     border-radius: 5px;
     border: 1px solid gray;
-    margin-bottom: 1rem;
+    align-self: center;
 
     .MuiTab-root {
       padding-block: 2px;

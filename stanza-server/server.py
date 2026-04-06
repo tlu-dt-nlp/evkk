@@ -76,6 +76,13 @@ def full_text_analysis():
     return Response(json.dumps(result), mimetype=mimetype)
 
 
+@app.route('/speller', methods=post)
+def speller():
+    tekst = request.json["tekst"]
+    speller_output = generate_grammar_output(tekst, fetch_speller(tekst))
+    return Response(json.dumps(speller_output), mimetype=mimetype)
+
+
 @app.route('/sonad-lemmad-silbid-sonaliigid-vormimargendid', methods=post)
 def sonad_lemmad_silbid_sonaliigid_vormimargendid():
     tekst = request.json["tekst"]

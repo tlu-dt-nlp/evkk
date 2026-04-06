@@ -1,13 +1,10 @@
-import './styles.css';
+import './styles/CorrectorInput.css';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useEffect, useRef } from 'react';
 import MarkComponentExtension from './MarkComponentExtension.js';
 import { useEditorContext } from '../../providers/EditorProvider.jsx';
-import {
-  GRAMMARCHECKER,
-  SPELLCHECKER
-} from '../../../correction/const/Constants';
+import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
 import TextUpload from '../../../../components/TextUpload';
 import { IconButton } from '@mui/material';
 import UndoIcon from '@mui/icons-material/Undo';

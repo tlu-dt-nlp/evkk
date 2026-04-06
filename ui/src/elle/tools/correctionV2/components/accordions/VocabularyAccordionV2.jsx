@@ -24,9 +24,7 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
         <AccordionDetails>
           <div>
             <div className="tab-table">
-              <div>
-                {t('corrector_vocabulary_statistics_the_words_considered')}
-              </div>
+              <div>{t('corrector_vocabulary_statistics_the_words_considered')}</div>
               <div>{complexityAnswer.sonad.length}</div>
             </div>
             <div className="tab-table">
@@ -110,8 +108,7 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
             startValue={0}
             endValue={10}
             value={
-              (complexityAnswer.korrektoriLoendid.harvaesinevad * 100) /
-              complexityAnswer.mitmekesisus[10]
+              (complexityAnswer.korrektoriLoendid.harvaesinevad * 100) / complexityAnswer.mitmekesisus[10]
             }
             startText={t('corrector_vocabulary_more_frequent_vocabulary')}
             endText={t('corrector_vocabulary_less_frequent_vocabulary')}
@@ -123,8 +120,7 @@ export default function VocabularyAccordionV2({ complexityAnswer }) {
             startValue={30}
             endValue={70}
             value={
-              (complexityAnswer.korrektoriLoendid.sisusonad * 100) /
-              complexityAnswer.mitmekesisus[10]
+              (complexityAnswer.korrektoriLoendid.sisusonad * 100) / complexityAnswer.mitmekesisus[10]
             }
             startText={t('corrector_vocabulary_less_content_words')}
             endText={t('corrector_vocabulary_more_content_words')}

@@ -50,10 +50,7 @@ export default function CorrectionV2() {
 
   const tabValues = [
     <Tab label={t('corrector_proofreading')} value={tabValueMap.CORRECTOR} />,
-    <Tab
-      label={t('corrector_proficiency_level')}
-      value={tabValueMap.PROFICIENCY_LEVEL}
-    />,
+    <Tab label={t('corrector_proficiency_level')} value={tabValueMap.PROFICIENCY_LEVEL} />,
     <Tab label={t('corrector_complexity')} value={tabValueMap.COMPLEXITY} />,
     <Tab label={t('corrector_vocabulary')} value={tabValueMap.VOCABULARY} />
   ];
