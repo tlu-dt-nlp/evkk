@@ -312,7 +312,6 @@ def merge_corrections(processed_corrections, list_checked_spelling_errors):
 
 
 def split_text_with_breaks(text, error_id_prefix):
-    """Splits text on paragraph breaks (\\n) and line breaks (\\r), returning text and break tokens."""
     tokens = []
     chunk = ''
     for ch in text:

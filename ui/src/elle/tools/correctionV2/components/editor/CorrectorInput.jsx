@@ -7,8 +7,7 @@ import { useEditorContext } from '../../providers/EditorProvider.jsx';
 import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
 import TextUpload from '../../../../components/TextUpload';
 import { IconButton } from '@mui/material';
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
+import { IconBarActionButtons } from '../../constants/tabConfig';
 
 export default function CorrectorInput() {
   const {
@@ -53,8 +52,7 @@ export default function CorrectorInput() {
     content: `<p>${text}</p>`
   });
 
-  /** Replaces editor content without adding to undo history or triggering onUpdate. */
-  const replaceContent = (content) => {
+  const replaceContent = content => {
     editor
       .chain()
       .command(({ tr }) => {
@@ -65,17 +63,16 @@ export default function CorrectorInput() {
       .run();
   };
 
-  /** Converts a flat token array from the backend into a TipTap document. */
-  const buildDocFromTokens = (tokens) => {
+  const buildDocFromTokens = tokens => {
     const paragraphs = [[]];
 
     for (const token of tokens) {
       if (token.type === 'paragraphBreak') {
         paragraphs.push([]);
       } else if (token.type === 'lineBreak') {
-        paragraphs[paragraphs.length - 1].push({ type: 'hardBreak' });
+        paragraphs.at(-1).push({ type: 'hardBreak' });
       } else if (token.corrected) {
-        paragraphs[paragraphs.length - 1].push({
+        paragraphs.at(-1).push({
           type: 'text',
           text: token.text === ' ' ? '\u00A0' : token.text,
           marks: [{
@@ -89,7 +86,7 @@ export default function CorrectorInput() {
           }]
         });
       } else {
-        paragraphs[paragraphs.length - 1].push({ type: 'text', text: token.text });
+        paragraphs.at(-1).push({ type: 'text', text: token.text });
       }
     }
 
@@ -121,8 +118,12 @@ export default function CorrectorInput() {
       const html = errorResponse.margitudLaused[selectedSubTab]
         .replaceAll('<span', '<markup-error')
         .replaceAll('</span>', '</markup-error>')
-        .replaceAll(' class=', ' data-classValue=');
-      replaceContent(html.split('\n').map(line => `<p>${line}</p>`).join('') || '<p></p>');
+        .replaceAll(' class=', ' data-classValue=')
+        .split('\n')
+        .map(line => `<p>${line}</p>`)
+        .join('');
+
+      replaceContent(html || '<p></p>');
     }
 
     setContent(editor.getHTML());
@@ -133,26 +134,24 @@ export default function CorrectorInput() {
       <EditorContent ref={contentRef} editor={editor} />
       <div className="corrector-input-icon-bar">
         <div>
-          <IconButton
-            className="corrector-input-icon-button"
-            disableRipple
-            size="small"
-            onClick={() => editor?.chain().focus().undo().run()}
-            disabled={!editor?.can().undo()}
-          >
-            <UndoIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            className="corrector-input-icon-button"
-            disableRipple
-            size="small"
-            onClick={() => editor?.chain().focus().redo().run()}
-            disabled={!editor?.can().redo()}
-          >
-            <RedoIcon fontSize="small" />
-          </IconButton>
+          {IconBarActionButtons.map(({ Icon, action }) => (
+            <IconButton
+              key={action}
+              className="corrector-input-icon-button"
+              disableRipple
+              size="small"
+              onClick={() => editor?.chain().focus()[action]().run()}
+              disabled={!editor?.can()[action]()}
+            >
+              <Icon fontSize="small" />
+            </IconButton>
+          ))}
         </div>
-        <TextUpload className="corrector-input-icon-button" sendTextFromFile={handleTextUpload} disableStyles={true} />
+        <TextUpload
+          className="corrector-input-icon-button"
+          sendTextFromFile={handleTextUpload}
+          disableStyles={true}
+        />
       </div>
     </div>
   );

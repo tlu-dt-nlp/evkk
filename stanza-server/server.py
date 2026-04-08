@@ -94,8 +94,8 @@ def sonad_lemmad_silbid_sonaliigid_vormimargendid():
 def keerukus_sonaliigid_mitmekesisus():
     tekst = request.json["tekst"]
     model_type = request.json["model"]
-    clean_tekst = tekst.replace('\r', ' ')
-    doc = nlp_tpl(clean_tekst)
+    text_with_no_line_breaks = tekst.replace('\r', ' ')
+    doc = nlp_tpl(text_with_no_line_breaks)
 
     sonad = []
     eestikeelsed_sonad = []
@@ -148,19 +148,21 @@ def keerukus_sonaliigid_mitmekesisus():
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
 
     if model_type == "grammarcheckerTest":
-        grammar_output = generate_test_grammar_output(tekst, fetch_test_grammar(clean_tekst))
+        grammar_output = generate_test_grammar_output(tekst, fetch_test_grammar(text_with_no_line_breaks))
     else:
-        grammar_output = generate_grammar_output(tekst, fetch_grammar(clean_tekst))
+        grammar_output = generate_grammar_output(tekst, fetch_grammar(text_with_no_line_breaks))
 
-    speller_output = generate_grammar_output(tekst, fetch_speller(clean_tekst), list_checked_speller_errors)
+    speller_output = generate_grammar_output(tekst, fetch_speller(text_with_no_line_breaks),
+                                             list_checked_speller_errors)
 
-    uncommon_marked, uncommon_count = handle_uncommon_words_marking(clean_tekst, sonaliigid, lemmad, sonad)
-    abstract_marked = handle_abstract_words_marking(clean_tekst, serializable_word_analysis, sonaliigid, sonad)
-    content_marked = handle_content_words_marking(clean_tekst, sonaliigid, lemmad, sonad)
-    repetition_marked = handle_repetition_marking(clean_tekst, vocabulary)
-    nouns_marked = handle_noun_marking(clean_tekst, sonaliigid, sonad)
-    long_words_marked = handle_long_word_marking(clean_tekst, sonad)
-    long_sentences_marked = handle_long_sentence_marking(clean_tekst, doc)
+    uncommon_marked, uncommon_count = handle_uncommon_words_marking(text_with_no_line_breaks, sonaliigid, lemmad, sonad)
+    abstract_marked = handle_abstract_words_marking(text_with_no_line_breaks, serializable_word_analysis, sonaliigid,
+                                                    sonad)
+    content_marked = handle_content_words_marking(text_with_no_line_breaks, sonaliigid, lemmad, sonad)
+    repetition_marked = handle_repetition_marking(text_with_no_line_breaks, vocabulary)
+    nouns_marked = handle_noun_marking(text_with_no_line_breaks, sonaliigid, sonad)
+    long_words_marked = handle_long_word_marking(text_with_no_line_breaks, sonad)
+    long_sentences_marked = handle_long_sentence_marking(text_with_no_line_breaks, doc)
 
     syllable_count = 0
     polysyllabic_words = 0
