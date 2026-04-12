@@ -1,13 +1,15 @@
 import './styles/CorrectorInput.css';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { EditorState } from '@tiptap/pm/state';
 import { useEffect, useRef } from 'react';
 import MarkComponentExtension from './MarkComponentExtension.js';
 import { useEditorContext } from '../../providers/EditorProvider.jsx';
 import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
 import TextUpload from '../../../../components/TextUpload';
 import { IconButton } from '@mui/material';
-import { IconBarActionButtons } from '../../constants/tabConfig';
+import UndoIcon from '@mui/icons-material/Undo';
+import RedoIcon from '@mui/icons-material/Redo';
 
 export default function CorrectorInput() {
   const {
@@ -28,9 +30,7 @@ export default function CorrectorInput() {
     setContent: state.setContent
   }));
 
-  const contentRef = useRef(null);
-  const textRef = useRef(text);
-  textRef.current = text;
+  const initialTextRef = useRef(text);
 
   const handleTextUpload = uploadedText => {
     setErrorResponse({});
@@ -52,7 +52,7 @@ export default function CorrectorInput() {
     content: `<p>${text}</p>`
   });
 
-  const replaceContent = content => {
+  const replaceContent = (content) => {
     editor
       .chain()
       .command(({ tr }) => {
@@ -61,9 +61,16 @@ export default function CorrectorInput() {
       })
       .setContent(content, { emitUpdate: false })
       .run();
+
+    editor.view.updateState(
+      EditorState.create({
+        doc: editor.state.doc,
+        plugins: editor.state.plugins
+      })
+    );
   };
 
-  const buildDocFromTokens = tokens => {
+  const buildDocFromTokens = (tokens) => {
     const paragraphs = [[]];
 
     for (const token of tokens) {
@@ -104,10 +111,19 @@ export default function CorrectorInput() {
   }, [editor]);
 
   useEffect(() => {
+    initialTextRef.current = text;
+  }, [errorResponse]);
+
+  useEffect(() => {
     if (!editor) return;
 
     const hasErrors = Object.keys(errorResponse).length > 0;
     if (!selectedSubTab || !hasErrors) return;
+
+    if (initialTextRef.current !== text) {
+      replaceContent(text);
+      return;
+    }
 
     if (selectedSubTab === SPELLCHECKER || selectedSubTab === GRAMMARCHECKER) {
       const tokens = selectedSubTab === SPELLCHECKER
@@ -131,27 +147,29 @@ export default function CorrectorInput() {
 
   return (
     <div className="position-relative">
-      <EditorContent ref={contentRef} editor={editor} />
+      <EditorContent editor={editor} />
       <div className="corrector-input-icon-bar">
         <div>
-          {IconBarActionButtons.map(({ Icon, action }) => (
-            <IconButton
-              key={action}
-              className="corrector-input-icon-button"
-              disableRipple
-              size="small"
-              onClick={() => editor?.chain().focus()[action]().run()}
-              disabled={!editor?.can()[action]()}
-            >
-              <Icon fontSize="small" />
-            </IconButton>
-          ))}
+          <IconButton
+            className="corrector-input-icon-button"
+            disableRipple
+            size="small"
+            onClick={() => editor?.chain().focus().undo().run()}
+            disabled={!editor?.can().undo()}
+          >
+            <UndoIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            className="corrector-input-icon-button"
+            disableRipple
+            size="small"
+            onClick={() => editor?.chain().focus().redo().run()}
+            disabled={!editor?.can().redo()}
+          >
+            <RedoIcon fontSize="small" />
+          </IconButton>
         </div>
-        <TextUpload
-          className="corrector-input-icon-button"
-          sendTextFromFile={handleTextUpload}
-          disableStyles={true}
-        />
+        <TextUpload className="corrector-input-icon-button" sendTextFromFile={handleTextUpload} disableStyles={true} />
       </div>
     </div>
   );
