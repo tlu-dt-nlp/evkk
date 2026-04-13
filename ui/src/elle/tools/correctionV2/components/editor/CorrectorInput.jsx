@@ -169,7 +169,11 @@ export default function CorrectorInput() {
             <RedoIcon fontSize="small" />
           </IconButton>
         </div>
-        <TextUpload className="corrector-input-icon-button" sendTextFromFile={handleTextUpload} disableStyles={true} />
+        <TextUpload
+          className="corrector-input-icon-button"
+          sendTextFromFile={handleTextUpload}
+          disableStyles={true}
+        />
       </div>
     </div>
   );

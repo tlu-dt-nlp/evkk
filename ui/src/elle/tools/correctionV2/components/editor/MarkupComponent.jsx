@@ -51,9 +51,14 @@ export default function MarkupComponent(props) {
   const hasError = initialText && correctedText;
   const canOpen = hasError && !isClosed;
 
+  const handleSingleErrorClose = () => {
+    setIsClosed(true);
+    setIsOpen(false);
+  };
+
   return (
     <WhiteTooltip
-      title={<SingleErrorV2 error={error} onClose={() => { setIsClosed(true); setIsOpen(false); }} />}
+      title={<SingleErrorV2 error={error} onClose={handleSingleErrorClose} />}
       enterTouchDelay={0}
       leaveTouchDelay={3000}
       arrow

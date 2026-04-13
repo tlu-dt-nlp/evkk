@@ -9,8 +9,6 @@ import {
   UNCOMMON_WORDS,
   WORD_REPETITION
 } from '../../correction/const/Constants';
-import RedoIcon from '@mui/icons-material/Redo';
-import UndoIcon from '@mui/icons-material/Undo';
 
 export const tabValueMap = {
   CORRECTOR: 'correctorTab',
@@ -71,11 +69,6 @@ export const CorrectionAndTextLevelToggleButtons = [
     value: GRAMMARCHECKER,
     text: 'corrector_proficiency_level_grammar'
   }
-];
-
-export const IconBarActionButtons = [
-  { Icon: UndoIcon, action: 'undo' },
-  { Icon: RedoIcon, action: 'redo' }
 ];
 
 export const ToggleButtonCategories = {
