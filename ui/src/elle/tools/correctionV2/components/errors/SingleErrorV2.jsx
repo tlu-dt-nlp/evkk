@@ -1,34 +1,49 @@
 import { IconButton, Paper } from '@mui/material';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { useEditorContext } from '../../providers/EditorProvider';
-import { changeHandler } from '../../utils/errorHelpers';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function SingleErrorV2({
-  error,
-  onClose = null
-}) {
-  const {
-    selectedSubTab,
-    setErrorResponse,
-    errorResponse
-  } = useEditorContext(state => ({
-    selectedSubTab: state.selectedSubTab,
-    setErrorResponse: state.setErrorResponse,
-    errorResponse: state.errorResponse
+                                        error,
+                                        onClose = null
+                                      }) {
+  const { editor } = useEditorContext(state => ({
+    editor: state.editor
   }));
 
   const handleChange = (isAcceptSelected = false) => {
     onClose?.();
-    setErrorResponse(
-      changeHandler(
-        errorResponse,
-        selectedSubTab,
-        error.error_id,
-        isAcceptSelected
-      )
-    );
+    if (!editor) return;
+
+    requestAnimationFrame(() => {
+      let markFrom = null;
+      let markTo = null;
+
+      editor.state.doc.descendants((node, pos) => {
+        if (node.isText) {
+          const mark = node.marks.find(m =>
+            m.type.name === 'reactComponent' && m.attrs.errorId === error.error_id
+          );
+          if (mark) {
+            markFrom = pos;
+            markTo = pos + node.nodeSize;
+            return false;
+          }
+        }
+      });
+
+      if (markFrom === null) return;
+
+      editor.chain().command(({ tr }) => {
+        const markType = editor.schema.marks.reactComponent;
+        tr.removeMark(markFrom, markTo, markType);
+        if (isAcceptSelected) {
+          tr.replaceWith(markFrom, markTo, editor.schema.text(error.corrected_text));
+        }
+        return true;
+      }).run();
+    });
   };
 
   return (

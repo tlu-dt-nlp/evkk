@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MarkViewContent } from '@tiptap/react';
 import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
-import './styles/MarkupComponent.css';
+import './styles/CorrectorInput.css';
 import { errorTypes } from '../../../correction/const/TabValuesConstant';
 import SingleErrorV2 from '../errors/SingleErrorV2';
 
@@ -39,6 +39,7 @@ export default function MarkupComponent(props) {
   const { initialText, correctedText, errorType, errorId, classValue } = props.HTMLAttributes;
 
   const [isClosed, setIsClosed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const error = {
     text: initialText,
@@ -48,15 +49,23 @@ export default function MarkupComponent(props) {
   };
 
   const hasError = initialText && correctedText;
+  const canOpen = hasError && !isClosed;
+
+  const handleSingleErrorClose = () => {
+    setIsClosed(true);
+    setIsOpen(false);
+  };
 
   return (
     <WhiteTooltip
-      title={<SingleErrorV2 error={error} onClose={() => setIsClosed(true)} />}
+      title={<SingleErrorV2 error={error} onClose={handleSingleErrorClose} />}
       enterTouchDelay={0}
       leaveTouchDelay={3000}
       arrow
       placement="top"
-      {...(isClosed || !hasError ? { open: false } : {})}
+      open={canOpen && isOpen}
+      onOpen={() => setIsOpen(true)}
+      onClose={() => setIsOpen(false)}
     >
       <span className="markup-component-content" tabIndex={0}>
         <span

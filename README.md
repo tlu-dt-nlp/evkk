@@ -61,6 +61,9 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 
 ### Python debugging
 
+**You probably need to install [PythonDAP plugin](https://plugins.jetbrains.com/plugin/28460-pythondap)** for IntelliJ
+IDEA in order for it to recognize and let you use `Python Debug Server` run config type.
+
 Only Stanza server currently has built-in support for local debugging. The simplest way in IntelliJ is to use the
 `stanza DEBUG` run config by **running it before running the container**. However, you can also do it manually:
 
