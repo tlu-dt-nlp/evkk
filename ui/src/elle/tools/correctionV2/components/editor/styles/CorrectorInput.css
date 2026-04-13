@@ -1,17 +1,29 @@
 .ProseMirror {
   flex: 1;
   background: #fff;
-  border: 2px solid #a855f7;
+  border: 1px solid rgba(0, 0, 0, 0.23);
   border-radius: 0.5rem;
   font-size: 1rem;
   color: black;
   text-align: left;
   height: 400px;
   overflow-y: auto;
-  padding-top: 2.2rem;
+  padding-top: 2.5rem;
   padding-left: 0.2rem;
   white-space: normal !important;
   word-break: break-word !important;
+  transition: border-color 0.2s;
+}
+
+.ProseMirror:hover {
+  border-color: rgba(0, 0, 0, 0.87);
+}
+
+.ProseMirror.ProseMirror-focused,
+.ProseMirror.ProseMirror-focused:hover {
+  border-color: #9C27B0;
+  border-width: 1px;
+  outline: none;
 }
 
 .corrector-input-icon-bar {
@@ -21,7 +33,7 @@
   width: calc(100% - 4px);
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 0.25rem;
   padding: 0.3rem 0.5rem;
   border-radius: 0.5rem 0.5rem 0 0;
@@ -31,13 +43,38 @@
   transition: color 0.2s;
 }
 
-.corrector-input-icon-bar:hover {
-  color: #9c27b0;
-}
-
 .corrector-input-icon-bar .container {
   width: auto;
   max-width: none;
   padding: 0;
   margin: 0;
+}
+
+.markup-error {
+  border: 2px solid var(--purple);
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.mark-view-content-wrapper {
+  border-radius: 0.2rem;
+  padding: 0 0.2rem;
+  cursor: pointer;
+}
+
+.mark-view-content-wrapper:hover {
+  filter: brightness(1.1);
+}
+
+.markup-component-content {
+  cursor: pointer;
+}
+
+.corrector-input-icon-button {
+  all: unset;
+}
+
+.corrector-input-icon-button:hover {
+  color: #9c27b0;
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Tab, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ToggleButtonCategories } from '../../constants/tabConfig';
@@ -29,6 +29,10 @@ export default function CorrectorButtonGroup({ selectedTab }) {
   const toggleButtons = ToggleButtonCategories[selectedTab];
 
   const [value, setValue] = useState(toggleButtons[0].value);
+
+  useEffect(() => {
+    setSelectedSubTab(toggleButtons[0].value);
+  }, []);
 
   const { t } = useTranslation();
 

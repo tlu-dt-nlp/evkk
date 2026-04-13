@@ -65,7 +65,7 @@ const MarkComponentExtension = Mark.create({
 
   onUpdate() {
     const doc = this.editor.state.doc;
-    const text = doc.textBetween(0, doc.content.size, ' ');
+    const text = doc.textBetween(0, doc.content.size, '\n', '\r');
     const innerHTML = this.editor.getHTML();
 
     if (this.options.onTextUpdate) {
