@@ -57,7 +57,7 @@ export default function ClusterFinderTreeView({
       setExpandedItems([]);
       setSelectedItems([]);
     }
-  }, [disabled]);
+  }, [disabled, setSelectedItems]);
 
   useEffect(() => {
     if (disabled) {
@@ -75,7 +75,7 @@ export default function ClusterFinderTreeView({
   useEffect(() => {
     setSelectedItems(prev => pruneClusterFinderTreeViewHiddenIds(prev, displayItemsIds));
     setExpandedItems(prev => pruneClusterFinderTreeViewHiddenIds(prev, displayItemsIds));
-  }, [displayItemsIds]);
+  }, [setSelectedItems, displayItemsIds]);
 
   /**
    * @param {string} id

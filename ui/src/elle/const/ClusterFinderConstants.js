@@ -33,6 +33,10 @@
  * @property {string} separator
  */
 
+export const ClusterFinderConfig = {
+  MAX_USAGES_DISPLAY: 10
+};
+
 export const ClusterFinderTreeType = {
   MORPHOLOGICAL: "morfological",
   SYNTACTIC: "syntactic",
