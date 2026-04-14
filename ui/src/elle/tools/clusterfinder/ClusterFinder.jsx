@@ -15,7 +15,7 @@ import {
   Select,
   Typography
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -61,6 +61,25 @@ export default function ClusterFinder() {
   const [storeData, setStoreData] = useState("");
   const {getSelectedTexts} = useGetSelectedTexts(setStoreData);
 
+  const ordinalSortingValues = Object.values(ClusterFinderSortingType)
+    .filter((value) => value !== ClusterFinderSortingType.BY_FREQUENCY);
+
+  const orderByOptions = useMemo(() => {
+    const options = [{
+      value: ClusterFinderSortingType.BY_FREQUENCY,
+      label: t("cluster_finder_order_by_frequency")
+    }];
+
+    for (let i = 0; i < wordSequenceLength; i++) {
+      options.push({
+        value: ordinalSortingValues[i],
+        label: t("cluster_finder_order_by_nth_word", {ordinal: t("ordinal", {count: i + 1, ordinal: true})})
+      });
+    }
+
+    return options;
+  }, [t, wordSequenceLength, ordinalSortingValues]);
+
   useEffect(() => {
     const clusterFinderState = toolAnalysisStore.getState().clusterFinder;
     if (clusterFinderState?.analysis?.clusters?.length > 0) {
@@ -89,18 +108,19 @@ export default function ClusterFinder() {
       },
       analysis: response
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 
   useEffect(() => {
     getSelectedTexts();
-  }, []);
+  }, [getSelectedTexts]);
 
   useEffect(() => {
     const unsubscribe = queryStore.subscribe(() => {
       getSelectedTexts();
 
       toolAnalysisStore.dispatch(changeClusterFinderResult(null));
-      setResponse([]);
+      setResponse(null);
       setIsAccordionExpanded(true);
       setShowTable(false);
     });
@@ -117,12 +137,9 @@ export default function ClusterFinder() {
   /** @type {number[]} */
   const wordSequenceLengthOptions = Array.from({length: 5}, (_, i) => i + 1);
 
-  const ordinalSortingValues = Object.values(ClusterFinderSortingType)
-    .filter((value) => value !== ClusterFinderSortingType.BY_FREQUENCY);
-
   const addSelectedItemsToParams = (params, selectedItems) =>
     selectedItems.forEach((item) => {
-      const [key, value] = String(item).split(":");
+      const [key, value] = item.split(":");
       if (!key || !value) {
         return;
       }
@@ -176,6 +193,10 @@ export default function ClusterFinder() {
 
     const params = buildPayload();
     getClusterFinderResult(params).then((result) => {
+      if (!result) {
+        return;
+      }
+
       const parsedResult = JSON.parse(result);
       setResponse(parsedResult);
 
@@ -244,22 +265,6 @@ export default function ClusterFinder() {
 
   const handleOrderByChange = (event) =>
     setOrderBy(event.target.value);
-
-  const getOrderByOptions = (maxOptions) => {
-    const options = [{
-      value: ClusterFinderSortingType.BY_FREQUENCY,
-      label: t("cluster_finder_order_by_frequency")
-    }];
-
-    for (let i = 0; i < maxOptions; i++) {
-      options.push({
-        value: ordinalSortingValues[i],
-        label: t("cluster_finder_order_by_nth_word", {ordinal: t("ordinal", {count: i + 1, ordinal: true})})
-      });
-    }
-
-    return options;
-  };
 
   const applyPunctuationSensitiveExclusionRules = (isChecked) => {
     const nextValues = {...typeValue};
@@ -365,7 +370,7 @@ export default function ClusterFinder() {
                     value={orderBy}
                     variant="outlined"
                   >
-                    {getOrderByOptions(wordSequenceLength).map((option) => (
+                    {orderByOptions.map((option) => (
                       <MenuItem key={option.value} value={option.value}>
                         {option.label}
                       </MenuItem>

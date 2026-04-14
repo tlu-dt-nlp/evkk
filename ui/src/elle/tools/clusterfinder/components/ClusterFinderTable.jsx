@@ -1,14 +1,15 @@
 import { Button, TextField } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import GenericTable from "../../../components/table/GenericTable";
 import { TableType } from "../../../components/table/TableDownloadButton";
 import TableHeaderButtons from "../../../components/table/TableHeaderButtons";
+import { ClusterFinderConfig } from "../../../const/ClusterFinderConstants";
 
 /** @typedef {import("../../const/ClusterFinderConstants").ClusterSearch} ClusterSearch */
 
-const MAX_USAGES = 10;
+const MAX_USAGES = ClusterFinderConfig.MAX_USAGES_DISPLAY;
 
 /* eslint-disable react/prop-types -- PropTypes dependency is not present */
 /**
@@ -27,7 +28,7 @@ export default function ClusterFinderTable({data}) {
     return data.clusters.reduce((acc, curr) => acc + curr.frequency, 0);
   }, [data]);
 
-  const decodeMarkups = (value) => {
+  const decodeMarkups = useCallback((value) => {
     if (!value) {
       return "";
     }
@@ -35,16 +36,23 @@ export default function ClusterFinderTable({data}) {
       .replaceAll("_", "")
       .replaceAll("&lt;", "<")
       .replaceAll("&gt;", ">");
-  };
+  }, []);
 
-  const formatFrequencyPercentage = (frequency) => {
+  const formatFrequencyPercentage = useCallback((frequency) => {
     if (totalFrequency === 0) {
       return "0.00%";
     }
     return ((frequency * 100) / totalFrequency).toFixed(2) + "%";
-  };
+  }, [totalFrequency]);
 
-  const renderUsagesCell = (props) => {
+  const toggleUsages = useCallback((id) => {
+    setExpandedUsages((prev) => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  }, []);
+
+  const renderUsagesCell = useCallback((props) => {
     const row = props.row.original;
     if (!row?.usages?.length) {
       return null;
@@ -76,14 +84,7 @@ export default function ClusterFinderTable({data}) {
         })}
       </div>
     )
-  };
-
-  const toggleUsages = (id) => {
-    setExpandedUsages((prev) => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
+  }, [expandedUsages, toggleUsages]);
 
   const columns = useMemo(() => [
     {
@@ -112,7 +113,7 @@ export default function ClusterFinderTable({data}) {
       accessorFn: (row) => row.usages ? row.usages.join("\n") : "",
       cell: renderUsagesCell
     }
-  ], [t, totalFrequency, expandedUsages]);
+  ], [t, decodeMarkups, formatFrequencyPercentage, renderUsagesCell]);
 
   if (!data?.clusters?.length) {
     return null;
