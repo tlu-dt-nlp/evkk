@@ -5,7 +5,6 @@ import Links from './elle/pages/Links';
 import FilledContacts from './elle/components/about/FilledContacts';
 import Grants from './elle/components/about/Grants';
 import ClusterFinder from './elle/tools/clusterfinder/ClusterFinder';
-import ClusterFinderOld from './elle/tools/ClusterFinderOld'; // TODO: ELLE-330 | Remove after migration
 import WordAnalyserParent from './elle/tools/wordanalyser/WordAnalyserParent';
 import AboutUsText from './elle/components/about/AboutUsText';
 import Publications from './elle/components/about/Publications';
@@ -147,17 +146,6 @@ export const routes = [
                   crumb: () => ({
                     to: RouteFullPathConstants.TOOLS_CLUSTERFINDER,
                     translateKey: 'common_clusters'
-                  })
-                }
-              },
-              // TODO: ELLE-330 | Remove after migration
-              {
-                path: RouteConstants.CLUSTERFINDER_OLD,
-                element: <ClusterFinderOld />,
-                handle: {
-                  crumb: () => ({
-                    to: RouteFullPathConstants.TOOLS_CLUSTERFINDER_OLD,
-                    translateKey: 'common_clusters_old'
                   })
                 }
               },

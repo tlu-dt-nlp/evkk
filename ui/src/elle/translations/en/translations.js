@@ -354,7 +354,6 @@ export const TRANSLATIONS_EN = {
   common_by_word_form: 'by word form',
   common_case_sensitive: 'case-sensitive',
   common_clusters: 'Cluster Catcher',
-  common_clusters_old: 'Cluster Catcher - OLD', // TODO: ELLE-330 | Remove after migration
   common_conferences_and_workshops: 'Conferences and workshops',
   common_corrector: 'Writing Evaluator',
   common_corrector_test_version: 'Writing Evaluator (test version)',
