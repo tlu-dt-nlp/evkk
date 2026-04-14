@@ -354,7 +354,6 @@ export const TRANSLATIONS_ET = {
   common_by_word_form: 'sõnavormi alusel',
   common_case_sensitive: 'tõstutundlik',
   common_clusters: 'Mustrileidja',
-  common_clusters_old: 'Mustrileidja - VANA', // TODO: ELLE-330 | Remove after migration
   common_conferences_and_workshops: 'Konverentsid ja töötoad',
   common_corrector: 'Tekstihindaja',
   common_corrector_test_version: 'Tekstihindaja (testversioon)',

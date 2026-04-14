@@ -75,8 +75,6 @@ export default function InfoElement() {
           <Tab label={t('common_word_in_context')} />
           <Tab label={t('common_neighbouring_words')} />
           <Tab label={t('common_clusters')} />
-          {/* TODO: ELLE-330 | Remove after migration */}
-          <Tab label={t('common_clusters_old')} />
           <Tab label={t('common_word_analyser')} />
         </GenericTabs>
         <TabPanel value={value} index={0} videoId={writingEvaluatorVideoId}
