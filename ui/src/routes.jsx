@@ -15,11 +15,18 @@ import Collocates from './elle/tools/Collocates';
 import Tools from './elle/pages/Tools';
 import Correction from './elle/tools/correction/Correction';
 import Login from './elle/pages/Login';
-import Admin from './elle/pages/Admin';
+import AdminOverview from './elle/components/admin/AdminOverview';
+import DonatedTexts from './elle/components/admin/DonatedTexts';
+import PublishedTexts from './elle/components/admin/PublishedTexts';
 import RequireAuth from './elle/components/security/RequireAuth';
 import { UserRoles } from './elle/const/Constants';
 import ResponsiveDrawer from './elle/components/ResponsiveDrawer';
-import { AboutUsDrawerList, RouteConstants, RouteFullPathConstants } from './elle/const/RouteConstants';
+import {
+  AboutUsDrawerList,
+  AdminDrawerList,
+  RouteConstants,
+  RouteFullPathConstants
+} from './elle/const/RouteConstants';
 import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
@@ -184,8 +191,44 @@ export const routes = [
             children: [
               {
                 path: RouteConstants.ADMIN,
-                element: <Admin />,
-                handle: { crumb: () => ({ to: RouteConstants.ADMIN, translateKey: 'common_admin_panel' }) }
+                element: <ResponsiveDrawer lists={AdminDrawerList} />,
+                handle: { crumb: () => ({ to: RouteConstants.ADMIN, translateKey: 'common_admin_panel' }) },
+                children: [
+                  {
+                    index: true,
+                    element: <Navigate to={RouteConstants.OVERVIEW} replace />
+                  },
+                  {
+                    path: RouteConstants.OVERVIEW,
+                    element: <AdminOverview />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_OVERVIEW,
+                        translateKey: 'common_overview'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.DONATED_TEXTS,
+                    element: <DonatedTexts />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_DONATED_TEXTS,
+                        translateKey: 'common_donated_texts'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.PUBLISHED_TEXTS,
+                    element: <PublishedTexts />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_PUBLISHED_TEXTS,
+                        translateKey: 'common_published_texts'
+                      })
+                    }
+                  }
+                ]
               }
             ]
           },
