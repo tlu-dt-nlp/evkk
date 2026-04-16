@@ -2,6 +2,8 @@
 import argparse
 import json
 import requests
+import signal
+import sys
 from pathlib import Path
 
 API_URL = "http://localhost:9090/api/texts/keeletase-grammatika-oigekiri-analuus"
@@ -41,63 +43,80 @@ def get_api_response(text):
         return None
 
 
-def filter_texts(input_file, limit=None, skip=0):
-    with open(input_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+class TextFilterer:
+    def __init__(self, output_path):
+        self.output_path = output_path
+        self.filtered_texts = []
+        self.total_processed = 0
+        self.total_kept = 0
+        self.interrupted = False
 
-    texts = data.get('texts', [])
-    filtered_texts = []
-    total_processed = 0
-    total_kept = 0
+    def signal_handler(self, signum, frame):
+        print("\n\nSkripti töö katkestatud. Salvestan siiani leitud tekstid...")
+        self.interrupted = True
+        self.save_results()
+        print(f"Salvestatud {self.total_kept} teksti faili: {self.output_path}")
+        sys.exit(0)
 
-    if skip > 0:
-        print(f"Vahele jäetakse esimesed {skip} teksti")
-        texts = texts[skip:]
+    def save_results(self):
+        output_data = {'texts': self.filtered_texts}
+        with open(self.output_path, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, ensure_ascii=False, indent=2)
 
-    for i, text_obj in enumerate(texts, 1):
-        actual_index = i + skip
-        print(f"[{actual_index}/{len(texts)}] teksti töötlemine... (siiani säilitatud {total_kept} teksti)")
-        total_processed += 1
+    def filter_texts(self, input_file, limit=None, skip=0):
+        with open(input_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
 
-        full_text = text_obj.get('full_text', '')
-        if not full_text:
-            print("  ✗ Tühi tekst")
-            continue
+        texts = data.get('texts', [])
 
-        api_response = get_api_response(full_text)
-        if api_response is None:
-            continue
+        if skip > 0:
+            print(f"Vahele jäetakse esimesed {skip} teksti")
+            texts = texts[skip:]
 
-        levels = api_response["keeletasemed"]
-        print(
-            f"  Tasemed: keerukus {levels["keerukus"]}, grammatika {levels["grammatika"]}, sõnavara {levels["sonavara"]}")
-        print(f"  Õigekirjavigu leitud: {api_response["oigekirjavigu"]}")
-        print(f"  Grammatikavigu leitud: {api_response["grammatikavigu"]}")
+        for i, text_obj in enumerate(texts, 1):
+            actual_index = i + skip
+            print(f"[{actual_index}/{len(texts)}] teksti töötlemine... (siiani säilitatud {self.total_kept} teksti)")
+            self.total_processed += 1
 
-        if not meets_cefr_criteria(levels):
-            print("  ✗ Tasemehinnang ei sobi")
+            full_text = text_obj.get('full_text', '')
+            if not full_text:
+                print("  ✗ Tühi tekst")
+                continue
 
-        if api_response["oigekirjavigu"] > 0:
-            print("  ✗ Leiti õigekirjavigu")
+            api_response = get_api_response(full_text)
+            if api_response is None:
+                continue
 
-        if api_response["grammatikavigu"] > 0:
-            print("  ! Leiti grammatikavigu")
+            levels = api_response["keeletasemed"]
+            print(
+                f"  Tasemed: keerukus {levels["keerukus"]}, grammatika {levels["grammatika"]}, sõnavara {levels["sonavara"]}")
+            print(f"  Õigekirjavigu leitud: {api_response["oigekirjavigu"]}")
+            print(f"  Grammatikavigu leitud: {api_response["grammatikavigu"]}")
 
-        if not meets_cefr_criteria(levels) or api_response["oigekirjavigu"] > 0:
-            continue
+            if not meets_cefr_criteria(levels):
+                print("  ✗ Tasemehinnang ei sobi")
 
-        text_obj['levels'] = levels
-        text_obj['spellcheck_error_count'] = 0
-        text_obj['grammarcheck_error_count'] = api_response["grammatikavigu"]
-        filtered_texts.append(text_obj)
-        total_kept += 1
-        print("  ✓ Sobiv tekst")
+            if api_response["oigekirjavigu"] > 0:
+                print("  ✗ Leiti õigekirjavigu")
 
-        if limit and total_kept >= limit:
-            print(f"Limiit saavutatud: {limit} sobivat teksti leitud")
-            break
+            if api_response["grammatikavigu"] > 0:
+                print("  ! Leiti grammatikavigu")
 
-    return filtered_texts, total_processed, total_kept
+            if not meets_cefr_criteria(levels) or api_response["oigekirjavigu"] > 0:
+                continue
+
+            text_obj['levels'] = levels
+            text_obj['spellcheck_error_count'] = 0
+            text_obj['grammarcheck_error_count'] = api_response["grammatikavigu"]
+            self.filtered_texts.append(text_obj)
+            self.total_kept += 1
+            print("  ✓ Sobiv tekst")
+
+            if limit and self.total_kept >= limit:
+                print(f"Limiit saavutatud: {limit} sobivat teksti leitud")
+                break
+
+        return self.filtered_texts, self.total_processed, self.total_kept
 
 
 def main():
@@ -134,11 +153,13 @@ def main():
         print(f"Limiit: {args.limit} sobivat teksti")
 
     output_path = input_path.with_stem(f"{input_path.stem}_filtered")
-    filtered_texts, total_processed, total_kept = filter_texts(args.input_file, limit=args.limit, skip=args.skip)
 
-    output_data = {'texts': filtered_texts}
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(output_data, f, ensure_ascii=False, indent=2)
+    filterer = TextFilterer(output_path)
+    signal.signal(signal.SIGINT, filterer.signal_handler)
+
+    filtered_texts, total_processed, total_kept = filterer.filter_texts(args.input_file, limit=args.limit,
+                                                                        skip=args.skip)
+    filterer.save_results()
 
     print(f"Kokku töödeldud tekste: {total_processed}")
     print(f"Sobivate tekstide arv: {total_kept}")
