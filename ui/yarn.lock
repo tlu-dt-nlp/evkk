@@ -294,7 +294,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/request@npm:^3.0.10":
+"@cypress/request@npm:^3.0.9":
   version: 3.0.10
   resolution: "@cypress/request@npm:3.0.10"
   dependencies:
@@ -2358,11 +2358,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^15.9.0":
-  version: 15.9.0
-  resolution: "cypress@npm:15.9.0"
+"cypress@npm:15.8.0":
+  version: 15.8.0
+  resolution: "cypress@npm:15.8.0"
   dependencies:
-    "@cypress/request": "npm:^3.0.10"
+    "@cypress/request": "npm:^3.0.9"
     "@cypress/xvfb": "npm:^1.2.4"
     "@types/sinonjs__fake-timers": "npm:8.1.1"
     "@types/sizzle": "npm:^2.3.2"
@@ -2399,14 +2399,14 @@ __metadata:
     proxy-from-env: "npm:1.0.0"
     request-progress: "npm:^3.0.0"
     supports-color: "npm:^8.1.1"
-    systeminformation: "npm:^5.27.14"
+    systeminformation: "npm:5.27.7"
     tmp: "npm:~0.2.4"
     tree-kill: "npm:1.2.2"
     untildify: "npm:^4.0.0"
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10c0/3626f778d32741262dfe34b810b3ac91ba7c4f66202154512f72bab4cce8c59dc184b76bb627ee3027c4ef6e81439c23b2459f902f05a704050e04329720101c
+  checksum: 10c0/f0cddee7d2ebfb251db3ca9d6fd3bff489f6fedf84f95f5c74579f515eac0bfadadfb69f2505a9959e911c21a5a5ff8f5667ccb2c28c8f7371ffe7bf7b8625d3
   languageName: node
   linkType: hard
 
@@ -5243,12 +5243,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.27.14":
-  version: 5.31.1
-  resolution: "systeminformation@npm:5.31.1"
+"systeminformation@npm:5.27.7":
+  version: 5.27.7
+  resolution: "systeminformation@npm:5.27.7"
   bin:
     systeminformation: lib/cli.js
-  checksum: 10c0/66dc6a5e696c3ea8c191c32163a1e426d066a73f6084fc538e86d7a148f19ff64449589f06f1f74ec0183cfd0c57e3df565d181bc352fb0ba268d6a6435de7fb
+  checksum: 10c0/92a9f3a2f37e135422da745be8e51984d66ae4c411e3d5c0ffdab9aef5cd8abc45d0d476bfa28c4bfee30a6e73722649544a88c4b6fa82b426c291adbfcdd8f9
   conditions: (os=darwin | os=linux | os=win32 | os=freebsd | os=openbsd | os=netbsd | os=sunos | os=android)
   languageName: node
   linkType: hard
@@ -5396,7 +5396,7 @@ __metadata:
     "@tiptap/starter-kit": "npm:^3.14.0"
     "@vitejs/plugin-react": "npm:^5.1.4"
     better-react-mathjax: "npm:^2.3.0"
-    cypress: "npm:^15.9.0"
+    cypress: "npm:15.8.0"
     cypress-real-events: "npm:^1.15.0"
     d3: "npm:^7.9.0"
     docx: "npm:9.5.1"
