@@ -108,6 +108,7 @@ class TextFilterer:
             text_obj['levels'] = levels
             text_obj['spellcheck_error_count'] = 0
             text_obj['grammarcheck_error_count'] = api_response["grammatikavigu"]
+            text_obj['analysis'] = api_response["analuus"]
             self.filtered_texts.append(text_obj)
             self.total_kept += 1
             print("  ✓ Sobiv tekst")
