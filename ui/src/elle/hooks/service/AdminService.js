@@ -1,15 +1,6 @@
-import { useFetch } from '../useFetch';
 import { useEffect } from 'react';
 
-export const useGetTextsToReviewCount = () => {
-  const { fetchData, response } = useFetch();
-
-  useEffect(() => {
-    fetchData('/api/admin/texts-to-review');
-  }, [fetchData]);
-
-  return response;
-};
+import { useFetch } from '../useFetch';
 
 export const useGetDatabaseHealth = () => {
   const { fetchData, response } = useFetch();
@@ -37,6 +28,28 @@ export const useGetInternalServerErrorMetrics = () => {
   useEffect(() => {
     fetchData('/api/actuator/metrics/http.errors.500.total');
   }, [fetchData]);
+
+  return response;
+};
+
+export const useGetTextsToReviewCount = () => {
+  const { fetchData, response } = useFetch();
+
+  useEffect(() => {
+    fetchData('/api/admin/texts-to-review');
+  }, [fetchData]);
+
+  return response;
+};
+
+export const useGetPublishedTextDetails = (id) => {
+  const { fetchData, response } = useFetch();
+
+  useEffect(() => {
+    if (id) {
+      fetchData(`/api/admin/published-texts/${id}`);
+    }
+  }, [fetchData, id]);
 
   return response;
 };
