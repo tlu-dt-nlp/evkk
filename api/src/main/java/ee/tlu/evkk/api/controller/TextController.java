@@ -5,6 +5,7 @@ import ee.evkk.dto.CommonTextRequestDto;
 import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.CorpusTextContentsDto;
+import ee.evkk.dto.KeeletaseGrammatikaOigekiriAnaluusResponseDto;
 import ee.tlu.evkk.api.annotation.RateLimit;
 import ee.tlu.evkk.api.service.WordAnalyserService;
 import ee.tlu.evkk.core.integration.CorrectorServerClient;
@@ -110,6 +111,11 @@ public class TextController {
     String[][] tasemed = stanzaServerClient.getKeeletase(request.getTekst());
     List<String[]> body = asList(tasemed);
     return ok(body);
+  }
+
+  @PostMapping("/keeletase-grammatika-oigekiri-analuus")
+  public ResponseEntity<KeeletaseGrammatikaOigekiriAnaluusResponseDto> keeletaseGrammatikaOigekiriAnaluus(@RequestBody CommonTextRequestDto request) {
+    return ok(stanzaServerClient.getKeeletaseGrammatikaOigekiriAnaluus(request.getTekst()));
   }
 
   @PostMapping("/keerukus")
