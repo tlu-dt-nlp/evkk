@@ -42,6 +42,18 @@ export const useGetTextsToReviewCount = () => {
   return response;
 };
 
+export const useGetDonatedTextDetails = (id) => {
+  const { fetchData, response } = useFetch();
+
+  useEffect(() => {
+    if (id) {
+      fetchData(`/api/admin/donated-texts/${id}`);
+    }
+  }, [fetchData, id]);
+
+  return response;
+};
+
 export const useGetPublishedTextDetails = (id) => {
   const { fetchData, response } = useFetch();
 

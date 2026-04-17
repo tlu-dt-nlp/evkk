@@ -23,6 +23,11 @@ public class AdminTextService {
     return textAddedDao.count();
   }
 
+  public Optional<TextAndMetadata> getDonatedTextDetails(UUID id) {
+    log.info("Fetching donated text details id={}", id);
+    return Optional.ofNullable(textAddedDao.findTextAndMetadataById(id));
+  }
+
   public Optional<TextAndMetadata> getPublishedTextDetails(UUID id) {
     log.info("Fetching published text details id={}", id);
     return Optional.ofNullable(textDao.findTextAndMetadataById(id));

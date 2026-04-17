@@ -8,4 +8,13 @@
     from core.text_added;
   </select>
 
+  <select id="findTextAndMetadataById" resultType="ee.tlu.evkk.dal.dto.TextAndMetadata">
+    select array_to_json(array_agg(json_build_object('propertyName', p.property_name, 'propertyValue',
+                                                     p.property_value))) as properties,
+           t.content                                                     as text
+    from (select property_name, property_value, text_id from core.text_property_added where text_id = #{textId}) p
+           join core.text_added t on p.text_id = t.id
+    group by t.content;
+  </select>
+
 </mapper>

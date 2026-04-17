@@ -25,6 +25,13 @@ public class AdminController {
     return ResponseEntity.ok(adminTextService.getTextsToReview());
   }
 
+  @GetMapping("/donated-texts/{id}")
+  public ResponseEntity<TextAndMetadata> getDonatedTextDetails(@PathVariable UUID id) {
+    return adminTextService.getDonatedTextDetails(id)
+      .map(ResponseEntity::ok)
+      .orElse(ResponseEntity.notFound().build());
+  }
+
   @GetMapping("/published-texts/{id}")
   public ResponseEntity<TextAndMetadata> getPublishedTextDetails(@PathVariable UUID id) {
     return adminTextService.getPublishedTextDetails(id)

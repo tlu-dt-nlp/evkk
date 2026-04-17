@@ -39,6 +39,35 @@ class AdminControllerTest extends IntegrationTest {
   }
 
   @Test
+  @DisplayName("Unauthenticated user cannot get donated text details")
+  void unauthenticatedUserCannotGetDonatedTextDetails() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        get("/admin/donated-texts/" + testId))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot get donated text details")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotGetDonatedTextDetails() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        get("/admin/donated-texts/" + testId))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 404 when donated text not found")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets404WhenDonatedTextNotFound() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+    mockMvc.perform(
+        get("/admin/donated-texts/" + nonExistentId))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
   @DisplayName("Unauthenticated user cannot get published text details")
   void unauthenticatedUserCannotGetPublishedTextDetails() throws Exception {
     UUID testId = UUID.randomUUID();
@@ -58,9 +87,9 @@ class AdminControllerTest extends IntegrationTest {
   }
 
   @Test
-  @DisplayName("Authenticated admin user gets 404 when text not found")
+  @DisplayName("Authenticated admin user gets 404 when published text not found")
   @WithMockUser(username = "admin", roles = {"ADMIN"})
-  void authenticatedUserGets404WhenTextNotFound() throws Exception {
+  void authenticatedUserGets404WhenPublishedTextNotFound() throws Exception {
     UUID nonExistentId = UUID.randomUUID();
     mockMvc.perform(
         get("/admin/published-texts/" + nonExistentId))

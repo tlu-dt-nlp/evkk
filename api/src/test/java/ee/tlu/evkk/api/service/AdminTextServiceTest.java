@@ -42,6 +42,37 @@ class AdminTextServiceTest {
   }
 
   @Test
+  void getDonatedTextDetails_whenTextExists_shouldReturnText() {
+    // Given
+    UUID testId = UUID.randomUUID();
+    TextAndMetadata expected = mock(TextAndMetadata.class);
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(expected);
+
+    // When
+    Optional<TextAndMetadata> result = adminTextService.getDonatedTextDetails(testId);
+
+    // Then
+    assertThat(result)
+      .isPresent()
+      .hasValue(expected);
+    verify(textAddedDao).findTextAndMetadataById(testId);
+  }
+
+  @Test
+  void getDonatedTextDetails_whenTextNotFound_shouldReturnEmpty() {
+    // Given
+    UUID testId = UUID.randomUUID();
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
+
+    // When
+    Optional<TextAndMetadata> result = adminTextService.getDonatedTextDetails(testId);
+
+    // Then
+    assertThat(result).isEmpty();
+    verify(textAddedDao).findTextAndMetadataById(testId);
+  }
+
+  @Test
   void getPublishedTextDetails_whenTextExists_shouldReturnText() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -54,7 +85,7 @@ class AdminTextServiceTest {
     // Then
     assertThat(result)
       .isPresent()
-      .contains(expected);
+      .hasValue(expected);
     verify(textDao).findTextAndMetadataById(testId);
   }
 
