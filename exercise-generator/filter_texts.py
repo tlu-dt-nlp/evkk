@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 API_URL = "http://localhost:9090/api/texts/keeletase-grammatika-oigekiri-analuus"
+#API_URL = "http://praktika1.cs.tlu.ee:9999/api/texts/keeletase-grammatika-oigekiri-analuus"
 API_TIMEOUT = 120  # seconds
 B2_OR_C1 = ['B2', 'C1']
 
@@ -29,12 +30,17 @@ def meets_cefr_criteria(levels):
 
 
 def get_api_response(text):
+    proxies = {
+        'http': 'http://localhost:3128',
+        'https': 'http://localhost:3128'
+    }
     try:
         response = requests.post(
             API_URL,
             json={'tekst': text},
             headers={'Content-Type': 'application/json'},
-            timeout=API_TIMEOUT
+            timeout=API_TIMEOUT,
+     #       proxies=proxies
         )
         response.raise_for_status()
         return response.json()

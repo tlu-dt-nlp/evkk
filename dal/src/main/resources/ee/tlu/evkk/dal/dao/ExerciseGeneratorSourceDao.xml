@@ -1,0 +1,41 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao">
+
+  <resultMap id="exerciseGeneratorSourceMap" type="ee.tlu.evkk.dal.dto.ExerciseGeneratorSource">
+    <id property="id" column="id"/>
+    <result property="content" column="content"/>
+    <result property="analysis" column="analysis"/>
+  </resultMap>
+
+  <select id="findTextsForExercise" resultMap="exerciseGeneratorSourceMap">
+    select id, content, analysis
+    from core.exercise_generator_source
+    where type = 'text'
+      <if test="topic != null and topic != ''">
+        and topic like '%' || #{topic} || '%'
+      </if>
+      and
+      (
+      select count(*)
+      from jsonb_array_elements(analysis->'sentences') as sentence,
+      jsonb_array_elements(sentence->'words') as word
+      <if test="type.name() == 'INFINITIVE'">
+        where word->'feats' @> '["VerbForm=Inf"]'::jsonb
+        or (word->'feats' @> '["VerbForm=Sup"]'::jsonb and word->'feats' @> '["Case=Ill"]'::jsonb)
+      </if>
+      <if test="type.name() == 'OBJECT'">
+        where word->>'upos' = 'NOUN'
+        and (word->>'deprel' = 'obj' or word->>'deprel' = 'obl')
+        and (word->'feats' @> '["Case=Nom"]'::jsonb or word->'feats' @> '["Case=Gen"]'::jsonb or word->'feats' @> '["Case=Par"]'::jsonb)
+      </if>
+      ) >= 5
+    order by random()
+  </select>
+
+  <select id="findSentencesForExercise" resultMap="exerciseGeneratorSourceMap">
+--     todo
+  </select>
+
+</mapper>
