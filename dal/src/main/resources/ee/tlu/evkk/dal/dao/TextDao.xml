@@ -160,4 +160,10 @@
     values (#{id}, #{pname}, #{pvalue});
   </insert>
 
+  <update id="updateTextContent">
+    update core.text
+    set content = #{content}
+    where id = #{textId}
+  </update>
+
 </mapper>
