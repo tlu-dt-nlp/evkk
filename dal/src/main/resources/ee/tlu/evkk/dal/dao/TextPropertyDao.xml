@@ -9,4 +9,15 @@
     where tp.text_id = #{textId};
   </select>
 
+  <delete id="deleteAllByTextId">
+    delete
+    from core.text_property
+    where text_id = #{textId}
+  </delete>
+
+  <insert id="insertProperty">
+    insert into core.text_property (text_id, property_name, property_value)
+    values (#{textId}, #{propertyName}, #{propertyValue})
+  </insert>
+
 </mapper>

@@ -3,6 +3,7 @@ package ee.tlu.evkk.api.controller.advice;
 import ee.tlu.evkk.api.controller.error.ErrorEntity;
 import ee.tlu.evkk.api.controller.error.ErrorEntityFactory;
 import ee.tlu.evkk.api.exception.AbstractBusinessException;
+import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.api.exception.RateLimitExceededException;
 import ee.tlu.evkk.api.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -20,6 +22,7 @@ import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.TOO_MANY_REQUESTS;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -56,6 +59,16 @@ public class ExceptionHandlingAdvice {
   @ExceptionHandler(RateLimitExceededException.class)
   public ResponseEntity<Object> handleRateLimitExceededException() {
     return new ResponseEntity<>(TOO_MANY_REQUESTS);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<Object> handleMethodArgumentNotValidException() {
+    return new ResponseEntity<>(BAD_REQUEST);
+  }
+
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<Object> handleEntityNotFoundException() {
+    return new ResponseEntity<>(NOT_FOUND);
   }
 
   @ExceptionHandler(Exception.class)

@@ -1,11 +1,11 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import RootContext from '../../context/RootContext';
 import {
   useGetDatabaseHealth,
   useGetInternalServerErrorMetrics,
-  useGetTextsToReviewCount,
+  useGetTextsToReview,
   useGetWordAnalyserMetrics
 } from '../../hooks/service/AdminService';
 
@@ -36,15 +36,36 @@ function calculateMetrics(measurements) {
 export default function AdminOverview() {
   const { t } = useTranslation();
   const { user } = useContext(RootContext);
-  const textsToReviewCount = useGetTextsToReviewCount();
-  const databaseHealth = useGetDatabaseHealth();
-  const wordAnalyserMetrics = useGetWordAnalyserMetrics();
-  const internalServerErrorMetrics = useGetInternalServerErrorMetrics();
+  const { getTextsToReview } = useGetTextsToReview();
+  const { getDatabaseHealth } = useGetDatabaseHealth();
+  const { getWordAnalyserMetrics } = useGetWordAnalyserMetrics();
+  const { getInternalServerErrorMetrics } = useGetInternalServerErrorMetrics();
+
+  const [textsToReview, setTextsToReview] = useState();
+  const [databaseHealth, setDatabaseHealth] = useState();
+  const [wordAnalyserMetrics, setWordAnalyserMetrics] = useState();
+  const [internalServerErrorMetrics, setInternalServerErrorMetrics] = useState();
 
   const calculatedMetrics = useMemo(
     () => calculateMetrics(wordAnalyserMetrics?.measurements),
     [wordAnalyserMetrics?.measurements]
   );
+
+  useEffect(() => {
+    getTextsToReview().then(setTextsToReview);
+  }, [getTextsToReview]);
+
+  useEffect(() => {
+    getDatabaseHealth().then(setDatabaseHealth);
+  }, [getDatabaseHealth]);
+
+  useEffect(() => {
+    getWordAnalyserMetrics().then(setWordAnalyserMetrics);
+  }, [getWordAnalyserMetrics]);
+
+  useEffect(() => {
+    getInternalServerErrorMetrics().then(setInternalServerErrorMetrics);
+  }, [getInternalServerErrorMetrics]);
 
   return (
     <div>
@@ -53,7 +74,7 @@ export default function AdminOverview() {
       </p>
 
       <p>
-        {t('admin_panel_texts_to_review')}: {textsToReviewCount}
+        {t('admin_panel_texts_to_review')}: {textsToReview?.count}
         <br />
         {t('admin_panel_database_status')}: {databaseHealth?.status}
       </p>

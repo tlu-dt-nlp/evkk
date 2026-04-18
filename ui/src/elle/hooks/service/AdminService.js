@@ -1,67 +1,76 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 
 import { useFetch } from '../useFetch';
 
 export const useGetDatabaseHealth = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/health');
+  const getDatabaseHealth = useCallback(() => {
+    return fetchData('/api/actuator/health');
   }, [fetchData]);
 
-  return response;
+  return { getDatabaseHealth };
 };
 
 export const useGetWordAnalyserMetrics = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/metrics/tools.wordanalyser', {}, { ignoreNotFoundError: true });
+  const getWordAnalyserMetrics = useCallback(() => {
+    return fetchData('/api/actuator/metrics/tools.wordanalyser', {}, { ignoreNotFoundError: true });
   }, [fetchData]);
 
-  return response;
+  return { getWordAnalyserMetrics };
 };
 
 export const useGetInternalServerErrorMetrics = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/metrics/http.errors.500.total');
+  const getInternalServerErrorMetrics = useCallback(() => {
+    return fetchData('/api/actuator/metrics/http.errors.500.total');
   }, [fetchData]);
 
-  return response;
+  return { getInternalServerErrorMetrics };
 };
 
-export const useGetTextsToReviewCount = () => {
-  const { fetchData, response } = useFetch();
+export const useGetTextsToReview = () => {
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/admin/texts-to-review');
+  const getTextsToReview = useCallback(() => {
+    return fetchData('/api/admin/texts-to-review');
   }, [fetchData]);
 
-  return response;
+  return { getTextsToReview };
 };
 
-export const useGetDonatedTextDetails = (id) => {
-  const { fetchData, response } = useFetch();
+export const useGetDonatedTextDetails = () => {
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    if (id) {
-      fetchData(`/api/admin/donated-texts/${id}`);
-    }
-  }, [fetchData, id]);
+  const getDonatedTextDetails = useCallback((id) => {
+    return fetchData(`/api/admin/donated-texts/${id}`);
+  }, [fetchData]);
 
-  return response;
+  return { getDonatedTextDetails };
 };
 
-export const useGetPublishedTextDetails = (id) => {
-  const { fetchData, response } = useFetch();
+export const useGetPublishedTextDetails = () => {
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    if (id) {
-      fetchData(`/api/admin/published-texts/${id}`);
-    }
-  }, [fetchData, id]);
+  const getPublishedTextDetails = useCallback((id) => {
+    return fetchData(`/api/admin/published-texts/${id}`);
+  }, [fetchData]);
 
-  return response;
+  return { getPublishedTextDetails };
+};
+
+export const useUpdatePublishedText = () => {
+  const { fetchData } = useFetch();
+
+  const updatePublishedText = useCallback((id, textUpdateRequest) => {
+    return fetchData(`/api/admin/published-texts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(textUpdateRequest)
+    });
+  }, [fetchData]);
+
+  return { updatePublishedText };
 };
