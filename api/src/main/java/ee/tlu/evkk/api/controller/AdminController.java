@@ -32,6 +32,14 @@ public class AdminController {
       .orElse(ResponseEntity.notFound().build());
   }
 
+  @PutMapping("/donated-texts/{id}")
+  public ResponseEntity<TextDetailsResponseDto> updateDonatedText(
+    @PathVariable UUID id,
+    @RequestBody @Valid TextUpdateRequestDto request
+  ) {
+    return ResponseEntity.ok(adminTextService.updateDonatedText(id, request));
+  }
+
   @GetMapping("/published-texts/{id}")
   public ResponseEntity<TextDetailsResponseDto> getPublishedTextDetails(@PathVariable UUID id) {
     return adminTextService.getPublishedTextDetails(id)

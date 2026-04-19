@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Mapper
 @Repository
-public interface TextPropertyDao {
+public interface TextPropertyAddedDao {
 
   Collection<TextProperty> findByTextId(@Param("textId") UUID textId);
 

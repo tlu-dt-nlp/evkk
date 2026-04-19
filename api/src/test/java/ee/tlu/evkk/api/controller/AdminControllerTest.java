@@ -77,6 +77,56 @@ class AdminControllerTest extends IntegrationTest {
   }
 
   @Test
+  @DisplayName("Unauthenticated user cannot update donated text")
+  void unauthenticatedUserCannotUpdateDonatedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("New text");
+    request.setProperties(Collections.emptyList());
+
+    mockMvc.perform(
+        put("/admin/donated-texts/" + testId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot update donated text")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotUpdateDonatedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("New text");
+    request.setProperties(Collections.emptyList());
+
+    mockMvc.perform(
+        put("/admin/donated-texts/" + testId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 400 when updating donated text properties to null")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets400WhenUpdatingDonatedTextPropertiesToNull() throws Exception {
+    UUID testId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("New text");
+    request.setProperties(null);
+
+    mockMvc.perform(
+        put("/admin/donated-texts/" + testId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isBadRequest());
+  }
+
+  @Test
   @DisplayName("Unauthenticated user cannot get published text details")
   void unauthenticatedUserCannotGetPublishedTextDetails() throws Exception {
     UUID testId = UUID.randomUUID();

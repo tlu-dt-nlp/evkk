@@ -1,28 +1,28 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="ee.tlu.evkk.dal.dao.TextPropertyDao">
+<mapper namespace="ee.tlu.evkk.dal.dao.TextPropertyAddedDao">
 
   <select id="findByTextId" resultType="ee.tlu.evkk.dal.dto.TextProperty">
     select *
-    from core.text_property tp
-    where tp.text_id = #{textId};
+    from core.text_property_added
+    where text_id = #{textId};
   </select>
 
   <update id="updateProperty">
-    update core.text_property
+    update core.text_property_added
     set property_value = #{propertyValue}
     where id = #{id}
   </update>
 
   <insert id="insertProperty">
-    insert into core.text_property (text_id, property_name, property_value)
+    insert into core.text_property_added (text_id, property_name, property_value)
     values (#{textId}, #{propertyName}, #{propertyValue})
   </insert>
 
   <delete id="deleteByIds">
     <if test="ids != null and ids.size() > 0">
-      delete from core.text_property
+      delete from core.text_property_added
       where id in
       <foreach item="id" collection="ids" open="(" separator="," close=")">
         #{id}
