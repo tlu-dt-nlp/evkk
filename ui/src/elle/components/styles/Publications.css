@@ -1,0 +1,7 @@
+.publications-container > div:not(:first-child) h4 {
+  margin-top: 2rem;
+}
+
+.publications-container h4 {
+  padding-bottom: 1rem;
+}

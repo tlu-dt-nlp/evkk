@@ -16,7 +16,7 @@ public abstract class AbstractRestOperationsClient {
 
   private final RetryOperations retry;
 
-  public AbstractRestOperationsClient() {
+  protected AbstractRestOperationsClient() {
     this.retry = createRetry();
   }
 

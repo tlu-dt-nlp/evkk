@@ -35,9 +35,9 @@ public class CharsWordsSentencesTextProcessor extends AbstractTextProcessor {
     String languageIsoCode = languageCodeToIso(languageCode);
     String[] triple = stanzaServerClient.getTahedSonadLaused(input, languageIsoCode);
     Map<String, Integer> answer = new HashMap<>();
-    answer.put("charCount", parseInt(triple[0]));
-    answer.put("wordCount", parseInt(triple[1]));
-    answer.put("sentenceCount", parseInt(triple[2]));
+    answer.put("charCount", input.length());
+    answer.put("wordCount", parseInt(triple[0]));
+    answer.put("sentenceCount", parseInt(triple[1]));
     return answer;
   }
 

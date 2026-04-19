@@ -1,0 +1,40 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.AccessTokenDao">
+
+  <select id="insert" parameterType="ee.tlu.evkk.dal.dto.AccessToken" resultType="java.lang.String">
+    insert into core.access_token (token,
+                                   expires_at,
+                                   user_id)
+    values (#{accessToken.token},
+            #{accessToken.expiresAt},
+            #{accessToken.userId})
+    returning token
+  </select>
+
+  <select id="findByUserId" parameterType="java.util.UUID" resultType="ee.tlu.evkk.dal.dto.AccessToken">
+    select token, expires_at, user_id
+    from core.access_token
+    where user_id = #{userId}
+  </select>
+
+  <select id="findByToken" parameterType="java.lang.String" resultType="ee.tlu.evkk.dal.dto.AccessToken">
+    select token_id, token, expires_at, user_id
+    from core.access_token
+    where token = #{token}
+  </select>
+
+  <delete id="deleteByToken" parameterType="java.lang.String">
+    delete
+    from core.access_token
+    where token = #{token};
+  </delete>
+
+  <delete id="deleteByUserId" parameterType="java.util.UUID">
+    delete
+    from core.access_token
+    where user_id = #{userId};
+  </delete>
+
+</mapper>

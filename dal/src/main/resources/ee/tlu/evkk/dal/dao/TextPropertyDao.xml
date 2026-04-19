@@ -9,10 +9,4 @@
     where tp.text_id = #{textId};
   </select>
 
-  <select id="findByTextIds" resultType="ee.tlu.evkk.dal.dto.TextProperty">
-    select *
-    from core.text_property tp
-    where tp.text_id in (select unnest(#{ids}));
-  </select>
-
 </mapper>

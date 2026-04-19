@@ -1,43 +1,5 @@
-.wordlist-analyse-button {
-  margin-top: 3vh !important;
-}
-
-.wordlist-table {
-  border-collapse: collapse;
-  width: 65%;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
-
-.wordlist-table td, .wordlist-table th {
-  border: 1px solid #ddd;
-  padding: 8px;
-  width: 1%;
-  white-space: nowrap;
-}
-
-.wordlist-table td:last-child, .wordlist-table th:last-child {
-  background-color: white;
-  border: none !important;
-  text-align: start;
-}
-
-.wordlist-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.wordlist-table tr:hover {
-  background-color: #ddd;
-}
-
-.wordlist-table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  padding-left: 10px;
-  text-align: center;
-  background-color: #ffffff;
-  border-bottom: solid 1px !important;
-  color: black;
-  font-weight: bold;
+.wordlist-app {
+  .MuiFormControl-root {
+    max-width: 350px;
+  }
 }

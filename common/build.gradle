@@ -6,11 +6,14 @@ dependencies {
   api "com.google.code.findbugs:jsr305:3.0.2"
 
   // Apache commons
-  api "commons-io:commons-io:2.11.0"
+  api 'commons-io:commons-io:2.14.0'
 
   // Spring
   api "org.springframework.boot:spring-boot-starter"
   api "org.springframework.boot:spring-boot-starter-data-jdbc"
   api "org.springframework.retry:spring-retry"
+
+  // Other
+  api 'com.google.guava:guava:32.0.1-android'
 
 }

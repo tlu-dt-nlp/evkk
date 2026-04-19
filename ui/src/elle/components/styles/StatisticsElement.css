@@ -1,3 +1,78 @@
+@media (max-width: 1280px) {
+  .statistics-container {
+    gap: 15px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .statistics-container {
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .statistics-container {
+    display: grid !important;
+    gap: 5px !important;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr)) !important;
+    height: auto !important;
+  }
+
+  .statistics-inner-container:last-child {
+    grid-column: 1 / -1;
+
+    div {
+      padding: 5%;
+    }
+  }
+
+  .statistics-inner-container {
+    margin-bottom: 0 !important;
+  }
+
+  .statistics-inner-container:nth-child(1) {
+    border-radius: 30px 10px 10px 10px !important;
+  }
+
+  .statistics-inner-container:nth-child(1) div {
+    border-radius: 25px 5px 5px 5px !important;
+  }
+
+  .statistics-inner-container:nth-child(2) {
+    border-radius: 10px 30px 10px 10px;
+  }
+
+  .statistics-inner-container:nth-child(2) div {
+    border-radius: 5px 25px 5px 5px;
+  }
+
+  .statistics-inner-container:nth-child(3) {
+    border-radius: 10px 10px 30px 30px !important;
+  }
+
+  .statistics-inner-container:nth-child(3) div {
+    border-radius: 5px 5px 25px 25px !important;
+  }
+}
+
+@media (max-width: 554px) {
+  .statistics-inner-container:nth-child(1) {
+    border-radius: 30px 30px 10px 10px !important;
+  }
+
+  .statistics-inner-container:nth-child(1) div {
+    border-radius: 25px 25px 5px 5px !important;
+  }
+
+  .statistics-inner-container:nth-child(2) {
+    border-radius: 10px 10px 10px 10px;
+  }
+
+  .statistics-inner-container:nth-child(2) div {
+    border-radius: 5px 5px 5px 5px;
+  }
+}
+
 .statistics-container {
   display: grid;
   width: 100%;
@@ -11,21 +86,24 @@
   border-radius: 10px 10px 10px 10px;
 }
 
+.statistics-inner-container div {
+  padding: 3% 5% 0 5%;
+}
+
 .statistics-inner-container:last-child {
-  border-radius: 10px 50px 50px 10px;
+  border-radius: 10px 30px 30px 10px;
 }
 
 .statistics-inner-container:last-child div {
-  border-radius: 5px 45px 45px 5px;
-  padding: 10%;
+  border-radius: 5px 25px 25px 5px;
 }
 
 .statistics-inner-container:first-child {
-  border-radius: 50px 10px 10px 50px;
+  border-radius: 30px 10px 10px 30px;
 }
 
 .statistics-inner-container:first-child div {
-  border-radius: 45px 5px 5px 45px;
+  border-radius: 25px 5px 5px 25px;
 }
 
 .statistics-box-inner {

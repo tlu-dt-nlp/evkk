@@ -1,6 +1,4 @@
-import json
 import math
-import os
 import re
 from io import StringIO
 
@@ -8,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from nlp import nlp_tpl
+from text_abstraction_analyse import Utils
 
 
 def pos_ratio(data, pos, textLength):
@@ -61,23 +60,8 @@ def lexical_density(data, textLength):
     return lexDensity
 
 
-def curl_request(data):
-    "Funktsioon teeb päringu teksti sõnade abstraktsuse ja sageduse kohta eesti kirjakeeles."
-    "Abstraktsushinnang lähtub kolmepallilisest skaalast (vt Mikk jt 2003; http://hdl.handle.net/10062/50110),"
-    "Sagedusandmed põhinevad Tartu Ülikooli tasakaalus korpusel."
-    lemmas = data["Lemma"].tolist()
-    request = """
-	curl --header "Content-Type: application/json" \
-	  --request POST \
-	  --data '{"language": "estonian", "text": "%s"}' \
-	  https://kiirlugemine.keeleressursid.ee/api/analyze""" % lemmas
-    response = os.popen(request).read()
-    return json.loads(response)
-
-
 def rare_counter(data, freqBoundary, textLength):
     "Funktsioon arvutab tekstis sõnade osakaalu, mille lemma sagedus on etteantud piirist väiksem."
-    "Sisendiks on URL-i https://kiirlugemine.keeleressursid.ee/api/analyze POST-päringu tulemused."
     rareCount = 0
     for word in data["wordAnalysis"]:
         lemma = word["lemmas"][0]
@@ -119,6 +103,7 @@ def arvuta(inputText):
     #  exit()
     # inputText=sys.argv[1]
     inputText = re.sub('[^0-9a-zA-ZõäöüšžÕÄÖÜŠŽ.?! \\n]+', '', inputText)
+    utils = Utils()
     # input.close()
     if len(inputText) < 15:
         # print("Tekst on liiga lühike.")
@@ -243,7 +228,7 @@ def arvuta(inputText):
     lexicalDensity = lexical_density(text, words)  # leksikaalne tihedus
 
     nouns = text[text.Xpos == "S"]  # nimisõnade eraldamine abstraktsuse päringu jaoks
-    abstractnessData = curl_request(nouns)
+    abstractnessData = utils.analyze(' '.join(nouns["Lemma"].tolist()), "estonian")
     abSum = 0
     abCount = 0
     for word in abstractnessData["wordAnalysis"]:
@@ -255,7 +240,8 @@ def arvuta(inputText):
     if abCount > 0:
         nounAbstractness = abSum / abCount
 
-    frequencyData = curl_request(text)  # sõnasageduste arvutamisel võetakse arvesse kõik sõnaliigid
+    # sõnasageduste arvutamisel võetakse arvesse kõik sõnaliigid
+    frequencyData = utils.analyze(' '.join(text["Lemma"].tolist()), "estonian")
     # sõnade osakaal, mille algvorm ei kuulu eesti keele 5000 sagedama lemma hulka
     rarerThan5000MostFreq = rare_counter(frequencyData, 220, words)
     # sõnade osakaal, mille algvorm ei kuulu eesti keele 2000 sagedama lemma hulka

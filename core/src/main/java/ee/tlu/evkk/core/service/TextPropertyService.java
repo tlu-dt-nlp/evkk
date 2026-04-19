@@ -2,6 +2,7 @@ package ee.tlu.evkk.core.service;
 
 import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextProperty;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -14,13 +15,10 @@ import java.util.UUID;
  * Date: 11.02.2022
  */
 @Service
+@RequiredArgsConstructor
 public class TextPropertyService {
 
   private final TextPropertyDao textPropertyDao;
-
-  public TextPropertyService(TextPropertyDao textPropertyDao) {
-    this.textPropertyDao = textPropertyDao;
-  }
 
   public MultiValueMap<String, String> getTextProperties(UUID textId) {
     Collection<TextProperty> textProperties = textPropertyDao.findByTextId(textId);

@@ -1,5 +1,6 @@
 package ee.tlu.evkk.common.env;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -20,14 +21,11 @@ import java.util.stream.Collectors;
  * @author Mikk Tarvas
  * Date: 21.01.2022
  */
+@RequiredArgsConstructor
 public class ServiceLocatorFactoryBean implements FactoryBean<ServiceLocator>, ApplicationContextAware {
 
   private final String serviceProfile;
   private ApplicationContext applicationContext;
-
-  public ServiceLocatorFactoryBean(String serviceProfile) {
-    this.serviceProfile = serviceProfile;
-  }
 
   @Override
   public ServiceLocator getObject() throws Exception {

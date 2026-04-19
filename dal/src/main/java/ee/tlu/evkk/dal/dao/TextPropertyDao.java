@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Array;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -14,7 +13,4 @@ import java.util.UUID;
 public interface TextPropertyDao {
 
   Collection<TextProperty> findByTextId(@Param("textId") UUID textId);
-
-  Collection<TextProperty> findByTextIds(@Param("ids") Array ids);
-
 }

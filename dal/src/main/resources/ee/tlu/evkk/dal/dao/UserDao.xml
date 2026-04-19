@@ -3,16 +3,67 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ee.tlu.evkk.dal.dao.UserDao">
 
-  <select id="findById" resultType="ee.tlu.evkk.dal.dto.User">
-        select *
-        from core.user u
-        where u.user_id = #{userId};
+  <select id="findByIdCode" parameterType="java.lang.String" resultType="ee.tlu.evkk.dal.dto.User">
+    select user_id,
+           email_address,
+           id_code,
+           id_code_prefix,
+           first_name,
+           middle_name,
+           last_name,
+           role_name,
+           ui_locales
+    from core.user
+    where id_code = #{idCode};
   </select>
 
-  <select id="findByEmailAddress" resultType="ee.tlu.evkk.dal.dto.User">
-        select *
-        from core.user u
-        where u.email_address = #{emailAddress}::citext;
+  <select id="findById" parameterType="java.util.UUID" resultType="ee.tlu.evkk.dal.dto.User">
+    select user_id,
+           email_address,
+           id_code,
+           id_code_prefix,
+           first_name,
+           middle_name,
+           last_name,
+           role_name,
+           ui_locales
+    from core.user
+    where user_id = #{id};
+  </select>
+
+  <select id="findByRefreshToken" parameterType="java.lang.String" resultType="ee.tlu.evkk.dal.dto.User">
+    select u.user_id,
+           u.email_address,
+           u.id_code,
+           u.id_code_prefix,
+           u.first_name,
+           u.middle_name,
+           u.last_name,
+           u.role_name,
+           u.ui_locales
+    from core.user u
+           join core.refresh_token t on u.user_id = t.user_id
+    where t.token = #{token};
+  </select>
+
+  <select id="insert" parameterType="ee.tlu.evkk.dal.dto.User" resultType="ee.tlu.evkk.dal.dto.User">
+    insert into core.user (email_address,
+                           id_code,
+                           id_code_prefix,
+                           first_name,
+                           middle_name,
+                           last_name,
+                           role_name,
+                           ui_locales)
+    values (#{user.emailAddress},
+            #{user.idCode},
+            #{user.idCodePrefix},
+            #{user.firstName},
+            #{user.middleName},
+            #{user.lastName},
+            'USER',
+            #{user.uiLocales})
+    returning user_id, email_address, id_code, id_code_prefix, first_name, middle_name, last_name, role_name, ui_locales
   </select>
 
 </mapper>

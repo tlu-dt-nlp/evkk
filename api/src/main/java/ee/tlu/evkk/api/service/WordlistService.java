@@ -3,8 +3,6 @@ package ee.tlu.evkk.api.service;
 import ee.evkk.dto.WordlistRequestDto;
 import ee.evkk.dto.WordlistResponseDto;
 import ee.evkk.dto.WordlistResponseEntryDto;
-import ee.tlu.evkk.core.integration.StanzaServerClient;
-import ee.tlu.evkk.core.service.TextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,6 @@ import java.util.Map;
 import static ee.evkk.dto.enums.WordType.WORDS;
 import static ee.tlu.evkk.api.util.FileUtils.readResourceAsString;
 import static ee.tlu.evkk.common.util.TextUtils.sanitizeLemmaStrings;
-import static ee.tlu.evkk.common.util.TextUtils.sanitizeTextDeep;
 import static ee.tlu.evkk.common.util.TextUtils.sanitizeWordStrings;
 import static java.math.BigDecimal.valueOf;
 import static java.math.RoundingMode.UP;
@@ -30,14 +27,12 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class WordlistService {
 
-  private final StanzaServerClient stanzaServerClient;
-  private final TextService textService;
+  private final StanzaAnalysisService stanzaAnalysisService;
 
   public WordlistResponseDto getWordlistResponse(WordlistRequestDto dto) throws IOException {
-    String sanitizedTextContent = sanitizeTextDeep(textService.combineCorpusTextIdsAndOwnText(dto.getCorpusTextIds(), dto.getOwnTexts()));
     List<String> wordlist = WORDS.equals(dto.getType())
-      ? sanitizeWordStrings(asList(stanzaServerClient.getSonad(sanitizedTextContent)))
-      : sanitizeLemmaStrings(asList(stanzaServerClient.getLemmad(sanitizedTextContent)));
+      ? sanitizeWordStrings(stanzaAnalysisService.getSonad(dto))
+      : sanitizeLemmaStrings(stanzaAnalysisService.getLemmad(dto));
     if (!dto.isKeepCapitalization()) {
       wordlist = wordlist.stream().map(String::toLowerCase).collect(toList());
     }

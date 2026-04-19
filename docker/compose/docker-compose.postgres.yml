@@ -4,7 +4,10 @@ services:
   postgres:
     image: postgres:13-alpine
     container_name: evkk-postgres
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     secrets:
       - EVKK_DB_DATASOURCE_PASSWORD
     environment:

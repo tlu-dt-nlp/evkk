@@ -5,24 +5,15 @@ import ee.evkk.dto.CommonTextRequestDto;
 import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.enums.CorpusDownloadForm;
-import ee.evkk.dto.enums.Language;
 import ee.tlu.evkk.core.integration.StanzaServerClient;
-import ee.tlu.evkk.core.service.dto.StanzaResponseDto;
-import ee.tlu.evkk.core.service.dto.TextResponseDto;
-import ee.tlu.evkk.core.service.dto.TextWithProperties;
-import ee.tlu.evkk.core.service.maps.WordFeatTranslationMappings;
+import ee.tlu.evkk.core.service.dto.TextWithComplexity;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dto.CorpusDownloadResponseEntity;
-import ee.tlu.evkk.dal.dto.Pageable;
-import ee.tlu.evkk.dal.dto.Text;
-import ee.tlu.evkk.dal.dto.TextProperty;
 import ee.tlu.evkk.dal.dto.TextQueryDisjunctionParamHelper;
 import ee.tlu.evkk.dal.dto.TextQueryMultiParamHelper;
 import ee.tlu.evkk.dal.dto.TextQueryRangeParamBaseHelper;
 import ee.tlu.evkk.dal.dto.TextQueryRangeParamHelper;
 import ee.tlu.evkk.dal.dto.TextQuerySingleParamHelper;
-import ee.tlu.evkk.dal.repository.TextPropertyRepository;
-import ee.tlu.evkk.dal.repository.TextRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,37 +22,28 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static ee.evkk.dto.enums.CorpusDownloadFileType.ZIP;
 import static ee.evkk.dto.enums.CorpusDownloadForm.ANNOTATE_TEI;
 import static ee.evkk.dto.enums.CorpusDownloadForm.BASIC_TEXT;
-import static ee.evkk.dto.enums.Language.EN;
-import static ee.evkk.dto.enums.Language.ET;
-import static ee.tlu.evkk.common.util.TextUtils.sanitizeLemmaStrings;
-import static ee.tlu.evkk.common.util.TextUtils.sanitizeWordStrings;
+import static ee.tlu.evkk.common.util.TextUtils.getSortedPartitionedUUIDs;
+import static ee.tlu.evkk.common.util.TextUtils.sanitizeText;
 import static java.io.File.createTempFile;
 import static java.lang.Boolean.TRUE;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.UUID.randomUUID;
 import static java.util.regex.Pattern.compile;
-import static java.util.stream.Collectors.toList;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -73,41 +55,22 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @AllArgsConstructor
 public class TextService {
 
-  private final TextRepository textRepository;
-  private final TextPropertyRepository textPropertyRepository;
   private final TextDao textDao;
   private final StanzaServerClient stanzaServerClient;
 
-  private static final Set<String> firstType = WordFeatTranslationMappings.getFirstType();
-  private static final Set<String> secondType = WordFeatTranslationMappings.getSecondType();
-  private static Map<String, String> numberTranslations;
-  private static Map<String, String> caseTranslations;
-  private static Map<String, String> degreeTranslations;
-  private static Map<String, String> moodTranslations;
-  private static Map<String, String> personTranslations;
-  private static Map<String, String> verbFormTranslations;
-  private static StringBuilder tensePrefixPresent;
-  private static StringBuilder tensePrefixPast;
-  private static String tensePostfixNud;
-  private static String tensePostfixTud;
-  private static String negPolarity;
-  private static String negation;
-  private static String impersonal;
-  private static String present;
-  private static String simplePast;
-  private static String past;
-  private static String inflectedFormNudParticiple;
-  private static String inflectedFormTudParticiple;
-  private static String imperativeMood;
-
   private static final Pattern fileNameCharacterWhitelist = compile("[\\p{L}0-9& ._()!-]");
 
-  public List<TextWithProperties> search(Pageable pageable, String[] korpus, String tekstityyp, String tekstikeel, String keeletase, Boolean abivahendid, Integer aasta, String sugu) {
-    Map<String, Collection<String>> filters = buildFilters(korpus, tekstityyp, tekstikeel, keeletase, abivahendid, aasta, sugu);
-    List<Text> texts = textRepository.search(filters, pageable);
-    Set<UUID> textIds = texts.stream().map(Text::getId).collect(Collectors.toUnmodifiableSet());
-    Map<UUID, List<TextProperty>> textPropertiesByTextId = textPropertyRepository.findByTextIds(textIds).stream().collect(Collectors.groupingBy(TextProperty::getTextId));
-    return texts.stream().map(text -> toTextWithProperties(text, textPropertiesByTextId)).collect(Collectors.toUnmodifiableList());
+  public String getPartitionedTextResourceByIds(Set<UUID> ids, Function<List<UUID>, String> resourceFunction) {
+    List<List<UUID>> batches = getSortedPartitionedUUIDs(ids);
+
+    StringBuilder result = new StringBuilder();
+    for (List<UUID> batch : batches) {
+      String resource = resourceFunction.apply(batch);
+      if (isNotBlank(resource)) {
+        result.append(resourceFunction.apply(batch)).append(" ");
+      }
+    }
+    return result.toString().trim();
   }
 
   public String detailneparing(CorpusRequestDto corpusRequestDto) {
@@ -182,91 +145,123 @@ public class TextService {
     if (isNotBlank(corpusRequestDto.getCountry())) {
       singleParamHelpers.add(new TextQuerySingleParamHelper("p17", "riik", corpusRequestDto.getCountry()));
     }
+    if (corpusRequestDto.getScores() != null) {
+      multiParamHelpers.add(new TextQueryMultiParamHelper("p18", "tulemusvahemik", corpusRequestDto.getScores()));
+    }
     if (corpusRequestDto.getAddedYears() != null) {
-      multiParamHelpers.add(new TextQueryMultiParamHelper("p18", "ajavahemik", corpusRequestDto.getAddedYears()));
+      multiParamHelpers.add(new TextQueryMultiParamHelper("p19", "ajavahemik", corpusRequestDto.getAddedYears()));
     }
     if (corpusRequestDto.getCharacters() != null) {
-      rangeParamBaseHelpers.add(createRangeBaseHelper("p19", "charCount", corpusRequestDto.getCharacters()));
+      rangeParamBaseHelpers.add(createRangeBaseHelper("p20", "charCount", corpusRequestDto.getCharacters()));
     }
     if (corpusRequestDto.getWords() != null) {
-      rangeParamBaseHelpers.add(createRangeBaseHelper("p20", "wordCount", corpusRequestDto.getWords()));
+      rangeParamBaseHelpers.add(createRangeBaseHelper("p21", "wordCount", corpusRequestDto.getWords()));
     }
     if (corpusRequestDto.getSentences() != null) {
-      rangeParamBaseHelpers.add(createRangeBaseHelper("p21", "sentenceCount", corpusRequestDto.getSentences()));
+      rangeParamBaseHelpers.add(createRangeBaseHelper("p22", "sentenceCount", corpusRequestDto.getSentences()));
     }
 
     String daoResponse = textDao.detailedTextQueryByParameters(multiParamHelpers, singleParamHelpers, rangeParamBaseHelpers, studyLevelAndDegreeHelper, otherLangHelper, usedMultiMaterialsHelper);
     return isNotBlank(daoResponse) ? daoResponse : new ArrayList<>().toString();
   }
 
-  public TextResponseDto sonadLemmadSilbidSonaliigidVormimargendid(CommonTextRequestDto request) {
-    StanzaResponseDto stanzaResponse = stanzaServerClient.getSonadLemmadSilbidSonaliigidVormimargendid(request.getTekst());
-    return new TextResponseDto(
-      sanitizeWordStrings(stanzaResponse.getSonad()),
-      sanitizeLemmaStrings(stanzaResponse.getLemmad()),
-      stanzaResponse.getSilbid(),
-      null,
-      translateWordType(stanzaResponse.getSonaliigid(), request.getLanguage()),
-      translateFeats(stanzaResponse.getVormimargendid(), request.getLanguage())
-    );
+  public TextWithComplexity keerukusSonaliigidMitmekesisus(CommonTextRequestDto request) {
+    return stanzaServerClient.getKeerukusSonaliigidMitmekesisus(sanitizeText(request.getTekst()), request.getModel());
   }
 
   public byte[] tekstidfailina(CorpusDownloadDto corpusDownloadDto) throws IOException {
-    List<CorpusDownloadResponseEntity> contentsAndTitles;
-
-    if (BASIC_TEXT.equals(corpusDownloadDto.getForm())) {
-      contentsAndTitles = textDao.findTextContentsAndTitlesByIds(corpusDownloadDto.getFileList());
-    } else {
-      contentsAndTitles = textDao.findTextTitlesAndContentsWithStanzaTaggingByIds(corpusDownloadDto.getFileList(), corpusDownloadDto.getForm().toString());
-    }
+    List<CorpusDownloadResponseEntity> contentsAndTitles = BASIC_TEXT.equals(corpusDownloadDto.getForm())
+      ? textDao.findTextContentsAndTitlesByIds(corpusDownloadDto.getFileList())
+      : textDao.findTextTitlesAndContentsWithStanzaTaggingByIds(corpusDownloadDto.getFileList(), corpusDownloadDto.getForm().toString());
 
     if (ZIP.equals(corpusDownloadDto.getFileType())) {
-      File tempFile = createTempFile("corpusDownloadTempZip", null, null);
-      String fileExtension = ANNOTATE_TEI.equals(corpusDownloadDto.getForm()) ? "xml" : "txt";
+      return buildZipOutput(corpusDownloadDto, contentsAndTitles);
+    }
+    return combineContents(contentsAndTitles, corpusDownloadDto.getForm());
+  }
 
-      try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(tempFile))) {
-        for (int i = 0; i < contentsAndTitles.size(); i++) {
-          String contents = replaceNewLinesAndTabs(corpusDownloadDto.getForm(), contentsAndTitles.get(i).getContents());
-          ZipEntry zipEntry = new ZipEntry(format(
-            "%s (%s).%s",
-            getSanitizedFileName(contentsAndTitles.get(i).getTitle()),
-            corpusDownloadDto.getFileList().get(i),
-            fileExtension)
-          );
-          zipOutputStream.putNextEntry(zipEntry);
+  private byte[] buildZipOutput(CorpusDownloadDto corpusDownloadDto, List<CorpusDownloadResponseEntity> contentsAndTitles) throws IOException {
+    File tempFile = createTempFile("corpusDownloadTempZip_", randomUUID().toString(), null);
+    String fileExtension = ANNOTATE_TEI.equals(corpusDownloadDto.getForm()) ? "xml" : "txt";
 
-          String result = nonNull(contents) ? contents : "";
-          zipOutputStream.write(result.getBytes(UTF_8));
-          zipOutputStream.closeEntry();
-        }
-      } catch (IOException e) {
-        throw new IOException("Something went wrong while generating ZIP file.", e);
+    try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(tempFile))) {
+      for (int i = 0; i < contentsAndTitles.size(); i++) {
+        buildSingleZipEntry(corpusDownloadDto, contentsAndTitles, i, fileExtension, zipOutputStream);
       }
-
-      try (FileInputStream fileInputStream = new FileInputStream(tempFile)) {
-        return fileInputStream.readAllBytes();
-      }
+    } catch (IOException e) {
+      throw new IOException("Something went wrong while generating ZIP file.", e);
     }
 
+    try (FileInputStream fileInputStream = new FileInputStream(tempFile)) {
+      return fileInputStream.readAllBytes();
+    }
+  }
+
+  private void buildSingleZipEntry(CorpusDownloadDto corpusDownloadDto, List<CorpusDownloadResponseEntity> contentsAndTitles, int i, String fileExtension, ZipOutputStream zipOutputStream) throws IOException {
+    String contents = replaceNewLinesAndTabs(corpusDownloadDto.getForm(), contentsAndTitles.get(i).getContents());
+    String title = getSanitizedFileName(contentsAndTitles.get(i).getTitle());
+    UUID uuid = corpusDownloadDto.getFileList().get(i);
+
+    ZipEntry zipEntry = new ZipEntry(
+      isNotBlank(title)
+        ? format("%s (%s).%s", title.trim(), uuid, fileExtension)
+        : format("%s.%s", uuid, fileExtension)
+    );
+    zipOutputStream.putNextEntry(zipEntry);
+
+    String result = nonNull(contents) ? contents : "";
+    zipOutputStream.write(result.getBytes(UTF_8));
+    zipOutputStream.closeEntry();
+  }
+
+  private byte[] combineContents(List<CorpusDownloadResponseEntity> contentsAndTitles, CorpusDownloadForm formType) {
+    boolean isTeiFormat = ANNOTATE_TEI.equals(formType);
     StringBuilder contentsCombined = new StringBuilder();
+    boolean isFirstEntry = true;
+
     for (CorpusDownloadResponseEntity entry : contentsAndTitles) {
-      String contents = replaceNewLinesAndTabs(corpusDownloadDto.getForm(), entry.getContents());
-      contentsCombined.append(isNotBlank(contents) ? contents : "");
-      contentsCombined.append(lineSeparator()).append(lineSeparator());
+      String contents = replaceNewLinesAndTabs(formType, entry.getContents());
+      if (isNotBlank(contents)) {
+        if (isTeiFormat) {
+          contents = processTeiContent(contents, isFirstEntry);
+          isFirstEntry = false;
+        }
+        contentsCombined.append(contents);
+        contentsCombined.append(lineSeparator()).append(lineSeparator());
+      }
     }
+
+    if (isTeiFormat) {
+      contentsCombined.append(lineSeparator()).append("</teiCorpus>");
+    }
+
     return contentsCombined.toString().getBytes(UTF_8);
+  }
+
+  private String processTeiContent(String contents, boolean isFirstEntry) {
+    if (isFirstEntry) {
+      return contents.replaceFirst("</teiCorpus>\\s*$", "");
+    }
+    return contents
+      .replaceFirst("<\\?xml[^>]*\\?>\\s*", "")
+      .replaceFirst("<teiCorpus[^>]*>\\s*<teiHeader/>\\s*", "")
+      .replaceFirst("</teiCorpus>\\s*$", "");
   }
 
   public String combineCorpusTextIdsAndOwnText(Set<UUID> corpusTextIds, String ownTexts) {
     StringBuilder result = new StringBuilder();
     if (nonNull(corpusTextIds) && !corpusTextIds.isEmpty()) {
-      result.append(textDao.findTextsByIds(corpusTextIds));
+      result.append(getPartitionedTextResourceByIds(corpusTextIds, textDao::findAnalysedTextsByIds));
+
+      String unanalysedTexts = getPartitionedTextResourceByIds(corpusTextIds, textDao::findUnanalysedTextsByIds);
+      if (isNotBlank(unanalysedTexts)) {
+        result.append(" ").append(unanalysedTexts);
+      }
     }
-    result.append(" ");
     if (isNotBlank(ownTexts)) {
-      result.append(ownTexts);
+      result.append(" ").append(ownTexts);
     }
-    return result.toString();
+    return sanitizeText(result.toString().trim());
   }
 
   public String lisatekst(AddingRequestDto andmed) {
@@ -308,221 +303,6 @@ public class TextService {
     return kood.toString();
   }
 
-  public List<String> translateFeats(List<List<String>> tekst, Language language) {
-    getLanguageMappings(language);
-    List<String> result = new ArrayList<>();
-
-    for (List<String> wordData : tekst) {
-      // muutumatud sõnad (Abbr=Yes ehk lühendid; NumForm=Digit ehk arvud jne)
-      String pos = wordData.get(0);
-      String feats = wordData.get(1);
-      if (feats == null || feats.equals("–") || feats.equals("Abbr=Yes") || feats.contains("NumForm=Digit")) {
-        result.add("–");
-      }
-
-      // käändsõnad
-      else if (firstType.contains(pos)) {
-        String[] featsSplit = feats.split("\\|");
-        String numberLabel = "";
-        String caseLabel = "";
-        String degreeLabel = "";
-        StringBuilder tenseLabel = new StringBuilder();
-
-        for (String feat : featsSplit) {
-          if (feat.contains("Number")) {
-            numberLabel = numberTranslations.get(feat.split("=")[1]);
-          }
-          if (feat.contains("Case")) {
-            caseLabel = caseTranslations.get(feat.split("=")[1]);
-          }
-          if (feat.contains("Degree")) {
-            degreeLabel = degreeTranslations.get(feat.split("=")[1]);
-          }
-          if (feat.contains("Tense")) {
-            if (feat.split("=")[1].equals("Pres")) {
-              tenseLabel = tensePrefixPresent;
-            } else {
-              tenseLabel = tensePrefixPast;
-            }
-          }
-          if (feat.contains("Voice") && tenseLabel.toString().contentEquals(tensePrefixPast)) {
-            if (feat.split("=")[1].equals("Act")) {
-              tenseLabel.append(tensePostfixNud);
-            } else {
-              tenseLabel.append(tensePostfixTud);
-              if (EN.equals(language)) {
-                tenseLabel.insert(0, "im");
-              }
-            }
-          }
-        }
-
-        StringBuilder subResult = new StringBuilder();
-        if (!numberLabel.isEmpty()) {
-          subResult.append(numberLabel).append(" ");
-        }
-        if (!caseLabel.isEmpty()) {
-          subResult.append(caseLabel);
-        }
-        if (!degreeLabel.isEmpty()) {
-          if (!subResult.toString().isEmpty()) {
-            subResult.append(", ");
-          }
-          subResult.append(degreeLabel);
-        }
-        if (tenseLabel.length() > 0) {
-          if (!subResult.toString().isEmpty()) {
-            subResult.append(", ");
-          }
-          subResult.append(tenseLabel);
-        }
-        result.add(subResult.toString());
-      }
-
-      // tegusõnad
-      else if (secondType.contains(pos)) {
-        List<String> featsSplit = asList(feats.split("\\|"));
-        String moodLabel = "";
-        String tenseLabel = "";
-        String numberLabel = "";
-        String personVoiceLabel = "";
-        String negativityLabel = "";
-        String verbFormLabel = "";
-
-        // Polarity=Neg only
-        if (feats.equals("Polarity=Neg")) {
-          result.add(negPolarity);
-        }
-
-        // pöördelised vormid
-        else if (feats.contains("VerbForm=Fin")) {
-          for (String feat : featsSplit) {
-            if (feat.contains("Mood")) {
-              moodLabel = moodTranslations.get(feat.split("=")[1]);
-            }
-            if (feat.contains("Number")) {
-              numberLabel = numberTranslations.get(feat.split("=")[1]);
-            }
-            if (feat.contains("Voice") && feat.split("=")[1].equals("Pass")) {
-              personVoiceLabel = impersonal;
-            }
-            if ((feat.contains("Polarity") || feat.contains("Connegative"))
-              && (feat.split("=")[1].equals("Neg") || feat.split("=")[1].equals("Yes"))) {
-              negativityLabel = negation;
-            }
-          }
-          for (String feat : featsSplit) {
-            if (feat.contains("Tense")) {
-              if (feat.split("=")[1].equals("Pres")) {
-                tenseLabel = present;
-              } else {
-                if (EN.equals(language)) {
-                  tenseLabel = past;
-                } else {
-                  if (moodLabel.equals("kindla kõneviisi")) {
-                    tenseLabel = simplePast;
-                  } else if (moodLabel.equals("tingiva kõneviisi") || moodLabel.equals("kaudse kõneviisi")) {
-                    tenseLabel = past;
-                  }
-                }
-              }
-            }
-            if (feat.contains("Person") && !Objects.equals(personVoiceLabel, impersonal)) {
-              personVoiceLabel = personTranslations.get(feat.split("=")[1]);
-            }
-          }
-
-          StringBuilder subResult = new StringBuilder(moodLabel);
-          if (!Objects.equals(moodLabel, imperativeMood)) {
-            subResult.append(" ").append(tenseLabel);
-          }
-          if (!negativityLabel.equals(negation) && !Objects.equals(personVoiceLabel, impersonal) && !numberLabel.isEmpty()) {
-            if (!tenseLabel.isEmpty()) {
-              subResult.append(",");
-            }
-            subResult.append(" ").append(numberLabel);
-          }
-          if (!negativityLabel.equals(negation) && !personVoiceLabel.isEmpty()) {
-            if (numberLabel.isEmpty()) {
-              subResult.append(",");
-            }
-            subResult.append(" ").append(personVoiceLabel);
-          }
-          if (!negativityLabel.isEmpty()) {
-            if (personVoiceLabel.isEmpty() && numberLabel.isEmpty()) {
-              subResult.append(",");
-            }
-            subResult.append(" ").append(negativityLabel);
-          }
-          result.add(subResult.toString());
-        }
-
-        // käändelised vormid (inflected form)
-        else {
-          if (featsSplit.contains("VerbForm=Part") && featsSplit.contains("Tense=Past")) {
-            if (featsSplit.contains("Voice=Act")) {
-              verbFormLabel = inflectedFormNudParticiple;
-            } else if (featsSplit.contains("Voice=Pass")) {
-              verbFormLabel = inflectedFormTudParticiple;
-            }
-          } else {
-            for (String feat : featsSplit) {
-              if (feat.split("=")[0].equals("VerbForm")) {
-                verbFormLabel = verbFormTranslations.get(feat.split("=")[1]);
-              }
-            }
-          }
-          result.add(verbFormLabel);
-        }
-      }
-    }
-
-    return result;
-  }
-
-  private static void getLanguageMappings(Language language) {
-    if (ET.equals(language)) {
-      numberTranslations = WordFeatTranslationMappings.getNumberEt();
-      caseTranslations = WordFeatTranslationMappings.getCaseEt();
-      degreeTranslations = WordFeatTranslationMappings.getDegreeEt();
-      moodTranslations = WordFeatTranslationMappings.getMoodEt();
-      personTranslations = WordFeatTranslationMappings.getPersonEt();
-      verbFormTranslations = WordFeatTranslationMappings.getVerbEt();
-      tensePrefixPresent = new StringBuilder("oleviku kesksõna");
-      tensePrefixPast = new StringBuilder("mineviku kesksõna");
-      tensePostfixNud = " nud-vorm";
-      tensePostfixTud = " tud-vorm";
-      negPolarity = "eitussõna";
-      negation = "eitus";
-      impersonal = "umbisikuline tegumood";
-      present = "olevik";
-      simplePast = "lihtminevik";
-      past = "minevik";
-      inflectedFormNudParticiple = "mineviku kesksõna nud-vorm";
-      inflectedFormTudParticiple = "mineviku kesksõna tud-vorm";
-      imperativeMood = "käskiv kõneviis,";
-    } else {
-      numberTranslations = WordFeatTranslationMappings.getNumberEn();
-      caseTranslations = WordFeatTranslationMappings.getCaseEn();
-      degreeTranslations = WordFeatTranslationMappings.getDegreeEn();
-      moodTranslations = WordFeatTranslationMappings.getMoodEn();
-      personTranslations = WordFeatTranslationMappings.getPersonEn();
-      verbFormTranslations = WordFeatTranslationMappings.getVerbFormEn();
-      tensePrefixPresent = new StringBuilder("present participle");
-      tensePrefixPast = new StringBuilder("personal past participle");
-      tensePostfixNud = " (-nud)";
-      tensePostfixTud = " (-tud)";
-      negPolarity = "negative particle";
-      negation = "negation";
-      impersonal = "impersonal";
-      present = "present";
-      past = "past";
-      inflectedFormNudParticiple = "personal past participle (-nud)";
-      inflectedFormTudParticiple = "impersonal past participle (-tud)";
-      imperativeMood = "imperative,";
-    }
-  }
-
   private TextQueryRangeParamBaseHelper createRangeBaseHelper(String table, String parameter, List<List<Integer>> values) {
     List<TextQueryRangeParamHelper> rangeHelpers = new ArrayList<>();
     for (List<Integer> value : values) {
@@ -555,48 +335,15 @@ public class TextService {
         .replace("\\t", "    ");
   }
 
-  private Map<String, Collection<String>> buildFilters(String[] korpus, String tekstityyp, String tekstikeel, String keeletase, Boolean abivahendid, Integer aasta, String sugu) {
-    Map<String, Collection<String>> result = new HashMap<>();
-    if (korpus != null && korpus.length > 0) result.put("korpus", Set.of(korpus));
-    if (hasText(tekstityyp)) result.put("tekstityyp", Set.of(tekstityyp));
-    if (hasText(tekstikeel)) result.put("tekstikeel", Set.of(tekstikeel));
-    if (hasText(keeletase)) result.put("keeletase", Set.of(keeletase));
-    if (abivahendid != null) result.put("abivahendid", Set.of(booleanToJahEi(abivahendid)));
-    if (aasta != null) result.put("aasta", Set.of(aasta.toString()));
-    if (hasText(sugu)) result.put("sugu", Set.of(sugu));
-    return Collections.unmodifiableMap(result);
-  }
-
-  private static boolean hasText(String input) {
-    return input != null && !input.isBlank();
-  }
-
   private static String booleanToJahEi(Boolean bool) {
     if (bool == null) return null;
     return bool ? "jah" : "ei";
-  }
-
-  private TextWithProperties toTextWithProperties(Text text, Map<UUID, List<TextProperty>> textPropertiesByTextId) {
-    List<TextProperty> properties = textPropertiesByTextId.getOrDefault(text.getId(), Collections.emptyList());
-    return new TextWithProperties(text, properties);
   }
 
   private void lisaTekstiOmadus(UUID kood, String tunnus, String omadus) {
     if (isNotBlank(omadus)) {
       textDao.insertAddingProperty(kood, tunnus, omadus);
     }
-  }
-
-  public List<String> translateWordType(List<String> tekst, Language language) {
-    Map<String, String> wordTypes;
-    if (ET.equals(language)) {
-      wordTypes = WordFeatTranslationMappings.getWordTypesEt();
-    } else {
-      wordTypes = WordFeatTranslationMappings.getWordTypesEn();
-    }
-    return tekst.stream()
-      .map(wordTypes::get)
-      .collect(toList());
   }
 
 }

@@ -26,6 +26,7 @@ public class CorpusRequestDto {
   private String otherLang;
   private String nationality;
   private String country;
+  private Set<String> scores;
   private Set<String> addedYears;
   private List<List<Integer>> characters;
   private List<List<Integer>> words;

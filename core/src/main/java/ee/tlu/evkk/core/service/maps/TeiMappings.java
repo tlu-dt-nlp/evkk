@@ -4,8 +4,6 @@ import ee.tlu.evkk.core.service.helpers.CommonMetadataForPersonPropertyCreation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,155 +15,213 @@ import static ee.tlu.evkk.core.service.constants.TeiConstants.METADATA_KEY_RESEA
 import static ee.tlu.evkk.core.service.constants.TeiConstants.METADATA_KEY_STUDY_LEVEL;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.NATIONALITY;
 import static ee.tlu.evkk.core.service.constants.TeiConstants.RESIDENCE;
+import static java.util.List.of;
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
 public class TeiMappings {
 
   @Getter
-  private static final Map<String, String> language = new HashMap<>();
+  private static final Map<String, String> type;
+  @Getter
+  private static final Map<String, String> language;
+  @Getter
+  private static final Map<String, String> languageCode;
+  @Getter
+  private static final Map<String, String> corpus;
+  @Getter
+  private static final Map<String, String> country;
+  @Getter
+  private static final Map<String, String> nationality;
+  @Getter
+  private static final Map<String, String> education;
+  @Getter
+  private static final Map<String, String> preparedness;
+  @Getter
+  private static final Map<String, String> age;
 
   @Getter
-  private static final Map<String, String> languageCode = new HashMap<>();
-
-  @Getter
-  private static final Map<String, String> corpus = new HashMap<>();
-
-  @Getter
-  private static final Map<String, String> country = new HashMap<>();
-
-  @Getter
-  private static final Map<String, String> nationality = new HashMap<>();
-
-  @Getter
-  private static final Map<String, String> education = new HashMap<>();
-
-  @Getter
-  private static final Map<String, String> preparedness = new HashMap<>();
-
-  @Getter
-  private static final Map<String, String> age = new HashMap<>();
-
-  @Getter
-  private static final List<CommonMetadataForPersonPropertyCreation> commonMetadataForPersonPropertyCreation = new ArrayList<>();
+  private static final List<CommonMetadataForPersonPropertyCreation> commonMetadataForPersonPropertyCreation;
 
   static {
-    language.put("eesti", "Estonian");
-    language.put("vene", "Russian");
-    language.put("eesti, vene", "Estonian, Russian");
-    language.put("soome", "Finnish");
-    language.put("inglise", "English");
-    language.put("saksa", "German");
-    language.put("prantsuse", "French");
-    language.put("jaapani", "Japanese");
-    language.put("jidiš", "Yiddish");
-    language.put("leedu", "Lithuanian");
-    language.put("läti", "Latvian");
-    language.put("poola", "Polish");
-    language.put("rootsi", "Swedish");
-    language.put("ukraina", "Ukrainian");
-    language.put("ungari", "Hungarian");
-    language.put("valgevene", "Belarusian");
-    language.put("hiina", "Chinese");
-
-    languageCode.put("eesti", "et");
-    languageCode.put("vene", "ru");
-    languageCode.put("eesti, vene", "et, ru");
-    languageCode.put("soome", "fi");
-    languageCode.put("inglise", "en");
-    languageCode.put("saksa", "de");
-    languageCode.put("prantsuse", "fr");
-    languageCode.put("jaapani", "jp");
-    languageCode.put("jidiš", "ji");
-    languageCode.put("leedu", "lt");
-    languageCode.put("läti", "lv");
-    languageCode.put("poola", "pl");
-    languageCode.put("rootsi", "se");
-    languageCode.put("ukraina", "ua");
-    languageCode.put("ungari", "hu");
-    languageCode.put("valgevene", "by");
-    languageCode.put("hiina", "cn");
-
-    corpus.put("cFqPphvYi", "Estonian L2 olympiade");
-    corpus.put("clWmOIrLa", "Estonian L2 proficiency exams");
-    corpus.put("cFOoRQekA", "L2 Estonian");
-    corpus.put("cYDRkpymb", "L1 Estonian");
-    corpus.put("cgSRJPKTr", "L1 Russian");
-    corpus.put("cZjHWUPtD", "L3 Russian");
-    corpus.put("cwUSEqQLt", "Academic Estonian");
-
-    country.put("Eesti", "Estonia");
-    country.put("Inglismaa", "England");
-    country.put("Leedu", "Lithuania");
-    country.put("Muu", "Other");
-    country.put("Saksamaa", "Germany");
-    country.put("Soome", "Finland");
-    country.put("Ungari", "Hungary");
-
-    nationality.put("Ameerika Ühendriigid", "U.S.");
-    nationality.put("Brasiilia", "Brazilian");
-    nationality.put("Bulgaaria", "Bulgarian");
-    nationality.put("Eesti", "Estonian");
-    nationality.put("Egiptus", "Egyptian");
-    nationality.put("Filipiinid", "Filipino");
-    nationality.put("Hiina", "Chinese");
-    nationality.put("Hispaania", "Spanish");
-    nationality.put("Holland", "Dutch");
-    nationality.put("Iirimaa", "Irish");
-    nationality.put("India", "Indian");
-    nationality.put("Kreeka", "Greek");
-    nationality.put("Leedu", "Lithuanian");
-    nationality.put("Läti", "Latvian");
-    nationality.put("Makedoonia", "North Macedonia");
-    nationality.put("Määramata", "Unassigned");
-    nationality.put("Poola", "Polish");
-    nationality.put("Prantsusmaa", "French");
-    nationality.put("Rumeenia", "Romanian");
-    nationality.put("Saksamaa", "German");
-    nationality.put("Soome", "Finnish");
-    nationality.put("Suurbritannia", "British");
-    nationality.put("Türgi", "Turkish");
-    nationality.put("Ukraina", "Ukrainian");
-    nationality.put("Valgevene", "Belarusian");
-    nationality.put("Venemaa", "Russian");
-    nationality.put("Venezuela", "Venezuelan");
-
-    education.put("Alg-/põhiharidus", "elementary/basic education");
-    education.put("Keskeriharidus/kutseharidus", "(secondary) vocational education");
-    education.put("Keskharidus", "secondary education");
-    education.put("Kõrgharidus", "higher education");
-    education.put("bakalaureuseope", "Bachelor's studies");
-    education.put("magistriope", "Master's studies");
-    education.put("doktoriope", "Doctoral studies");
-    education.put("ba", "Bachelor's degree");
-    education.put("ma", "Master's degree");
-    education.put("phd", "Doctoral degree");
-
-    preparedness.put("tolkesonastik", "translation dictionary or machine translation");
-    preparedness.put("ykskeelnesonastik", "monolingual dictionary (incl. online dictionaries)");
-    preparedness.put("terminisonastik", "term glossary or base");
-    preparedness.put("kasiraamat", "professional handbook or manual");
-    preparedness.put("automaatkontroll", "automated correction");
-    preparedness.put("muu", "other");
-
-    age.put("kuni18", "up to 18");
-    age.put("kuni26", "19–26");
-    age.put("kuni40", "27–40");
-    age.put("41plus", "over 40");
-
-    commonMetadataForPersonPropertyCreation.add(
-      new CommonMetadataForPersonPropertyCreation(nationality, METADATA_KEY_NATIONALITY, NATIONALITY)
+    type = ofEntries(
+      entry("ak_eriala_analuus", "Academic studies: analysis"),
+      entry("ak_eriala_essee", "Academic studies: essay"),
+      entry("ak_eriala_kursusetoo", "Academic studies: course paper"),
+      entry("ak_eriala_referaat", "Academic studies: report"),
+      entry("ak_eriala_retsensioon", "Academic studies: review"),
+      entry("ak_eriala_seminaritoo", "Academic studies: seminar paper"),
+      entry("ak_eriala_ulevaade", "Academic studies: overview"),
+      entry("ak_uurimus_artikkel", "Academic research: article"),
+      entry("ak_uurimus_batoo", "Academic research: bachelor's thesis"),
+      entry("ak_uurimus_diplomitoo", "Academic research: thesis"),
+      entry("ak_uurimus_ettekanne", "Academic research: presentation"),
+      entry("ak_uurimus_kokkuvote", "Academic research: summary"),
+      entry("ak_uurimus_matoo", "Academic research: master's thesis"),
+      entry("ak_uurimus_phdtoo", "Academic research: doctoral thesis"),
+      entry("k1eesti_arvamuslugu", "L1 opinion piece"),
+      entry("k1eesti_ekirjand_12kl", "L1 12th grade e-essay"),
+      entry("k1eesti_ekirjand_9kl", "L1 9th grade e-essay"),
+      entry("k1eesti_harjutus", "L1 exercise"),
+      entry("k1eesti_eksamitoo", "L1 examination"),
+      entry("k1vene_eksamitoo", "L1 Russian examination"),
+      entry("k1vene_loovkirjutis", "L1 Russian creative writing"),
+      entry("k2eesti_eksamitoo", "L2 examination"),
+      entry("k2eesti_harjutus_dialoog", "L2 exercise: dialogue"),
+      entry("k2eesti_harjutus_etteutlus", "L2 exercise: dictation"),
+      entry("k2eesti_harjutus_juhend", "L2 exercise: instruction"),
+      entry("k2eesti_harjutus_kirjeldus", "L2 exercise: description"),
+      entry("k2eesti_harjutus_kone", "L2 exercise: speech"),
+      entry("k2eesti_harjutus_kuulutus", "L2 exercise: announcement"),
+      entry("k2eesti_harjutus_laused", "L2 exercise: sentence construction"),
+      entry("k2eesti_harjutus_leping", "L2 exercise: contract"),
+      entry("k2eesti_harjutus_lunktekst", "L2 exercise: fill-in-the-blanks"),
+      entry("k2eesti_harjutus_menuu", "L2 exercise: menu"),
+      entry("k2eesti_harjutus_reklaam", "L2 exercise: advertisement"),
+      entry("k2eesti_harjutus_retsept", "L2 exercise: recipe"),
+      entry("k2eesti_harjutus_teejuht", "L2 exercise: guide"),
+      entry("k2eesti_harjutus_umberjutustus", "L2 exercise: retelling"),
+      entry("k2eesti_harjutus_vastused", "L2 exercise: answering questions"),
+      entry("k2eesti_kiri_isiklik", "L2 letter: informal"),
+      entry("k2eesti_kiri_poolametlik", "L2 letter: (semi-)formal"),
+      entry("k2eesti_kontrolltoo_test", "L2 test"),
+      entry("k2eesti_loovkirjutis", "L2 creative writing"),
+      entry("k2eesti_ol_loovkirjutis", "L2 olympiade creative writing"),
+      entry("k2eesti_riiklik_eksamitoo", "L2 proficiency examination"),
+      entry("k2eesti_tolge", "L2 translation"),
+      entry("k3vene_eksamitoo", "L3 Russian examination"),
+      entry("k3vene_loovkirjutis", "L3 Russian creative writing")
     );
-    commonMetadataForPersonPropertyCreation.add(
-      new CommonMetadataForPersonPropertyCreation(country, METADATA_KEY_COUNTRY, RESIDENCE)
+
+    language = ofEntries(
+      entry("eesti", "Estonian"),
+      entry("vene", "Russian"),
+      entry("eesti, vene", "Estonian, Russian"),
+      entry("soome", "Finnish"),
+      entry("inglise", "English"),
+      entry("saksa", "German"),
+      entry("prantsuse", "French"),
+      entry("jaapani", "Japanese"),
+      entry("jidiš", "Yiddish"),
+      entry("leedu", "Lithuanian"),
+      entry("läti", "Latvian"),
+      entry("poola", "Polish"),
+      entry("rootsi", "Swedish"),
+      entry("ukraina", "Ukrainian"),
+      entry("ungari", "Hungarian"),
+      entry("valgevene", "Belarusian"),
+      entry("hiina", "Chinese")
     );
-    commonMetadataForPersonPropertyCreation.add(
-      new CommonMetadataForPersonPropertyCreation(education, METADATA_KEY_EDUCATION, EDUCATION)
+
+    languageCode = ofEntries(
+      entry("eesti", "et"),
+      entry("vene", "ru"),
+      entry("eesti, vene", "et, ru"),
+      entry("soome", "fi"),
+      entry("inglise", "en"),
+      entry("saksa", "de"),
+      entry("prantsuse", "fr"),
+      entry("jaapani", "jp"),
+      entry("jidiš", "ji"),
+      entry("leedu", "lt"),
+      entry("läti", "lv"),
+      entry("poola", "pl"),
+      entry("rootsi", "se"),
+      entry("ukraina", "ua"),
+      entry("ungari", "hu"),
+      entry("valgevene", "by"),
+      entry("hiina", "cn")
     );
-    commonMetadataForPersonPropertyCreation.add(
-      new CommonMetadataForPersonPropertyCreation(education, METADATA_KEY_STUDY_LEVEL, EDUCATION)
+
+    corpus = ofEntries(
+      entry("cFqPphvYi", "Estonian L2 olympiade"),
+      entry("clWmOIrLa", "Estonian L2 proficiency exams"),
+      entry("cFOoRQekA", "L2 Estonian"),
+      entry("cYDRkpymb", "L1 Estonian"),
+      entry("cgSRJPKTr", "L1 Russian"),
+      entry("cZjHWUPtD", "L3 Russian"),
+      entry("cwUSEqQLt", "Academic Estonian")
     );
-    commonMetadataForPersonPropertyCreation.add(
+
+    country = ofEntries(
+      entry("Eesti", "Estonia"),
+      entry("Inglismaa", "England"),
+      entry("Leedu", "Lithuania"),
+      entry("Muu", "Other"),
+      entry("Saksamaa", "Germany"),
+      entry("Soome", "Finland"),
+      entry("Ungari", "Hungary")
+    );
+
+    nationality = ofEntries(
+      entry("Ameerika Ühendriigid", "U.S."),
+      entry("Brasiilia", "Brazilian"),
+      entry("Bulgaaria", "Bulgarian"),
+      entry("Eesti", "Estonian"),
+      entry("Egiptus", "Egyptian"),
+      entry("Filipiinid", "Filipino"),
+      entry("Hiina", "Chinese"),
+      entry("Hispaania", "Spanish"),
+      entry("Holland", "Dutch"),
+      entry("Iirimaa", "Irish"),
+      entry("India", "Indian"),
+      entry("Kreeka", "Greek"),
+      entry("Leedu", "Lithuanian"),
+      entry("Läti", "Latvian"),
+      entry("Makedoonia", "North Macedonia"),
+      entry("Määramata", "Unassigned"),
+      entry("Poola", "Polish"),
+      entry("Prantsusmaa", "French"),
+      entry("Rumeenia", "Romanian"),
+      entry("Saksamaa", "German"),
+      entry("Soome", "Finnish"),
+      entry("Suurbritannia", "British"),
+      entry("Türgi", "Turkish"),
+      entry("Ukraina", "Ukrainian"),
+      entry("Valgevene", "Belarusian"),
+      entry("Venemaa", "Russian"),
+      entry("Venezuela", "Venezuelan")
+    );
+
+    education = ofEntries(
+      entry("Alg-/põhiharidus", "elementary/basic education"),
+      entry("Keskeriharidus/kutseharidus", "(secondary) vocational education"),
+      entry("Keskharidus", "secondary education"),
+      entry("Kõrgharidus", "higher education"),
+      entry("bakalaureuseope", "Bachelor's studies"),
+      entry("magistriope", "Master's studies"),
+      entry("doktoriope", "Doctoral studies"),
+      entry("ba", "Bachelor's degree"),
+      entry("ma", "Master's degree"),
+      entry("phd", "Doctoral degree")
+    );
+
+    preparedness = ofEntries(
+      entry("tehisintellekt", "generative artificial intelligence"),
+      entry("keeleoppematerjalid", "language learning materials"),
+      entry("automaatkontroll", "automated correction"),
+      entry("tolkesonastik", "translation dictionary or machine translation"),
+      entry("ykskeelnesonastik", "monolingual dictionary (incl. online dictionaries)"),
+      entry("terminisonastik", "term glossary or base"),
+      entry("kasiraamat", "professional handbook or manual"),
+      entry("muu", "other")
+    );
+
+    age = ofEntries(
+      entry("kuni18", "up to 18"),
+      entry("kuni26", "19–26"),
+      entry("kuni40", "27–40"),
+      entry("41plus", "over 40")
+    );
+
+
+    commonMetadataForPersonPropertyCreation = of(
+      new CommonMetadataForPersonPropertyCreation(nationality, METADATA_KEY_NATIONALITY, NATIONALITY),
+      new CommonMetadataForPersonPropertyCreation(country, METADATA_KEY_COUNTRY, RESIDENCE),
+      new CommonMetadataForPersonPropertyCreation(education, METADATA_KEY_EDUCATION, EDUCATION),
+      new CommonMetadataForPersonPropertyCreation(education, METADATA_KEY_STUDY_LEVEL, EDUCATION),
       new CommonMetadataForPersonPropertyCreation(education, METADATA_KEY_RESEARCH_DEGREE, EDUCATION)
     );
   }

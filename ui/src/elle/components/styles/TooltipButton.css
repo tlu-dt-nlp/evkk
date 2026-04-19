@@ -1,0 +1,15 @@
+.tooltip-button {
+  padding: 0 !important;
+  cursor: help !important;
+
+  .tooltip-icon {
+    color: #3B3B3B;
+    border: 2px solid #3B3B3B;
+    border-radius: 12px;
+    padding: 1px;
+  }
+}
+
+.tooltip-button:focus {
+  outline: none;
+}

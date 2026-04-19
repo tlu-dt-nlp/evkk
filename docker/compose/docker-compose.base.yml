@@ -1,18 +1,23 @@
 version: "3.7"
 
 services:
-
   redis:
     image: redis:6-alpine
     container_name: evkk-redis
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     volumes:
       - /srv/evkk/data/redis:/data
 
   caddy:
-    image: caddy:2.4.5-alpine
+    image: caddy:2.8.4-alpine
     container_name: evkk-caddy
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     ports:
       - "9999:9999"
     volumes:
@@ -21,17 +26,26 @@ services:
   ui:
     image: evkk-ui
     container_name: evkk-ui
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     depends_on:
       - api
 
   api:
     image: evkk-backend
     container_name: evkk-api
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     entrypoint: [ "/bin/bash", "-c", "java -jar app/api.jar" ]
     secrets:
       - EVKK_API_DATASOURCE_PASSWORD
+      - HARID_CLIENT_ID
+      - HARID_CLIENT_SECRET
+      - JWT_TOKEN_SECRET
     depends_on:
       - postgres
       - redis
@@ -41,8 +55,11 @@ services:
 
   task_scheduler:
     image: evkk-backend
-    container_name: evkk-task-scheduer
-    restart: always
+    container_name: evkk-task-scheduler
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     entrypoint: [ "/bin/bash", "-c", "java -jar app/task-scheduler.jar" ]
     secrets:
       - EVKK_TASK_SCHEDULER_DATASOURCE_PASSWORD
@@ -55,30 +72,60 @@ services:
   stanza-server:
     image: evkk-stanza-server
     container_name: evkk-stanza-server
-    restart: always
+    environment:
+      - CPU_CORE={{.Task.Slot}}
     deploy:
+      mode: replicated
+      replicas: 5
+      restart_policy:
+        condition: any
+        window: 120s
       resources:
         limits:
-          memory: 45G
+          memory: 8G
+        reservations:
+          memory: 4G
+      update_config:
+        parallelism: 1
+        order: start-first
 
   corrector-server:
     image: evkk-corrector-server
     container_name: evkk-corrector-server
-    restart: always
     deploy:
+      restart_policy:
+        condition: any
+        window: 120s
       resources:
         limits:
           memory: 15G
 
+  grammar-worker-server:
+    image: evkk-grammar-worker-server
+    container_name: evkk-grammar-worker-server
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
+      resources:
+        limits:
+          memory: 25G
+
   klasterdaja:
     image: evkk-klasterdaja
     container_name: evkk-klasterdaja
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
 
   clusterfinder:
     image: evkk-backend
     container_name: evkk-clusterfinder
-    restart: always
+    deploy:
+      restart_policy:
+        condition: any
+        window: 120s
     entrypoint: [ "/bin/bash", "-c", "java -jar app/clusterfinder.jar" ]
     env_file:
       - $PWD/conf/common.env

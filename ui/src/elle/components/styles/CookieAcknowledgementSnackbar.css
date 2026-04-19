@@ -1,0 +1,21 @@
+.cookie-snackbar {
+  .MuiAlert-standardInfo {
+    background-color: rgba(255, 208, 253, 1) !important;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px #0003;
+  }
+
+  .cookie-alert {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .cookie-alert-text {
+      font-size: 16px;
+    }
+  }
+
+  button {
+    margin-top: 0.5rem;
+  }
+}

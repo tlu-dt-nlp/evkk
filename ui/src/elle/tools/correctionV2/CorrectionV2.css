@@ -1,0 +1,43 @@
+.correction-tab-context-wrapper {
+  flex: 1;
+  width: 100%;
+}
+
+.correction-tab-group-box {
+  display: flex;
+  justify-content: center;
+}
+
+.correction-button-group {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap-reverse;
+  min-width: 0;
+  padding-bottom: .5rem;
+}
+
+.correction-input-group {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+  }
+}
+
+.correction-input-group-inner {
+  flex: 1;
+}
+
+.correction-layout {
+  padding: 2rem;
+
+  @media (max-width: 1100px) {
+    padding: 1rem;
+  }
+}
+
+.vocabulary-mathjax {
+  padding: 0.5rem;
+}

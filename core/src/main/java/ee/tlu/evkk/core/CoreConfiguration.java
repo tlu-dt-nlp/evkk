@@ -5,13 +5,20 @@ import ee.tlu.evkk.common.env.ServiceLocatorFactoryBean;
 import ee.tlu.evkk.core.integration.CorrectorServerClient;
 import ee.tlu.evkk.core.integration.KlasterdajaServerClient;
 import ee.tlu.evkk.core.integration.StanzaServerClient;
+import ee.tlu.evkk.core.integration.TextToSpeechClient;
 import ee.tlu.evkk.dal.DalConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.client.RestTemplate;
 
-import static ee.tlu.evkk.common.env.ServiceLocator.ServiceName.*;
+import static ee.tlu.evkk.common.env.ServiceLocator.ServiceName.CORRECTOR_SERVER;
+import static ee.tlu.evkk.common.env.ServiceLocator.ServiceName.KLASTERDAJA;
+import static ee.tlu.evkk.common.env.ServiceLocator.ServiceName.STANZA_SERVER;
 
 /**
  * @author Mikk Tarvas
@@ -47,4 +54,8 @@ public class CoreConfiguration {
     return new CorrectorServerClient(rest);
   }
 
+  @Bean
+  public TextToSpeechClient textToSpeechClient() {
+    return new TextToSpeechClient(new RestTemplate());
+  }
 }

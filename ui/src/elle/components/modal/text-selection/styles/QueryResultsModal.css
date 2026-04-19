@@ -1,0 +1,9 @@
+.clickable-row {
+  cursor: pointer;
+}
+
+.metainfo-subtitle {
+  font-weight: bold;
+  text-decoration: underline;
+  padding-bottom: 0.75em;
+}

@@ -21,29 +21,28 @@ import static ee.tlu.evkk.api.util.WordContextUtils.removeCapitalization;
 import static ee.tlu.evkk.api.util.WordContextUtils.removeCapitalizationInList;
 import static ee.tlu.evkk.api.util.WordContextUtils.sanitizeLemmaList;
 import static ee.tlu.evkk.api.util.WordContextUtils.sanitizeLemmas;
-import static ee.tlu.evkk.api.util.WordContextUtils.sentenceArrayToList;
 import static ee.tlu.evkk.common.util.TextUtils.sanitizeLemmaStrings;
-import static ee.tlu.evkk.common.util.TextUtils.sanitizeText;
 import static java.util.Arrays.asList;
 
 @Service
 @RequiredArgsConstructor
 public class WordContextService {
 
+  private final StanzaAnalysisService stanzaAnalysisService;
   private final StanzaServerClient stanzaServerClient;
   private final TextService textService;
 
   public WordContextResponseDto getWordContextResponse(WordContextRequestDto dto) {
-    String sanitizedTextContent = sanitizeText(textService.combineCorpusTextIdsAndOwnText(dto.getCorpusTextIds(), dto.getOwnTexts()));
+    String sanitizedTextContent = textService.combineCorpusTextIdsAndOwnText(dto.getCorpusTextIds(), dto.getOwnTexts());
     if (SENTENCE.equals(dto.getDisplayType())) {
       List<List<WordAndPosInfoDto>> sentencelist = WORDS.equals(dto.getType())
-        ? removeCapitalizationInList(sentenceArrayToList(stanzaServerClient.getSonadLausetenaJaPosInfo(sanitizedTextContent)), dto.isKeepCapitalization())
-        : removeCapitalizationInList(sanitizeLemmaList(sentenceArrayToList(stanzaServerClient.getLemmadLausetenaJaPosInfo(sanitizedTextContent))), false);
+        ? removeCapitalizationInList(stanzaAnalysisService.getSonadLausetenaJaPosInfo(dto), dto.isKeepCapitalization())
+        : removeCapitalizationInList(sanitizeLemmaList(stanzaAnalysisService.getLemmadLausetenaJaPosInfo(dto)), false);
       return generateResponseForSentences(sentencelist, dto, sanitizedTextContent);
     } else {
       List<WordAndPosInfoDto> wordlist = WORDS.equals(dto.getType())
-        ? removeCapitalization(asList(stanzaServerClient.getSonadJaPosInfo(sanitizedTextContent)), dto.isKeepCapitalization())
-        : removeCapitalization(sanitizeLemmas(asList(stanzaServerClient.getLemmadJaPosInfo(sanitizedTextContent))), false);
+        ? removeCapitalization(stanzaAnalysisService.getSonadJaPosInfo(dto), dto.isKeepCapitalization())
+        : removeCapitalization(sanitizeLemmas(stanzaAnalysisService.getLemmadJaPosInfo(dto)), false);
       return generateResponseForWords(wordlist, dto, sanitizedTextContent);
     }
   }

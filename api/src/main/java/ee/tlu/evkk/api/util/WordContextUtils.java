@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -19,11 +20,15 @@ public class WordContextUtils {
     return keepCapitalization
       ? words
       : words.stream().map(word -> {
-        word.setWord(
-          word.getWord().toLowerCase()
-        );
-        return word;
-      }).collect(toList());
+          if (word == null || word.getWord() == null) {
+            return null;
+          }
+
+          word.setWord(word.getWord().toLowerCase());
+          return word;
+        })
+        .filter(Objects::nonNull)
+        .collect(toList());
   }
 
   public static List<List<WordAndPosInfoDto>> removeCapitalizationInList(List<List<WordAndPosInfoDto>> words, boolean keepCapitalization) {
@@ -35,6 +40,10 @@ public class WordContextUtils {
   public static List<WordAndPosInfoDto> sanitizeLemmas(List<WordAndPosInfoDto> lemmas) {
     return lemmas.stream()
       .map(lemma -> {
+        if (lemma == null || lemma.getWord() == null) {
+          return null;
+        }
+
         lemma.setWord(
           lemma.getWord()
             .replace("_", "")
@@ -42,6 +51,7 @@ public class WordContextUtils {
         );
         return lemma;
       })
+      .filter(Objects::nonNull)
       .collect(toList());
   }
 

@@ -32,7 +32,7 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'cd /opt/evkk && ./run.sh'
+        sh 'docker system prune --force --volumes && cd /opt/evkk && ./run.sh'
       }
     }
 
@@ -41,7 +41,7 @@ pipeline {
   post {
 
     success {
-      slackSend (message: "Build Success - ${env.JOB_NAME} ${env.BUILD_NUMBER}: ${BRANCH} (<http://praktika1.cs.tlu.ee:9999|praktika1.cs.tlu.ee>)", color: "good")
+      slackSend (message: "Build Success - ${env.JOB_NAME} ${env.BUILD_NUMBER}: ${BRANCH} (<https://praktika1.cs.tlu.ee|praktika1.cs.tlu.ee>)", color: "good")
     }
 
     failure {

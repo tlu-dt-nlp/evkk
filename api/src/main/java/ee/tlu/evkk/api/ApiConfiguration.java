@@ -4,7 +4,6 @@ import ee.tlu.evkk.api.integration.MasinoppeEnnustusClient;
 import ee.tlu.evkk.api.integration.MinitornPikkusClient;
 import ee.tlu.evkk.core.CoreConfiguration;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,6 @@ import java.nio.file.Paths;
 @Configuration
 @Import(CoreConfiguration.class)
 @PropertySource("classpath:/api.properties")
-@EnableConfigurationProperties(ApiProperties.class)
 public class ApiConfiguration {
 
   @Value("${evkk.api.lib.paths.masinoppe-ennustus}")

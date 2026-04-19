@@ -1,0 +1,34 @@
+.word-repetition-color {
+  padding: 0.1em;
+  border-radius: 2px 2px 1px 1px;
+}
+
+.same-sentence-color {
+  padding: 0.1em;
+  border-radius: 2px 2px 1px 1px;
+  background: hsl(31, 89%, 69%);
+}
+
+.next-sentence-color {
+  padding: 0.1em;
+  border-radius: 2px 2px 1px 1px;
+  background: hsl(44.71 100% 80%);
+}
+
+.uncommon-word-color {
+  background-color: hsl(100 66% 76%);
+  padding: 0.1em;
+  border-radius: 2px 2px 1px 1px;
+}
+
+.abstract-word-color {
+  background-color: hsl(200 66% 76%);
+  padding: 0.1em;
+  border-radius: 2px 2px 1px 1px;
+}
+
+.content-word-color {
+  background-color: hsl(300 66% 76%);
+  padding: 0.1em;
+  border-radius: 2px 2px 1px 1px;
+}

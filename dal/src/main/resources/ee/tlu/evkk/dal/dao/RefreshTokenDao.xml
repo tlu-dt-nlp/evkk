@@ -1,0 +1,34 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.RefreshTokenDao">
+
+  <select id="insert" parameterType="ee.tlu.evkk.dal.dto.RefreshToken" resultType="ee.tlu.evkk.dal.dto.RefreshToken">
+    insert into core.refresh_token (token,
+                                    expires_at,
+                                    user_id)
+    values (#{refreshToken.token},
+            #{refreshToken.expiresAt},
+            #{refreshToken.userId})
+    returning token_id, token, expires_at, user_id
+  </select>
+
+  <delete id="deleteByUserId" parameterType="java.util.UUID">
+    delete
+    from core.refresh_token
+    where user_id = #{userId};
+  </delete>
+
+  <select id="findByToken" parameterType="java.lang.String" resultType="ee.tlu.evkk.dal.dto.RefreshToken">
+    select token_id, token, expires_at, user_id
+    from core.refresh_token
+    where token = #{token}
+  </select>
+
+  <delete id="deleteByToken" parameterType="java.lang.String">
+    delete
+    from core.refresh_token
+    where token = #{token};
+  </delete>
+
+</mapper>

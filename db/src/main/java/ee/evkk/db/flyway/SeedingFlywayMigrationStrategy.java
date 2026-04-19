@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -17,16 +16,18 @@ import java.util.function.Consumer;
 @Slf4j
 public class SeedingFlywayMigrationStrategy implements FlywayMigrationStrategy {
 
-  private static final Map<String, Consumer<Flyway>> COMMAND_MAP = new HashMap<>();
+  private static final Map<String, Consumer<Flyway>> COMMAND_MAP;
 
   static {
-    COMMAND_MAP.put("migrate", Flyway::migrate);
-    COMMAND_MAP.put("clean", Flyway::clean);
-    COMMAND_MAP.put("info", Flyway::info);
-    COMMAND_MAP.put("validate", Flyway::validate);
-    COMMAND_MAP.put("baseline", Flyway::baseline);
-    COMMAND_MAP.put("undo", Flyway::baseline);
-    COMMAND_MAP.put("repair", Flyway::repair);
+    COMMAND_MAP = Map.of(
+      "migrate", Flyway::migrate,
+      "clean", Flyway::clean,
+      "info", Flyway::info,
+      "validate", Flyway::validate,
+      "baseline", Flyway::baseline,
+      "undo", Flyway::baseline,
+      "repair", Flyway::repair
+    );
   }
 
   private final List<String> commands;

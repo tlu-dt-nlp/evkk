@@ -3,6 +3,7 @@
   justify-items: center;
   gap: 2rem;
   padding-top: 2rem;
+  padding-bottom: 10rem;
 }
 
 .server-error-container {

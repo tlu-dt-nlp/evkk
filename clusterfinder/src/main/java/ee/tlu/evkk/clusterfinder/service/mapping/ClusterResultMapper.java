@@ -93,6 +93,6 @@ public class ClusterResultMapper
 
   private String replaceNonEssentialMarkup(String markup)
   {
-    return markup.replaceAll("<redacted>", "").trim();
+    return markup.replace("<redacted>", "").replace("\"", "").trim();
   }
 }

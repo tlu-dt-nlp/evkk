@@ -35,10 +35,6 @@ public class ResourceTransformer {
     return new TransformingResource(resource);
   }
 
-  private PlaceholderReplacingReader createPlaceholderReplacingReader(Reader reader) {
-    return PlaceholderReplacingReader.create(configuration, parsingContext, reader);
-  }
-
   private static ParsingContext createParsingContext(Configuration configuration) {
     Database<?> database = createDatabase(configuration);
     ParsingContext parsingContext = new ParsingContext();
@@ -55,6 +51,10 @@ public class ResourceTransformer {
 
     private TransformingResource(Resource delegate) {
       super(delegate);
+    }
+
+    private PlaceholderReplacingReader createPlaceholderReplacingReader(Reader reader) {
+      return PlaceholderReplacingReader.create(configuration, parsingContext, reader);
     }
 
     @NonNull

@@ -1,9 +1,9 @@
 package ee.tlu.evkk.api.controller.tools;
 
-import ee.tlu.evkk.api.ApiMapper;
-import ee.tlu.evkk.api.controller.tools.dto.MasinoppeEnnustusRequestEntity;
-import ee.tlu.evkk.api.controller.tools.dto.MasinoppeEnustusResponseEntity;
+import ee.tlu.evkk.api.controller.tools.dto.MasinoppeEnnustusRequestDto;
+import ee.tlu.evkk.api.controller.tools.dto.MasinoppeEnnustusResponseDto;
 import ee.tlu.evkk.api.integration.MasinoppeEnnustusClient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,19 +17,15 @@ import java.io.IOException;
  * Date: 11.02.2020
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/tools/masinoppe-ennustus")
 public class MasinoppeEnnustusController {
 
   private final MasinoppeEnnustusClient client;
 
-  public MasinoppeEnnustusController(MasinoppeEnnustusClient client) {
-    this.client = client;
-  }
-
   @PostMapping
-  public MasinoppeEnustusResponseEntity post(@RequestBody @Valid MasinoppeEnnustusRequestEntity requestEntity) throws IOException, InterruptedException {
+  public MasinoppeEnnustusResponseDto post(@RequestBody @Valid MasinoppeEnnustusRequestDto requestEntity) throws IOException, InterruptedException {
     String result = client.execute(requestEntity.getInput());
-    return ApiMapper.INSTANCE.toMasinoppeEnustusResponseEntity(result);
+    return new MasinoppeEnnustusResponseDto(result);
   }
-
 }

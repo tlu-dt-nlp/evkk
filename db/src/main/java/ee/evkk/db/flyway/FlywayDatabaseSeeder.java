@@ -9,6 +9,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class FlywayDatabaseSeeder {
   private void executeInTransaction(Runnable runnable) {
     transactionTemplate.execute(new TransactionCallbackWithoutResult() {
       @Override
-      protected void doInTransactionWithoutResult(TransactionStatus status) {
+      protected void doInTransactionWithoutResult(@Nonnull TransactionStatus status) {
         runnable.run();
       }
     });

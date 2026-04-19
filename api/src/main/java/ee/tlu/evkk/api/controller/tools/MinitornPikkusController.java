@@ -1,9 +1,9 @@
 package ee.tlu.evkk.api.controller.tools;
 
-import ee.tlu.evkk.api.ApiMapper;
-import ee.tlu.evkk.api.controller.tools.dto.MinitornPikkusRequestEntity;
-import ee.tlu.evkk.api.controller.tools.dto.MinitornPikkusResponseEntity;
+import ee.tlu.evkk.api.controller.tools.dto.MinitornPikkusRequestDto;
+import ee.tlu.evkk.api.controller.tools.dto.MinitornPikkusResponseDto;
 import ee.tlu.evkk.api.integration.MinitornPikkusClient;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,19 +16,15 @@ import javax.validation.Valid;
  * Date: 11.02.2020
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/tools/minitorn-pikkus")
 public class MinitornPikkusController {
 
   private final MinitornPikkusClient client;
 
-  public MinitornPikkusController(MinitornPikkusClient client) {
-    this.client = client;
-  }
-
   @PostMapping
-  public MinitornPikkusResponseEntity post(@RequestBody @Valid MinitornPikkusRequestEntity requestEntity) {
+  public MinitornPikkusResponseDto post(@RequestBody @Valid MinitornPikkusRequestDto requestEntity) {
     long length = client.getStringLengthOfCharSequence(requestEntity.getInput());
-    return ApiMapper.INSTANCE.toMinitornPikkusResponseEntity(length);
+    return new MinitornPikkusResponseDto(length);
   }
-
 }

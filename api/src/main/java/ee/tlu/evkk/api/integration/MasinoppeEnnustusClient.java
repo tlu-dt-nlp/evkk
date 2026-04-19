@@ -1,5 +1,6 @@
 package ee.tlu.evkk.api.integration;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -12,13 +13,10 @@ import java.nio.file.Path;
  * Date: 09.02.2020
  */
 @Slf4j
+@RequiredArgsConstructor
 public class MasinoppeEnnustusClient {
 
   private final Path workingDirectory;
-
-  public MasinoppeEnnustusClient(Path workingDirectory) {
-    this.workingDirectory = workingDirectory;
-  }
 
   public String execute(CharSequence charSequence) throws IOException, InterruptedException {
     if (charSequence == null) throw new NullPointerException();

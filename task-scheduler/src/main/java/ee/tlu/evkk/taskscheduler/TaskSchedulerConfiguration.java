@@ -3,6 +3,7 @@ package ee.tlu.evkk.taskscheduler;
 import ee.tlu.evkk.core.CoreConfiguration;
 import ee.tlu.evkk.taskscheduler.task.TextProcessingTask;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -25,17 +26,16 @@ import static java.lang.Boolean.TRUE;
 @EnableScheduling
 @EnableConfigurationProperties(TaskSchedulerConfiguration.Properties.class)
 @Slf4j
+@RequiredArgsConstructor
 public class TaskSchedulerConfiguration {
 
   private final Properties properties;
   private final TextProcessingTask textProcessingTask;
 
-  public TaskSchedulerConfiguration(Properties properties, TextProcessingTask textProcessingTask) {
-    this.properties = properties;
-    this.textProcessingTask = textProcessingTask;
-  }
+  private static final long FIXED_DELAY = 30000L; // 30 seconds
+  private static final long INITIAL_DELAY = 300000L; // 5 minutes
 
-  @Scheduled(fixedDelay = 5000L)
+  @Scheduled(fixedDelay = FIXED_DELAY, initialDelay = INITIAL_DELAY)
   public void processTexts() {
     if (properties.getTextProcessingEnabled() != TRUE) {
       log.info("TextProcessingTask is not enabled");

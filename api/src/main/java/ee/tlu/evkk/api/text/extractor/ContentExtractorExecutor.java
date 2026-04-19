@@ -43,7 +43,7 @@ public class ContentExtractorExecutor {
       if (extractor.supports(mimeType)) return invokeExtractor(extractor, iss);
     }
 
-    throw new UnsupportedMimeTypeException(mimeType);
+    throw new UnsupportedMimeTypeException();
   }
 
   private String invokeExtractor(ContentExtractor extractor, InputStreamSource iss) throws TextExtractionException {

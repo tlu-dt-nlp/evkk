@@ -1,17 +1,28 @@
-import { createStore } from 'redux';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-export const QueryStoreActionType = {
-  CHANGE_CORPUS_TEXTS: 'CHANGE_CORPUS_TEXTS',
-  CHANGE_OWN_TEXTS: 'CHANGE_OWN_TEXTS'
+const initialState = {
+  corpusTextIds: null,
+  ownTexts: null
 };
 
-const reducer = (state = {corpusTextIds: null, ownTexts: null}, action) => {
-  if (action.type === QueryStoreActionType.CHANGE_CORPUS_TEXTS) {
-    return {...state, corpusTextIds: action.value !== null ? action.value.split(',') : null};
-  } else if (action.type === QueryStoreActionType.CHANGE_OWN_TEXTS) {
-    return {...state, ownTexts: action.value};
+const querySlice = createSlice({
+  name: 'query',
+  initialState,
+  reducers: {
+    changeCorpusTexts: (state, action) => {
+      state.corpusTextIds = action.payload !== null ? action.payload.split(',') : null;
+    },
+    changeOwnTexts: (state, action) => {
+      state.ownTexts = action.payload;
+    }
   }
-  return state;
-};
+});
 
-export const queryStore = createStore(reducer);
+export const {
+  changeCorpusTexts,
+  changeOwnTexts
+} = querySlice.actions;
+
+export const queryStore = configureStore({
+  reducer: querySlice.reducer
+});

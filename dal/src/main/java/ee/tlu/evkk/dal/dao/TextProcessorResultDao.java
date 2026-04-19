@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 @Mapper
 @Repository
@@ -19,5 +21,7 @@ public interface TextProcessorResultDao {
   Optional<TextProcessorResult> findResultForTypeAndVersion(@Param("textHash") String textHash, @Param("type") String type, @Param("version") Long version);
 
   Cursor<MissingTextProcessorResult> findMissingTextProcessorResults(@Param("processors") Map<String, Long> processors);
+
+  String findStanzaFullTextAnalysisByTextIds(@Param("textIds") Set<UUID> textIds);
 
 }

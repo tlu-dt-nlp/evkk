@@ -5,7 +5,8 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Mikk Tarvas
@@ -17,7 +18,7 @@ public class TextProcessorExecutorFactoryBean implements FactoryBean<TextProcess
   private final Collection<TextProcessor> processors;
 
   public TextProcessorExecutorFactoryBean(ObjectProvider<TextProcessor> processors) {
-    this.processors = processors.stream().collect(Collectors.toList());
+    this.processors = processors.stream().collect(toList());
   }
 
   @Override

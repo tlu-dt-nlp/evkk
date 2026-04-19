@@ -9,5 +9,6 @@ import lombok.Setter;
 public class CommonTextRequestDto {
 
   private String tekst;
+  private String model;
   private Language language;
 }

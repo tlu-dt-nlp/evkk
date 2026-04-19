@@ -4,12 +4,35 @@
 <mapper namespace="ee.tlu.evkk.dal.dao.TextDao">
 
   <select id="findTextsByIds" resultType="java.lang.String">
-    select string_agg(content, ' ')
+    select string_agg(content, ' ' order by id)
     from core.text
     where id in
     <foreach item="id" collection="ids" separator=", " open="(" close=")">
       #{id}
     </foreach>
+  </select>
+
+  <select id="findAnalysedTextsByIds" resultType="java.lang.String">
+    select string_agg(t.content, ' ' order by t.id)
+    from core.text t
+    left join core.text_processor_result tpr on t.hash = tpr.text_hash and tpr.type = 'STANZA_ANALYSIS'
+    where t.id in
+    <foreach item="id" collection="ids" separator=", " open="(" close=")">
+      #{id}
+    </foreach>
+    and tpr.result is not null
+    and tpr.result->>'content' != '';
+  </select>
+
+  <select id="findUnanalysedTextsByIds" resultType="java.lang.String">
+    select string_agg(t.content, ' ' order by t.id)
+    from core.text t
+    left join core.text_processor_result tpr on t.hash = tpr.text_hash and tpr.type = 'STANZA_ANALYSIS'
+    where t.id in
+    <foreach item="id" collection="ids" separator=", " open="(" close=")">
+      #{id}
+    </foreach>
+    and (tpr.result is null or tpr.result->>'content' = '');
   </select>
 
   <select id="findTextAndMetadataById" resultType="ee.tlu.evkk.dal.dto.TextAndMetadata">
@@ -19,25 +42,6 @@
     from (select property_name, property_value, text_id from core.text_property where text_id = #{textId}) p
            join core.text t on p.text_id = t.id
     group by t.content;
-  </select>
-
-  <select id="findTextIdsByCorpusId" resultType="java.lang.String">
-    select text_id
-    from core.text_property
-    where core.text_property.property_value = #{corpusId}
-      and core.text_property.property_name = 'korpus';
-  </select>
-
-  <select id="findTextIdAndTitleByCorpusId" resultType="java.lang.String">
-    select array_to_json(array_agg(row_to_json(t)))
-    from (select tp1.text_id,
-                 (select tp2.property_value
-                  FROM core.text_property as tp2
-                  where tp2.property_name = 'title'
-                    and tp2.text_id = tp1.text_id)
-          from core.text_property as tp1
-          where tp1.property_value = #{corpusId}
-            and tp1.property_name = 'korpus') t
   </select>
 
   <select id="getAllData" resultType="java.lang.String">
@@ -118,7 +122,7 @@
       </when>
     </choose>
     <if test="otherLangHelper.table != null">
-      <bind name="likeValue" value="'%' + otherLangHelper.value + '%'"/>
+      <bind name="likeValue" value="'%' + otherLangHelper.value + '%'" />
       and ${otherLangHelper.table}.property_name = #{otherLangHelper.parameter}
       and ${otherLangHelper.table}.property_value ilike #{likeValue}
     </if>
@@ -154,88 +158,6 @@
     ) t
   </select>
 
-  <select id="findMiniStats" resultType="java.lang.String">
-    select array_to_json(array_agg(row_to_json(t)))
-    from (
-    select distinct count(tp1.text_id) as sum,
-    sum(tp2.property_value::integer) as sonu,
-    sum(tp3.property_value::integer) as lauseid
-    from core.text_property as tp1
-    JOIN core.text_property as tp2 on tp1.text_id=tp2.text_id
-    JOIN core.text_property as tp3 on tp2.text_id=tp3.text_id
-    WHERE tp1.property_name = 'korpus' AND tp1.property_value IN <foreach item="cId" collection="cId" separator=","
-                                                                          open="(" close=")">
-    #{cId}
-  </foreach> AND tp2.property_name = 'sonu' AND tp3.property_name = 'lauseid'
-    ) t
-  </select>
-
-  <select id="findAvailableValues" resultType="java.lang.String">
-    select array_to_json(array_agg(row_to_json(t)))
-    from (
-        select distinct tp1.property_value as value
-        from core.text_property as tp1
-        WHERE tp1.property_name = #{pName}
-        ) t
-    </select>
-
-    <select id="findDetailedValueByPropertyName" resultType="java.lang.String">
-       select array_to_json(array_agg(row_to_json(t)))
-        from (
-        select distinct tp2.property_name as type,
-        tp2.property_value as value,
-        count(tp2.text_id) as tekste,
-        sum(tp3.property_value::integer) as sonu,
-        sum(tp4.property_value::integer) as lauseid,
-        sum(tp5.property_value::integer) as vigu,
-
-        COUNT(tp5.text_id) * 100.0 / (SELECT distinct COUNT(text_id) FROM core.text_property WHERE property_name = 'korpus' AND property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
-        #{cId}
-    </foreach>) AS protsent
-        from core.text_property as tp1
-        JOIN core.text_property as tp2 on tp1.text_id=tp2.text_id
-        JOIN core.text_property as tp3 on tp2.text_id=tp3.text_id
-        JOIN core.text_property as tp4 on tp3.text_id=tp4.text_id
-        JOIN core.text_property as tp5 on tp4.text_id=tp5.text_id
-
-        <!-- multiple tables JOIN -->
-
-        <!-- JOIN core.text_property as tp6 on tp5.text_id=tp6.text_id -->
-
-        WHERE tp1.property_name = 'korpus' AND tp1.property_value IN <foreach item="cId" collection="cId" separator="," open="(" close=")">
-        #{cId}
-    </foreach> AND
-         tp2.property_name = #{pName} AND tp2.property_value IN <foreach item="pValue" collection="pValue" separator="," open="(" close=")">
-        #{pValue}
-    </foreach> AND tp3.property_name = 'sonu' AND tp4.property_name = 'lauseid'
-        AND tp5.property_name = 'vigu'
-
-        <!-- multiple tables WHERE -->
-
-        <!-- AND tp6.property_name = 'tekstityyp' AND tp6.property_value = 'essee' -->
-
-        GROUP BY tp2.property_name, tp2.property_value
-        ) t
-    </select>
-
-    <select id="findValueByPropertyName" resultType="java.lang.String">
-
-        select array_to_json(array_agg(row_to_json(t)))
-        from (
-               select property_name, property_value from core.text_property
-               WHERE property_value = #{cId}) t
-
-    </select>
-
-  <select id="findTextsByCorpusId" resultType="java.lang.String"> select content
-                                                                  from core.text
-                                                                  where core.text.id
-                                                                          IN (SELECT text_id
-                                                                              from core.text_property
-                                                                              WHERE core.text_property.property_name = 'korpus'
-                                                                                AND core.text_property.property_value = #{corpusId});
-  </select>
-
   <select id="findTextContentsAndTitlesByIds" resultType="ee.tlu.evkk.dal.dto.CorpusDownloadResponseEntity">
     select t2.property_value as title, t1.content as contents from core.text as t1
     join core.text_property as t2 on t1.id = t2.text_id
@@ -257,36 +179,6 @@
     select *
     from core.text t
     where t.id = #{id};
-  </select>
-
-  <select id="search" resultType="ee.tlu.evkk.dal.dto.Text">
-    select *
-    from core.text t
-     where t.id in (
-      select distinct text_id
-      from core.text_property tp
-      <where>
-        <foreach collection="filters" index="key" item="value" open="" separator=" " close="">
-          or (tp.property_name = #{key} and tp.property_value in (select unnest(#{value,typeHandler=org.apache.ibatis.type.ArrayTypeHandler})))
-        </foreach>
-      </where>
-      group by text_id
-      having count(text_id) = ${filters.size()}
-    )
-    and t.content is not null and t.content != '' -- todo: content needs cleaning up so we can remove t.content is not null and t.content != '' checks
-    order by t.id asc
-    limit #{limit} offset #{offset};
-  </select>
-
-  <select id="list" resultType="ee.tlu.evkk.dal.dto.Text">
-    select *
-    from core.text t
-         -- todo: content needs cleaning up so we can remove t.content is not null and t.content != '' checks
-    where t.content is not null
-      and t.content != ''
-    order by t.id asc
-      limit #{limit}
-    offset #{offset};
   </select>
 
   <insert id="insertAdding">

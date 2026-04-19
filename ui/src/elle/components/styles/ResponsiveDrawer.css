@@ -1,0 +1,36 @@
+.drawer-toggle-button {
+  cursor: pointer;
+  width: 380px;
+  border-radius: 20px !important;
+  background-color: #9C27B0 !important;
+  z-index: 100;
+  height: 50px !important;
+  position: fixed !important;
+  left: -335px;
+  top: 170px;
+}
+
+.drawer-toggle-icon {
+  font-size: 30px !important;
+  margin-left: 330px !important;
+}
+
+@media (min-width: 900px) {
+  .responsive-drawer-main-box {
+    display: flex;
+  }
+}
+
+.responsive-drawer {
+  .MuiListItemIcon-root {
+    min-width: 45px;
+  }
+
+  .MuiListItemText-root {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+}

@@ -1,6 +1,7 @@
-FROM openjdk:11-jdk-stretch AS backend-builder
+FROM eclipse-temurin:11-jdk AS backend-builder
 COPY . /app
-RUN cd /app && ./gradlew clean bootJar --no-daemon
+WORKDIR /app
+RUN ./gradlew clean bootJar --no-daemon
 
-FROM openjdk:11-jre-stretch AS backend
+FROM eclipse-temurin:11-jre AS backend
 COPY --from=backend-builder /app/dist /app

@@ -1,44 +1,48 @@
-.add-container {
-    padding-right: 50px;
-    padding-left: 50px;
-    width: 100%;
-    max-width: 100%;
-    background-color: white;
-    border-radius: 45px;
-}
+.adding-container-inner {
+  padding: 0 50px 50px 50px !important;
 
-.form-control {
-    width: 100%;
-    margin-top: 20px !important;
-    min-width: 240px;
-    max-width: 270px;
-}
-
-.adding-rounded-corners {
-    border-radius: 50px;
-    margin-bottom: 100px;
-}
-
-.elle-outer-border {
-    padding: 7px;
-    background: linear-gradient(315deg, rgba(156, 39, 176, 1) 0%, rgba(156, 39, 176, 1) 33%, rgba(204, 168, 253, 1) 33%, rgba(204, 168, 253, 1) 67%, rgba(255, 208, 253, 1) 67%, rgba(255, 208, 253, 1) 100%);
-    border-radius: 50px;
-    margin-bottom: 100px;
-}
-
-.adding-title-text {
-    width: 100%;
-    text-align: center;
-    padding-top: 30px;
-}
-
-.adding-text-upload-component {
-    display: grid;
-    justify-content: end;
-    padding: 0;
-    margin-top: 10em;
-
-    & svg {
-        margin: 0;
+  @media (min-width: 900px) {
+    .first-column {
+      padding-top: 3em !important;
     }
+  }
+
+  h5 {
+    padding-bottom: 1rem;
+  }
+
+  h5.title {
+    text-align: center;
+    font-size: 25px;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    font-weight: bold;
+  }
+
+  .MuiAlert-root {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  @media (min-width: 900px) {
+    .terms-of-service {
+      width: 50%;
+    }
+  }
+
+  .terms-of-service {
+    .MuiAlert-icon {
+      display: none;
+    }
+
+    label {
+      display: inline;
+    }
+  }
+
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 }

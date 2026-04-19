@@ -1,0 +1,26 @@
+.text-to-speech-icon {
+  margin-left: 1rem;
+  cursor: pointer;
+  color: black;
+}
+
+.text-to-speech-slider-container {
+  margin-inline: 1rem;
+}
+
+.speech-menu-popper-container {
+  z-index: 10000;
+  min-width: 300px;
+}
+
+.speech-menu-popper-paper {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.speech-menu-popper-button-container {
+  display: flex;
+  gap: 1rem
+}

@@ -1,6 +1,7 @@
 package ee.tlu.evkk.taskscheduler.task;
 
 import ee.tlu.evkk.core.service.TextProcessorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.boot.task.TaskExecutorBuilder;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -14,17 +15,12 @@ import org.springframework.transaction.support.TransactionTemplate;
  * Date: 22.01.2022
  */
 @Component
+@RequiredArgsConstructor
 public class TextProcessingTaskFactoryBean implements FactoryBean<TextProcessingTask> {
 
   private final TaskExecutorBuilder taskExecutorBuilder;
   private final TextProcessorService textProcessorService;
   private final PlatformTransactionManager platformTransactionManager;
-
-  public TextProcessingTaskFactoryBean(TaskExecutorBuilder taskExecutorBuilder, TextProcessorService textProcessorService, PlatformTransactionManager platformTransactionManager) {
-    this.taskExecutorBuilder = taskExecutorBuilder;
-    this.textProcessorService = textProcessorService;
-    this.platformTransactionManager = platformTransactionManager;
-  }
 
   @Override
   public TextProcessingTask getObject() {
@@ -46,5 +42,4 @@ public class TextProcessingTaskFactoryBean implements FactoryBean<TextProcessing
   public Class<?> getObjectType() {
     return TextProcessingTask.class;
   }
-
 }

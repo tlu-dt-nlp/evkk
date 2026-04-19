@@ -7,3 +7,9 @@ secrets:
     file: /srv/evkk/secrets/EVKK_API_DATASOURCE_PASSWORD
   EVKK_TASK_SCHEDULER_DATASOURCE_PASSWORD:
     file: /srv/evkk/secrets/EVKK_TASK_SCHEDULER_DATASOURCE_PASSWORD
+  HARID_CLIENT_ID:
+    file: /srv/evkk/secrets/HARID_CLIENT_ID
+  HARID_CLIENT_SECRET:
+    file: /srv/evkk/secrets/HARID_CLIENT_SECRET
+  JWT_TOKEN_SECRET:
+    file: /srv/evkk/secrets/JWT_TOKEN_SECRET

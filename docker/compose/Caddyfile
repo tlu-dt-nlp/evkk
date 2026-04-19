@@ -1,6 +1,16 @@
 {
 	auto_https off
 	admin off
+
+	servers :9999 {
+    timeouts {
+      read_body 1800s
+      read_header 1800s
+      write 1800s
+      idle 1800s
+    }
+    keepalive_interval 1800s
+  }
 }
 
 :9999 {

@@ -1,12 +1,11 @@
 version: "3.7"
 
 services:
-
   postgres:
     image: postgres:13-alpine
     container_name: evkk-postgres
     profiles: [ "all", "backend" ]
-    restart: always
+    restart: unless-stopped
     command: [ "postgres", "-c", "log_statement=all" ]
     environment:
       POSTGRES_USER: db_user
@@ -21,14 +20,18 @@ services:
     image: redis:6-alpine
     container_name: evkk-redis
     profiles: [ "all", "backend" ]
-    restart: always
+    restart: unless-stopped
     ports:
       - "6379:6379"
 
   stanza-server:
     container_name: evkk-stanza-server
     profiles: [ "all", "stanza" ]
-    restart: always
+    restart: unless-stopped
+    environment:
+      PYCHARM_DEBUG: 1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     build:
       context: .
       dockerfile: docker/images/evkk-stanza-server.Dockerfile
@@ -38,7 +41,7 @@ services:
   klasterdaja:
     container_name: evkk-klasterdaja
     profiles: [ "all", "klasterdaja" ]
-    restart: always
+    restart: unless-stopped
     build:
       context: .
       dockerfile: docker/images/evkk-klasterdaja.Dockerfile
@@ -48,9 +51,19 @@ services:
   corrector-server:
     container_name: evkk-corrector-server
     profiles: [ "all", "corrector" ]
-    restart: always
+    restart: unless-stopped
     build:
       context: .
       dockerfile: docker/images/evkk-corrector-server.Dockerfile
     ports:
       - "5200:5200"
+
+  grammar-worker-server:
+    container_name: evkk-grammar-worker-server
+    profiles: [ "all", "grammar_worker" ]
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: docker/images/evkk-grammar-worker-server.Dockerfile
+    ports:
+      - "5400:5400"

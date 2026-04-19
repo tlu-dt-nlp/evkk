@@ -21,7 +21,7 @@ VERB_AND_ADPOSITION_MARKUP_REGEXP = re.compile(
 
 @app.route('/parsi', methods=['POST'])
 def t2():
-    return Response(parsi(request.json["tekst"]), mimetype=mimetype)
+    return Response(parsi(request.json["tekst"], False, True), mimetype=mimetype)
 
 
 @app.route('/klasterda', methods=['POST'])
@@ -30,21 +30,27 @@ def t3():
         return Response(klasterda(request.json["tekst"], request.json["parameetrid"]), mimetype=mimetype)
     else:
         return Response(
-            klasterda(parsi(request.json["tekst"], request.json["eemaldaValikulised"]), request.json["parameetrid"]),
+            klasterda(parsi(request.json["tekst"], request.json["eemalda_valikulised"]), request.json["parameetrid"]),
             mimetype=mimetype)
 
 
-def removeUnnecessaryMarkup(value, removeOptionalMarkup):
-    valueWithoutUnnecessaryMarkup = re.sub(UNNECESSARY_MARKUP_REGEXP, r'\1<redacted>', value)
-    return valueWithoutUnnecessaryMarkup if removeOptionalMarkup == "ei" else re.sub(VERB_AND_ADPOSITION_MARKUP_REGEXP,
-                                                                                     '', valueWithoutUnnecessaryMarkup)
+def remove_unnecessary_markup(value, remove_optional_markup):
+    value_without_unnecessary_markup = re.sub(UNNECESSARY_MARKUP_REGEXP, r'\1<redacted>', value)
+    if not remove_optional_markup:
+        return value_without_unnecessary_markup
+    return re.sub(VERB_AND_ADPOSITION_MARKUP_REGEXP, '', value_without_unnecessary_markup)
 
 
-def parsi(tekst, eemaldaValikulised="ei"):
-    inputText = Text(tekst)
-    initial_output = parser.parse_text(inputText, return_type='vislcg3')
-    simplified_output = [s if s.find("#") == -1 else removeUnnecessaryMarkup(s[0: s.find("#")], eemaldaValikulised) for
-                         s in initial_output]
+def parsi(tekst, eemalda_valikulised=False, eemalda_ainult_redacted=False):
+    input_text = Text(tekst)
+    initial_output = parser.parse_text(input_text, return_type='vislcg3')
+    if eemalda_ainult_redacted:
+        simplified_output = [re.sub(r'\s*<redacted>\s*', ' ', s)
+                             for s in initial_output]
+    else:
+        simplified_output = [
+            s if s.find("#") == -1 else remove_unnecessary_markup(s[0: s.find("#")], eemalda_valikulised)
+            for s in initial_output]
     return "\n".join(simplified_output)
 
 

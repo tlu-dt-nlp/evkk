@@ -1,31 +1,17 @@
 package ee.tlu.evkk.api.controller.error;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Mikk Tarvas
  * Date: 05.06.2020
  */
+@Getter
+@AllArgsConstructor
 public class ErrorEntity {
 
   private final String code;
   private final String message;
   private final String field;
-
-  public ErrorEntity(String code, String message, String field) {
-    this.code = code;
-    this.message = message;
-    this.field = field;
-  }
-
-  public String getCode() {
-    return code;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public String getField() {
-    return field;
-  }
-
 }

@@ -1,57 +1,150 @@
+@media (max-width: 1365px) {
+  .services-container {
+    gap: 15px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .services-container {
+    display: grid !important;
+    gap: 5px !important;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)) !important;
+    height: auto !important;
+  }
+
+  .service-detail {
+    margin-bottom: 0 !important;
+    height: 200px !important;
+  }
+
+  .service-detail:nth-child(1) {
+    border-radius: 30px 10px 10px 10px !important;
+  }
+
+  .service-detail:nth-child(1) .service-text {
+    border-radius: 25px 5px 5px 5px !important;
+  }
+
+  .service-detail:nth-child(2) {
+    border-radius: 10px 30px 10px 10px !important;
+  }
+
+  .service-detail:nth-child(2) .service-text {
+    border-radius: 5px 25px 5px 5px !important;
+  }
+
+  .service-detail:nth-child(3) {
+    border-radius: 10px 10px 10px 30px !important;
+  }
+
+  .service-detail:nth-child(3) .service-text {
+    border-radius: 5px 5px 5px 25px !important;
+  }
+
+  .service-detail:nth-child(4) {
+    border-radius: 10px 10px 30px 10px !important;
+  }
+
+  .service-detail:nth-child(4) .service-text {
+    border-radius: 5px 5px 25px 5px !important;
+  }
+}
+
+@media (max-width: 744px) {
+  .service-detail {
+    height: 150px !important;
+  }
+
+  .service-detail:nth-child(1) {
+    border-radius: 30px 30px 10px 10px !important;
+  }
+
+  .service-detail:nth-child(1) .service-text {
+    border-radius: 25px 25px 5px 5px !important;
+  }
+
+  .service-detail:nth-child(2) {
+    border-radius: 10px 10px 10px 10px !important;
+  }
+
+  .service-detail:nth-child(2) .service-text {
+    border-radius: 5px 5px 5px 5px !important;
+  }
+
+  .service-detail:nth-child(3) {
+    border-radius: 10px 10px 10px 10px !important;
+  }
+
+  .service-detail:nth-child(3) .service-text {
+    border-radius: 5px 5px 5px 5px !important;
+  }
+
+  .service-detail:nth-child(4) {
+    border-radius: 10px 10px 30px 30px !important;
+  }
+
+  .service-detail:nth-child(4) .service-text {
+    border-radius: 5px 5px 25px 25px !important;
+  }
+}
+
 .services-container {
-    width: 100%;
-    height: 300px;
-    display: flex;
-    gap: 50px;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  gap: 50px;
+  flex-direction: row;
 }
 
 .service-detail {
-    border-radius: 10px;
+  border-radius: 10px;
+  height: 300px;
+  width: 100%;
 }
 
 .service-container-outer {
-    border-radius: 50px;
-    margin-top: 100px;
-    text-align: center;
-    padding-top: 30px;
-    padding-left: 20px;
-    padding-right: 20px;
-    background: linear-gradient(180deg, rgba(255, 208, 253, 0.7) 0%, rgba(255, 255, 255, 0) 50%);
+  border-radius: 20px;
+  margin-top: 100px;
+  text-align: center;
+  padding-top: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: linear-gradient(180deg, rgba(255, 208, 253, 0.7) 0%, rgba(255, 255, 255, 0) 50%);
 }
 
 .service-title-box {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100px;
-    width: 200px;
-    background-color: rgb(255, 208, 253);
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100px;
+  width: 200px;
+  background-color: rgb(255, 208, 253);
 }
 
 .service-text {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    padding: 10% 10% 0;
-    text-align: center;
-    font-weight: bold;
-    background: linear-gradient(0deg, rgba(252, 245, 255, 1) 0%, rgba(255, 255, 255, 1) 50%);
-    border-radius: 5px;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0 10% 0 10%;
+  text-align: center;
+  font-weight: bold;
+  background: linear-gradient(0deg, rgba(252, 245, 255, 1) 0%, rgba(255, 255, 255, 1) 50%);
+  border-radius: 5px;
 }
 
 .service-detail:first-child {
-    border-radius: 50px 10px 10px 50px;
+  border-radius: 30px 10px 10px 30px;
 }
 
 .service-detail:first-child .service-text {
-    border-radius: 45px 5px 5px 45px;
+  border-radius: 25px 5px 5px 25px;
 }
 
 .service-detail:last-child {
-    border-radius: 10px 50px 50px 10px;
+  border-radius: 10px 30px 30px 10px;
 }
 
 .service-detail:last-child .service-text {
-    border-radius: 5px 45px 45px 5px;
+  border-radius: 5px 25px 25px 5px;
 }

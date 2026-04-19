@@ -1,4 +1,4 @@
-@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "@fortawesome/fontawesome-free/css/all.css";
 @import url('https://fonts.googleapis.com/css?family=Mulish');
 @import url('https://fonts.googleapis.com/css?family=Exo+2');
 @import url('https://fonts.googleapis.com/css2?family=Material+Icons');
@@ -6,6 +6,7 @@
 html {
   position: relative;
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -50,12 +51,8 @@ a:hover {
   color: #CCA8FD;
 }
 
-.tooltip-icon {
-  margin-left: 0.25em;
-  color: #3B3B3B;
-  border: 2.5px solid #3B3B3B;
-  border-radius: 12px;
-  padding: 1px;
+.elle-light-text {
+  color: #FFEBFE;
 }
 
 .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
@@ -68,7 +65,6 @@ a:hover {
   color: #9C27B0 !important;
 }
 
-
 .MuiMenuItem-root.Mui-selected {
   background-color: rgba(255, 208, 253, .5) !important;
 }
@@ -79,4 +75,94 @@ a:hover {
 
 .MuiAlert-standardInfo .MuiAlert-icon {
   color: #9C27B0 !important;
+}
+
+.MuiFormControl-root {
+  contain: inline-size;
+  width: 100%;
+}
+
+.MuiInputBase-root {
+  margin-bottom: 1rem !important;
+}
+
+/* to even labels without tooltips to those that have tooltips */
+.MuiFormLabel-root, .MuiInputLabel-root {
+  min-height: 25px;
+  margin-bottom: .25rem !important;
+}
+
+.MuiFormHelperText-root {
+  margin-top: -.5rem !important;
+}
+
+.global-page-container {
+  width: 80vw !important;
+  margin-top: 20px;
+}
+
+@media (max-width: 1399px) {
+  .global-page-container {
+    width: 90vw !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .global-page-container {
+    width: 100% !important;
+  }
+}
+
+.global-page-content-container {
+  background: fixed linear-gradient(315deg, rgba(156, 39, 176, 1) 0%, rgba(156, 39, 176, 1) 33%, rgba(204, 168, 253, 1) 33%, rgba(204, 168, 253, 1) 67%, rgba(255, 208, 253, 1) 67%, rgba(255, 208, 253, 1) 100%);
+  border-radius: 20px;
+  padding: 7px;
+  margin-bottom: 50px;
+
+  @media (max-width: 677px) {
+    border-radius: 0;
+    padding: 7px 0;
+  }
+
+  .global-page-content-container-inner {
+    background-color: white;
+    border-radius: 15px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
+    @media (max-width: 677px) {
+      border-radius: 0;
+    }
+  }
+}
+
+[id] {
+  /* anchors need to have the same offset as the height of the header/navbar */
+  scroll-margin-top: 80px;
+}
+
+h3, h4 {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+/* Prevent MUI Select from scrolling viewport on focus */
+.MuiSelect-select:focus {
+  scroll-margin: 0;
+}
+
+.MuiSelect-select {
+  scroll-margin: 0;
+}
+
+/* Enable horizontal scrolling for Select menus with long text */
+.MuiMenu-paper {
+  overflow-x: auto;
+}
+
+.MuiMenu-paper .MuiMenuItem-root {
+  min-width: fit-content;
 }

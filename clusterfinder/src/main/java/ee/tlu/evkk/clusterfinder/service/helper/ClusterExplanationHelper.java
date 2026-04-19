@@ -122,6 +122,10 @@ public class ClusterExplanationHelper
       {
         markupExplanations.add(joinMarkups(splitMarkup, "//", true));
       }
+      else if (splitMarkup.length == 1)
+      {
+        markupExplanations.add(clusterTextsMap.get(markup.replace("//", "").trim()));
+      }
       else
       {
         markupExplanations.add(clusterTextsMap.get(markup));

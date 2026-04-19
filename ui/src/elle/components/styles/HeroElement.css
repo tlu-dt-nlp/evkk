@@ -1,11 +1,102 @@
+.tool-intro-button {
+  z-index: 1;
+  font-family: "Exo 2", sans-serif !important;
+  font-size: 16px !important;
+}
+
+@media (min-width: 3400px) {
+  .hero-image-box {
+    width: 40% !important;
+  }
+}
+
+@media (min-width: 2500px) and (max-width: 3399px) {
+  .hero-image-box {
+    width: 50% !important;
+  }
+}
+
+@media (max-width: 1133px) {
+  .hero-img {
+    max-height: 31em !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero-text-container {
+    font-size: 30px !important;
+  }
+
+  .hero-image-box {
+    width: 65% !important;
+  }
+}
+
+@media (max-width: 744px) {
+  .hero-text-container {
+    font-size: 25px !important;
+    margin-bottom: 35%;
+
+    .tool-intro-button {
+      line-height: 20px;
+      padding: 2% 5%;
+      font-size: 10px !important;
+    }
+  }
+
+  .hero-container-inner {
+    width: 60% !important;
+  }
+
+  .hero-image-box {
+    width: 70% !important;
+  }
+
+  .hero-img {
+    max-height: 26em !important;
+  }
+}
+
+@media (max-width: 580px) {
+  .hero-image-box {
+    width: 80% !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .hero-text-container {
+    font-size: 20px !important;
+  }
+
+  .hero-image-box {
+    width: 85% !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .hero-image-box {
+    width: 90% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-image-box {
+    width: 95% !important;
+  }
+}
+
 .hero-container {
   position: relative;
   display: flex;
-  height: 35vw;
+  height: 100%;
   margin-top: 150px;
-  border-radius: 50px;
+  border-radius: 20px;
   background: rgb(204, 168, 253);
   background: linear-gradient(315deg, rgba(204, 168, 253, 1) 0%, rgba(204, 168, 253, 1) 21%, rgba(255, 208, 253, 1) 21%, rgba(255, 208, 253, 1) 44%, rgba(255, 255, 255, 1) 44%, rgba(255, 255, 255, 1) 100%);
+
+  @media (max-width: 1023px) {
+    margin-top: 50px;
+  }
 }
 
 .hero-text-container {
@@ -15,14 +106,17 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  font-size: 2vw;
+  font-size: 34px;
+}
+
+.hero-container-inner {
+  width: 40%;
 }
 
 .hero-image-box {
   border-radius: 0 0 100px 0;
   transform-origin: bottom;
   width: 60%;
-  height: 120%;
   position: absolute;
   right: 0;
   bottom: 0;
@@ -40,11 +134,7 @@
 }
 
 .hero-img {
-  width: 100%;
+  max-height: 35em;
+  max-width: 39em;
   object-fit: cover;
 }
-
-.button-design {
-  z-index: 1;
-}
-

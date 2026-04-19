@@ -1,0 +1,26 @@
+.error-popper-container {
+  position: relative;
+  padding: 0.5em;
+  z-index: 20;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0 3px 6px, rgba(0, 0, 0, 0.23) 0 3px 6px;
+}
+
+.error-popper-container:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: calc(50% - 5px);
+  top: calc(100% - 2.5px);
+  box-sizing: border-box;
+
+  border: 5px solid;
+  border-color: transparent transparent white white;
+
+  transform-origin: 0 0;
+  transform: rotate(-45deg);
+
+  box-shadow: -2px 2px 2px 0 rgba(0, 0, 0, 0.4);
+}

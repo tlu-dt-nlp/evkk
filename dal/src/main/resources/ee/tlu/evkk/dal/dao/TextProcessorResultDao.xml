@@ -51,4 +51,30 @@
     limit 1000;
   </select>
 
+  <select id="findStanzaFullTextAnalysisByTextIds" resultType="java.lang.String">
+    select jsonb_agg(
+      jsonb_set(
+        jsonb_set(
+        tpr_content.result->'content',
+        '{char_count}',
+        tpr_char_count.result->'charCount'
+        ),
+        '{text_id}',
+        to_jsonb(t.id)
+      )
+      order by t.id
+    )
+    from core.text_processor_result tpr_content
+    join core.text t on tpr_content.text_hash = t.hash
+    left join core.text_processor_result tpr_char_count on tpr_content.text_hash = tpr_char_count.text_hash
+      and tpr_char_count.type = 'CHARS_WORDS_SENTENCES'
+    where tpr_content.type = 'STANZA_ANALYSIS'
+    and tpr_content.result is not null
+    and tpr_content.result->>'content' != ''
+    and t.id in
+    <foreach item="id" collection="textIds" separator=", " open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
+
 </mapper>

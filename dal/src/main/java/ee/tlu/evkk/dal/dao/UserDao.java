@@ -5,18 +5,18 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author Mikk Tarvas
- * Date: 10.02.2020
- */
 @Mapper
 @Repository
 public interface UserDao {
 
-  User findById(@Param("userId") UUID userId);
+  User findByIdCode(@Param("idCode") String idCode);
 
-  User findByEmailAddress(@Param("emailAddress") String emailAddress);
+  User findById(@Param("id") UUID id);
 
+  Optional<User> findByRefreshToken(@Param("token") String refreshToken);
+
+  User insert(@Param("user") User user);
 }

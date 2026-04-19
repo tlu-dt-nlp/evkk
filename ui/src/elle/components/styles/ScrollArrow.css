@@ -1,0 +1,30 @@
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  40% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.homepage-scroll-arrow {
+  position: absolute !important;
+  left: 50%;
+  z-index: 99;
+  animation: bounce 2s infinite;
+  width: 200px;
+  height: 80px;
+  color: #9C27B0 !important;
+  transition: opacity 0.5s ease-in-out !important;
+}
+
+.homepage-scroll-arrow:hover {
+  background-color: transparent !important;
+}
+
+.homepage-scroll-arrow:focus {
+  outline: none;
+}
