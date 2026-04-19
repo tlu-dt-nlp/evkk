@@ -1,6 +1,7 @@
 package ee.tlu.evkk.api.controller;
 
 import ee.evkk.dto.ExerciseDto;
+import ee.evkk.dto.ExerciseSubmissionResponseDto;
 import ee.evkk.dto.enums.ExerciseFormat;
 import ee.evkk.dto.enums.ExerciseStructureType;
 import ee.evkk.dto.enums.ExerciseType;
@@ -19,7 +20,7 @@ public class ExerciseGeneratorController {
 
   private final ExerciseGeneratorService exerciseGeneratorService;
 
-  @GetMapping
+  @GetMapping("generate")
   public ExerciseDto generateExercise(
     @RequestParam ExerciseType type,
     @RequestParam ExerciseStructureType structureType,
@@ -30,7 +31,7 @@ public class ExerciseGeneratorController {
   }
 
   @PostMapping("submit")
-  public Object submitExercise() {
+  public ExerciseSubmissionResponseDto submitExercise() {
 //    todo
     return null;
   }
