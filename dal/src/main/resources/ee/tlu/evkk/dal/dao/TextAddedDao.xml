@@ -17,4 +17,10 @@
     group by t.content;
   </select>
 
+  <update id="updateTextContent">
+    update core.text_added
+    set content = #{content}
+    where id = #{textId}
+  </update>
+
 </mapper>

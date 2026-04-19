@@ -8,9 +8,11 @@ import ee.evkk.dto.TextsToReviewResponseDto;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
+import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
 import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
 import ee.tlu.evkk.dal.dto.TextMetadata;
+import ee.tlu.evkk.dal.dto.TextProperty;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +37,9 @@ class AdminTextServiceTest {
 
   @Mock
   private TextDao textDao;
+
+  @Mock
+  private TextPropertyAddedDao textPropertyAddedDao;
 
   @Mock
   private TextPropertyDao textPropertyDao;
@@ -88,6 +93,356 @@ class AdminTextServiceTest {
   }
 
   @Test
+  void updateDonatedText_shouldUpdateTextAndProperties() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID titlePropertyId = UUID.randomUUID();
+    UUID authorPropertyId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Existing content", List.of(
+      createTextMetadata("title", "Existing Title"),
+      createTextMetadata("author", "Existing Author")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titlePropertyId, "title", "Existing Title"),
+      createTextProperty(authorPropertyId, "author", "Existing Author")
+    );
+
+    TextMetadataDto updatedTitleProp = TextMetadataDto.builder()
+      .propertyName("title")
+      .propertyValue("Updated Title")
+      .build();
+
+    TextMetadataDto newTypeProp = TextMetadataDto.builder()
+      .propertyName("type")
+      .propertyValue("Article")
+      .build();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Updated content");
+    request.setProperties(List.of(updatedTitleProp, newTypeProp));
+
+    TextAndMetadata updated = createTextAndMetadata("Updated content", List.of(
+      createTextMetadata("title", "Updated Title"),
+      createTextMetadata("type", "Article")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+
+    // When
+    TextDetailsResponseDto response = adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    assertThat(response.getText()).isEqualTo("Updated content");
+    assertThat(response.getProperties()).hasSize(2);
+    verify(textAddedDao).updateTextContent(testId, "Updated content");
+    verify(textPropertyAddedDao).updateProperty(titlePropertyId, "Updated Title");
+    verify(textPropertyAddedDao).insertProperty(testId, "type", "Article");
+    verify(textPropertyAddedDao).deleteByIds(List.of(authorPropertyId));
+  }
+
+  @Test
+  void updateDonatedText_whenPropertyValueUnchanged_shouldNotUpdate() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID titlePropertyId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Same Title")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titlePropertyId, "title", "Same Title")
+    );
+
+    TextMetadataDto sameTitleProp = TextMetadataDto.builder()
+      .propertyName("title")
+      .propertyValue("Same Title")
+      .build();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Content");
+    request.setProperties(List.of(sameTitleProp));
+
+    TextAndMetadata updated = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Same Title")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+
+    // When
+    adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    verify(textPropertyAddedDao, never()).updateProperty(any(), any());
+    verify(textPropertyAddedDao, never()).insertProperty(any(), any(), any());
+    verify(textPropertyAddedDao, never()).deleteByIds(any());
+  }
+
+  @Test
+  void updateDonatedText_withMultiValueProperties_shouldHandleCorrectly() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID enId = UUID.randomUUID();
+    UUID esId = UUID.randomUUID();
+    UUID deId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of(
+      createTextMetadata("muudkeeled", "en"),
+      createTextMetadata("muudkeeled", "es"),
+      createTextMetadata("muudkeeled", "de")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(enId, "muudkeeled", "en"),
+      createTextProperty(esId, "muudkeeled", "es"),
+      createTextProperty(deId, "muudkeeled", "de")
+    );
+
+    List<TextMetadataDto> newProperties = List.of(
+      TextMetadataDto.builder()
+        .propertyName("muudkeeled")
+        .propertyValue("en")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("muudkeeled")
+        .propertyValue("de")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("muudkeeled")
+        .propertyValue("ru")
+        .build()
+    );
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Content");
+    request.setProperties(newProperties);
+
+    TextAndMetadata updated = createTextAndMetadata("Content", List.of(
+      createTextMetadata("muudkeeled", "en"),
+      createTextMetadata("muudkeeled", "de"),
+      createTextMetadata("muudkeeled", "ru")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+
+    // When
+    adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    verify(textPropertyAddedDao, never()).updateProperty(eq(enId), any());
+    verify(textPropertyAddedDao).updateProperty(esId, "ru");
+    verify(textPropertyAddedDao, never()).updateProperty(eq(deId), any());
+    verify(textPropertyAddedDao, never()).insertProperty(any(), any(), any());
+    verify(textPropertyAddedDao, never()).deleteByIds(any());
+  }
+
+  @Test
+  void updateDonatedText_withMixedSingleAndMultiValueProperties_shouldHandleCorrectly() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID titleId = UUID.randomUUID();
+    UUID enId = UUID.randomUUID();
+    UUID esId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Existing Title"),
+      createTextMetadata("muudkeeled", "en"),
+      createTextMetadata("muudkeeled", "es")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titleId, "title", "Existing Title"),
+      createTextProperty(enId, "muudkeeled", "en"),
+      createTextProperty(esId, "muudkeeled", "es")
+    );
+
+    List<TextMetadataDto> newProperties = List.of(
+      TextMetadataDto.builder()
+        .propertyName("title")
+        .propertyValue("Updated Title")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("muudkeeled")
+        .propertyValue("en")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("muudkeeled")
+        .propertyValue("ru")
+        .build()
+    );
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Content");
+    request.setProperties(newProperties);
+
+    TextAndMetadata updated = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Updated Title"),
+      createTextMetadata("muudkeeled", "en"),
+      createTextMetadata("muudkeeled", "ru")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+
+    // When
+    adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    verify(textPropertyAddedDao).updateProperty(titleId, "Updated Title");
+    verify(textPropertyAddedDao, never()).updateProperty(eq(enId), any());
+    verify(textPropertyAddedDao).updateProperty(esId, "ru");
+    verify(textPropertyAddedDao, never()).insertProperty(any(), any(), any());
+    verify(textPropertyAddedDao, never()).deleteByIds(any());
+  }
+
+  @Test
+  void updateDonatedText_whenPropertyRemoved_shouldDelete() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID titleId = UUID.randomUUID();
+    UUID authorId = UUID.randomUUID();
+    UUID typeId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Title"),
+      createTextMetadata("author", "Author"),
+      createTextMetadata("type", "Article")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titleId, "title", "Title"),
+      createTextProperty(authorId, "author", "Author"),
+      createTextProperty(typeId, "type", "Article")
+    );
+
+    List<TextMetadataDto> newProperties = List.of(
+      TextMetadataDto.builder()
+        .propertyName("title")
+        .propertyValue("Title")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("type")
+        .propertyValue("Article")
+        .build()
+    );
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Content");
+    request.setProperties(newProperties);
+
+    TextAndMetadata updated = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Title"),
+      createTextMetadata("type", "Article")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+
+    // When
+    adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    verify(textPropertyAddedDao, never()).updateProperty(any(), any());
+    verify(textPropertyAddedDao, never()).insertProperty(any(), any(), any());
+    verify(textPropertyAddedDao).deleteByIds(List.of(authorId));
+  }
+
+  @Test
+  void updateDonatedText_whenAllPropertiesRemoved_shouldDeleteAll() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID titleId = UUID.randomUUID();
+    UUID authorId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of(
+      createTextMetadata("title", "Title"),
+      createTextMetadata("author", "Author")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titleId, "title", "Title"),
+      createTextProperty(authorId, "author", "Author")
+    );
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Content");
+    request.setProperties(List.of());
+
+    TextAndMetadata updated = createTextAndMetadata("Content", List.of());
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+
+    // When
+    adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    verify(textPropertyAddedDao, never()).updateProperty(any(), any());
+    verify(textPropertyAddedDao, never()).insertProperty(any(), any(), any());
+    verify(textPropertyAddedDao).deleteByIds(argThat(ids ->
+      ids.size() == 2 && ids.contains(titleId) && ids.contains(authorId)
+    ));
+  }
+
+  @Test
+  void updateDonatedText_whenTextUnchanged_shouldNotUpdateContent() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of());
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Content");
+    request.setProperties(List.of());
+
+    TextAndMetadata updated = createTextAndMetadata("Content", List.of());
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(List.of());
+
+    // When
+    adminTextService.updateDonatedText(testId, request);
+
+    // Then
+    verify(textAddedDao, never()).updateTextContent(any(), any());
+  }
+
+  @Test
+  void updateDonatedText_whenTextNotFound_shouldThrowException() {
+    // Given
+    UUID testId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Updated content");
+    request.setProperties(List.of());
+
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
+
+    // When & Then
+    assertThatThrownBy(() -> adminTextService.updateDonatedText(testId, request))
+      .isInstanceOf(EntityNotFoundException.class);
+    verify(textPropertyAddedDao, never()).findByTextId(any());
+  }
+
+  @Test
   void getPublishedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -122,10 +477,18 @@ class AdminTextServiceTest {
   void updatePublishedText_shouldUpdateTextAndProperties() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
+    UUID titlePropertyId = UUID.randomUUID();
+    UUID authorPropertyId = UUID.randomUUID();
+
     TextAndMetadata existing = createTextAndMetadata("Existing content", List.of(
       createTextMetadata("title", "Existing Title"),
       createTextMetadata("author", "Existing Author")
     ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titlePropertyId, "title", "Existing Title"),
+      createTextProperty(authorPropertyId, "author", "Existing Author")
+    );
 
     TextMetadataDto updatedTitleProp = TextMetadataDto.builder()
       .propertyName("title")
@@ -149,6 +512,7 @@ class AdminTextServiceTest {
     when(textDao.findTextAndMetadataById(testId))
       .thenReturn(existing)
       .thenReturn(updated);
+    when(textPropertyDao.findByTextId(testId)).thenReturn(existingProperties);
 
     // When
     TextDetailsResponseDto response = adminTextService.updatePublishedText(testId, request);
@@ -157,9 +521,9 @@ class AdminTextServiceTest {
     assertThat(response.getText()).isEqualTo("Updated content");
     assertThat(response.getProperties()).hasSize(2);
     verify(textDao).updateTextContent(testId, "Updated content");
-    verify(textPropertyDao).deleteAllByTextId(testId);
-    verify(textPropertyDao).insertProperty(testId, "title", "Updated Title");
+    verify(textPropertyDao).updateProperty(titlePropertyId, "Updated Title");
     verify(textPropertyDao).insertProperty(testId, "type", "Article");
+    verify(textPropertyDao).deleteByIds(List.of(authorPropertyId));
   }
 
   @Test
@@ -177,6 +541,7 @@ class AdminTextServiceTest {
     when(textDao.findTextAndMetadataById(testId))
       .thenReturn(existing)
       .thenReturn(updated);
+    when(textPropertyDao.findByTextId(testId)).thenReturn(List.of());
 
     // When
     adminTextService.updatePublishedText(testId, request);
@@ -199,6 +564,7 @@ class AdminTextServiceTest {
     // When & Then
     assertThatThrownBy(() -> adminTextService.updatePublishedText(testId, request))
       .isInstanceOf(EntityNotFoundException.class);
+    verify(textPropertyDao, never()).findByTextId(any());
   }
 
   private TextAndMetadata createTextAndMetadata(String text, List<TextMetadata> properties) throws Exception {
@@ -209,5 +575,13 @@ class AdminTextServiceTest {
   private TextMetadata createTextMetadata(String name, String value) throws Exception {
     String json = String.format("{\"propertyName\":\"%s\", \"propertyValue\":\"%s\"}", name, value);
     return objectMapper.readValue(json, TextMetadata.class);
+  }
+
+  private TextProperty createTextProperty(UUID id, String name, String value) {
+    TextProperty property = new TextProperty();
+    property.setId(id);
+    property.setPropertyName(name);
+    property.setPropertyValue(value);
+    return property;
   }
 }

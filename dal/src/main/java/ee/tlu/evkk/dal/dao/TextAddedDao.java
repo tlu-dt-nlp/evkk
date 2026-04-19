@@ -12,4 +12,6 @@ public interface TextAddedDao {
   Integer count();
 
   TextAndMetadata findTextAndMetadataById(@Param("textId") UUID textId);
+
+  void updateTextContent(@Param("textId") UUID textId, @Param("content") String content);
 }
