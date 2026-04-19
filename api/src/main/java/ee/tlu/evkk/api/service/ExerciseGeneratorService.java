@@ -1,9 +1,10 @@
 package ee.tlu.evkk.api.service;
 
-import ee.evkk.dto.ExerciseGeneratorAnalysis;
-import ee.evkk.dto.ExerciseGeneratorAnalysis.Word;
-import ee.evkk.dto.FillInTheBlanksExercise;
-import ee.evkk.dto.FillInTheBlanksExercise.Blank;
+import ee.evkk.dto.ExerciseDto;
+import ee.evkk.dto.ExerciseDto.Blank;
+import ee.evkk.dto.ExerciseGeneratorAnalysisDto.Sentence;
+import ee.evkk.dto.ExerciseGeneratorAnalysisDto.Word;
+import ee.evkk.dto.enums.ExerciseFormat;
 import ee.evkk.dto.enums.ExerciseStructureType;
 import ee.evkk.dto.enums.ExerciseType;
 import ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao;
@@ -12,13 +13,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
 import static ee.evkk.dto.enums.ExerciseStructureType.TEXT;
 import static ee.evkk.dto.enums.ExerciseType.INFINITIVE;
+import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isInfinitiveTarget;
+import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isObjectTarget;
 import static ee.tlu.evkk.api.util.FileUtils.readResourceAsString;
 import static ee.tlu.evkk.common.util.TextUtils.sanitizeLemmaString;
 import static java.util.Arrays.asList;
+import static java.util.Collections.shuffle;
 import static java.util.stream.Collectors.toList;
 
 @Service
@@ -27,17 +34,17 @@ public class ExerciseGeneratorService {
 
   private final ExerciseGeneratorSourceDao exerciseGeneratorSourceDao;
 
-  public Object generateExercise(ExerciseType type, ExerciseStructureType structureType, String topic) {
+  public ExerciseDto generateExercise(ExerciseType type, ExerciseStructureType structureType, ExerciseFormat format, String topic) {
     List<String> c1Words = new ArrayList<>(asList(readResourceAsString(
       INFINITIVE.equals(type) ? "c1_verbs.txt" : "c1_nouns.txt"
     ).split(",")));
 
     return TEXT.equals(structureType)
-      ? generateFromTexts(type, topic, c1Words)
-      : generateFromSentences(type, topic, c1Words);
+      ? generateFromTexts(type, format, topic, c1Words)
+      : generateFromSentences(type, format, topic, c1Words);
   }
 
-  private Object generateFromTexts(ExerciseType type, String topic, List<String> c1Words) {
+  private ExerciseDto generateFromTexts(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findTextsForExercise(type, topic);
 
     ExerciseGeneratorSource targetSource = sources.stream()
@@ -45,9 +52,12 @@ public class ExerciseGeneratorService {
         long matchingWordCount = source.getAnalysisAsObject().getSentences().stream()
           .flatMap(sentence -> sentence.getWords().stream())
           .filter(word -> INFINITIVE.equals(type)
-            ? isInfinitiveTarget(word, c1Words)
-            : isObjectTarget(word, c1Words)
-          ).count();
+            ? isInfinitiveTarget(word, c1Words, false)
+            : isObjectTarget(word, c1Words, false)
+          )
+          .map(Word::getWord)
+          .distinct()
+          .count();
         return matchingWordCount >= 5;
       })
       .findFirst()
@@ -57,63 +67,51 @@ public class ExerciseGeneratorService {
       return null;
     }
 
+    boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(format);
     StringBuilder modifiedContent = new StringBuilder(targetSource.getContent());
     List<Blank> blanks = new ArrayList<>();
+    Set<String> usedHints = new HashSet<>();
 
-    for (ExerciseGeneratorAnalysis.Sentence sentence : targetSource.getAnalysisAsObject().getSentences()) {
-      Word targetWord = sentence.getWords().stream()
+    for (Sentence sentence : targetSource.getAnalysisAsObject().getSentences()) {
+      List<Word> targetWords = sentence.getWords().stream()
         .filter(word -> INFINITIVE.equals(type)
-          ? isInfinitiveTarget(word, c1Words)
-          : isObjectTarget(word, c1Words)
+          ? isInfinitiveTarget(word, c1Words, false)
+          : isObjectTarget(word, c1Words, false)
         )
-        .findFirst()
-        .orElse(null);
+        .collect(toList());
 
-      if (targetWord != null) {
+      for (Word targetWord : targetWords) {
+        String hint = isFillInTheBlanks ? sanitizeLemmaString(targetWord.getLemma()) : targetWord.getWord();
+
+        if (usedHints.contains(hint)) {
+          continue;
+        }
+
+        usedHints.add(hint);
         int wordLength = targetWord.getEndChar() - targetWord.getStartChar();
         String blanksReplacement = "_".repeat(wordLength);
 
         modifiedContent.replace(targetWord.getStartChar(), targetWord.getEndChar(), blanksReplacement);
 
         blanks.add(new Blank(
-          targetWord.getStartChar(),
-          targetWord.getEndChar(),
-          sanitizeLemmaString(targetWord.getLemma())
+          isFillInTheBlanks ? targetWord.getStartChar() : null,
+          isFillInTheBlanks ? targetWord.getEndChar() : null,
+          hint
         ));
       }
     }
 
-    return new FillInTheBlanksExercise(modifiedContent.toString(), blanks);
+    if (!isFillInTheBlanks) {
+      shuffle(blanks);
+    }
+
+    return new ExerciseDto(modifiedContent.toString(), blanks);
   }
 
-  private Object generateFromSentences(ExerciseType type, String topic, List<String> c1Words) {
+  private ExerciseDto generateFromSentences(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSentencesForExercise(type, topic);
 
-    return sources.stream()
-      .filter(source -> {
-        ExerciseGeneratorAnalysis analysis = source.getAnalysisAsObject();
-//        todo
-        return true;
-      })
-      .collect(toList());
-  }
-
-  private boolean isInfinitiveTarget(Word word, List<String> c1Verbs) {
-//    boolean isC1Verb = c1Verbs.contains(sanitizeLemmaString(word.getLemma()));
-    boolean isVerb = word.getUpos().equals("VERB");
-    boolean isInf = word.getFeats().contains("VerbForm=Inf");
-    boolean isSup = word.getFeats().contains("VerbForm=Sup") && word.getFeats().contains("Case=Ill");
-//    return isC1Verb && isVerb && (isInf || isSup);
-    return isVerb && (isInf || isSup);
-  }
-
-  private boolean isObjectTarget(Word word, List<String> c1Nouns) {
-//    boolean isC1Noun = c1Nouns.contains(sanitizeLemmaString(word.getLemma()));
-    boolean isNoun = word.getUpos().equals("NOUN");
-    boolean isMatchingDeprel = word.getDeprel().equals("obj") || word.getDeprel().equals("obl");
-    boolean isMatchingCase = word.getFeats().contains("Case=Nom") || word.getFeats().contains("Case=Gen") || word.getFeats().contains("Case=Par");
-    boolean isPlural = word.getFeats().contains("Number=Plur");
-//    return isC1Noun && isNoun && isMatchingDeprel && isMatchingCase && isPlural;
-    return isNoun && isMatchingDeprel && isMatchingCase && isPlural;
+//    todo
+    return new ExerciseDto("a", List.of());
   }
 }

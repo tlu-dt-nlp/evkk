@@ -1,5 +1,7 @@
 package ee.tlu.evkk.api.controller;
 
+import ee.evkk.dto.ExerciseDto;
+import ee.evkk.dto.enums.ExerciseFormat;
 import ee.evkk.dto.enums.ExerciseStructureType;
 import ee.evkk.dto.enums.ExerciseType;
 import ee.tlu.evkk.api.service.ExerciseGeneratorService;
@@ -18,12 +20,13 @@ public class ExerciseGeneratorController {
   private final ExerciseGeneratorService exerciseGeneratorService;
 
   @GetMapping
-  public Object generateExercise(
+  public ExerciseDto generateExercise(
     @RequestParam ExerciseType type,
     @RequestParam ExerciseStructureType structureType,
+    @RequestParam ExerciseFormat format,
     @RequestParam(required = false) String topic
   ) {
-    return exerciseGeneratorService.generateExercise(type, structureType, topic);
+    return exerciseGeneratorService.generateExercise(type, structureType, format, topic);
   }
 
   @PostMapping("submit")

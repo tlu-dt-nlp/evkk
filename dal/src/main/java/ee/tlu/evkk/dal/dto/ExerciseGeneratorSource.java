@@ -1,6 +1,6 @@
 package ee.tlu.evkk.dal.dto;
 
-import ee.evkk.dto.ExerciseGeneratorAnalysis;
+import ee.evkk.dto.ExerciseGeneratorAnalysisDto;
 import ee.tlu.evkk.dal.json.Json;
 import lombok.Data;
 
@@ -13,7 +13,7 @@ public class ExerciseGeneratorSource {
   private String content;
   private Json analysis;
 
-  public ExerciseGeneratorAnalysis getAnalysisAsObject() {
-    return analysis.getAsObject(ExerciseGeneratorAnalysis.class);
+  public ExerciseGeneratorAnalysisDto getAnalysisAsObject() {
+    return analysis.getAsObject(ExerciseGeneratorAnalysisDto.class);
   }
 }

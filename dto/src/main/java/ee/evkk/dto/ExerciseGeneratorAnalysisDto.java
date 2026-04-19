@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ExerciseGeneratorAnalysis {
+public class ExerciseGeneratorAnalysisDto {
 
   private List<Sentence> sentences;
   private Metadata metadata;
