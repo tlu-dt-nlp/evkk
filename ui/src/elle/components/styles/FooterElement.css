@@ -70,6 +70,16 @@
   text-decoration: none;
 }
 
+.footer-consent-link {
+  color: #1B1B1BDD;
+  margin-bottom: 8px;
+  text-decoration: none;
+}
+
+.footer-consent-link:hover {
+  color: #9C27B0;
+}
+
 @media (max-width: 1399px) {
   .footer-inner {
     padding-left: 0;

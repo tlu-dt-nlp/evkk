@@ -701,5 +701,11 @@ export const TRANSLATIONS_EN = {
   wordlist_word_column: 'Word form',
   wordlist_wordcloud: 'Word cloud',
   wordlist_wordcloud_filename: 'word_cloud',
-  wordlist_wordcloud_loading: 'Loading word cloud...'
+  wordlist_wordcloud_loading: 'Loading word cloud...',
+  cookie_consent_title: 'Cookie usage',
+  cookie_consent_text: 'ELLE is a free online environment developed with the support of projects. We use statistics cookies to collect anonymous usage statistics. This data helps us to develop the environment and is important when applying for grants, as it shows the website\'s traffic. We do not use any other cookies.',
+  cookie_consent_learn_more: 'Learn more',
+  cookie_consent_accept: 'Accept',
+  cookie_consent_decline: 'Decline',
+  cookie_consent_settings: 'Cookie settings'
 };

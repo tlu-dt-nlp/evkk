@@ -5,6 +5,7 @@ import { queryCaller } from '../util/Utils';
 import { useGetCorrectorResult } from '../../../hooks/service/ToolsService';
 import CorrectionDocxDownloadButton from './CorrectionDocxDownloadButton';
 import { GRAMMARCHECKER_TEST } from '../const/Constants';
+import { useAnalytics } from '../../../../analytics.jsx';
 
 export default function CorrectionButton(
   {
@@ -28,8 +29,10 @@ export default function CorrectionButton(
   }) {
   const { t } = useTranslation();
   const { getCorrectorResult } = useGetCorrectorResult();
+  const { trackToolAnalyze } = useAnalytics();
 
   const handleClick = () => {
+    trackToolAnalyze('corrector');
     setNoQuery(false);
     if (setInputType) setInputType(null);
     queryCaller(textBoxRef, inputText, setRequestingText, setGrammarAnswer, setSpellerAnswer, setInputText, newRef, setComplexityAnswer, setAbstractWords, getCorrectorResult, true, setGrammarErrorList, setSpellerErrorList, model);

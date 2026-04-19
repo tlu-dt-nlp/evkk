@@ -1,5 +1,6 @@
 import { Outlet, ScrollRestoration, useNavigate, useSearchParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
+import { AnalyticsProvider } from '../../analytics.jsx';
 import RootContext from '../context/RootContext';
 import { errorEmitter } from '../../App';
 import ErrorSnackbar, { ErrorSnackbarEventType } from '../components/snackbar/ErrorSnackbar';
@@ -35,20 +36,22 @@ function AppWithStatus() {
   }
 
   return (
-    <div className="min-vh-100 d-flex flex-column justify-content-between">
-      <div>
-        <ErrorSnackbar />
-        <SuccessSnackbar />
-        <LoadingSpinner />
-        <SessionExpirationModal />
-        <PageTitle />
-        <ScrollRestoration />
-        <Navbar />
-        <DonateText />
-        <Outlet />
+    <AnalyticsProvider>
+      <div className="min-vh-100 d-flex flex-column justify-content-between">
+        <div>
+          <ErrorSnackbar />
+          <SuccessSnackbar />
+          <LoadingSpinner />
+          <SessionExpirationModal />
+          <PageTitle />
+          <ScrollRestoration />
+          <Navbar />
+          <DonateText />
+          <Outlet />
+        </div>
+        <FooterElement />
       </div>
-      <FooterElement />
-    </div>
+    </AnalyticsProvider>
   );
 }
 

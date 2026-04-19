@@ -8,9 +8,11 @@ import { parseHtmlForDocx, processErrorListForDocx } from '../util/Utils';
 import { accordionDetails, correctorDocxType, errorTypes } from '../const/TabValuesConstant';
 import { useTranslation } from 'react-i18next';
 import { GRAMMARCHECKER, SPELLCHECKER } from '../const/Constants';
+import { useAnalytics } from '../../../../analytics.jsx';
 
 const CorrectionDocxDownloadButton = ({ innerHtml, modelValue, errorList, tab, textLevel }) => {
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics();
   const labels = accordionDetails.map((detail) => t(detail.label));
   const [grammarLabel, setGrammarLabel] = useState(null);
 
@@ -54,6 +56,7 @@ const CorrectionDocxDownloadButton = ({ innerHtml, modelValue, errorList, tab, t
   };
 
   const runDownloader = () => {
+    trackEvent('Download', 'export', 'correction-docx');
     if (modelValue === GRAMMARCHECKER || modelValue === SPELLCHECKER) {
       downloadCorrectorGrammarDocx();
     } else {

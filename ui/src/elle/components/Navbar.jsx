@@ -14,6 +14,7 @@ import TextToSpeechMenu from './text-to-speech/TextToSpeechMenu';
 import flagEst from '../resources/images/flags/est.png';
 import flagEng from '../resources/images/flags/eng.png';
 import { NavbarPages } from '../const/RouteConstants';
+import { useAnalytics } from '../../analytics.jsx';
 
 const MenuLink = styled(Link)({
   fontWeight: 600,
@@ -48,6 +49,7 @@ const BurgerLink = styled(Link)({
 export default function Navbar() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const { trackEvent } = useAnalytics();
   const [navColor, setNavColor] = useState('sticking');
   const [langAnchorEl, setLangAnchorEl] = useState(false);
   const langOpen = Boolean(langAnchorEl);
@@ -66,6 +68,7 @@ export default function Navbar() {
   };
 
   const handleLangSelect = (lang) => {
+    trackEvent('Settings', 'change', `language-${lang}`);
     i18n.changeLanguage(lang).then(r => r);
     localStorage.setItem('language', lang);
     setLangAnchorEl(false);

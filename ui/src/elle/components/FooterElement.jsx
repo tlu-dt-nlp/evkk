@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Link as MuiLink } from '@mui/material';
 import './styles/FooterElement.css';
 import dtiEt from '../resources/images/footer/dti_et.svg';
 import dtiEn from '../resources/images/footer/dti_en.svg';
@@ -16,10 +16,12 @@ import {
   FooterReferencesValues,
   FooterToolsValues
 } from '../const/RouteConstants';
+import { useAnalytics } from '../../analytics.jsx';
 
 export default function FooterElement() {
   const { t } = useTranslation();
   const { version } = useContext(RootContext);
+  const { openConsentBanner } = useAnalytics();
   const [dtiLogo, setDtiLogo] = useState(i18n.language === Languages.ESTONIAN ? dtiEt : dtiEn);
 
   i18n.on('languageChanged', () => {
@@ -45,6 +47,14 @@ export default function FooterElement() {
         <Box className="footer-logo-box">
           <img className="dti-logo" src={dtiLogo} alt="DTI logo" />
           <p><b>{t('footer_contact')}:</b> elle@tlu.ee</p>
+          <MuiLink
+            component="button"
+            variant="body2"
+            onClick={openConsentBanner}
+            className="footer-consent-link"
+          >
+            {t('cookie_consent_settings')}
+          </MuiLink>
           {version ?
             <NewTabHyperlink
               className="footer-version"

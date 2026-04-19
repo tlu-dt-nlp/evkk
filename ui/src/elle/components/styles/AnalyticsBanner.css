@@ -1,0 +1,20 @@
+.analytics-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1400;
+  padding: 24px;
+  border-radius: 0;
+}
+
+.analytics-banner-content {
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.analytics-banner-buttons {
+  margin-top: 16px;
+}
+
