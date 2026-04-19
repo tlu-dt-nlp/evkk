@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
+import static ee.evkk.dto.enums.ExerciseStructureType.SENTENCE;
 import static ee.evkk.dto.enums.ExerciseStructureType.TEXT;
 import static ee.evkk.dto.enums.ExerciseType.INFINITIVE;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isInfinitiveTarget;
@@ -45,7 +46,7 @@ public class ExerciseGeneratorService {
   }
 
   private ExerciseDto generateFromTexts(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
-    List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findTextsForExercise(type, topic);
+    List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(TEXT, type, topic);
 
     ExerciseGeneratorSource targetSource = sources.stream()
       .filter(source -> {
@@ -109,7 +110,7 @@ public class ExerciseGeneratorService {
   }
 
   private ExerciseDto generateFromSentences(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
-    List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSentencesForExercise(type, topic);
+    List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, type, topic);
 
 //    todo
     return new ExerciseDto("a", List.of());
