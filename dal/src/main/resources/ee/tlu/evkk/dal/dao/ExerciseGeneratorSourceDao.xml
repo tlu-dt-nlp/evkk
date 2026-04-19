@@ -22,7 +22,8 @@
       from jsonb_array_elements(analysis->'sentences') as sentence,
       jsonb_array_elements(sentence->'words') as word
       <if test="type.name() == 'INFINITIVE'">
-        where word->'feats' @> '["VerbForm=Inf"]'::jsonb
+        where word->>'upos' = 'VERB'
+        and word->'feats' @> '["VerbForm=Inf"]'::jsonb
         or (word->'feats' @> '["VerbForm=Sup"]'::jsonb and word->'feats' @> '["Case=Ill"]'::jsonb)
       </if>
       <if test="type.name() == 'OBJECT'">
