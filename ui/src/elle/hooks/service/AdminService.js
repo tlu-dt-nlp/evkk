@@ -65,6 +65,18 @@ export const useUpdateDonatedText = () => {
   return { updateDonatedText };
 };
 
+export const useDeleteDonatedText = () => {
+  const { fetchData } = useFetch();
+
+  const deleteDonatedText = useCallback((id) => {
+    return fetchData(`/api/admin/donated-texts/${id}`, {
+      method: 'DELETE'
+    });
+  }, [fetchData]);
+
+  return { deleteDonatedText };
+};
+
 export const useGetPublishedTextDetails = () => {
   const { fetchData } = useFetch();
 
@@ -86,4 +98,16 @@ export const useUpdatePublishedText = () => {
   }, [fetchData]);
 
   return { updatePublishedText };
+};
+
+export const useDeletePublishedText = () => {
+  const { fetchData } = useFetch();
+
+  const deletePublishedText = useCallback((id) => {
+    return fetchData(`/api/admin/published-texts/${id}`, {
+      method: 'DELETE'
+    });
+  }, [fetchData]);
+
+  return { deletePublishedText };
 };

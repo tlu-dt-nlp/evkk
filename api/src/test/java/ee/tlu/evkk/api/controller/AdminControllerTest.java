@@ -12,8 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import java.util.Collections;
 import java.util.UUID;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminControllerTest extends IntegrationTest {
@@ -127,6 +126,52 @@ class AdminControllerTest extends IntegrationTest {
   }
 
   @Test
+  @DisplayName("Authenticated admin user gets 404 when updating non-existent donated text")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets404WhenUpdatingNonExistentDonatedText() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("New text");
+    request.setProperties(Collections.emptyList());
+
+    mockMvc.perform(
+        put("/admin/donated-texts/" + nonExistentId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot delete donated text")
+  void unauthenticatedUserCannotDeleteDonatedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        delete("/admin/donated-texts/" + testId))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot delete donated text")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotDeleteDonatedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        delete("/admin/donated-texts/" + testId))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 404 when deleting non-existent donated text")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets404WhenDeletingNonExistentDonatedText() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+    mockMvc.perform(
+        delete("/admin/donated-texts/" + nonExistentId))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
   @DisplayName("Unauthenticated user cannot get published text details")
   void unauthenticatedUserCannotGetPublishedTextDetails() throws Exception {
     UUID testId = UUID.randomUUID();
@@ -203,5 +248,51 @@ class AdminControllerTest extends IntegrationTest {
           .contentType(MediaType.APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 404 when updating non-existent published text")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets404WhenUpdatingNonExistentPublishedText() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("New text");
+    request.setProperties(Collections.emptyList());
+
+    mockMvc.perform(
+        put("/admin/published-texts/" + nonExistentId)
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot delete published text")
+  void unauthenticatedUserCannotDeletePublishedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        delete("/admin/published-texts/" + testId))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot delete published text")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotDeletePublishedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        delete("/admin/published-texts/" + testId))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 404 when deleting non-existent published text")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets404WhenDeletingNonExistentPublishedText() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+    mockMvc.perform(
+        delete("/admin/published-texts/" + nonExistentId))
+      .andExpect(status().isNotFound());
   }
 }

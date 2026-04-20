@@ -30,4 +30,10 @@
     </if>
   </delete>
 
+  <delete id="deleteByTextId">
+    delete
+    from core.text_property_added
+    where text_id = #{textId}
+  </delete>
+
 </mapper>

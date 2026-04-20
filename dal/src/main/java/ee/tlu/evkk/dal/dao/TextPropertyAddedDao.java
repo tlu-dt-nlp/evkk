@@ -20,4 +20,6 @@ public interface TextPropertyAddedDao {
   void insertProperty(@Param("textId") UUID textId, @Param("propertyName") String propertyName, @Param("propertyValue") String propertyValue);
 
   void deleteByIds(@Param("ids") List<UUID> ids);
+
+  void deleteByTextId(@Param("textId") UUID textId);
 }

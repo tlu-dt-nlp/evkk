@@ -40,6 +40,12 @@ public class AdminController {
     return ResponseEntity.ok(adminTextService.updateDonatedText(id, request));
   }
 
+  @DeleteMapping("/donated-texts/{id}")
+  public ResponseEntity<Void> deleteDonatedText(@PathVariable UUID id) {
+    adminTextService.deleteDonatedText(id);
+    return ResponseEntity.ok().build();
+  }
+
   @GetMapping("/published-texts/{id}")
   public ResponseEntity<TextDetailsResponseDto> getPublishedTextDetails(@PathVariable UUID id) {
     return adminTextService.getPublishedTextDetails(id)
@@ -53,5 +59,11 @@ public class AdminController {
     @RequestBody @Valid TextUpdateRequestDto request
   ) {
     return ResponseEntity.ok(adminTextService.updatePublishedText(id, request));
+  }
+
+  @DeleteMapping("/published-texts/{id}")
+  public ResponseEntity<Void> deletePublishedText(@PathVariable UUID id) {
+    adminTextService.deletePublishedText(id);
+    return ResponseEntity.ok().build();
   }
 }

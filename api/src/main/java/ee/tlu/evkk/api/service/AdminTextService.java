@@ -55,6 +55,15 @@ public class AdminTextService {
     return toTextDetailsResponseDto(textAddedDao.findTextAndMetadataById(id));
   }
 
+  @Transactional
+  public void deleteDonatedText(UUID id) {
+    log.info("Deleting donated text id={}", id);
+
+    validateDonatedTextExists(id);
+    textPropertyAddedDao.deleteByTextId(id);
+    textAddedDao.deleteById(id);
+  }
+
   public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
     log.info("Fetching published text details id={}", id);
     return Optional.ofNullable(textDao.findTextAndMetadataById(id))
@@ -70,6 +79,15 @@ public class AdminTextService {
     updatePublishedTextProperties(id, request.getProperties());
 
     return toTextDetailsResponseDto(textDao.findTextAndMetadataById(id));
+  }
+
+  @Transactional
+  public void deletePublishedText(UUID id) {
+    log.info("Deleting published text id={}", id);
+
+    validatePublishedTextExists(id);
+    textPropertyDao.deleteByTextId(id);
+    textDao.deleteById(id);
   }
 
   private TextDetailsResponseDto toTextDetailsResponseDto(TextAndMetadata textAndMetadata) {
