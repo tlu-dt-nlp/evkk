@@ -11,6 +11,29 @@ public class ExerciseDto {
 
   private String textWithBlanks;
   private List<Blank> blanks;
+  private List<SentenceWithBlanks> sentencesWithBlanks;
+
+  public ExerciseDto(String textWithBlanks, List<Blank> blanks) {
+    this.textWithBlanks = textWithBlanks;
+    this.blanks = blanks;
+  }
+
+  public ExerciseDto(List<SentenceWithBlanks> sentencesWithBlanks) {
+    this.sentencesWithBlanks = sentencesWithBlanks;
+  }
+
+  public ExerciseDto(List<SentenceWithBlanks> sentencesWithBlanks, List<Blank> blanks) {
+    this.sentencesWithBlanks = sentencesWithBlanks;
+    this.blanks = blanks;
+  }
+
+  @Data
+  @AllArgsConstructor
+  public static class SentenceWithBlanks {
+
+    private String sentence;
+    private List<Blank> blanks;
+  }
 
   @Data
   @AllArgsConstructor

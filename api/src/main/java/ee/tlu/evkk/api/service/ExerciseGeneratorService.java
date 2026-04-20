@@ -2,6 +2,7 @@ package ee.tlu.evkk.api.service;
 
 import ee.evkk.dto.ExerciseDto;
 import ee.evkk.dto.ExerciseDto.Blank;
+import ee.evkk.dto.ExerciseDto.SentenceWithBlanks;
 import ee.evkk.dto.ExerciseGeneratorAnalysisDto.Sentence;
 import ee.evkk.dto.ExerciseGeneratorAnalysisDto.Word;
 import ee.evkk.dto.enums.ExerciseFormat;
@@ -50,7 +51,7 @@ public class ExerciseGeneratorService {
 
     ExerciseGeneratorSource targetSource = sources.stream()
       .filter(source -> {
-        long matchingWordCount = source.getAnalysisAsObject().getSentences().stream()
+        long matchingWordCount = source.getTextAsObject().getSentences().stream()
           .flatMap(sentence -> sentence.getWords().stream())
           .filter(word -> INFINITIVE.equals(type)
             ? isInfinitiveTarget(word, c1Words, false)
@@ -73,7 +74,7 @@ public class ExerciseGeneratorService {
     List<Blank> blanks = new ArrayList<>();
     Set<String> usedHints = new HashSet<>();
 
-    for (Sentence sentence : targetSource.getAnalysisAsObject().getSentences()) {
+    for (Sentence sentence : targetSource.getTextAsObject().getSentences()) {
       List<Word> targetWords = sentence.getWords().stream()
         .filter(word -> INFINITIVE.equals(type)
           ? isInfinitiveTarget(word, c1Words, false)
@@ -112,7 +113,100 @@ public class ExerciseGeneratorService {
   private ExerciseDto generateFromSentences(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, type, topic);
 
-//    todo
-    return new ExerciseDto("a", List.of());
+    List<ExerciseGeneratorSource> targetSources = sources.stream()
+      .filter(source -> source.getSentenceAsObject().getWords().stream()
+        .anyMatch(word -> INFINITIVE.equals(type)
+          ? isInfinitiveTarget(word, c1Words, true)
+          : isObjectTarget(word, c1Words, true)
+        )
+      )
+      .collect(toList());
+
+    if (targetSources.isEmpty()) {
+      return null;
+    }
+
+    boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(format);
+    List<SentenceWithBlanks> sentencesWithBlanks = new ArrayList<>();
+    List<Blank> globalBlanks = isFillInTheBlanks ? null : new ArrayList<>();
+    Set<String> usedHints = new HashSet<>();
+
+    for (ExerciseGeneratorSource source : targetSources) {
+      if (sentencesWithBlanks.size() >= 5) {
+        break;
+      }
+
+      Sentence sentence = source.getSentenceAsObject();
+      List<Word> targetWords = sentence.getWords().stream()
+        .filter(word -> INFINITIVE.equals(type)
+          ? isInfinitiveTarget(word, c1Words, true)
+          : isObjectTarget(word, c1Words, true)
+        )
+        .collect(toList());
+
+      if (targetWords.isEmpty()) {
+        continue;
+      }
+
+      int sentenceOffset = sentence.getWords().isEmpty() ? 0 : sentence.getWords().get(0).getStartChar();
+      String sentenceText = sentence.getText();
+      StringBuilder modifiedSentence = new StringBuilder(sentenceText);
+      List<Blank> sentenceBlanks = isFillInTheBlanks ? new ArrayList<>() : null;
+      int blanksAddedForSentence = 0;
+
+      int firstWordInTextOffset = 0;
+      if (!sentence.getWords().isEmpty()) {
+        String firstWord = sentence.getWords().get(0).getWord();
+        firstWordInTextOffset = sentenceText.indexOf(firstWord);
+        if (firstWordInTextOffset == -1) {
+          firstWordInTextOffset = 0;
+        }
+      }
+
+      for (Word targetWord : targetWords) {
+        String hint = isFillInTheBlanks ? sanitizeLemmaString(targetWord.getLemma()) : targetWord.getWord();
+
+        if (usedHints.contains(hint)) {
+          continue;
+        }
+
+        usedHints.add(hint);
+        int wordLength = targetWord.getEndChar() - targetWord.getStartChar();
+        String blanksReplacement = "_".repeat(wordLength);
+
+        int relativeStart = targetWord.getStartChar() - sentenceOffset + firstWordInTextOffset;
+        int relativeEnd = targetWord.getEndChar() - sentenceOffset + firstWordInTextOffset;
+
+        modifiedSentence.replace(relativeStart, relativeEnd, blanksReplacement);
+
+        Blank blank = new Blank(
+          isFillInTheBlanks ? relativeStart : null,
+          isFillInTheBlanks ? relativeEnd : null,
+          hint
+        );
+
+        if (isFillInTheBlanks) {
+          sentenceBlanks.add(blank);
+        } else {
+          globalBlanks.add(blank);
+        }
+        blanksAddedForSentence++;
+      }
+
+      if (blanksAddedForSentence > 0) {
+        sentencesWithBlanks.add(new SentenceWithBlanks(modifiedSentence.toString(), sentenceBlanks));
+      }
+    }
+
+    if (sentencesWithBlanks.isEmpty()) {
+      return null;
+    }
+
+    if (!isFillInTheBlanks) {
+      shuffle(globalBlanks);
+      return new ExerciseDto(sentencesWithBlanks, globalBlanks);
+    }
+
+    return new ExerciseDto(sentencesWithBlanks);
   }
 }
