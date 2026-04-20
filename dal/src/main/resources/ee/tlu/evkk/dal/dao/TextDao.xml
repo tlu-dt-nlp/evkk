@@ -166,4 +166,10 @@
     where id = #{textId}
   </update>
 
+  <delete id="deleteById">
+    delete
+    from core.text
+    where id = #{textId}
+  </delete>
+
 </mapper>

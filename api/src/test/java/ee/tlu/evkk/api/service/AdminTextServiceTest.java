@@ -443,6 +443,36 @@ class AdminTextServiceTest {
   }
 
   @Test
+  void deleteDonatedText_shouldDeletePropertiesAndText() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    TextAndMetadata existing = createTextAndMetadata("Text", List.of(
+      createTextMetadata("title", "Title")
+    ));
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(existing);
+
+    // When
+    adminTextService.deleteDonatedText(testId);
+
+    // Then
+    verify(textPropertyAddedDao).deleteByTextId(testId);
+    verify(textAddedDao).deleteById(testId);
+  }
+
+  @Test
+  void deleteDonatedText_whenNotFound_shouldThrowException() {
+    // Given
+    UUID testId = UUID.randomUUID();
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
+
+    // When & Then
+    assertThatThrownBy(() -> adminTextService.deleteDonatedText(testId))
+      .isInstanceOf(EntityNotFoundException.class);
+    verify(textPropertyAddedDao, never()).deleteByTextId(any());
+    verify(textAddedDao, never()).deleteById(any());
+  }
+
+  @Test
   void getPublishedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -565,6 +595,36 @@ class AdminTextServiceTest {
     assertThatThrownBy(() -> adminTextService.updatePublishedText(testId, request))
       .isInstanceOf(EntityNotFoundException.class);
     verify(textPropertyDao, never()).findByTextId(any());
+  }
+
+  @Test
+  void deletePublishedText_shouldDeletePropertiesAndText() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    TextAndMetadata existing = createTextAndMetadata("Text", List.of(
+      createTextMetadata("title", "Title")
+    ));
+    when(textDao.findTextAndMetadataById(testId)).thenReturn(existing);
+
+    // When
+    adminTextService.deletePublishedText(testId);
+
+    // Then
+    verify(textPropertyDao).deleteByTextId(testId);
+    verify(textDao).deleteById(testId);
+  }
+
+  @Test
+  void deletePublishedText_whenNotFound_shouldThrowException() {
+    // Given
+    UUID testId = UUID.randomUUID();
+    when(textDao.findTextAndMetadataById(testId)).thenReturn(null);
+
+    // When & Then
+    assertThatThrownBy(() -> adminTextService.deletePublishedText(testId))
+      .isInstanceOf(EntityNotFoundException.class);
+    verify(textPropertyDao, never()).deleteByTextId(any());
+    verify(textDao, never()).deleteById(any());
   }
 
   private TextAndMetadata createTextAndMetadata(String text, List<TextMetadata> properties) throws Exception {

@@ -40,4 +40,6 @@ public interface TextDao {
   void insertAddingProperty(@Param("id") UUID id, @Param("pname") String pname, @Param("pvalue") String pvalue);
 
   void updateTextContent(@Param("textId") UUID textId, @Param("content") String content);
+
+  void deleteById(@Param("textId") UUID textId);
 }
