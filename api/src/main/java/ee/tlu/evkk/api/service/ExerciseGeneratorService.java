@@ -53,10 +53,7 @@ public class ExerciseGeneratorService {
       .filter(source -> {
         long matchingWordCount = source.getTextAsObject().getSentences().stream()
           .flatMap(sentence -> sentence.getWords().stream())
-          .filter(word -> INFINITIVE.equals(type)
-            ? isInfinitiveTarget(word, c1Words, false)
-            : isObjectTarget(word, c1Words, false)
-          )
+          .filter(word -> isTargetWord(word, type, c1Words, false))
           .map(Word::getWord)
           .distinct()
           .count();
@@ -75,15 +72,10 @@ public class ExerciseGeneratorService {
     Set<String> usedHints = new HashSet<>();
 
     for (Sentence sentence : targetSource.getTextAsObject().getSentences()) {
-      List<Word> targetWords = sentence.getWords().stream()
-        .filter(word -> INFINITIVE.equals(type)
-          ? isInfinitiveTarget(word, c1Words, false)
-          : isObjectTarget(word, c1Words, false)
-        )
-        .collect(toList());
+      List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, false);
 
       for (Word targetWord : targetWords) {
-        String hint = isFillInTheBlanks ? sanitizeLemmaString(targetWord.getLemma()) : targetWord.getWord();
+        String hint = getHint(targetWord, isFillInTheBlanks);
 
         if (usedHints.contains(hint)) {
           continue;
@@ -95,11 +87,7 @@ public class ExerciseGeneratorService {
 
         modifiedContent.replace(targetWord.getStartChar(), targetWord.getEndChar(), blanksReplacement);
 
-        blanks.add(new Blank(
-          isFillInTheBlanks ? targetWord.getStartChar() : null,
-          isFillInTheBlanks ? targetWord.getEndChar() : null,
-          hint
-        ));
+        blanks.add(createBlank(targetWord.getStartChar(), targetWord.getEndChar(), hint, isFillInTheBlanks));
       }
     }
 
@@ -115,10 +103,7 @@ public class ExerciseGeneratorService {
 
     List<ExerciseGeneratorSource> targetSources = sources.stream()
       .filter(source -> source.getSentenceAsObject().getWords().stream()
-        .anyMatch(word -> INFINITIVE.equals(type)
-          ? isInfinitiveTarget(word, c1Words, true)
-          : isObjectTarget(word, c1Words, true)
-        )
+        .anyMatch(word -> isTargetWord(word, type, c1Words, true))
       )
       .collect(toList());
 
@@ -137,12 +122,7 @@ public class ExerciseGeneratorService {
       }
 
       Sentence sentence = source.getSentenceAsObject();
-      List<Word> targetWords = sentence.getWords().stream()
-        .filter(word -> INFINITIVE.equals(type)
-          ? isInfinitiveTarget(word, c1Words, true)
-          : isObjectTarget(word, c1Words, true)
-        )
-        .collect(toList());
+      List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, true);
 
       if (targetWords.isEmpty()) {
         continue;
@@ -154,17 +134,10 @@ public class ExerciseGeneratorService {
       List<Blank> sentenceBlanks = isFillInTheBlanks ? new ArrayList<>() : null;
       int blanksAddedForSentence = 0;
 
-      int firstWordInTextOffset = 0;
-      if (!sentence.getWords().isEmpty()) {
-        String firstWord = sentence.getWords().get(0).getWord();
-        firstWordInTextOffset = sentenceText.indexOf(firstWord);
-        if (firstWordInTextOffset == -1) {
-          firstWordInTextOffset = 0;
-        }
-      }
+      int firstWordInTextOffset = calculateFirstWordOffset(sentence, sentenceText);
 
       for (Word targetWord : targetWords) {
-        String hint = isFillInTheBlanks ? sanitizeLemmaString(targetWord.getLemma()) : targetWord.getWord();
+        String hint = getHint(targetWord, isFillInTheBlanks);
 
         if (usedHints.contains(hint)) {
           continue;
@@ -179,11 +152,7 @@ public class ExerciseGeneratorService {
 
         modifiedSentence.replace(relativeStart, relativeEnd, blanksReplacement);
 
-        Blank blank = new Blank(
-          isFillInTheBlanks ? relativeStart : null,
-          isFillInTheBlanks ? relativeEnd : null,
-          hint
-        );
+        Blank blank = createBlank(relativeStart, relativeEnd, hint, isFillInTheBlanks);
 
         if (isFillInTheBlanks) {
           sentenceBlanks.add(blank);
@@ -208,5 +177,38 @@ public class ExerciseGeneratorService {
     }
 
     return new ExerciseDto(sentencesWithBlanks);
+  }
+
+  private boolean isTargetWord(Word word, ExerciseType type, List<String> c1Words, boolean allowC1) {
+    return INFINITIVE.equals(type)
+      ? isInfinitiveTarget(word, c1Words, allowC1)
+      : isObjectTarget(word, c1Words, allowC1);
+  }
+
+  private List<Word> filterTargetWords(List<Word> words, ExerciseType type, List<String> c1Words, boolean allowC1) {
+    return words.stream()
+      .filter(word -> isTargetWord(word, type, c1Words, allowC1))
+      .collect(toList());
+  }
+
+  private String getHint(Word word, boolean isFillInTheBlanks) {
+    return isFillInTheBlanks ? sanitizeLemmaString(word.getLemma()) : word.getWord();
+  }
+
+  private Blank createBlank(int startChar, int endChar, String hint, boolean isFillInTheBlanks) {
+    return new Blank(
+      isFillInTheBlanks ? startChar : null,
+      isFillInTheBlanks ? endChar : null,
+      hint
+    );
+  }
+
+  private int calculateFirstWordOffset(Sentence sentence, String sentenceText) {
+    if (sentence.getWords().isEmpty()) {
+      return 0;
+    }
+    String firstWord = sentence.getWords().get(0).getWord();
+    int offset = sentenceText.indexOf(firstWord);
+    return offset == -1 ? 0 : offset;
   }
 }
