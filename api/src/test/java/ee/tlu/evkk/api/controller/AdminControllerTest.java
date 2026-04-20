@@ -172,6 +172,52 @@ class AdminControllerTest extends IntegrationTest {
   }
 
   @Test
+  @DisplayName("Unauthenticated user cannot publish donated text")
+  void unauthenticatedUserCannotPublishDonatedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        post("/admin/donated-texts/" + testId + "/publish"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot publish donated text")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotPublishDonatedText() throws Exception {
+    UUID testId = UUID.randomUUID();
+    mockMvc.perform(
+        post("/admin/donated-texts/" + testId + "/publish"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 400 when publishing with null properties")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets400WhenPublishingWithNullProperties() throws Exception {
+    UUID testId = UUID.randomUUID();
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("New text");
+    request.setProperties(null);
+
+    mockMvc.perform(
+        post("/admin/donated-texts/" + testId + "/publish")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user gets 404 when publishing non-existent donated text")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserGets404WhenPublishingNonExistentDonatedText() throws Exception {
+    UUID nonExistentId = UUID.randomUUID();
+    mockMvc.perform(
+        post("/admin/donated-texts/" + nonExistentId + "/publish"))
+      .andExpect(status().isNotFound());
+  }
+
+  @Test
   @DisplayName("Unauthenticated user cannot get published text details")
   void unauthenticatedUserCannotGetPublishedTextDetails() throws Exception {
     UUID testId = UUID.randomUUID();
