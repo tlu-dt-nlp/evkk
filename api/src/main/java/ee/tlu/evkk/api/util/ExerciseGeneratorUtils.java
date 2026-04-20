@@ -1,5 +1,6 @@
 package ee.tlu.evkk.api.util;
 
+import ee.evkk.dto.ExerciseGeneratorAnalysisDto;
 import ee.evkk.dto.ExerciseGeneratorAnalysisDto.Word;
 import lombok.NoArgsConstructor;
 
@@ -36,5 +37,14 @@ public class ExerciseGeneratorUtils {
     }
 
     return isNoun && isMatchingDeprel && isMatchingCase && isPlural;
+  }
+
+  public static int calculateFirstWordOffset(ExerciseGeneratorAnalysisDto.Sentence sentence, String sentenceText) {
+    if (sentence.getWords().isEmpty()) {
+      return 0;
+    }
+    String firstWord = sentence.getWords().get(0).getWord();
+    int offset = sentenceText.indexOf(firstWord);
+    return offset == -1 ? 0 : offset;
   }
 }

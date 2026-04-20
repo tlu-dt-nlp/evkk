@@ -25,9 +25,10 @@ public class ExerciseGeneratorController {
     @RequestParam ExerciseType type,
     @RequestParam ExerciseStructureType structureType,
     @RequestParam ExerciseFormat format,
-    @RequestParam(required = false) String topic
+    @RequestParam(required = false) String topic,
+    @RequestParam(required = false) boolean setC1Criteria
   ) {
-    return exerciseGeneratorService.generateExercise(type, structureType, format, topic);
+    return exerciseGeneratorService.generateExercise(type, structureType, format, topic, setC1Criteria);
   }
 
   @PostMapping("submit")
