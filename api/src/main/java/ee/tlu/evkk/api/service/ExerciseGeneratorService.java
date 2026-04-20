@@ -112,38 +112,9 @@ public class ExerciseGeneratorService {
         break;
       }
 
-      Sentence sentence = source.getSentenceAsObject();
-      List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, setC1Criteria);
-
-      if (targetWords.isEmpty()) {
-        continue;
-      }
-
-      String sentenceText = sentence.getText();
-      StringBuilder modifiedSentence = new StringBuilder(sentenceText);
-
-      List<Blank> sentenceBlanks = isFillInTheBlanks ? new ArrayList<>() : null;
-      int blanksAddedForSentence = 0;
-
-      int sentenceOffset = sentence.getWords().isEmpty() ? 0 : sentence.getWords().get(0).getStartChar();
-      int firstWordInTextOffset = calculateFirstWordOffset(sentence, sentenceText);
-
-      for (Word targetWord : targetWords) {
-        Blank blank = processTargetWord(targetWord, modifiedSentence, usedHints, isFillInTheBlanks, sentenceOffset, firstWordInTextOffset);
-        if (blank == null) {
-          continue;
-        }
-
-        if (isFillInTheBlanks) {
-          sentenceBlanks.add(blank);
-        } else {
-          globalBlanks.add(blank);
-        }
-        blanksAddedForSentence++;
-      }
-
-      if (blanksAddedForSentence > 0) {
-        sentencesWithBlanks.add(new SentenceWithBlanks(modifiedSentence.toString(), sentenceBlanks));
+      SentenceWithBlanks processedSentence = processSingleSentence(source, type, c1Words, setC1Criteria, isFillInTheBlanks, usedHints, globalBlanks);
+      if (processedSentence != null) {
+        sentencesWithBlanks.add(processedSentence);
       }
     }
 
@@ -181,6 +152,44 @@ public class ExerciseGeneratorService {
       isFillInTheBlanks ? endChar : null,
       hint
     );
+  }
+
+  private SentenceWithBlanks processSingleSentence(ExerciseGeneratorSource source, ExerciseType type, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks) {
+    Sentence sentence = source.getSentenceAsObject();
+    List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, setC1Criteria);
+
+    if (targetWords.isEmpty()) {
+      return null;
+    }
+
+    String sentenceText = sentence.getText();
+    StringBuilder modifiedSentence = new StringBuilder(sentenceText);
+    List<Blank> sentenceBlanks = isFillInTheBlanks ? new ArrayList<>() : null;
+
+    int sentenceOffset = sentence.getWords().isEmpty() ? 0 : sentence.getWords().get(0).getStartChar();
+    int firstWordOffset = calculateFirstWordOffset(sentence, sentenceText);
+
+    return processTargetWords(targetWords, modifiedSentence, usedHints, isFillInTheBlanks, sentenceOffset, firstWordOffset, sentenceBlanks, globalBlanks);
+  }
+
+  private SentenceWithBlanks processTargetWords(List<Word> targetWords, StringBuilder modifiedSentence, Set<String> usedHints, boolean isFillInTheBlanks, int sentenceOffset, int firstWordOffset, List<Blank> sentenceBlanks, List<Blank> globalBlanks) {
+    boolean hasBlanks = false;
+
+    for (Word targetWord : targetWords) {
+      Blank blank = processTargetWord(targetWord, modifiedSentence, usedHints, isFillInTheBlanks, sentenceOffset, firstWordOffset);
+      if (blank == null) {
+        continue;
+      }
+
+      if (isFillInTheBlanks) {
+        sentenceBlanks.add(blank);
+      } else {
+        globalBlanks.add(blank);
+      }
+      hasBlanks = true;
+    }
+
+    return hasBlanks ? new SentenceWithBlanks(modifiedSentence.toString(), sentenceBlanks) : null;
   }
 
   private Blank processTargetWord(Word targetWord, StringBuilder text, Set<String> usedHints, boolean isFillInTheBlanks, int sentenceOffset, int firstWordOffset) {
