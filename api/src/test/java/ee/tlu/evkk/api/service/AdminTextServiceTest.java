@@ -473,6 +473,117 @@ class AdminTextServiceTest {
   }
 
   @Test
+  void publishDonatedText_shouldMoveTextAndPropertiesToPublishedTables() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID publishedId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Donated content", List.of(
+      createTextMetadata("title", "Title")
+    ));
+
+    TextAndMetadata published = createTextAndMetadata("Donated content", List.of(
+      createTextMetadata("title", "Title")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(existing);
+    when(textDao.insertDonatedText("Donated content")).thenReturn(publishedId);
+    when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
+
+    // When
+    TextDetailsResponseDto response = adminTextService.publishDonatedText(testId, null);
+
+    // Then
+    assertThat(response.getText()).isEqualTo("Donated content");
+    assertThat(response.getProperties()).hasSize(1);
+    verify(textAddedDao, never()).updateTextContent(any(), any());
+    verify(textPropertyAddedDao, never()).updateProperty(any(), any());
+    verify(textDao).insertDonatedText("Donated content");
+    verify(textDao).copyPropertiesFromDonatedText(testId, publishedId);
+    verify(textPropertyAddedDao).deleteByTextId(testId);
+    verify(textAddedDao).deleteById(testId);
+  }
+
+  @Test
+  void publishDonatedText_withRequest_shouldUpdateDonatedTextBeforePublish() throws Exception {
+    // Given
+    UUID testId = UUID.randomUUID();
+    UUID publishedId = UUID.randomUUID();
+    UUID titlePropertyId = UUID.randomUUID();
+    UUID typePropertyId = UUID.randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Existing content", List.of(
+      createTextMetadata("title", "Existing Title"),
+      createTextMetadata("type", "Essay")
+    ));
+
+    List<TextProperty> existingProperties = List.of(
+      createTextProperty(titlePropertyId, "title", "Existing Title"),
+      createTextProperty(typePropertyId, "type", "Essay")
+    );
+
+    List<TextMetadataDto> newProperties = List.of(
+      TextMetadataDto.builder()
+        .propertyName("title")
+        .propertyValue("Updated Title")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("type")
+        .propertyValue("Article")
+        .build()
+    );
+
+    TextUpdateRequestDto request = new TextUpdateRequestDto();
+    request.setText("Updated content");
+    request.setProperties(newProperties);
+
+    TextAndMetadata updatedDonated = createTextAndMetadata("Updated content", List.of(
+      createTextMetadata("title", "Updated Title"),
+      createTextMetadata("type", "Article")
+    ));
+
+    TextAndMetadata published = createTextAndMetadata("Updated content", List.of(
+      createTextMetadata("title", "Updated Title"),
+      createTextMetadata("type", "Article")
+    ));
+
+    when(textAddedDao.findTextAndMetadataById(testId))
+      .thenReturn(existing)
+      .thenReturn(updatedDonated);
+    when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
+    when(textDao.insertDonatedText("Updated content")).thenReturn(publishedId);
+    when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
+
+    // When
+    TextDetailsResponseDto response = adminTextService.publishDonatedText(testId, request);
+
+    // Then
+    assertThat(response.getText()).isEqualTo("Updated content");
+    verify(textAddedDao).updateTextContent(testId, "Updated content");
+    verify(textPropertyAddedDao).updateProperty(titlePropertyId, "Updated Title");
+    verify(textPropertyAddedDao).updateProperty(typePropertyId, "Article");
+    verify(textDao).insertDonatedText("Updated content");
+    verify(textDao).copyPropertiesFromDonatedText(testId, publishedId);
+    verify(textPropertyAddedDao).deleteByTextId(testId);
+    verify(textAddedDao).deleteById(testId);
+  }
+
+  @Test
+  void publishDonatedText_whenNotFound_shouldThrowException() {
+    // Given
+    UUID testId = UUID.randomUUID();
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
+
+    // When & Then
+    assertThatThrownBy(() -> adminTextService.publishDonatedText(testId, null))
+      .isInstanceOf(EntityNotFoundException.class);
+    verify(textDao, never()).insertDonatedText(any());
+    verify(textDao, never()).copyPropertiesFromDonatedText(any(), any());
+    verify(textPropertyAddedDao, never()).deleteByTextId(any());
+    verify(textAddedDao, never()).deleteById(any());
+  }
+
+  @Test
   void getPublishedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();

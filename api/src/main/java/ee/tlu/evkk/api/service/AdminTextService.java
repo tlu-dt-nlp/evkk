@@ -64,6 +64,26 @@ public class AdminTextService {
     textAddedDao.deleteById(id);
   }
 
+  @Transactional
+  public TextDetailsResponseDto publishDonatedText(UUID id, TextUpdateRequestDto request) {
+    log.info("Publishing donated text id={}", id);
+
+    TextAndMetadata donatedTextToPublish = validateDonatedTextExists(id);
+
+    if (request != null) {
+      updateDonatedTextContentIfChanged(id, donatedTextToPublish.getText(), request.getText());
+      updateDonatedTextProperties(id, request.getProperties());
+      donatedTextToPublish = textAddedDao.findTextAndMetadataById(id);
+    }
+
+    UUID publishedTextId = textDao.insertDonatedText(donatedTextToPublish.getText());
+    textDao.copyPropertiesFromDonatedText(id, publishedTextId);
+    textPropertyAddedDao.deleteByTextId(id);
+    textAddedDao.deleteById(id);
+
+    return toTextDetailsResponseDto(textDao.findTextAndMetadataById(publishedTextId));
+  }
+
   public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
     log.info("Fetching published text details id={}", id);
     return Optional.ofNullable(textDao.findTextAndMetadataById(id))

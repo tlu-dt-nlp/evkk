@@ -77,6 +77,19 @@ export const useDeleteDonatedText = () => {
   return { deleteDonatedText };
 };
 
+export const usePublishDonatedText = () => {
+  const { fetchData } = useFetch();
+
+  const publishDonatedText = useCallback((id, textUpdateRequest) => {
+    return fetchData(`/api/admin/donated-texts/${id}/publish`, {
+      method: 'POST',
+      ...(textUpdateRequest != null && { body: JSON.stringify(textUpdateRequest) })
+    });
+  }, [fetchData]);
+
+  return { publishDonatedText };
+};
+
 export const useGetPublishedTextDetails = () => {
   const { fetchData } = useFetch();
 

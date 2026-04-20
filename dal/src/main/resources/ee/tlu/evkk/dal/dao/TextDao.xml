@@ -172,4 +172,17 @@
     where id = #{textId}
   </delete>
 
+  <select id="insertDonatedText" resultType="java.util.UUID">
+    insert into core.text (content)
+    values (#{content})
+    returning id
+  </select>
+
+  <insert id="copyPropertiesFromDonatedText">
+    insert into core.text_property (text_id, property_name, property_value)
+    select #{publishedTextId}, property_name, property_value
+    from core.text_property_added
+    where text_id = #{donatedTextId}
+  </insert>
+
 </mapper>

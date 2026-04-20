@@ -42,4 +42,8 @@ public interface TextDao {
   void updateTextContent(@Param("textId") UUID textId, @Param("content") String content);
 
   void deleteById(@Param("textId") UUID textId);
+
+  UUID insertDonatedText(@Param("content") String content);
+
+  void copyPropertiesFromDonatedText(@Param("donatedTextId") UUID donatedTextId, @Param("publishedTextId") UUID publishedTextId);
 }
