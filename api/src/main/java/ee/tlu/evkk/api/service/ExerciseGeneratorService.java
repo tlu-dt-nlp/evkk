@@ -91,14 +91,7 @@ public class ExerciseGeneratorService {
   }
 
   private ExerciseDto generateFromSentences(ExerciseType type, String topic, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks) {
-    List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, type, topic);
-
-    List<ExerciseGeneratorSource> targetSources = sources.stream()
-      .filter(source -> source.getSentenceAsObject().getWords().stream()
-        .anyMatch(word -> isTargetWord(word, type, c1Words, setC1Criteria))
-      )
-      .collect(toList());
-
+    List<ExerciseGeneratorSource> targetSources = findSentenceTargetSources(type, topic, c1Words, setC1Criteria);
     if (targetSources.isEmpty()) {
       return null;
     }
@@ -107,6 +100,20 @@ public class ExerciseGeneratorService {
     List<Blank> globalBlanks = isFillInTheBlanks ? null : new ArrayList<>();
     Set<String> usedHints = new HashSet<>();
 
+    collectSentencesWithBlanks(targetSources, sentencesWithBlanks, type, c1Words, setC1Criteria, isFillInTheBlanks, usedHints, globalBlanks);
+    return buildSentenceExerciseResult(sentencesWithBlanks, globalBlanks, isFillInTheBlanks);
+  }
+
+  private List<ExerciseGeneratorSource> findSentenceTargetSources(ExerciseType type, String topic, List<String> c1Words, boolean setC1Criteria) {
+    List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, type, topic);
+    return sources.stream()
+      .filter(source -> source.getSentenceAsObject().getWords().stream()
+        .anyMatch(word -> isTargetWord(word, type, c1Words, setC1Criteria))
+      )
+      .collect(toList());
+  }
+
+  private void collectSentencesWithBlanks(List<ExerciseGeneratorSource> targetSources, List<SentenceWithBlanks> sentencesWithBlanks, ExerciseType type, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks) {
     for (ExerciseGeneratorSource source : targetSources) {
       if (sentencesWithBlanks.size() >= 5) {
         break;
@@ -117,7 +124,9 @@ public class ExerciseGeneratorService {
         sentencesWithBlanks.add(processedSentence);
       }
     }
+  }
 
+  private ExerciseDto buildSentenceExerciseResult(List<SentenceWithBlanks> sentencesWithBlanks, List<Blank> globalBlanks, boolean isFillInTheBlanks) {
     if (sentencesWithBlanks.isEmpty()) {
       return null;
     }
