@@ -40,13 +40,14 @@ public class ExerciseGeneratorService {
     List<String> c1Words = new ArrayList<>(asList(readResourceAsString(
       INFINITIVE.equals(type) ? "c1_verbs.txt" : "c1_nouns.txt"
     ).split(",")));
+    boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(format);
 
     return TEXT.equals(structureType)
-      ? generateFromTexts(type, format, topic, c1Words)
-      : generateFromSentences(type, format, topic, c1Words);
+      ? generateFromTexts(type, topic, c1Words, isFillInTheBlanks)
+      : generateFromSentences(type, topic, c1Words, isFillInTheBlanks);
   }
 
-  private ExerciseDto generateFromTexts(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
+  private ExerciseDto generateFromTexts(ExerciseType type, String topic, List<String> c1Words, boolean isFillInTheBlanks) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(TEXT, type, topic);
 
     ExerciseGeneratorSource targetSource = sources.stream()
@@ -66,7 +67,6 @@ public class ExerciseGeneratorService {
       return null;
     }
 
-    boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(format);
     StringBuilder modifiedContent = new StringBuilder(targetSource.getContent());
     List<Blank> blanks = new ArrayList<>();
     Set<String> usedHints = new HashSet<>();
@@ -75,19 +75,10 @@ public class ExerciseGeneratorService {
       List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, false);
 
       for (Word targetWord : targetWords) {
-        String hint = getHint(targetWord, isFillInTheBlanks);
-
-        if (usedHints.contains(hint)) {
-          continue;
+        Blank blank = processTargetWord(targetWord, modifiedContent, usedHints, isFillInTheBlanks, 0, 0);
+        if (blank != null) {
+          blanks.add(blank);
         }
-
-        usedHints.add(hint);
-        int wordLength = targetWord.getEndChar() - targetWord.getStartChar();
-        String blanksReplacement = "_".repeat(wordLength);
-
-        modifiedContent.replace(targetWord.getStartChar(), targetWord.getEndChar(), blanksReplacement);
-
-        blanks.add(createBlank(targetWord.getStartChar(), targetWord.getEndChar(), hint, isFillInTheBlanks));
       }
     }
 
@@ -98,7 +89,7 @@ public class ExerciseGeneratorService {
     return new ExerciseDto(modifiedContent.toString(), blanks);
   }
 
-  private ExerciseDto generateFromSentences(ExerciseType type, ExerciseFormat format, String topic, List<String> c1Words) {
+  private ExerciseDto generateFromSentences(ExerciseType type, String topic, List<String> c1Words, boolean isFillInTheBlanks) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, type, topic);
 
     List<ExerciseGeneratorSource> targetSources = sources.stream()
@@ -111,7 +102,6 @@ public class ExerciseGeneratorService {
       return null;
     }
 
-    boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(format);
     List<SentenceWithBlanks> sentencesWithBlanks = new ArrayList<>();
     List<Blank> globalBlanks = isFillInTheBlanks ? null : new ArrayList<>();
     Set<String> usedHints = new HashSet<>();
@@ -128,31 +118,20 @@ public class ExerciseGeneratorService {
         continue;
       }
 
-      int sentenceOffset = sentence.getWords().isEmpty() ? 0 : sentence.getWords().get(0).getStartChar();
       String sentenceText = sentence.getText();
       StringBuilder modifiedSentence = new StringBuilder(sentenceText);
+
       List<Blank> sentenceBlanks = isFillInTheBlanks ? new ArrayList<>() : null;
       int blanksAddedForSentence = 0;
 
+      int sentenceOffset = sentence.getWords().isEmpty() ? 0 : sentence.getWords().get(0).getStartChar();
       int firstWordInTextOffset = calculateFirstWordOffset(sentence, sentenceText);
 
       for (Word targetWord : targetWords) {
-        String hint = getHint(targetWord, isFillInTheBlanks);
-
-        if (usedHints.contains(hint)) {
+        Blank blank = processTargetWord(targetWord, modifiedSentence, usedHints, isFillInTheBlanks, sentenceOffset, firstWordInTextOffset);
+        if (blank == null) {
           continue;
         }
-
-        usedHints.add(hint);
-        int wordLength = targetWord.getEndChar() - targetWord.getStartChar();
-        String blanksReplacement = "_".repeat(wordLength);
-
-        int relativeStart = targetWord.getStartChar() - sentenceOffset + firstWordInTextOffset;
-        int relativeEnd = targetWord.getEndChar() - sentenceOffset + firstWordInTextOffset;
-
-        modifiedSentence.replace(relativeStart, relativeEnd, blanksReplacement);
-
-        Blank blank = createBlank(relativeStart, relativeEnd, hint, isFillInTheBlanks);
 
         if (isFillInTheBlanks) {
           sentenceBlanks.add(blank);
@@ -210,5 +189,23 @@ public class ExerciseGeneratorService {
     String firstWord = sentence.getWords().get(0).getWord();
     int offset = sentenceText.indexOf(firstWord);
     return offset == -1 ? 0 : offset;
+  }
+
+  private Blank processTargetWord(Word targetWord, StringBuilder text, Set<String> usedHints, boolean isFillInTheBlanks, int sentenceOffset, int firstWordOffset) {
+    String hint = getHint(targetWord, isFillInTheBlanks);
+
+    if (usedHints.contains(hint)) {
+      return null;
+    }
+
+    usedHints.add(hint);
+    int wordLength = targetWord.getEndChar() - targetWord.getStartChar();
+    String blanksReplacement = "_".repeat(wordLength);
+
+    int startChar = targetWord.getStartChar() - sentenceOffset + firstWordOffset;
+    int endChar = targetWord.getEndChar() - sentenceOffset + firstWordOffset;
+
+    text.replace(startChar, endChar, blanksReplacement);
+    return createBlank(startChar, endChar, hint, isFillInTheBlanks);
   }
 }
