@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ee.evkk.dto.ExerciseIncorrectAnswerDto;
-import ee.evkk.dto.ExerciseSubmissionDto;
 import ee.tlu.evkk.api.exception.ExerciseInvalidAmountOfAnswersException;
 import ee.tlu.evkk.api.exception.ExerciseNotFoundOrExpiredException;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +22,8 @@ public class ExerciseSubmissionService {
   private final ExerciseAnswerDao exerciseAnswerDao;
   private final ObjectMapper objectMapper;
 
-  public List<ExerciseIncorrectAnswerDto> submitExercise(ExerciseSubmissionDto submission) throws ExerciseNotFoundOrExpiredException, ExerciseInvalidAmountOfAnswersException, JsonProcessingException {
-    ExerciseAnswer exerciseAnswer = exerciseAnswerDao.findById(submission.getExerciseId());
+  public List<ExerciseIncorrectAnswerDto> submitExercise(UUID exerciseId, List<String> userAnswers) throws ExerciseNotFoundOrExpiredException, ExerciseInvalidAmountOfAnswersException, JsonProcessingException {
+    ExerciseAnswer exerciseAnswer = exerciseAnswerDao.findById(exerciseId);
 
     if (exerciseAnswer == null) {
       throw new ExerciseNotFoundOrExpiredException();
@@ -34,12 +34,12 @@ public class ExerciseSubmissionService {
       new TypeReference<>() {}
     );
 
-    if (submission.getAnswers().size() != correctAnswers.size()) {
+    if (userAnswers.size() != correctAnswers.size()) {
       throw new ExerciseInvalidAmountOfAnswersException();
     }
 
     List<ExerciseIncorrectAnswerDto> mistakes = new ArrayList<>();
-    validateAnswers(correctAnswers, submission.getAnswers(), mistakes);
+    validateAnswers(correctAnswers, userAnswers, mistakes);
 
     return mistakes;
   }
