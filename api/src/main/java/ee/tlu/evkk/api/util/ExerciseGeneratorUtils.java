@@ -41,15 +41,6 @@ public class ExerciseGeneratorUtils {
     return matchesCriteria(word, criteriaWords, targetWordCriteria);
   }
 
-  private static boolean matchesCriteria(Word word, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
-    if (NONE.equals(targetWordCriteria)) {
-      return true;
-    }
-
-    String lemma = sanitizeLemmaString(word.getLemma());
-    return criteriaWords.contains(lemma);
-  }
-
   public static int calculateFirstWordOffset(ExerciseGeneratorAnalysisDto.Sentence sentence, String sentenceText) {
     if (sentence.getWords().isEmpty()) {
       return 0;
@@ -57,5 +48,14 @@ public class ExerciseGeneratorUtils {
     String firstWord = sentence.getWords().get(0).getWord();
     int offset = sentenceText.indexOf(firstWord);
     return offset == -1 ? 0 : offset;
+  }
+
+  private static boolean matchesCriteria(Word word, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
+    if (NONE.equals(targetWordCriteria)) {
+      return true;
+    }
+
+    String lemma = sanitizeLemmaString(word.getLemma());
+    return criteriaWords.contains(lemma);
   }
 }
