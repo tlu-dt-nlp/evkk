@@ -8,6 +8,7 @@ import ee.evkk.dto.ExerciseGeneratorAnalysisDto.Word;
 import ee.evkk.dto.enums.ExerciseFormat;
 import ee.evkk.dto.enums.ExerciseStructureType;
 import ee.evkk.dto.enums.ExerciseType;
+import ee.evkk.dto.enums.TargetWordCriteria;
 import ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao;
 import ee.tlu.evkk.dal.dto.ExerciseGeneratorSource;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,8 @@ import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
 import static ee.evkk.dto.enums.ExerciseStructureType.SENTENCE;
 import static ee.evkk.dto.enums.ExerciseStructureType.TEXT;
 import static ee.evkk.dto.enums.ExerciseType.INFINITIVE;
+import static ee.evkk.dto.enums.TargetWordCriteria.C1_OR_B2;
+import static ee.evkk.dto.enums.TargetWordCriteria.NONE;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.calculateFirstWordOffset;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isInfinitiveTarget;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isObjectTarget;
@@ -37,19 +40,36 @@ public class ExerciseGeneratorService {
 
   private final ExerciseGeneratorSourceDao exerciseGeneratorSourceDao;
 
-  public ExerciseDto generateExercise(ExerciseType type, ExerciseStructureType structureType, ExerciseFormat format, String topic, boolean setC1Criteria) {
-    List<String> c1Words = new ArrayList<>(asList(readResourceAsString(
-      INFINITIVE.equals(type) ? "c1_verbs.txt" : "c1_nouns.txt"
-    ).split(",")));
+  public ExerciseDto generateExercise(ExerciseType type, ExerciseStructureType structureType, ExerciseFormat format, TargetWordCriteria targetWordCriteria, String topic) {
+    List<String> criteriaWords = loadCriteriaWords(type, targetWordCriteria);
     boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(format);
 
     return TEXT.equals(structureType)
-      ? generateFromTexts(type, topic, c1Words, setC1Criteria, isFillInTheBlanks)
-      : generateFromSentences(type, topic, c1Words, setC1Criteria, isFillInTheBlanks);
+      ? generateFromTexts(type, topic, criteriaWords, targetWordCriteria, isFillInTheBlanks)
+      : generateFromSentences(type, topic, criteriaWords, targetWordCriteria, isFillInTheBlanks);
   }
 
-  private ExerciseDto generateFromTexts(ExerciseType type, String topic, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks) {
-    ExerciseGeneratorSource targetSource = findTextTargetSource(type, topic, c1Words, setC1Criteria);
+  private List<String> loadCriteriaWords(ExerciseType type, TargetWordCriteria targetWordCriteria) {
+    if (NONE.equals(targetWordCriteria)) {
+      return new ArrayList<>();
+    }
+
+    boolean isInfinitive = INFINITIVE.equals(type);
+    List<String> words = new ArrayList<>(asList(readResourceAsString(
+      isInfinitive ? "c1_verbs.txt" : "c1_nouns.txt"
+    ).split(",")));
+
+    if (C1_OR_B2.equals(targetWordCriteria)) {
+      words.addAll(asList(readResourceAsString(
+        isInfinitive ? "b2_verbs.txt" : "b2_nouns.txt"
+      ).split(",")));
+    }
+
+    return words;
+  }
+
+  private ExerciseDto generateFromTexts(ExerciseType type, String topic, List<String> criteriaWords, TargetWordCriteria targetWordCriteria, boolean isFillInTheBlanks) {
+    ExerciseGeneratorSource targetSource = findTextTargetSource(type, topic, criteriaWords, targetWordCriteria);
     if (targetSource == null) {
       return null;
     }
@@ -58,17 +78,17 @@ public class ExerciseGeneratorService {
     List<Blank> blanks = new ArrayList<>();
     Set<String> usedHints = new HashSet<>();
 
-    collectTextBlanks(targetSource, blanks, type, c1Words, setC1Criteria, isFillInTheBlanks, modifiedContent, usedHints);
+    collectTextBlanks(targetSource, blanks, type, criteriaWords, targetWordCriteria, isFillInTheBlanks, modifiedContent, usedHints);
     return buildTextExerciseResult(modifiedContent, blanks, isFillInTheBlanks);
   }
 
-  private ExerciseGeneratorSource findTextTargetSource(ExerciseType type, String topic, List<String> c1Words, boolean setC1Criteria) {
+  private ExerciseGeneratorSource findTextTargetSource(ExerciseType type, String topic, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(TEXT, type, topic);
     return sources.stream()
       .filter(source -> {
         long matchingWordCount = source.getTextAsObject().getSentences().stream()
           .flatMap(sentence -> sentence.getWords().stream())
-          .filter(word -> isTargetWord(word, type, c1Words, setC1Criteria))
+          .filter(word -> isTargetWord(word, type, criteriaWords, targetWordCriteria))
           .map(Word::getWord)
           .distinct()
           .count();
@@ -78,9 +98,9 @@ public class ExerciseGeneratorService {
       .orElse(null);
   }
 
-  private void collectTextBlanks(ExerciseGeneratorSource targetSource, List<Blank> blanks, ExerciseType type, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks, StringBuilder modifiedContent, Set<String> usedHints) {
+  private void collectTextBlanks(ExerciseGeneratorSource targetSource, List<Blank> blanks, ExerciseType type, List<String> criteriaWords, TargetWordCriteria targetWordCriteria, boolean isFillInTheBlanks, StringBuilder modifiedContent, Set<String> usedHints) {
     for (Sentence sentence : targetSource.getTextAsObject().getSentences()) {
-      List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, setC1Criteria);
+      List<Word> targetWords = filterTargetWords(sentence.getWords(), type, criteriaWords, targetWordCriteria);
 
       for (Word targetWord : targetWords) {
         Blank blank = processTargetWord(targetWord, modifiedContent, usedHints, isFillInTheBlanks, 0, 0);
@@ -98,8 +118,8 @@ public class ExerciseGeneratorService {
     return new ExerciseDto(modifiedContent.toString(), blanks);
   }
 
-  private ExerciseDto generateFromSentences(ExerciseType type, String topic, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks) {
-    List<ExerciseGeneratorSource> targetSources = findSentenceTargetSources(type, topic, c1Words, setC1Criteria);
+  private ExerciseDto generateFromSentences(ExerciseType type, String topic, List<String> criteriaWords, TargetWordCriteria targetWordCriteria, boolean isFillInTheBlanks) {
+    List<ExerciseGeneratorSource> targetSources = findSentenceTargetSources(type, topic, criteriaWords, targetWordCriteria);
     if (targetSources.isEmpty()) {
       return null;
     }
@@ -108,26 +128,26 @@ public class ExerciseGeneratorService {
     List<Blank> globalBlanks = isFillInTheBlanks ? null : new ArrayList<>();
     Set<String> usedHints = new HashSet<>();
 
-    collectSentenceBlanks(targetSources, sentencesWithBlanks, type, c1Words, setC1Criteria, isFillInTheBlanks, usedHints, globalBlanks);
+    collectSentenceBlanks(targetSources, sentencesWithBlanks, type, criteriaWords, targetWordCriteria, isFillInTheBlanks, usedHints, globalBlanks);
     return buildSentenceExerciseResult(sentencesWithBlanks, globalBlanks, isFillInTheBlanks);
   }
 
-  private List<ExerciseGeneratorSource> findSentenceTargetSources(ExerciseType type, String topic, List<String> c1Words, boolean setC1Criteria) {
+  private List<ExerciseGeneratorSource> findSentenceTargetSources(ExerciseType type, String topic, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, type, topic);
     return sources.stream()
       .filter(source -> source.getSentenceAsObject().getWords().stream()
-        .anyMatch(word -> isTargetWord(word, type, c1Words, setC1Criteria))
+        .anyMatch(word -> isTargetWord(word, type, criteriaWords, targetWordCriteria))
       )
       .collect(toList());
   }
 
-  private void collectSentenceBlanks(List<ExerciseGeneratorSource> targetSources, List<SentenceWithBlanks> sentencesWithBlanks, ExerciseType type, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks) {
+  private void collectSentenceBlanks(List<ExerciseGeneratorSource> targetSources, List<SentenceWithBlanks> sentencesWithBlanks, ExerciseType type, List<String> criteriaWords, TargetWordCriteria targetWordCriteria, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks) {
     for (ExerciseGeneratorSource source : targetSources) {
       if (sentencesWithBlanks.size() >= 5) {
         break;
       }
 
-      SentenceWithBlanks processedSentence = processSingleSentence(source, type, c1Words, setC1Criteria, isFillInTheBlanks, usedHints, globalBlanks);
+      SentenceWithBlanks processedSentence = processSingleSentence(source, type, criteriaWords, targetWordCriteria, isFillInTheBlanks, usedHints, globalBlanks);
       if (processedSentence != null) {
         sentencesWithBlanks.add(processedSentence);
       }
@@ -147,15 +167,15 @@ public class ExerciseGeneratorService {
     return new ExerciseDto(sentencesWithBlanks);
   }
 
-  private boolean isTargetWord(Word word, ExerciseType type, List<String> c1Words, boolean setC1Criteria) {
+  private boolean isTargetWord(Word word, ExerciseType type, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
     return INFINITIVE.equals(type)
-      ? isInfinitiveTarget(word, c1Words, setC1Criteria)
-      : isObjectTarget(word, c1Words, setC1Criteria);
+      ? isInfinitiveTarget(word, criteriaWords, targetWordCriteria)
+      : isObjectTarget(word, criteriaWords, targetWordCriteria);
   }
 
-  private List<Word> filterTargetWords(List<Word> words, ExerciseType type, List<String> c1Words, boolean setC1Criteria) {
+  private List<Word> filterTargetWords(List<Word> words, ExerciseType type, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
     return words.stream()
-      .filter(word -> isTargetWord(word, type, c1Words, setC1Criteria))
+      .filter(word -> isTargetWord(word, type, criteriaWords, targetWordCriteria))
       .collect(toList());
   }
 
@@ -171,9 +191,9 @@ public class ExerciseGeneratorService {
     );
   }
 
-  private SentenceWithBlanks processSingleSentence(ExerciseGeneratorSource source, ExerciseType type, List<String> c1Words, boolean setC1Criteria, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks) {
+  private SentenceWithBlanks processSingleSentence(ExerciseGeneratorSource source, ExerciseType type, List<String> criteriaWords, TargetWordCriteria targetWordCriteria, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks) {
     Sentence sentence = source.getSentenceAsObject();
-    List<Word> targetWords = filterTargetWords(sentence.getWords(), type, c1Words, setC1Criteria);
+    List<Word> targetWords = filterTargetWords(sentence.getWords(), type, criteriaWords, targetWordCriteria);
 
     if (targetWords.isEmpty()) {
       return null;
