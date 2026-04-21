@@ -21,4 +21,14 @@ CREATE INDEX idx_exercise_generator_source_topic ON core.exercise_generator_sour
 CREATE INDEX idx_exercise_generator_source_analysis ON core.exercise_generator_source USING GIN (analysis);
 CREATE INDEX idx_exercise_generator_source_grammar_errors ON core.exercise_generator_source (grammarcheck_error_count) WHERE type = 'text';
 
--- todo add table for correct answers + cronjob to clean it
+
+CREATE TABLE core.exercise_answer
+(
+  id            uuid DEFAULT uuid_generate_v4(),
+  answers       jsonb NOT NULL,
+  exercise_data jsonb NOT NULL,
+
+  CONSTRAINT exercise_answer_pk PRIMARY KEY (id)
+);
+
+CALL core.attach_meta_trigger('core.exercise_answer');
