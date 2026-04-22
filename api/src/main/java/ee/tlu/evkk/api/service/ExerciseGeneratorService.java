@@ -13,6 +13,7 @@ import ee.tlu.evkk.api.exception.ExerciseCouldNotBeGeneratedException;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao;
 import ee.tlu.evkk.dal.dto.ExerciseGeneratorSource;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -50,36 +51,35 @@ public class ExerciseGeneratorService {
   public ExerciseDto generateExercise(ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException {
     List<String> criteriaWords = loadCriteriaWords(request.getType(), request.getTargetWordCriteria());
     boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(request.getFormat());
-    List<String> correctAnswers = new ArrayList<>();
+    GenerationContext generationContext = new GenerationContext(criteriaWords, isFillInTheBlanks);
 
     ExerciseDto exercise = TEXT.equals(request.getStructureType())
-      ? generateFromTexts(request, criteriaWords, isFillInTheBlanks, correctAnswers)
-      : generateFromSentences(request, criteriaWords, isFillInTheBlanks, correctAnswers);
+      ? generateFromTexts(request, generationContext)
+      : generateFromSentences(request, generationContext);
 
     if (exercise == null) {
       throw new ExerciseCouldNotBeGeneratedException();
     }
 
-    if (!isFillInTheBlanks && exercise.getBlanks() != null) {
+    if (!generationContext.isFillInTheBlanks() && exercise.getBlanks() != null) {
       shuffle(exercise.getBlanks());
     }
 
     exercise.setExerciseId(randomUUID());
-    storeAnswers(exercise.getExerciseId(), correctAnswers, exercise);
+    storeAnswers(exercise.getExerciseId(), generationContext.getCorrectAnswers(), exercise);
     return exercise;
   }
 
-  private ExerciseDto generateFromTexts(ExerciseRequestDto request, List<String> criteriaWords, boolean isFillInTheBlanks, List<String> correctAnswers) {
-    ExerciseGeneratorSource targetSource = findTextTargetSource(request, criteriaWords);
+  private ExerciseDto generateFromTexts(ExerciseRequestDto request, GenerationContext generationContext) {
+    ExerciseGeneratorSource targetSource = findTextTargetSource(request, generationContext.getCriteriaWords());
     if (targetSource == null) {
       return null;
     }
 
     StringBuilder modifiedContent = new StringBuilder(targetSource.getContent());
     List<Blank> blanks = new ArrayList<>();
-    Set<String> usedHints = new HashSet<>();
 
-    collectTextBlanks(request, targetSource, blanks, criteriaWords, isFillInTheBlanks, modifiedContent, usedHints, correctAnswers);
+    collectTextBlanks(request, generationContext, targetSource, blanks, modifiedContent);
     return new ExerciseDto(modifiedContent.toString(), blanks);
   }
 
@@ -99,18 +99,17 @@ public class ExerciseGeneratorService {
       .orElse(null);
   }
 
-  private ExerciseDto generateFromSentences(ExerciseRequestDto request, List<String> criteriaWords, boolean isFillInTheBlanks, List<String> correctAnswers) {
-    List<ExerciseGeneratorSource> targetSources = findSentenceTargetSources(request, criteriaWords);
+  private ExerciseDto generateFromSentences(ExerciseRequestDto request, GenerationContext generationContext) {
+    List<ExerciseGeneratorSource> targetSources = findSentenceTargetSources(request, generationContext.getCriteriaWords());
     if (targetSources.isEmpty()) {
       return null;
     }
 
     List<SentenceWithBlanks> sentencesWithBlanks = new ArrayList<>();
-    List<Blank> globalBlanks = isFillInTheBlanks ? null : new ArrayList<>();
-    Set<String> usedHints = new HashSet<>();
+    List<Blank> globalBlanks = generationContext.isFillInTheBlanks() ? null : new ArrayList<>();
 
-    collectSentenceBlanks(request, targetSources, sentencesWithBlanks, criteriaWords, isFillInTheBlanks, usedHints, globalBlanks, correctAnswers);
-    return buildSentenceExerciseResult(sentencesWithBlanks, globalBlanks, isFillInTheBlanks);
+    collectSentenceBlanks(request, generationContext, targetSources, sentencesWithBlanks, globalBlanks);
+    return buildSentenceExerciseResult(sentencesWithBlanks, globalBlanks, generationContext.isFillInTheBlanks());
   }
 
   private List<ExerciseGeneratorSource> findSentenceTargetSources(ExerciseRequestDto request, List<String> criteriaWords) {
@@ -149,12 +148,12 @@ public class ExerciseGeneratorService {
     return words;
   }
 
-  private static void collectTextBlanks(ExerciseRequestDto request, ExerciseGeneratorSource targetSource, List<Blank> blanks, List<String> criteriaWords, boolean isFillInTheBlanks, StringBuilder modifiedContent, Set<String> usedHints, List<String> correctAnswers) {
+  private static void collectTextBlanks(ExerciseRequestDto request, GenerationContext generationContext, ExerciseGeneratorSource targetSource, List<Blank> blanks, StringBuilder modifiedContent) {
     for (Sentence sentence : targetSource.getTextAsObject().getSentences()) {
-      List<Word> targetWords = filterTargetWords(sentence.getWords(), request, criteriaWords);
+      List<Word> targetWords = filterTargetWords(sentence.getWords(), request, generationContext.getCriteriaWords());
 
       for (Word targetWord : targetWords) {
-        Blank blank = processTargetWord(targetWord, modifiedContent, usedHints, isFillInTheBlanks, 0, 0, correctAnswers);
+        Blank blank = processTargetWord(targetWord, modifiedContent, generationContext, 0, 0);
         if (blank != null) {
           blanks.add(blank);
         }
@@ -162,13 +161,13 @@ public class ExerciseGeneratorService {
     }
   }
 
-  private static void collectSentenceBlanks(ExerciseRequestDto request, List<ExerciseGeneratorSource> targetSources, List<SentenceWithBlanks> sentencesWithBlanks, List<String> criteriaWords, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks, List<String> correctAnswers) {
+  private static void collectSentenceBlanks(ExerciseRequestDto request, GenerationContext generationContext, List<ExerciseGeneratorSource> targetSources, List<SentenceWithBlanks> sentencesWithBlanks, List<Blank> globalBlanks) {
     for (ExerciseGeneratorSource source : targetSources) {
       if (sentencesWithBlanks.size() >= 5) {
         break;
       }
 
-      SentenceWithBlanks processedSentence = processSingleSentence(request, source, criteriaWords, isFillInTheBlanks, usedHints, globalBlanks, correctAnswers);
+      SentenceWithBlanks processedSentence = processSingleSentence(request, generationContext, source, globalBlanks);
       if (processedSentence != null) {
         sentencesWithBlanks.add(processedSentence);
       }
@@ -213,9 +212,9 @@ public class ExerciseGeneratorService {
     );
   }
 
-  private static SentenceWithBlanks processSingleSentence(ExerciseRequestDto request, ExerciseGeneratorSource source, List<String> criteriaWords, boolean isFillInTheBlanks, Set<String> usedHints, List<Blank> globalBlanks, List<String> correctAnswers) {
+  private static SentenceWithBlanks processSingleSentence(ExerciseRequestDto request, GenerationContext generationContext, ExerciseGeneratorSource source, List<Blank> globalBlanks) {
     Sentence sentence = source.getSentenceAsObject();
-    List<Word> targetWords = filterTargetWords(sentence.getWords(), request, criteriaWords);
+    List<Word> targetWords = filterTargetWords(sentence.getWords(), request, generationContext.getCriteriaWords());
 
     if (targetWords.isEmpty()) {
       return null;
@@ -223,24 +222,24 @@ public class ExerciseGeneratorService {
 
     String sentenceText = sentence.getText();
     StringBuilder modifiedSentence = new StringBuilder(sentenceText);
-    List<Blank> sentenceBlanks = isFillInTheBlanks ? new ArrayList<>() : null;
+    List<Blank> sentenceBlanks = generationContext.isFillInTheBlanks() ? new ArrayList<>() : null;
 
     int sentenceOffset = sentence.getWords().isEmpty() ? 0 : sentence.getWords().get(0).getStartChar();
     int firstWordOffset = calculateFirstWordOffset(sentence, sentenceText);
 
-    return processTargetWords(targetWords, modifiedSentence, usedHints, isFillInTheBlanks, sentenceOffset, firstWordOffset, sentenceBlanks, globalBlanks, correctAnswers);
+    return processTargetWords(targetWords, modifiedSentence, generationContext, sentenceOffset, firstWordOffset, sentenceBlanks, globalBlanks);
   }
 
-  private static SentenceWithBlanks processTargetWords(List<Word> targetWords, StringBuilder modifiedSentence, Set<String> usedHints, boolean isFillInTheBlanks, int sentenceOffset, int firstWordOffset, List<Blank> sentenceBlanks, List<Blank> globalBlanks, List<String> correctAnswers) {
+  private static SentenceWithBlanks processTargetWords(List<Word> targetWords, StringBuilder modifiedSentence, GenerationContext generationContext, int sentenceOffset, int firstWordOffset, List<Blank> sentenceBlanks, List<Blank> globalBlanks) {
     boolean hasBlanks = false;
 
     for (Word targetWord : targetWords) {
-      Blank blank = processTargetWord(targetWord, modifiedSentence, usedHints, isFillInTheBlanks, sentenceOffset, firstWordOffset, correctAnswers);
+      Blank blank = processTargetWord(targetWord, modifiedSentence, generationContext, sentenceOffset, firstWordOffset);
       if (blank == null) {
         continue;
       }
 
-      if (isFillInTheBlanks) {
+      if (generationContext.isFillInTheBlanks()) {
         sentenceBlanks.add(blank);
       } else {
         globalBlanks.add(blank);
@@ -251,15 +250,15 @@ public class ExerciseGeneratorService {
     return hasBlanks ? new SentenceWithBlanks(modifiedSentence.toString(), sentenceBlanks) : null;
   }
 
-  private static Blank processTargetWord(Word targetWord, StringBuilder text, Set<String> usedHints, boolean isFillInTheBlanks, int sentenceOffset, int firstWordOffset, List<String> correctAnswers) {
-    String hint = getHint(targetWord, isFillInTheBlanks);
+  private static Blank processTargetWord(Word targetWord, StringBuilder text, GenerationContext generationContext, int sentenceOffset, int firstWordOffset) {
+    String hint = getHint(targetWord, generationContext.isFillInTheBlanks());
 
-    if (usedHints.contains(hint)) {
+    if (generationContext.getUsedHints().contains(hint)) {
       return null;
     }
 
-    usedHints.add(hint);
-    correctAnswers.add(targetWord.getWord());
+    generationContext.getUsedHints().add(hint);
+    generationContext.getCorrectAnswers().add(targetWord.getWord());
 
     int wordLength = targetWord.getEndChar() - targetWord.getStartChar();
     String blanksReplacement = "_".repeat(wordLength);
@@ -268,6 +267,20 @@ public class ExerciseGeneratorService {
     int endChar = targetWord.getEndChar() - sentenceOffset + firstWordOffset;
 
     text.replace(startChar, endChar, blanksReplacement);
-    return createBlank(startChar, endChar, hint, isFillInTheBlanks);
+    return createBlank(startChar, endChar, hint, generationContext.isFillInTheBlanks());
+  }
+
+  @Data
+  private static class GenerationContext {
+
+    private List<String> criteriaWords;
+    private boolean isFillInTheBlanks;
+    private Set<String> usedHints = new HashSet<>();
+    private List<String> correctAnswers = new ArrayList<>();
+
+    private GenerationContext(List<String> criteriaWords, boolean isFillInTheBlanks) {
+      this.criteriaWords = criteriaWords;
+      this.isFillInTheBlanks = isFillInTheBlanks;
+    }
   }
 }
