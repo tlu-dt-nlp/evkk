@@ -1,11 +1,9 @@
 package ee.tlu.evkk.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ee.evkk.dto.TextDetailsResponseDto;
-import ee.evkk.dto.TextMetadataDto;
-import ee.evkk.dto.TextUpdateRequestDto;
-import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.evkk.dto.*;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
+import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
@@ -33,13 +31,16 @@ class AdminTextServiceTest {
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Mock
+  private TextService textService;
+
+  @Mock
   private TextAddedDao textAddedDao;
 
   @Mock
-  private TextDao textDao;
+  private TextPropertyAddedDao textPropertyAddedDao;
 
   @Mock
-  private TextPropertyAddedDao textPropertyAddedDao;
+  private TextDao textDao;
 
   @Mock
   private TextPropertyDao textPropertyDao;
@@ -59,6 +60,21 @@ class AdminTextServiceTest {
     // Then
     assertThat(response.getCount()).isEqualTo(expectedCount);
     verify(textAddedDao).count();
+  }
+
+  @Test
+  void getDonatedTexts_shouldReturnJsonFromTextService() {
+    // Given
+    CorpusRequestDto request = new CorpusRequestDto();
+    String expectedJson = "[]";
+    when(textService.detailneparing(any())).thenReturn(expectedJson);
+
+    // When
+    String response = adminTextService.getDonatedTexts(request);
+
+    // Then
+    assertThat(response).isEqualTo(expectedJson);
+    verify(textService).detailneparing(any());
   }
 
   @Test
@@ -581,6 +597,21 @@ class AdminTextServiceTest {
     verify(textDao, never()).copyPropertiesFromDonatedText(any(), any());
     verify(textPropertyAddedDao, never()).deleteByTextId(any());
     verify(textAddedDao, never()).deleteById(any());
+  }
+
+  @Test
+  void getPublishedTexts_shouldReturnJsonFromTextService() {
+    // Given
+    CorpusRequestDto request = new CorpusRequestDto();
+    String expectedJson = "[]";
+    when(textService.detailneparing(any())).thenReturn(expectedJson);
+
+    // When
+    String response = adminTextService.getPublishedTexts(request);
+
+    // Then
+    assertThat(response).isEqualTo(expectedJson);
+    verify(textService).detailneparing(any());
   }
 
   @Test

@@ -13,5 +13,7 @@ public class TextMetadataDto {
 
   @NotBlank
   private String propertyName;
+
+  @NotBlank
   private String propertyValue;
 }

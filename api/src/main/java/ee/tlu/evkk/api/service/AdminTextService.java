@@ -1,10 +1,10 @@
 package ee.tlu.evkk.api.service;
 
-import ee.evkk.dto.TextDetailsResponseDto;
-import ee.evkk.dto.TextMetadataDto;
-import ee.evkk.dto.TextUpdateRequestDto;
-import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.evkk.dto.*;
+import ee.evkk.dto.enums.CorpusTextContext;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
+import ee.tlu.evkk.core.service.TextService;
+import ee.tlu.evkk.core.service.helpers.CorpusSearchCriteria;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
@@ -26,9 +26,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminTextService {
 
+  private final TextService textService;
+
   private final TextAddedDao textAddedDao;
-  private final TextDao textDao;
   private final TextPropertyAddedDao textPropertyAddedDao;
+  private final TextDao textDao;
   private final TextPropertyDao textPropertyDao;
 
   public TextsToReviewResponseDto getTextsToReview() {
@@ -36,6 +38,18 @@ public class AdminTextService {
     return TextsToReviewResponseDto.builder()
       .count(textAddedDao.count())
       .build();
+  }
+
+  public String getDonatedTexts(CorpusRequestDto request) {
+    log.info("Fetching donated texts");
+
+    CorpusSearchCriteria searchCriteria = CorpusSearchCriteria.builder()
+      .corpusRequestDto(request)
+      .corpusTextContext(CorpusTextContext.DONATED)
+      .includeMeta(true)
+      .build();
+
+    return textService.detailneparing(searchCriteria);
   }
 
   public Optional<TextDetailsResponseDto> getDonatedTextDetails(UUID id) {
@@ -82,6 +96,18 @@ public class AdminTextService {
     textAddedDao.deleteById(id);
 
     return toTextDetailsResponseDto(textDao.findTextAndMetadataById(publishedTextId));
+  }
+
+  public String getPublishedTexts(CorpusRequestDto request) {
+    log.info("Fetching published texts");
+
+    CorpusSearchCriteria searchCriteria = CorpusSearchCriteria.builder()
+      .corpusRequestDto(request)
+      .corpusTextContext(CorpusTextContext.PUBLISHED)
+      .includeMeta(true)
+      .build();
+
+    return textService.detailneparing(searchCriteria);
   }
 
   public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
