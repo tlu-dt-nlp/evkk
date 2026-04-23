@@ -1,6 +1,7 @@
 package ee.tlu.evkk.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.tlu.evkk.api.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -43,6 +44,43 @@ class AdminControllerTest extends IntegrationTest {
   void authenticatedUserCanGetAmountOfTextsToReview() throws Exception {
     mockMvc.perform(
         get("/admin/texts-to-review"))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot get donated texts")
+  void unauthenticatedUserCannotGetDonatedTexts() throws Exception {
+    CorpusRequestDto request = new CorpusRequestDto();
+    mockMvc.perform(
+        post("/admin/donated-texts")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot get donated texts")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotGetDonatedTexts() throws Exception {
+    CorpusRequestDto request = new CorpusRequestDto();
+    mockMvc.perform(
+        post("/admin/donated-texts")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can get donated texts")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserCanGetDonatedTexts() throws Exception {
+    CorpusRequestDto request = new CorpusRequestDto();
+    request.setLanguage("nonExistentLanguage");
+
+    mockMvc.perform(
+        post("/admin/donated-texts")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isOk());
   }
 
@@ -215,6 +253,43 @@ class AdminControllerTest extends IntegrationTest {
     mockMvc.perform(
         post("/admin/donated-texts/" + nonExistentId + "/publish"))
       .andExpect(status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot get published texts")
+  void unauthenticatedUserCannotGetPublishedTexts() throws Exception {
+    CorpusRequestDto request = new CorpusRequestDto();
+    mockMvc.perform(
+        post("/admin/published-texts")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot get published texts")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotGetPublishedTexts() throws Exception {
+    CorpusRequestDto request = new CorpusRequestDto();
+    mockMvc.perform(
+        post("/admin/published-texts")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can get published texts")
+  @WithMockUser(username = "admin", roles = {"ADMIN"})
+  void authenticatedUserCanGetPublishedTexts() throws Exception {
+    CorpusRequestDto request = new CorpusRequestDto();
+    request.setLanguage("nonExistentLanguage");
+
+    mockMvc.perform(
+        post("/admin/published-texts")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(objectMapper.writeValueAsString(request)))
+      .andExpect(status().isOk());
   }
 
   @Test

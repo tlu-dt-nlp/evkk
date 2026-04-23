@@ -5,9 +5,12 @@ import ee.evkk.dto.CommonTextRequestDto;
 import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.enums.CorpusDownloadForm;
+import ee.evkk.dto.enums.CorpusTextContext;
 import ee.tlu.evkk.core.integration.StanzaServerClient;
 import ee.tlu.evkk.core.service.dto.TextWithComplexity;
+import ee.tlu.evkk.core.service.helpers.CorpusSearchCriteria;
 import ee.tlu.evkk.dal.dao.TextDao;
+import ee.tlu.evkk.dal.dao.TextQueryDao;
 import ee.tlu.evkk.dal.dto.CorpusDownloadResponseEntity;
 import ee.tlu.evkk.dal.dto.TextQueryDisjunctionParamHelper;
 import ee.tlu.evkk.dal.dto.TextQueryMultiParamHelper;
@@ -56,6 +59,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class TextService {
 
   private final TextDao textDao;
+  private final TextQueryDao textQueryDao;
   private final StanzaServerClient stanzaServerClient;
 
   private static final Pattern fileNameCharacterWhitelist = compile("[\\p{L}0-9& ._()!-]");
@@ -73,7 +77,11 @@ public class TextService {
     return result.toString().trim();
   }
 
-  public String detailneparing(CorpusRequestDto corpusRequestDto) {
+  public String detailneparing(CorpusSearchCriteria corpusSearchCriteria) {
+    CorpusRequestDto corpusRequestDto = corpusSearchCriteria.getCorpusRequestDto();
+    CorpusTextContext corpusTextContext = corpusSearchCriteria.getCorpusTextContext();
+    boolean isIncludeMeta = corpusSearchCriteria.isIncludeMeta();
+
     List<TextQuerySingleParamHelper> singleParamHelpers = new ArrayList<>();
     List<TextQueryRangeParamBaseHelper> rangeParamBaseHelpers = new ArrayList<>();
     List<TextQueryMultiParamHelper> multiParamHelpers = new ArrayList<>();
@@ -161,7 +169,17 @@ public class TextService {
       rangeParamBaseHelpers.add(createRangeBaseHelper("p22", "sentenceCount", corpusRequestDto.getSentences()));
     }
 
-    String daoResponse = textDao.detailedTextQueryByParameters(multiParamHelpers, singleParamHelpers, rangeParamBaseHelpers, studyLevelAndDegreeHelper, otherLangHelper, usedMultiMaterialsHelper);
+    String daoResponse = textQueryDao.detailedTextQueryByParameters(
+      corpusTextContext.getTextTable(),
+      corpusTextContext.getPropertyTable(),
+      isIncludeMeta,
+      multiParamHelpers,
+      singleParamHelpers,
+      rangeParamBaseHelpers,
+      studyLevelAndDegreeHelper,
+      otherLangHelper,
+      usedMultiMaterialsHelper
+    );
     return isNotBlank(daoResponse) ? daoResponse : new ArrayList<>().toString();
   }
 

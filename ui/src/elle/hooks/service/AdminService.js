@@ -42,6 +42,19 @@ export const useGetTextsToReview = () => {
   return { getTextsToReview };
 };
 
+export const useGetDonatedTexts = () => {
+  const { fetchData } = useFetch();
+
+  const getDonatedTexts = useCallback((textsRequest) => {
+    return fetchData(`/api/admin/donated-texts`, {
+      method: 'POST',
+      body: JSON.stringify(textsRequest)
+    });
+  }, [fetchData]);
+
+  return { getDonatedTexts };
+};
+
 export const useGetDonatedTextDetails = () => {
   const { fetchData } = useFetch();
 
@@ -88,6 +101,19 @@ export const usePublishDonatedText = () => {
   }, [fetchData]);
 
   return { publishDonatedText };
+};
+
+export const useGetPublishedTexts = () => {
+  const { fetchData } = useFetch();
+
+  const getPublishedTexts = useCallback((textsRequest) => {
+    return fetchData(`/api/admin/published-texts`, {
+      method: 'POST',
+      body: JSON.stringify(textsRequest)
+    });
+  }, [fetchData]);
+
+  return { getPublishedTexts };
 };
 
 export const useGetPublishedTextDetails = () => {

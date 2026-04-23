@@ -3,10 +3,6 @@ package ee.tlu.evkk.dal.dao;
 import ee.tlu.evkk.dal.dto.CorpusDownloadResponseEntity;
 import ee.tlu.evkk.dal.dto.Text;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
-import ee.tlu.evkk.dal.dto.TextQueryDisjunctionParamHelper;
-import ee.tlu.evkk.dal.dto.TextQueryMultiParamHelper;
-import ee.tlu.evkk.dal.dto.TextQueryRangeParamBaseHelper;
-import ee.tlu.evkk.dal.dto.TextQuerySingleParamHelper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -26,8 +22,6 @@ public interface TextDao {
   String findUnanalysedTextsByIds(@Param("ids") List<UUID> ids);
 
   TextAndMetadata findTextAndMetadataById(@Param("textId") UUID textId);
-
-  String detailedTextQueryByParameters(@Param("multiParamHelpers") List<TextQueryMultiParamHelper> multiParamHelpers, @Param("singleParamHelpers") List<TextQuerySingleParamHelper> singleParamHelpers, @Param("rangeParamHelpers") List<TextQueryRangeParamBaseHelper> rangeParamHelpers, @Param("studyLevelAndDegreeHelper") TextQueryDisjunctionParamHelper studyLevelAndDegreeHelper, @Param("otherLangHelper") TextQuerySingleParamHelper otherLangHelper, @Param("usedMultiMaterialsHelper") TextQueryMultiParamHelper usedMultiMaterialsHelper);
 
   List<CorpusDownloadResponseEntity> findTextContentsAndTitlesByIds(@Param("ids") List<UUID> ids);
 
