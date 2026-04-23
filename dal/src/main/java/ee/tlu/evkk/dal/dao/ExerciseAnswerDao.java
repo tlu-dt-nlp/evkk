@@ -18,4 +18,6 @@ public interface ExerciseAnswerDao {
   );
 
   ExerciseAnswer findById(@Param("id") UUID id);
+
+  int deleteOlderThan24Hours();
 }

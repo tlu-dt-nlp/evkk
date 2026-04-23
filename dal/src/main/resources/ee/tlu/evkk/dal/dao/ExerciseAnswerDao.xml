@@ -14,4 +14,11 @@
     WHERE id = #{id}
   </select>
 
+  <delete id="deleteOlderThan24Hours">
+    <![CDATA[
+    DELETE FROM core.exercise_answer
+    WHERE (_meta ->> 'created_at')::timestamp < NOW() - INTERVAL '24 hours'
+    ]]>
+  </delete>
+
 </mapper>

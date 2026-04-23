@@ -32,3 +32,5 @@ CREATE TABLE core.exercise_answer
 );
 
 CALL core.attach_meta_trigger('core.exercise_answer');
+
+GRANT DELETE ON core.exercise_answer TO task_scheduler_user;
