@@ -1,5 +1,8 @@
 package ee.tlu.evkk.dal.dao;
 
+import ee.evkk.dto.enums.ExerciseFormat;
+import ee.evkk.dto.enums.ExerciseStructureType;
+import ee.evkk.dto.enums.ExerciseType;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,6 +16,9 @@ public interface ExerciseAnswerDao {
 
   void insert(
     @Param("id") UUID id,
+    @Param("type") ExerciseType type,
+    @Param("structureType") ExerciseStructureType structureType,
+    @Param("format") ExerciseFormat format,
     @Param("answers") String answersJson,
     @Param("exerciseData") String exerciseDataJson
   );

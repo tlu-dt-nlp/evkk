@@ -1,0 +1,30 @@
+package ee.tlu.evkk.core.service.constants;
+
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
+public class GeminiConstants {
+
+  public static final String MODEL_NAME = "gemini-3-flash-preview";
+  public static final String THINKING_LEVEL = "low";
+  public static final String SYSTEM_INSTRUCTION = "Sa oled eesti keele ekspert, kes aitab õpetada eesti keelt teise keelena. Sa tegeled eesti keele õppimiseks mõeldud automaatselt genereeritud harjutustega.";
+
+  public static final int RETRY_ATTEMPTS = 3;
+  public static final List<Integer> RETRY_HTTP_STATUS_CODES = List.of(408, 429, 500, 502, 503, 504);
+
+  public static final String EXERCISE_QUALITY_CHECK_PROMPT_BASE = "Sinu ülesanne on hinnata, kas automaatselt genereeritud keeleharjutus on õppijale sobilik või mitte. Vaadata tuleks näiteks õigekirja, grammatikat, aga ka muid (subjektiivseid) aspekte. Hinnang ei tohiks olla liiga range, st et negatiivne hinnang peaks olema selgelt põhjendatud, mitte tulenema ühest pisiveast pikas tekstis jne. Samas ei tohi hinnang olla ka liiga leebe. Harjutus on umbes C1 tasemel. Negatiivne arvamus peab olema põhjendatud, positiivne mitte. Vastus peab olema esitatud kujul 'true/false;põhjendus'. Näide 1: 'true'. Näide 2: 'false;Mõned valikvastused puuduvad'. Näide 3: 'false;1. Teine valikvastus on ebatsensuurne sõna 2. Neljas valikvastus ei ole harjutuse jaoks õiges käändes'. Harjutuse sisu on JSON kujul ning selle sisu sõltub täpsemalt harjutuse loomisel tehtud valikutest. Harjutus saab olla kas tekstipõhine või lausepõhine. %s %s %s Õiged vastused on toodud õiges järjekorras, nii nagu nad tekstis olevatesse lünkadesse paigutuvad. Vastused on järgnevad: %s. Kogu ülesanne ise on järgnev: %s";
+  public static final String EXERCISE_INCORRECT_ANSWER_EXPLANATIONS_PROMPT_BASE = "Sinu ülesanne on lühidalt selgitada valesid vastuseid - miks see ei sobi, mida tasub sellest õppida/meelde jätta vms abistav tekst, mis aitaks õppijat. Harjutus on umbes C1 tasemel. Iga selgitus peaks olema umbes 1-2 lauset pikk, iga vea kohta peab olema üks selgitus ning kogu sinu lõppvastus peab olema esitatud kujul 'selgitus1;selgitus2;selgitus3'. Selgitus ei tohiks olla liiga pealiskaudne, vaid seletama viga nii, et õppijal oleks võimalik sellest õppida. Selgituses pead kasutama eestikeelseid keeleteaduslikke termineid. Vältima peab keeleterminite valet kasutust ja termineid, mida pole olemas. Väldi liigset infot, kordusi ja üldisi sisutühje selgitusi. Näide 1: 'Sõna on ainsuses ning ei haaku tähendusega'. Näide 2: 'Sõna käändevorm on vale ning ei sobitu lauseehitusega.;Pärast väljendit X kasutatakse da-infinitiivi'. Harjutuse sisu on JSON kujul ning selle sisu sõltub täpsemalt harjutuse loomisel tehtud valikutest. Harjutus saab olla kas tekstipõhine või lausepõhine. %s %s %s Õiged vastused on toodud õiges järjekorras, nii nagu nad tekstis olevatesse lünkadesse paigutuvad. Õiged vastused on järgnevad: %s. Valed vastused on samuti toodud õiges järjekorras, kuid sealt loendist puuduvad õiged vastused, seega on neile kaasa antud indeksid, et saada aru, millise lünga kohta konkreetne viga käib (kuigi neid on võimalik kokku viia ka õige vastuse alusel, mis on igas vea objektis välja toodud). Valed vastused on järgnevad: %s. Selguse mõttes on järgnevalt välja toodud ka kõik õppija sisestatud vastused õiges järjekorras ehk siin on läbisegi nii õiged kui ka valed vastused: %s. Kogu ülesanne ise on järgnev: %s";
+
+  public static final String EXERCISE_STRUCTURE_TYPE_TEXT_PROMPT_PART = "Antud harjutus on tekstipõhine, seega on kogu tekst 'textWithBlanks' väärtusena ning kõik lüngad/vastusevariandid 'blanks' nimekirjas.";
+  public static final String EXERCISE_STRUCTURE_TYPE_SENTENCE_PROMPT_PART = "Antud harjutus on lausepõhine, seega on iga lause eraldi objekt 'sentencesWithBlanks' nimekirjas.";
+
+  public static final String EXERCISE_FORMAT_FILL_IN_THE_BLANKS_PROMPT_PART = "Kuna ülesande formaat on 'fill-in-the-blanks' ehk lünkade täitmine, siis on iga 'blank' objekti juures 'hint' ehk vihje väärtuseks korrektse vastuse sõna algvorm ehk lemma, mille õppija peab panema õigesse vormi. Samuti on igal 'blank' objektil 'startChar' ja 'endChar' väärtus, mis esindavad lünga algus- ja lõpuindekseid. Kõik lüngad on välja toodud nende õiges tekstis esinemise järjekorras.";
+  public static final String EXERCISE_FORMAT_MATCHING_PROMPT_PART = "Kuna ülesande formaat on 'matching' ehk etteantud õigete vastuste sobitamine õigetesse lünkadesse, siis on iga 'blank' objekti juures 'hint' väärtuseks korrektne vastuse sõna tema õiges vormis. 'startChar' ja 'endChar' väärtused on teadlikult jäetud tühjaks, samuti on kõik 'blank' objektid segatud suvalisse järjekorda ning ei kuulu konkreetse lause objekti külge, vaid üldisesse nimekirja. Seda selleks, et ülesande struktuurist ei oleks võimalik õigeid vastuseid välja lugeda.";
+
+  public static final String EXERCISE_TYPE_INFINITIVE_PROMPT_PART = "Harjutuse mõte on praktiseerida da-/ta- ja ma-infinitiivide ehk tegevusnimede kasutamist.";
+  public static final String EXERCISE_TYPE_OBJECT_PROMPT_PART = "Harjutuse mõte on praktiseerida sihitise käänete kasutamist.";
+}

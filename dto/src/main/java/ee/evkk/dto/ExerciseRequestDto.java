@@ -24,4 +24,5 @@ public class ExerciseRequestDto {
   private TargetWordCriteria targetWordCriteria;
 
   private String topic;
+  private boolean performQualityCheck = true;
 }

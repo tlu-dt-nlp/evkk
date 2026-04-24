@@ -3,6 +3,9 @@
                  factoryName="Spring Boot" nameIsGenerated="true">
     <option name="ALTERNATIVE_JRE_PATH" value="corretto-11" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="GEMINI_API_KEY" value="x" />
+    </envs>
     <module name="evkk.api.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="ee.tlu.evkk.api.ApiRunner" />
     <option name="VM_PARAMETERS" value="-DHARID_CLIENT_ID=x -DHARID_CLIENT_SECRET=y -DJWT_TOKEN_SECRET=z" />

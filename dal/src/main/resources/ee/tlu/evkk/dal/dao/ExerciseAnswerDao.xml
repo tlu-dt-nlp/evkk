@@ -4,12 +4,12 @@
 <mapper namespace="ee.tlu.evkk.dal.dao.ExerciseAnswerDao">
 
   <insert id="insert">
-    INSERT INTO core.exercise_answer (id, answers, exercise_data)
-    VALUES (#{id}, #{answers}::jsonb, #{exerciseData}::jsonb)
+    INSERT INTO core.exercise_answer (id, type, structure_type, format, answers, exercise_data)
+    VALUES (#{id}, #{type}, #{structureType}, #{format}, #{answers}::jsonb, #{exerciseData}::jsonb)
   </insert>
 
   <select id="findById" resultType="ee.tlu.evkk.dal.dto.ExerciseAnswer">
-    SELECT id, answers, exercise_data
+    SELECT id, type, structure_type, format, answers, exercise_data
     FROM core.exercise_answer
     WHERE id = #{id}
   </select>

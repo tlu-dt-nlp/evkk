@@ -5,6 +5,7 @@ import ee.evkk.dto.ExerciseDto;
 import ee.evkk.dto.ExerciseIncorrectAnswerDto;
 import ee.evkk.dto.ExerciseRequestDto;
 import ee.tlu.evkk.api.exception.ExerciseCouldNotBeGeneratedException;
+import ee.tlu.evkk.api.exception.ExerciseDidNotPassQualityGateException;
 import ee.tlu.evkk.api.exception.ExerciseInvalidAmountOfAnswersException;
 import ee.tlu.evkk.api.exception.ExerciseNotFoundOrExpiredException;
 import ee.tlu.evkk.api.service.ExerciseGeneratorService;
@@ -31,7 +32,7 @@ public class ExerciseGeneratorController {
   private final ExerciseSubmissionService exerciseSubmissionService;
 
   @GetMapping("generate")
-  public ExerciseDto generateExercise(@Valid @ModelAttribute ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException {
+  public ExerciseDto generateExercise(@Valid @ModelAttribute ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException, ExerciseDidNotPassQualityGateException {
     return exerciseGeneratorService.generateExercise(request);
   }
 

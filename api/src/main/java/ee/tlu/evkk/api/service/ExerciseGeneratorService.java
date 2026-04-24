@@ -10,6 +10,8 @@ import ee.evkk.dto.ExerciseRequestDto;
 import ee.evkk.dto.enums.ExerciseType;
 import ee.evkk.dto.enums.TargetWordCriteria;
 import ee.tlu.evkk.api.exception.ExerciseCouldNotBeGeneratedException;
+import ee.tlu.evkk.api.exception.ExerciseDidNotPassQualityGateException;
+import ee.tlu.evkk.core.service.GeminiService;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao;
 import ee.tlu.evkk.dal.dto.ExerciseGeneratorSource;
@@ -22,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
 import static ee.evkk.dto.enums.ExerciseStructureType.SENTENCE;
@@ -44,11 +45,12 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class ExerciseGeneratorService {
 
+  private final GeminiService geminiService;
   private final ExerciseGeneratorSourceDao exerciseGeneratorSourceDao;
   private final ExerciseAnswerDao exerciseAnswerDao;
   private final ObjectMapper objectMapper;
 
-  public ExerciseDto generateExercise(ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException {
+  public ExerciseDto generateExercise(ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException, ExerciseDidNotPassQualityGateException {
     List<String> criteriaWords = loadCriteriaWords(request.getType(), request.getTargetWordCriteria());
     boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(request.getFormat());
     GenerationContext generationContext = new GenerationContext(criteriaWords, isFillInTheBlanks);
@@ -65,8 +67,12 @@ public class ExerciseGeneratorService {
       shuffle(exercise.getBlanks());
     }
 
+    if (request.isPerformQualityCheck() && !geminiService.checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)) {
+      throw new ExerciseDidNotPassQualityGateException();
+    }
+
     exercise.setExerciseId(randomUUID());
-    storeAnswers(exercise.getExerciseId(), generationContext.getCorrectAnswers(), exercise);
+    storeAnswers(generationContext.getCorrectAnswers(), request, exercise);
     return exercise;
   }
 
@@ -122,11 +128,15 @@ public class ExerciseGeneratorService {
   }
 
   @SneakyThrows
-  private void storeAnswers(UUID exerciseId, List<String> answers, ExerciseDto exercise) {
-    String answersJson = objectMapper.writeValueAsString(answers);
-    String exerciseDataJson = objectMapper.writeValueAsString(exercise);
-
-    exerciseAnswerDao.insert(exerciseId, answersJson, exerciseDataJson);
+  private void storeAnswers(List<String> answers, ExerciseRequestDto request, ExerciseDto exercise) {
+    exerciseAnswerDao.insert(
+      exercise.getExerciseId(),
+      request.getType(),
+      request.getStructureType(),
+      request.getFormat(),
+      objectMapper.writeValueAsString(answers),
+      objectMapper.writeValueAsString(exercise)
+    );
   }
 
   private static List<String> loadCriteriaWords(ExerciseType type, TargetWordCriteria targetWordCriteria) {

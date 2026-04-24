@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ee.evkk.dto.ExerciseIncorrectAnswerDto;
 import ee.tlu.evkk.api.exception.ExerciseInvalidAmountOfAnswersException;
 import ee.tlu.evkk.api.exception.ExerciseNotFoundOrExpiredException;
+import ee.tlu.evkk.core.service.GeminiService;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ExerciseSubmissionService {
 
+  private final GeminiService geminiService;
   private final ExerciseAnswerDao exerciseAnswerDao;
   private final ObjectMapper objectMapper;
 
@@ -38,20 +40,37 @@ public class ExerciseSubmissionService {
       throw new ExerciseInvalidAmountOfAnswersException();
     }
 
-    List<ExerciseIncorrectAnswerDto> mistakes = new ArrayList<>();
-    validateAnswers(correctAnswers, userAnswers, mistakes);
+    List<ExerciseIncorrectAnswerDto> mistakes = validateAnswers(correctAnswers, userAnswers);
+    generateMistakeExplanations(userAnswers, exerciseAnswer, mistakes);
 
     return mistakes;
   }
 
-  private static void validateAnswers(List<String> correctAnswers, List<String> userAnswers, List<ExerciseIncorrectAnswerDto> mistakes) {
+  private void generateMistakeExplanations(List<String> userAnswers, ExerciseAnswer exerciseAnswer, List<ExerciseIncorrectAnswerDto> mistakes) {
+    if (mistakes.isEmpty()) {
+      return;
+    }
+
+    List<String> explanations = geminiService.generateIncorrectAnswerExplanations(userAnswers, exerciseAnswer, mistakes);
+    if (mistakes.size() != explanations.size()) {
+      return;
+    }
+
+    for (int i = 0; i < mistakes.size(); i++) {
+      mistakes.get(i).setExplanation(explanations.get(i));
+    }
+  }
+
+  private static List<ExerciseIncorrectAnswerDto> validateAnswers(List<String> correctAnswers, List<String> userAnswers) {
+    List<ExerciseIncorrectAnswerDto> mistakes = new ArrayList<>();
     for (int i = 0; i < correctAnswers.size(); i++) {
       String correctAnswer = correctAnswers.get(i);
       String userAnswer = userAnswers.get(i);
 
       if (!correctAnswer.equalsIgnoreCase(userAnswer)) {
-        mistakes.add(new ExerciseIncorrectAnswerDto(i, userAnswer, correctAnswer, null));
+        mistakes.add(new ExerciseIncorrectAnswerDto(i, userAnswer, correctAnswer));
       }
     }
+    return mistakes;
   }
 }

@@ -24,11 +24,17 @@ CREATE INDEX idx_exercise_generator_source_grammar_errors ON core.exercise_gener
 
 CREATE TABLE core.exercise_answer
 (
-  id            uuid DEFAULT uuid_generate_v4(),
-  answers       jsonb NOT NULL,
-  exercise_data jsonb NOT NULL,
+  id             uuid DEFAULT uuid_generate_v4(),
+  type           text  NOT NULL,
+  structure_type text  NOT NULL,
+  format         text  NOT NULL,
+  answers        jsonb NOT NULL,
+  exercise_data  jsonb NOT NULL,
 
-  CONSTRAINT exercise_answer_pk PRIMARY KEY (id)
+  CONSTRAINT exercise_answer_pk PRIMARY KEY (id),
+  CONSTRAINT exercise_answer_chk_type CHECK (type IN ('INFINITIVE', 'OBJECT')),
+  CONSTRAINT exercise_answer_chk_structure_type CHECK (structure_type IN ('TEXT', 'SENTENCE')),
+  CONSTRAINT exercise_answer_chk_format CHECK (format IN ('FILL_IN_THE_BLANKS', 'MATCHING'))
 );
 
 CALL core.attach_meta_trigger('core.exercise_answer');
