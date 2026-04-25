@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import ee.evkk.dto.ExerciseDto;
 import ee.evkk.dto.ExerciseIncorrectAnswerDto;
 import ee.evkk.dto.ExerciseRequestDto;
+import ee.tlu.evkk.api.annotation.RateLimit;
 import ee.tlu.evkk.api.exception.ExerciseCouldNotBeGeneratedException;
 import ee.tlu.evkk.api.exception.ExerciseDidNotPassQualityGateException;
 import ee.tlu.evkk.api.exception.ExerciseInvalidAmountOfAnswersException;
@@ -31,11 +32,13 @@ public class ExerciseGeneratorController {
   private final ExerciseGeneratorService exerciseGeneratorService;
   private final ExerciseSubmissionService exerciseSubmissionService;
 
+  @RateLimit(limit = 2)
   @GetMapping("generate")
   public ExerciseDto generateExercise(@Valid @ModelAttribute ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException, ExerciseDidNotPassQualityGateException {
     return exerciseGeneratorService.generateExercise(request);
   }
 
+  @RateLimit(limit = 2)
   @PostMapping("submit/{exerciseId}")
   public List<ExerciseIncorrectAnswerDto> submitExercise(
     @PathVariable UUID exerciseId,
