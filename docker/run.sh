@@ -20,10 +20,20 @@ docker-compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.
 docker stack rm evkk
 
 echo "Waiting for stack services to be removed"
-while docker stack services evkk >/dev/null 2>&1; do sleep 2; done
+for _ in $(seq 1 60); do
+  if ! docker stack ls --format '{{.Name}}' | grep -qx 'evkk'; then
+    break
+  fi
+  sleep 2
+done
 
 echo "Waiting for postgres containers to stop"
-while docker ps --format '{{.Names}}' | grep -Eq '^evkk_postgres\.|^evkk-postgres$'; do sleep 2; done
+for _ in $(seq 1 60); do
+  if ! docker ps --format '{{.Names}}' | grep -Eq '^evkk_postgres\.|^evkk-postgres$'; then
+    break
+  fi
+  sleep 2
+done
 
 echo "Stopping services done"
 
