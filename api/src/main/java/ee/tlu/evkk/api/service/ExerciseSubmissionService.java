@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -38,11 +41,15 @@ public class ExerciseSubmissionService {
       new TypeReference<>() {}
     );
 
-    if (userAnswers.size() != correctAnswers.size()) {
+    List<String> filteredUserAnswers = userAnswers.stream()
+      .filter(Objects::nonNull)
+      .collect(toList());
+
+    if (filteredUserAnswers.size() != correctAnswers.size()) {
       throw new ExerciseInvalidAmountOfAnswersException();
     }
 
-    List<ExerciseIncorrectAnswerDto> mistakes = validateAnswers(correctAnswers, userAnswers);
+    List<ExerciseIncorrectAnswerDto> mistakes = validateAnswers(correctAnswers, filteredUserAnswers);
     generateMistakeExplanations(userAnswers, exerciseAnswer, mistakes);
 
     return mistakes;
