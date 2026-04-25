@@ -35,6 +35,7 @@ export default function CorrectorInput() {
   const handleTextUpload = uploadedText => {
     setErrorResponse({});
     setText(uploadedText);
+    editor?.commands.setContent(`<p>${uploadedText}</p>`);
   };
 
   const handleTextChange = (newText, newContent) => {
@@ -49,7 +50,17 @@ export default function CorrectorInput() {
         onTextUpdate: handleTextChange
       })
     ],
-    content: `<p>${text}</p>`
+    content: `<p>${text}</p>`,
+    editorProps: {
+      handlePaste(view, event) {
+        const plainText = event.clipboardData.getData('text/plain');
+        if (!plainText) return false;
+        event.preventDefault();
+        const { state, dispatch } = view;
+        dispatch(state.tr.insertText(plainText).scrollIntoView());
+        return true;
+      }
+    }
   });
 
   const replaceContent = (content) => {
@@ -146,8 +157,7 @@ export default function CorrectorInput() {
   }, [selectedSubTab, errorResponse, editor]);
 
   return (
-    <div className="position-relative">
-      <EditorContent editor={editor} />
+    <div className="corrector-input-wrapper">
       <div className="corrector-input-icon-bar">
         <div>
           <IconButton
@@ -175,6 +185,7 @@ export default function CorrectorInput() {
           disableStyles={true}
         />
       </div>
+      <EditorContent editor={editor} />
     </div>
   );
 }
