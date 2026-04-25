@@ -10,12 +10,14 @@ import ee.tlu.evkk.core.service.GeminiService;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExerciseSubmissionService {
@@ -53,6 +55,7 @@ public class ExerciseSubmissionService {
 
     List<String> explanations = geminiService.generateIncorrectAnswerExplanations(userAnswers, exerciseAnswer, mistakes);
     if (mistakes.size() != explanations.size()) {
+      log.warn("LLM returned {} explanations, although there were {} mistakes!", explanations.size(), mistakes.size());
       return;
     }
 

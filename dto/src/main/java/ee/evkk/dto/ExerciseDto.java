@@ -11,11 +11,18 @@ public class ExerciseDto {
 
   private UUID exerciseId;
   private String textWithBlanks;
+  private List<Blank> textBlankIndexes;
   private List<Blank> blanks;
   private List<SentenceWithBlanks> sentencesWithBlanks;
 
   public ExerciseDto(String textWithBlanks, List<Blank> blanks) {
     this.textWithBlanks = textWithBlanks;
+    this.blanks = blanks;
+  }
+
+  public ExerciseDto(String textWithBlanks, List<Blank> textBlankIndexes, List<Blank> blanks) {
+    this.textWithBlanks = textWithBlanks;
+    this.textBlankIndexes = textBlankIndexes;
     this.blanks = blanks;
   }
 
