@@ -11,11 +11,11 @@ import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
@@ -42,7 +42,7 @@ public class ExerciseSubmissionService {
     );
 
     List<String> filteredUserAnswers = userAnswers.stream()
-      .filter(Objects::nonNull)
+      .filter(StringUtils::isNotBlank)
       .collect(toList());
 
     if (filteredUserAnswers.size() != correctAnswers.size()) {
