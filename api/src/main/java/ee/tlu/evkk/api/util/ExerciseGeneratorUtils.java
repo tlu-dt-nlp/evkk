@@ -15,9 +15,11 @@ import static lombok.AccessLevel.PRIVATE;
 public class ExerciseGeneratorUtils {
 
   public static boolean isInfinitiveTarget(Word word, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
+    List<String> feats = word.getFeats();
+
     boolean isVerb = word.getUpos().equals("VERB");
-    boolean isInf = word.getFeats().contains("VerbForm=Inf");
-    boolean isSup = word.getFeats().contains("VerbForm=Sup") && word.getFeats().contains("Case=Ill");
+    boolean isInf = feats.contains("VerbForm=Inf");
+    boolean isSup = feats.contains("VerbForm=Sup") && feats.contains("Case=Ill");
     boolean isValidForm = isInf || isSup;
 
     if (!isVerb || !isValidForm) {
@@ -28,10 +30,13 @@ public class ExerciseGeneratorUtils {
   }
 
   public static boolean isObjectTarget(Word word, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
+    String deprel = word.getDeprel();
+    List<String> feats = word.getFeats();
+
     boolean isNoun = word.getUpos().equals("NOUN");
-    boolean isMatchingDeprel = word.getDeprel().equals("obj") || word.getDeprel().equals("obl");
-    boolean isMatchingCase = word.getFeats().contains("Case=Nom") || word.getFeats().contains("Case=Gen") || word.getFeats().contains("Case=Par");
-    boolean isPlural = word.getFeats().contains("Number=Plur");
+    boolean isMatchingDeprel = deprel.equals("obj") || deprel.equals("obl");
+    boolean isMatchingCase = feats.contains("Case=Nom") || feats.contains("Case=Gen") || feats.contains("Case=Par");
+    boolean isPlural = feats.contains("Number=Plur");
     boolean meetsGrammarRules = isNoun && isMatchingDeprel && isMatchingCase && isPlural;
 
     if (!meetsGrammarRules) {
