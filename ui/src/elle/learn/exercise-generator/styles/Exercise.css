@@ -1,0 +1,92 @@
+.exercise-text-blank-wrapper {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.2rem;
+
+  .answers-wrapper {
+    display: inline-flex;
+    align-items: flex-start;
+  }
+
+  .hover-tooltip {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .MuiInputBase-root {
+    margin: 0 !important;
+    padding-top: 4px !important;
+    height: 22px;
+    color: #1a73d9;
+    -webkit-text-fill-color: #1a73d9;
+  }
+
+  .MuiTextField-root {
+    min-width: 12ch;
+  }
+
+  .hint {
+    margin-left: .3rem;
+    font-size: .85rem;
+    color: #6b7280;
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .expected-answer {
+    margin-left: .5rem;
+    padding: 0 .35rem;
+    border-radius: 6px;
+    border: 1px dashed #255c41;
+    background-color: #d4f6e6;
+    color: #255c41;
+    font-weight: bold;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  svg {
+    font-size: 1.25rem;
+    margin-bottom: 3px;
+  }
+
+  .answer-correct,
+  .answer-incorrect,
+  .answer-missing {
+    .MuiInputBase-root {
+      border-radius: 6px;
+      padding: 0 .3rem;
+    }
+
+    .MuiInput-root:before,
+    .MuiInput-root:after {
+      border-bottom: none !important;
+    }
+  }
+
+  .answer-correct .MuiInputBase-root {
+    background-color: #9dd8bb;
+  }
+
+  .answer-correct .MuiInputBase-input {
+    color: #255c41 !important;
+    -webkit-text-fill-color: #255c41 !important;
+  }
+
+  .answer-incorrect .MuiInputBase-root {
+    background-color: #f7d0d0;
+    color: #b71c1c;
+    -webkit-text-fill-color: #b71c1c !important;
+    text-decoration: line-through;
+  }
+
+  .answer-incorrect .MuiInputBase-input {
+    color: #b71c1c !important;
+    -webkit-text-fill-color: #b71c1c !important;
+  }
+
+  .answer-missing .MuiInputBase-root {
+    background-color: #f7d0d0;
+    box-shadow: inset 0 0 0 1px #b71c1c;
+  }
+}

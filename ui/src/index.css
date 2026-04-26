@@ -149,6 +149,11 @@ h3, h4 {
   -ms-hyphens: auto;
 }
 
+.page-title {
+  text-align: center;
+  padding-bottom: 2vh;
+}
+
 /* Prevent MUI Select from scrolling viewport on focus */
 .MuiSelect-select:focus {
   scroll-margin: 0;

@@ -2,7 +2,13 @@ import { Tooltip } from '@mui/material';
 import { useState } from 'react';
 import '../styles/TooltipOnText.css';
 
-export default function TooltipOnText({ title, children }) {
+export default function TooltipOnText({
+                                        title,
+                                        children,
+                                        className = '',
+                                        placement = 'bottom',
+                                        disabled = false
+                                      }) {
   const [open, setOpen] = useState(false);
 
   const handleClick = (e) => {
@@ -10,19 +16,27 @@ export default function TooltipOnText({ title, children }) {
     setOpen((prev) => !prev);
   };
 
+  if (disabled) {
+    return children;
+  }
+
   return (
     <Tooltip
       title={title}
-      placement="bottom"
-      className="tooltip-on-text"
+      placement={placement}
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       followCursor
       disableTouchListener
     >
-      <span onClick={handleClick}>
-        {children}
+      <span
+        className={`tooltip-on-text-trigger ${className}`}
+        onClick={handleClick}
+      >
+        <span className="tooltip-on-text-content">
+          {children}
+        </span>
       </span>
     </Tooltip>
   );

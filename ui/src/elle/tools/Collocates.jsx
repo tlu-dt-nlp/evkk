@@ -211,7 +211,7 @@ export default function Collocates() {
 
   return (
     <span className="collocates-app">
-      <h2 className="tool-title">
+      <h2 className="page-title">
         {t('common_neighbouring_words')}
       </h2>
       <Accordion
