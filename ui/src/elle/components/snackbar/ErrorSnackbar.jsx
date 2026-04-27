@@ -53,6 +53,7 @@ export const ErrorSnackbarEventType = {
   GENERIC_ERROR: 'error_generic_server_error',
   ID_CODE_MISSING: 'error_id_code_missing',
   LOGIN_FAILED: 'error_login_failed',
+  MANDATORY_FIELDS_NOT_FILLED: 'error_mandatory_fields_not_filled',
   NO_INTERNET_CONNECTION: 'error_no_internet_connection',
   TOO_MANY_REQUESTS: 'error_too_many_requests',
   UNAUTHORIZED: 'error_unauthorized',

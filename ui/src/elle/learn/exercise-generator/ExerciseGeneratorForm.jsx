@@ -23,18 +23,23 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import { useGetExerciseGeneratorResult } from '../../hooks/service/ExerciseGeneratorService';
 import Exercise from './Exercise';
 import './styles/ExerciseGeneratorForm.css';
+import { selectOnFocusIfCoarsePointer } from '../../util/InputUtils';
+import { errorEmitter } from '../../../App';
+import { ErrorSnackbarEventType } from '../../components/snackbar/ErrorSnackbar';
+import { ExerciseFormat } from '../../enum/ExerciseFormat';
 
 export default function ExerciseGeneratorForm() {
 
   const { t } = useTranslation();
   const [paramsExpanded, setParamsExpanded] = useState(true);
   const [response, setResponse] = useState(null);
+  const [responseFormat, setResponseFormat] = useState(null);
   const [typeValue, setTypeValue] = useState(null);
   const [typeError, setTypeError] = useState(false);
-  const [structureValue, setStructureValue] = useState(ExerciseGeneratorStructureType.SENTENCE);
+  const [structureValue, setStructureValue] = useState(ExerciseStructureType.SENTENCE);
   const [formatValue, setFormatValue] = useState(null);
   const [formatError, setFormatError] = useState(false);
-  const [targetWordCriteriaValue, setTargetWordCriteriaValue] = useState(ExerciseGeneratorTargetWordCriteria.C1_OR_B2);
+  const [targetWordCriteriaValue, setTargetWordCriteriaValue] = useState(ExerciseTargetWordCriteria.C1_OR_B2);
   const [topicValue, setTopicValue] = useState('');
   const [performQualityCheckValue, setPerformQualityCheckValue] = useState(true);
   const [sentenceCountValue, setSentenceCountValue] = useState(8);
@@ -45,12 +50,18 @@ export default function ExerciseGeneratorForm() {
     setTypeError(!typeValue);
     setFormatError(!formatValue);
     if (typeValue && formatValue) {
-      getExerciseGeneratorResult(generateRequestData())
+      const requestData = generateRequestData();
+
+      getExerciseGeneratorResult(requestData)
         .then(response => {
           if (!response) return;
           setResponse(response);
+          setResponseFormat(requestData.format);
           setParamsExpanded(false);
         });
+    } else {
+      window.scrollTo(0, 0);
+      errorEmitter.emit(ErrorSnackbarEventType.MANDATORY_FIELDS_NOT_FILLED);
     }
   };
 
@@ -79,11 +90,11 @@ export default function ExerciseGeneratorForm() {
   const handleStructureChange = event => {
     const value = event.target.value;
     setStructureValue(value);
-    setTargetWordCriteriaValue(value === ExerciseGeneratorStructureType.SENTENCE
-      ? ExerciseGeneratorTargetWordCriteria.C1_OR_B2
-      : ExerciseGeneratorTargetWordCriteria.NONE
+    setTargetWordCriteriaValue(value === ExerciseStructureType.SENTENCE
+      ? ExerciseTargetWordCriteria.C1_OR_B2
+      : ExerciseTargetWordCriteria.NONE
     );
-    setSentenceCountValue(value === ExerciseGeneratorStructureType.SENTENCE
+    setSentenceCountValue(value === ExerciseStructureType.SENTENCE
       ? 8
       : 15
     );
@@ -127,12 +138,12 @@ export default function ExerciseGeneratorForm() {
                     onChange={handleTypeChange}
                   >
                     <FormControlLabel
-                      value={ExerciseGeneratorType.INFINITIVE}
+                      value={ExerciseType.INFINITIVE}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_type_infinitive')}
                     />
                     <FormControlLabel
-                      value={ExerciseGeneratorType.OBJECT}
+                      value={ExerciseType.OBJECT}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_type_object')}
                     />
@@ -154,17 +165,17 @@ export default function ExerciseGeneratorForm() {
                     onChange={handleFormatChange}
                   >
                     <FormControlLabel
-                      value={ExerciseGeneratorFormat.FILL_IN_THE_BLANKS}
+                      value={ExerciseFormat.FILL_IN_THE_BLANKS}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_format_fill_in_the_blanks')}
                     />
                     <FormControlLabel
-                      value={ExerciseGeneratorFormat.MATCHING}
+                      value={ExerciseFormat.MATCHING}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_format_matching')}
                     />
                   </RadioGroup>
-                  {typeError &&
+                  {formatError &&
                     <FormHelperText>
                       {t('error_mandatory_field')}
                     </FormHelperText>
@@ -185,12 +196,12 @@ export default function ExerciseGeneratorForm() {
                     onChange={handleStructureChange}
                   >
                     <FormControlLabel
-                      value={ExerciseGeneratorStructureType.SENTENCE}
+                      value={ExerciseStructureType.SENTENCE}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_structure_type_sentence')}
                     />
                     <FormControlLabel
-                      value={ExerciseGeneratorStructureType.TEXT}
+                      value={ExerciseStructureType.TEXT}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_structure_type_text')}
                     />
@@ -207,17 +218,17 @@ export default function ExerciseGeneratorForm() {
                     onChange={e => setTargetWordCriteriaValue(e.target.value)}
                   >
                     <FormControlLabel
-                      value={ExerciseGeneratorTargetWordCriteria.C1}
+                      value={ExerciseTargetWordCriteria.C1}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_target_word_criteria_c1')}
                     />
                     <FormControlLabel
-                      value={ExerciseGeneratorTargetWordCriteria.C1_OR_B2}
+                      value={ExerciseTargetWordCriteria.C1_OR_B2}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_target_word_criteria_c1_or_b2')}
                     />
                     <FormControlLabel
-                      value={ExerciseGeneratorTargetWordCriteria.NONE}
+                      value={ExerciseTargetWordCriteria.NONE}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_target_word_criteria_none')}
                     />
@@ -255,9 +266,13 @@ export default function ExerciseGeneratorForm() {
                     {t('exercise_generator_exercise_topic')}
                   </InputLabel>
                   <Select
+                    displayEmpty
                     value={topicValue}
                     onChange={e => setTopicValue(e.target.value)}
                   >
+                    <MenuItem value="">
+                      <em>{t('exercise_generator_exercise_topic_none')}</em>
+                    </MenuItem>
                     <MenuItem value="history">
                       {t('exercise_generator_exercise_topic_history')}
                     </MenuItem>
@@ -336,6 +351,7 @@ export default function ExerciseGeneratorForm() {
                     required
                     value={sentenceCountValue}
                     onChange={e => setSentenceCountValue(e.target.value)}
+                    onFocus={selectOnFocusIfCoarsePointer}
                     className="exercise-generator-form-inline-textfield"
                   />
                 </FormControl>
@@ -355,6 +371,7 @@ export default function ExerciseGeneratorForm() {
       {response &&
         <Exercise
           content={response}
+          exerciseFormat={responseFormat}
           setContent={setResponse}
           setParamsExpanded={setParamsExpanded}
         />
@@ -363,22 +380,17 @@ export default function ExerciseGeneratorForm() {
   );
 }
 
-const ExerciseGeneratorType = {
+const ExerciseType = {
   INFINITIVE: 'INFINITIVE',
   OBJECT: 'OBJECT'
 };
 
-const ExerciseGeneratorStructureType = {
+const ExerciseStructureType = {
   SENTENCE: 'SENTENCE',
   TEXT: 'TEXT'
 };
 
-const ExerciseGeneratorFormat = {
-  FILL_IN_THE_BLANKS: 'FILL_IN_THE_BLANKS',
-  MATCHING: 'MATCHING'
-};
-
-const ExerciseGeneratorTargetWordCriteria = {
+const ExerciseTargetWordCriteria = {
   C1: 'C1',
   C1_OR_B2: 'C1_OR_B2',
   NONE: 'NONE'

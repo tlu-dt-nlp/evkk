@@ -2,13 +2,22 @@ import { DefaultButtonStyle } from '../../const/StyleConstants';
 import { Alert, Button, TextField } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import { DndContext } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useSubmitExerciseAnswers } from '../../hooks/service/ExerciseGeneratorService';
 import './styles/Exercise.css';
 import TooltipOnText from '../../components/tooltip/TooltipOnText';
+import { MatchingBankDropzone, MatchingDropzone, MatchingOption } from './MatchingDndComponents';
+import {
+  MATCHING_BANK_DROPPABLE_ID,
+  MATCHING_BLANK_ID_PREFIX,
+  MATCHING_FILLED_ID_PREFIX,
+  useMatchingExercise
+} from './hooks/useMatchingExercise';
+import { ExerciseFormat } from '../../enum/ExerciseFormat';
 
-export default function Exercise({ content, setContent, setParamsExpanded }) {
+export default function Exercise({ content, exerciseFormat, setContent, setParamsExpanded }) {
 
   const { t } = useTranslation();
   const [answers, setAnswers] = useState([]);
@@ -16,8 +25,13 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
   const [isAnswered, setIsAnswered] = useState(false);
   const [showMissingAnswers, setShowMissingAnswers] = useState(false);
   const { submitExerciseAnswers } = useSubmitExerciseAnswers();
+  const isMatchingFormat = exerciseFormat === ExerciseFormat.MATCHING;
 
-  const textBlanks = useMemo(() => content.blanks ?? [], [content.blanks]);
+  const textBlanks = useMemo(() => (
+    isMatchingFormat
+      ? (content.textBlankIndexes ?? [])
+      : (content.blanks ?? [])
+  ), [content.blanks, content.textBlankIndexes, isMatchingFormat]);
 
   const sentenceBlankBaseIndexes = useMemo(() => {
     let total = 0;
@@ -70,6 +84,34 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
     return missingIndexes;
   }, [answers, totalBlankCount]);
 
+  const handleAnswerChange = (answerIndex, value) => {
+    setAnswers(prevAnswers => {
+      const updatedAnswers = [...prevAnswers];
+      updatedAnswers[answerIndex] = value;
+      return updatedAnswers;
+    });
+  };
+
+  const {
+    sensors,
+    matchingCollisionDetection,
+    selectedMatchingOptionId,
+    selectedMatchingValue,
+    availableMatchingOptions,
+    handleMatchingDrop,
+    handleMatchingOptionClick,
+    handleMatchingBlankClick,
+    handleMatchingBlankKeyDown,
+    clearMatchingSelection
+  } = useMatchingExercise({
+    contentBlanks: content.blanks,
+    isMatchingFormat,
+    isAnswered,
+    answers,
+    handleAnswerChange,
+    setAnswers
+  });
+
   useEffect(() => {
     setAnswers(new Array(totalBlankCount).fill(null));
   }, [totalBlankCount]);
@@ -80,15 +122,8 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
     setResponse(null);
     setIsAnswered(false);
     setShowMissingAnswers(false);
-  }, [content]);
-
-  const handleAnswerChange = (answerIndex, value) => {
-    setAnswers(prevAnswers => {
-      const updatedAnswers = [...prevAnswers];
-      updatedAnswers[answerIndex] = value;
-      return updatedAnswers;
-    });
-  };
+    clearMatchingSelection();
+  }, [clearMatchingSelection, content]);
 
   const getAnswerResultClass = answerIndex => {
     if (!isAnswered) {
@@ -106,54 +141,98 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
     return getAnswerResultClass(answerIndex);
   };
 
-  const renderSingleBlank = (blank, answerIndex, key) => {
-    const answerValue = answers[answerIndex] ?? '';
-    const incorrectAnswer = incorrectAnswerByIndex.get(answerIndex);
-    const isIncorrect = !!incorrectAnswer;
-    const inputWidthCh = Math.max(8, answerValue.length + 3);
+  const getIncorrectAnswer = answerIndex => incorrectAnswerByIndex.get(answerIndex);
 
-    const answerIcon = isAnswered && (
-      isIncorrect
-        ? <ClearIcon sx={{ color: '#b91c1c' }} />
-        : <CheckIcon sx={{ color: '#15803d' }} />
-    );
+  const shouldShowAnswerTooltip = incorrectAnswer => isAnswered && !!incorrectAnswer?.explanation;
+
+  const getAnswerIcon = answerIndex => {
+    if (!isAnswered) {
+      return null;
+    }
+
+    return getIncorrectAnswer(answerIndex)
+      ? <ClearIcon sx={{ color: '#b91c1c' }} />
+      : <CheckIcon sx={{ color: '#15803d' }} />;
+  };
+
+  const renderBlankWithSharedLayout = ({ blank, answerIndex, key, field }) => {
+    const incorrectAnswer = getIncorrectAnswer(answerIndex);
+    const isIncorrect = !!incorrectAnswer;
 
     return (
       <span
         key={key}
         className="exercise-text-blank-wrapper"
       >
-        <div className="answers-wrapper">
+        <div className={`answers-wrapper ${isMatchingFormat ? 'matching' : 'fill-in-the-blanks'}`}>
           <TooltipOnText
             title={incorrectAnswer?.explanation}
-            disabled={!isAnswered || !isIncorrect || !incorrectAnswer.explanation}
+            disabled={!shouldShowAnswerTooltip(incorrectAnswer)}
             className="hover-tooltip"
             placement="top"
           >
-            <TextField
-              variant="standard"
-              size="small"
-              value={answerValue}
-              disabled={isAnswered}
-              className={getAnswerClass(answerIndex)}
-              sx={{ width: `${inputWidthCh}ch` }}
-              onChange={e => handleAnswerChange(answerIndex, e.target.value)}
-              slotProps={{
-                input: {
-                  endAdornment: answerIcon
-                }
-              }}
-            />
+            {field}
           </TooltipOnText>
           {isAnswered && isIncorrect && (
             <span className="expected-answer">{incorrectAnswer.correctAnswer}</span>
           )}
         </div>
-        <span className="hint">
-          ({blank.hint})
-        </span>
-    </span>
+        {blank.hint && (
+          <span className="hint">
+            ({blank.hint})
+          </span>
+        )}
+      </span>
     );
+  };
+
+  const renderSingleBlank = (blank, answerIndex, key) => {
+    if (isMatchingFormat) {
+      const answerValue = answers[answerIndex] ?? '';
+
+      return renderBlankWithSharedLayout({
+        blank,
+        answerIndex,
+        key,
+        field: (
+          <MatchingDropzone
+            id={`${MATCHING_BLANK_ID_PREFIX}${answerIndex}`}
+            draggableId={answerValue ? `${MATCHING_FILLED_ID_PREFIX}${answerIndex}` : null}
+            value={answerValue}
+            endIcon={getAnswerIcon(answerIndex)}
+            dragDisabled={isAnswered}
+            className={getAnswerClass(answerIndex)}
+            onClick={() => handleMatchingBlankClick(answerIndex)}
+            onKeyDown={event => handleMatchingBlankKeyDown(answerIndex, event)}
+          />
+        )
+      });
+    }
+
+    const answerValue = answers[answerIndex] ?? '';
+    const inputWidthCh = Math.max(8, answerValue.length + 3);
+
+    return renderBlankWithSharedLayout({
+      blank,
+      answerIndex,
+      key,
+      field: (
+        <TextField
+          variant="standard"
+          size="small"
+          value={answerValue}
+          disabled={isAnswered}
+          className={getAnswerClass(answerIndex)}
+          sx={{ width: `${inputWidthCh}ch` }}
+          onChange={e => handleAnswerChange(answerIndex, e.target.value)}
+          slotProps={{
+            input: {
+              endAdornment: getAnswerIcon(answerIndex)
+            }
+          }}
+        />
+      )
+    });
   };
 
   const renderBlanksInText = (text, blanks, getAnswerIndex, keyPrefix, startElements = []) => {
@@ -203,6 +282,44 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
     );
   };
 
+  const renderMatchingBank = () => (
+    <>
+      <p className="matching-helper-text">
+        {t('exercise_generator_matching_interaction_hint')}
+      </p>
+      {selectedMatchingValue && (
+        <p className="matching-selected-text">
+          {t('exercise_generator_matching_selected_word_hint', {
+            word: selectedMatchingValue
+          })}
+        </p>
+      )}
+      <MatchingBankDropzone id={MATCHING_BANK_DROPPABLE_ID}>
+        {availableMatchingOptions.map(option => (
+          <MatchingOption
+            key={option.id}
+            id={option.id}
+            value={option.value}
+            selected={selectedMatchingOptionId === option.id}
+            disabled={isAnswered}
+            onClick={() => handleMatchingOptionClick(option.id)}
+          />
+        ))}
+      </MatchingBankDropzone>
+    </>
+  );
+
+  const renderExerciseTextContent = () => (
+    <>
+      {content.textWithBlanks && <p>{renderTextWithBlanks()}</p>}
+      {content.sentencesWithBlanks?.map((sentenceWithBlanks, index) => (
+        <p key={`${sentenceWithBlanks.sentence}-${index}`}>
+          {renderSentenceWithBlanks(sentenceWithBlanks, index)}
+        </p>
+      ))}
+    </>
+  );
+
   const handleSubmit = event => {
     event.preventDefault();
 
@@ -234,7 +351,8 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
             <Alert severity="info">
               {t('exercise_generator_exercise_completed_with_mistakes', {
                 correctAnswers: totalBlankCount - response.length,
-                totalAnswers: totalBlankCount
+                totalAnswers: totalBlankCount,
+                correctPercentage: Math.round((totalBlankCount - response.length) / totalBlankCount * 100)
               })}
             </Alert>
             {response.some(item => item.explanation === null) && (
@@ -253,14 +371,21 @@ export default function Exercise({ content, setContent, setParamsExpanded }) {
 
   return (
     <>
-      <br /><br />
+      <br />
       {isAnswered && buildResultMessage()}
-      {content.textWithBlanks && <p>{renderTextWithBlanks()}</p>}
-      {content.sentencesWithBlanks?.map((sentenceWithBlanks, index) => (
-        <p key={`${sentenceWithBlanks.sentence}-${index}`}>
-          {renderSentenceWithBlanks(sentenceWithBlanks, index)}
-        </p>
-      ))}
+      {isMatchingFormat ? (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={matchingCollisionDetection}
+          onDragStart={clearMatchingSelection}
+          onDragEnd={handleMatchingDrop}
+        >
+          {!isAnswered && renderMatchingBank()}
+          {renderExerciseTextContent()}
+        </DndContext>
+      ) : (
+        renderExerciseTextContent()
+      )}
       <br />
       <Button
         sx={DefaultButtonStyle}

@@ -21,6 +21,12 @@
   }
 }
 
+@media (max-width: 899px) {
+  .responsive-drawer-main-box main {
+    padding-top: 10px;
+  }
+}
+
 .responsive-drawer {
   .MuiListItemIcon-root {
     min-width: 45px;

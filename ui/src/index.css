@@ -127,7 +127,7 @@ a:hover {
   .global-page-content-container-inner {
     background-color: white;
     border-radius: 15px;
-    padding-top: 50px;
+    padding-top: 20px;
     padding-bottom: 50px;
 
     @media (max-width: 677px) {
@@ -170,4 +170,8 @@ h3, h4 {
 
 .MuiMenu-paper .MuiMenuItem-root {
   min-width: fit-content;
+}
+
+.MuiAccordionSummary-root:focus {
+  outline: none;
 }
