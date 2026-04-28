@@ -187,6 +187,21 @@
   padding: .25rem;
 }
 
+.matching-bank-sticky {
+  position: sticky;
+  top: 62px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: .5rem .5rem .1rem;
+  margin-bottom: calc(2rem + var(--matching-bank-collapse-spacer, 0px));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.matching-bank-sticky .matching-options-wrapper {
+  max-height: var(--matching-options-max-height, none);
+  overflow-y: auto;
+}
+
 .matching-helper-text,
 .matching-selected-text {
   margin: 0 0 .4rem;
@@ -197,4 +212,10 @@
 .matching-selected-text {
   color: #1a73d9;
   font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .matching-bank-sticky {
+    top: 60px;
+  }
 }

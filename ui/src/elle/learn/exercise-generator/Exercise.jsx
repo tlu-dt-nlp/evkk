@@ -98,6 +98,8 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
     selectedMatchingOptionId,
     selectedMatchingValue,
     availableMatchingOptions,
+    matchingBankRef,
+    matchingBankStyle,
     handleMatchingDrop,
     handleMatchingOptionClick,
     handleMatchingBlankClick,
@@ -283,7 +285,11 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
   };
 
   const renderMatchingBank = () => (
-    <>
+    <div
+      className="matching-bank-sticky"
+      ref={matchingBankRef}
+      style={matchingBankStyle}
+    >
       <p className="matching-helper-text">
         {t('exercise_generator_matching_interaction_hint')}
       </p>
@@ -306,7 +312,7 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
           />
         ))}
       </MatchingBankDropzone>
-    </>
+    </div>
   );
 
   const renderExerciseTextContent = () => (

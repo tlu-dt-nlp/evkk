@@ -6,7 +6,6 @@ import {
   FormControl,
   FormControlLabel,
   FormHelperText,
-  FormLabel,
   Grid,
   InputLabel,
   MenuItem,
@@ -27,6 +26,10 @@ import { selectOnFocusIfCoarsePointer } from '../../util/InputUtils';
 import { errorEmitter } from '../../../App';
 import { ErrorSnackbarEventType } from '../../components/snackbar/ErrorSnackbar';
 import { ExerciseFormat } from '../../enum/ExerciseFormat';
+import TooltipButton from '../../components/tooltip/TooltipButton';
+import NewTabHyperlink from '../../components/NewTabHyperlink';
+import Translate from '../../components/Translate';
+import { EKI_VOCABULARY_LIST_PATH } from '../../const/PathConstants';
 
 export default function ExerciseGeneratorForm() {
 
@@ -129,9 +132,12 @@ export default function ExerciseGeneratorForm() {
                 size={{ xs: 12, sm: 6, md: 4 }}
               >
                 <FormControl error={typeError}>
-                  <FormLabel>
+                  <InputLabel>
                     {t('common_type')}
-                  </FormLabel>
+                    <TooltipButton>
+                      <Translate i18nKey="exercise_generator_exercise_type_hover" />
+                    </TooltipButton>
+                  </InputLabel>
                   <RadioGroup
                     name="type"
                     value={typeValue}
@@ -156,9 +162,12 @@ export default function ExerciseGeneratorForm() {
                 </FormControl>
                 <br /><br />
                 <FormControl error={formatError}>
-                  <FormLabel>
+                  <InputLabel>
                     {t('exercise_generator_exercise_format')}
-                  </FormLabel>
+                    <TooltipButton>
+                      <Translate i18nKey="exercise_generator_exercise_format_hover" />
+                    </TooltipButton>
+                  </InputLabel>
                   <RadioGroup
                     name="format"
                     value={formatValue}
@@ -187,9 +196,12 @@ export default function ExerciseGeneratorForm() {
                 size={{ xs: 12, sm: 6, md: 4 }}
               >
                 <FormControl>
-                  <FormLabel>
+                  <InputLabel>
                     {t('exercise_generator_exercise_structure_type')}
-                  </FormLabel>
+                    <TooltipButton>
+                      <Translate i18nKey="exercise_generator_exercise_structure_type_hover" />
+                    </TooltipButton>
+                  </InputLabel>
                   <RadioGroup
                     name="structure"
                     value={structureValue}
@@ -209,9 +221,15 @@ export default function ExerciseGeneratorForm() {
                 </FormControl>
                 <br /><br />
                 <FormControl>
-                  <FormLabel>
+                  <InputLabel>
                     {t('exercise_generator_exercise_target_word_criteria')}
-                  </FormLabel>
+                    <TooltipButton>
+                      <Translate
+                        i18nKey="exercise_generator_exercise_target_word_criteria_hover"
+                        components={{ vocabularyLink: <NewTabHyperlink path={EKI_VOCABULARY_LIST_PATH} /> }}
+                      />
+                    </TooltipButton>
+                  </InputLabel>
                   <RadioGroup
                     name="targetWordCriteria"
                     value={targetWordCriteriaValue}
@@ -240,9 +258,12 @@ export default function ExerciseGeneratorForm() {
                 size={{ xs: 12, sm: 6, md: 4 }}
               >
                 <FormControl>
-                  <FormLabel>
+                  <InputLabel>
                     {t('exercise_generator_perform_quality_check')}
-                  </FormLabel>
+                    <TooltipButton>
+                      {t('exercise_generator_perform_quality_check_hover')}
+                    </TooltipButton>
+                  </InputLabel>
                   <RadioGroup
                     name="performQualityCheck"
                     value={performQualityCheckValue}
@@ -264,11 +285,15 @@ export default function ExerciseGeneratorForm() {
                 <FormControl size="small">
                   <InputLabel>
                     {t('exercise_generator_exercise_topic')}
+                    <TooltipButton>
+                      {t('exercise_generator_exercise_topic_hover')}
+                    </TooltipButton>
                   </InputLabel>
                   <Select
                     displayEmpty
                     value={topicValue}
                     onChange={e => setTopicValue(e.target.value)}
+                    variant="outlined"
                   >
                     <MenuItem value="">
                       <em>{t('exercise_generator_exercise_topic_none')}</em>
@@ -334,9 +359,12 @@ export default function ExerciseGeneratorForm() {
                 </FormControl>
                 <br /><br />
                 <FormControl>
-                  <FormLabel>
-                    {t('exercise_generator_exercise_sentence_count_max')}
-                  </FormLabel>
+                  <InputLabel>
+                    {t('exercise_generator_exercise_sentence_count')}
+                    <TooltipButton>
+                      <Translate i18nKey="exercise_generator_exercise_sentence_count_hover" />
+                    </TooltipButton>
+                  </InputLabel>
                   <TextField
                     type="number"
                     slotProps={{

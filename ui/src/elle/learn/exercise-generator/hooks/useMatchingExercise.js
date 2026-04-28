@@ -8,6 +8,7 @@ import {
   useSensors
 } from '@dnd-kit/core';
 import { useCallback, useMemo, useState } from 'react';
+import { useMatchingBankStickySizing } from './useMatchingBankStickySizing';
 
 export const MATCHING_BANK_DROPPABLE_ID = 'matching-bank';
 export const MATCHING_BLANK_ID_PREFIX = 'matching-blank-';
@@ -62,6 +63,12 @@ export function useMatchingExercise({
 
     return matchingOptions.filter(option => !new Set(answers).has(option.value));
   }, [answers, isMatchingFormat, matchingOptions]);
+
+  const { matchingBankRef, matchingBankStyle } = useMatchingBankStickySizing({
+    isMatchingFormat,
+    isAnswered,
+    availableMatchingOptionsCount: availableMatchingOptions.length
+  });
 
   const clearMatchingSelection = useCallback(() => {
     setSelectedMatchingOptionId(null);
@@ -186,6 +193,8 @@ export function useMatchingExercise({
     selectedMatchingOptionId,
     selectedMatchingValue,
     availableMatchingOptions,
+    matchingBankRef,
+    matchingBankStyle,
     handleMatchingDrop,
     handleMatchingOptionClick,
     handleMatchingBlankClick,
