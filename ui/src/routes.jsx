@@ -13,6 +13,9 @@ import Wordlist from './elle/tools/wordlist/Wordlist';
 import WordContext from './elle/tools/wordcontext/WordContext';
 import Collocates from './elle/tools/Collocates';
 import Tools from './elle/pages/Tools';
+// TODO ELLE-386 remove this unused import
+// it is only necessary because it imports Correction.css which is still in use in the new correction components
+import Correction from './elle/tools/correction/Correction';
 import Login from './elle/pages/Login';
 import Admin from './elle/pages/Admin';
 import RequireAuth from './elle/components/security/RequireAuth';
