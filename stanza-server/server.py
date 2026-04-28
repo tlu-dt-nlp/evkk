@@ -111,7 +111,8 @@ def keerukus_sonaliigid_mitmekesisus():
         laused.append(sentence.text)
         sentence_array = []
         for word in sentence.words:
-            total_words += 1
+            if word.upos != 'PUNCT' and word.upos != 'SYM':
+                total_words += 1
             data_row = [word.id, word.text, word.lemma, word.upos, word.xpos, word.feats]
             linguistic_data.append(data_row)
             corrected_word = common_errors_map.get(word.text.lower(), None)
@@ -147,9 +148,11 @@ def keerukus_sonaliigid_mitmekesisus():
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
 
     if model_type == "grammarcheckerTest":
-        grammar_output = generate_test_grammar_output(tekst, fetch_test_grammar(text_with_no_line_breaks))
+        grammar_response = fetch_test_grammar(text_with_no_line_breaks)
+        grammar_output = generate_test_grammar_output(tekst, grammar_response)
     else:
-        grammar_output = generate_grammar_output(tekst, fetch_grammar(text_with_no_line_breaks))
+        grammar_response = fetch_grammar(text_with_no_line_breaks)
+        grammar_output = generate_grammar_output(tekst, grammar_response)
 
     speller_output = generate_grammar_output(tekst, fetch_speller(text_with_no_line_breaks),
                                              list_checked_speller_errors)
@@ -165,8 +168,8 @@ def keerukus_sonaliigid_mitmekesisus():
 
     syllable_count, polysyllabic_words = get_syllable_info(eestikeelsed_sonad)
 
-    errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
-    errors_per_word = grammar_output["error_count"] / total_words
+    errors_per_sentence = len(grammar_response["corrections"]) / len(doc.sentences)
+    errors_per_word = len(grammar_response["corrections"]) / total_words
 
     feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
                                    polysyllabic_words)
