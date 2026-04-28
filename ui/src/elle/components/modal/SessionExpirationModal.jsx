@@ -52,8 +52,7 @@ export default function SessionExpirationModal() {
       updateMinutesLeft(expirationTime);
       if (Date.now() > expirationTime) {
         setIsOpen(false);
-        logout(true);
-        clearInterval(intervalId.current);
+        renew().catch(() => {}).finally(() => {});
       }
     }, 3000);
 

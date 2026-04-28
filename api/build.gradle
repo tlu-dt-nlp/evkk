@@ -37,3 +37,18 @@ dependencies {
   implementation "org.apache.poi:poi:5.1.0"
 
 }
+
+bootRun {
+  environment "EVKK_COMMON_DATASOURCE_URL", System.getenv("EVKK_COMMON_DATASOURCE_URL") ?: "jdbc:postgresql://localhost:5432/evkk"
+  environment "EVKK_API_DATASOURCE_PASSWORD", System.getenv("EVKK_API_DATASOURCE_PASSWORD") ?: "password"
+  environment "EVKK_COMMON_REDIS_HOST", System.getenv("EVKK_COMMON_REDIS_HOST") ?: "localhost"
+  environment "EVKK_COMMON_REDIS_PORT", System.getenv("EVKK_COMMON_REDIS_PORT") ?: "6379"
+  environment "EVKK_COMMON_LIB_PATHS_MASINOPPE_ENNUSTUS", System.getenv("EVKK_COMMON_LIB_PATHS_MASINOPPE_ENNUSTUS") ?: ""
+  environment "HARID_CLIENT_ID", System.getenv("HARID_CLIENT_ID") ?: ""
+  environment "HARID_CLIENT_SECRET", System.getenv("HARID_CLIENT_SECRET") ?: ""
+  environment "HARID_AUTH_URL", System.getenv("HARID_AUTH_URL") ?: ""
+  environment "HARID_GENERAL_DATA_URL", System.getenv("HARID_GENERAL_DATA_URL") ?: ""
+  environment "HARID_TOKEN_URL", System.getenv("HARID_TOKEN_URL") ?: ""
+  environment "JWT_TOKEN_SECRET", System.getenv("JWT_TOKEN_SECRET") ?: "local-dev-secret-change-in-prod"
+  environment "TEXT_TO_SPEECH_URL", System.getenv("TEXT_TO_SPEECH_URL") ?: ""
+}

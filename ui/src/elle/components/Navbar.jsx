@@ -1,9 +1,9 @@
 import elleLogo from '../resources/images/header/elle_logo.png';
-import { AppBar, Box, Drawer, IconButton, Link, List, ListItem, Menu, MenuItem, styled, Toolbar } from '@mui/material';
-import { Close, Language, Logout, Menu as MenuIcon } from '@mui/icons-material';
-import { NavLink } from 'react-router-dom';
+import { AppBar, Box, Drawer, IconButton, Link, List, ListItem, Menu, MenuItem, Popover, Button, styled, Toolbar } from '@mui/material';
+import { AccountCircle, Close, Language, Logout, Menu as MenuIcon, Login } from '@mui/icons-material';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import '@fontsource/exo-2/600.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import './styles/Navbar.css';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,8 @@ import { useLogout } from '../hooks/service/AuthService';
 import TextToSpeechMenu from './text-to-speech/TextToSpeechMenu';
 import flagEst from '../resources/images/flags/est.png';
 import flagEng from '../resources/images/flags/eng.png';
-import { NavbarPages } from '../const/RouteConstants';
+import { NavbarPages, RouteConstants } from '../const/RouteConstants';
+import RootContext from '../context/RootContext';
 
 const MenuLink = styled(Link)({
   fontWeight: 600,
@@ -47,11 +48,16 @@ const BurgerLink = styled(Link)({
 
 export default function Navbar() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [navColor, setNavColor] = useState('sticking');
   const [langAnchorEl, setLangAnchorEl] = useState(false);
   const langOpen = Boolean(langAnchorEl);
   const { logout } = useLogout();
+  const { user, accessToken } = useContext(RootContext);
+  const isLoggedIn = Boolean(accessToken);
+  const onAccountPage = location.pathname.startsWith(`/${RouteConstants.ACCOUNT}`);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -121,6 +127,27 @@ export default function Navbar() {
     );
   };
 
+  const [profileAnchorEl, setProfileAnchorEl] = useState(null);
+
+  const authButton = (isDesktop) => {
+    const handleClick = (event) => {
+      if (onAccountPage || isLoggedIn) {
+        setProfileAnchorEl(event.currentTarget);
+      } else {
+        navigate('/login');
+      }
+    };
+
+    return (
+      <div
+        className={`nav-login ${isDesktop ? 'desktop' : ''}`}
+        onClick={handleClick}
+      >
+        {onAccountPage || isLoggedIn ? <AccountCircle /> : <Login />}
+      </div>
+    );
+  };
+
   const handleScroll = () => {
     const position = window.scrollY;
     if (position > 20) {
@@ -173,6 +200,7 @@ export default function Navbar() {
             })}
           </div>
           <div className="nav-icons-container">
+            {authButton(true)}
             {logoutItem(true)}
             <Box className="navbar-icons-desktop">
               {languageMenu()}
@@ -187,6 +215,74 @@ export default function Navbar() {
           </div>
         </div>
       </Toolbar>
+      <Popover
+        open={Boolean(profileAnchorEl)}
+        anchorEl={profileAnchorEl}
+        onClose={() => setProfileAnchorEl(null)}
+        disableScrollLock
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center'
+        }}
+        PaperProps={{
+          sx: {
+            position: 'absolute',
+            top: '58px',
+            left: '1249px',
+            p: 0,
+            opacity: 1,
+            transform: 'none',
+            transformOrigin: '110px 0px',
+            transition: 'none',
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
+            overflow: 'visible'
+          }
+        }}
+      >
+        <div className="profile-popover">
+          <div className="profile-name">
+            {user?.name || 'Katrin'}
+          </div>
+          <div className="profile-role">
+            <span className="profile-role-label">Roll:</span>{' '}
+            {user?.roleNameReadable || 'õppija / keelehuviline'}
+          </div>
+          <div className="profile-buttons">
+            <Button
+              variant="contained"
+              className="profile-button primary"
+              onClick={() => {
+                navigate(onAccountPage || isLoggedIn
+                  ? `/${RouteConstants.ACCOUNT}/${RouteConstants.ACCOUNT_OVERVIEW}`
+                  : '/login'
+                );
+                setProfileAnchorEl(null);
+              }}
+            >
+              Minu leht
+            </Button>
+            <Button
+              variant="contained"
+              className="profile-button secondary"
+              onClick={() => {
+                setProfileAnchorEl(null);
+                if (isLoggedIn) {
+                  handleLogout();
+                } else {
+                  navigate('/');
+                }
+              }}
+            >
+              Logi välja
+            </Button>
+          </div>
+        </div>
+      </Popover>
       <Drawer
         open={open}
         anchor="left"
@@ -231,6 +327,7 @@ export default function Navbar() {
             </List>
           </div>
           <div className="d-flex justify-content-end align-items-center nav-50px-height">
+            {authButton(false)}
             {logoutItem(false)}
             {languageMenu()}
             <TextToSpeechMenu />

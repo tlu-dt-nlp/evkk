@@ -15,7 +15,9 @@ import Collocates from './elle/tools/Collocates';
 import Tools from './elle/pages/Tools';
 import Correction from './elle/tools/correction/Correction';
 import Login from './elle/pages/Login';
+import NativeLanguage from './elle/pages/NativeLanguage';
 import Admin from './elle/pages/Admin';
+import Account from './elle/pages/Account';
 import RequireAuth from './elle/components/security/RequireAuth';
 import { UserRoles } from './elle/const/Constants';
 import ResponsiveDrawer from './elle/components/ResponsiveDrawer';
@@ -171,6 +173,62 @@ export const routes = [
             path: RouteConstants.LOGIN,
             element: <Login />,
             handle: { crumb: () => ({ to: RouteConstants.LOGIN, translateKey: 'common_login_for_admins' }) }
+          },
+          {
+            path: RouteConstants.ACCOUNT,
+            element: <Account />,
+            handle: { crumb: () => ({ to: RouteConstants.ACCOUNT, translateKey: 'account_overview_breadcrumb' }) },
+            children: [
+              {
+                index: true,
+                element: <Navigate to={RouteConstants.ACCOUNT_OVERVIEW} replace />
+              },
+              {
+                path: RouteConstants.ACCOUNT_OVERVIEW,
+                element: <></>,
+                handle: { crumb: () => ({ to: RouteConstants.ACCOUNT_OVERVIEW, translateKey: 'account_overview_breadcrumb_leaf' }) }
+              },
+              {
+                path: RouteConstants.ACCOUNT_ACTIVITIES,
+                element: <></>,
+                handle: { crumb: () => ({ to: RouteConstants.ACCOUNT_ACTIVITIES, translateKey: 'account_activities_breadcrumb_leaf' }) }
+              },
+              {
+                path: RouteConstants.ACCOUNT_MATERIALS,
+                element: <></>,
+                children: [
+                  {
+                    index: true,
+                    element: <Navigate to={RouteConstants.ACCOUNT_MATERIALS_STUDY} replace />
+                  },
+                  {
+                    path: RouteConstants.ACCOUNT_MATERIALS_STUDY,
+                    element: <></>,
+                    handle: { crumb: () => ({ to: RouteConstants.ACCOUNT_MATERIALS_STUDY, translateKey: 'account_materials_study_breadcrumb_leaf' }) }
+                  },
+                  {
+                    path: RouteConstants.ACCOUNT_MATERIALS_EXERCISES,
+                    element: <></>,
+                    handle: { crumb: () => ({ to: RouteConstants.ACCOUNT_MATERIALS_EXERCISES, translateKey: 'account_materials_exercises_breadcrumb_leaf' }) }
+                  }
+                ]
+              },
+              {
+                path: RouteConstants.ACCOUNT_TEXTS,
+                element: <></>,
+                handle: { crumb: () => ({ to: RouteConstants.ACCOUNT_TEXTS, translateKey: 'account_texts_breadcrumb_leaf' }) }
+              },
+              {
+                path: RouteConstants.ACCOUNT_DATA,
+                element: <></>,
+                handle: { crumb: () => ({ to: RouteConstants.ACCOUNT_DATA, translateKey: 'account_data_breadcrumb_leaf' }) }
+              }
+            ]
+          },
+          {
+            path: RouteConstants.NATIVE_LANGUAGE,
+            element: <NativeLanguage />,
+            handle: { crumb: () => ({ to: RouteConstants.NATIVE_LANGUAGE, translateKey: 'native_language_breadcrumb' }) }
           },
           {
             element: <RequireAuth role={UserRoles.ADMIN} />,

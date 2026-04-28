@@ -1,0 +1,1500 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&display=swap");
+
+.account-page-container .MuiButton-root:focus-visible,
+.account-page-container .MuiButton-root:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.account-page-container {
+  margin: 0 50px 50px 50px;
+  font-family: "Exo 2", sans-serif;
+  margin-left: -5px;
+  margin-right: -5px;
+
+}
+
+.account-card-wrapper {
+  background: fixed linear-gradient(
+    315deg,
+    rgba(156, 39, 176, 1) 0%,
+    rgba(156, 39, 176, 1) 33%,
+    rgba(204, 168, 253, 1) 33%,
+    rgba(204, 168, 253, 1) 67%,
+    rgba(255, 208, 253, 1) 67%,
+    rgba(255, 208, 253, 1) 100%
+  );
+  border-radius: 20px;
+  padding: 7px;
+}
+
+.account-card {
+  border-radius: 13px;
+  background: #fff;
+  padding: 3.2rem 3.5rem 3.8rem 2rem;
+}
+
+.account-title {
+  font-weight: 600;
+  font-size: 1.7rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  margin-left: 146px;
+}
+
+.account-content {
+  display: flex;
+  gap: 0;
+  align-items: stretch;
+}
+
+.account-sidebar {
+  min-width: 250px;
+  border-right: 2px solid #9C27B0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding-left: 1.5rem;
+  padding-right: 0;
+  box-sizing: border-box;
+}
+
+.account-sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Account layout (menu -> divider -> content) */
+.layout {
+  display: flex;
+  width: 100%;
+  gap: 40px;
+}
+
+.sidebar {
+  width: 190px;
+  
+}
+
+.sidebar > ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 107px;
+}
+
+.sidebar li {
+  margin: 19px 0;
+  font-size: 22px;
+  cursor: pointer;
+  color: #000000;
+}
+
+.sidebar li.active {
+  color: #9C27B0;
+  font-weight: 600;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.divider {
+  width: 1px;
+  height: 499px;
+  background-color: #9C27B0;
+  margin-left: -59px;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.account-submenu {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 1.25rem;
+}
+
+.account-submenu li {
+  font-size: 18px;
+  margin: 0.6rem 0;
+}
+
+.account-subpage-title {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 1.75rem;
+  font-family: "Exo 2", sans-serif;
+}
+
+.account-materials-subpage {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-materials-search-area {
+  margin-bottom: 1.5rem;
+}
+
+.account-materials-search {
+  width: 65%;
+  margin-bottom: 1.25rem !important;
+}
+
+.account-materials-search .MuiOutlinedInput-root {
+  border-radius: 15px !important;
+}
+
+.account-materials-search .MuiOutlinedInput-notchedOutline {
+  border-color: #9C27B0 !important;
+  border-width: 1px;
+}
+
+.account-materials-search .MuiInputBase-root {
+  margin-bottom: 0 !important;
+}
+
+.account-materials-filters-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.account-materials-filters {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.account-materials-filter {
+  width: 180px;
+}
+
+.account-materials-filter .MuiInputBase-root {
+  margin-bottom: 0 !important;
+  border-radius: 5px 5px 0 0 !important;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.10), 2px 0 4px rgba(0,0,0,0.06), -2px 0 4px rgba(0,0,0,0.06);
+  background: #ffffff;
+}
+
+.account-materials-filter .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+.account-materials-filter-select .MuiSelect-select {
+  color: #9C27B0 !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 6px 16px !important;
+}
+
+.account-materials-filter-select .MuiSvgIcon-root {
+  color: #9C27B0;
+  font-size: 1.2rem;
+}
+
+
+.account-subpage-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.account-subpage-cards .account-card-box {
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-subpage-cards .account-card-box.empty {
+  background: #ffffff;
+}
+
+.account-activities-page {
+  width: 100%;
+  min-height: 360px;
+}
+
+.account-activities-empty {
+  max-width: 680px;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin: 4rem auto 0;
+}
+
+.account-title-info {
+  color: #9C27B0 !important;
+  margin-left: 0.35rem !important;
+  vertical-align: middle;
+  padding: 2px !important;
+}
+
+.account-title-info:hover,
+.account-title-info:focus {
+  background-color: rgba(156, 39, 176, 0.08) !important;
+}
+
+.account-title-info .MuiTouchRipple-root {
+  color: #9C27B0;
+}
+
+.account-activities-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0.55rem;
+}
+
+.account-activities-header .account-subpage-title {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+
+.account-activities-filter {
+  width: 152px;
+}
+
+.account-activities-filter .MuiInputBase-root {
+  height: 30px;
+  border-radius: 4px;
+  font-family: "Exo 2", sans-serif;
+  font-size: 0.86rem;
+  color: #9C27B0;
+  background-color: #ffffff;
+}
+
+.account-activities-filter .MuiOutlinedInput-notchedOutline {
+  border-color: #e0e0e0;
+  border-width: 1px;
+}
+
+.account-activities-filter .MuiSelect-select {
+  padding: 5px 28px 5px 10px !important;
+}
+
+.account-activities-filter .MuiSelect-icon {
+  color: #9C27B0;
+  right: 6px;
+  top: calc(50% - 9px);
+  font-size: 18px;
+}
+
+.account-activities-table-head,
+.account-activity-row {
+  display: grid;
+  grid-template-columns: 1.1fr 1.35fr 1fr 0.9fr 0.95fr 0.45fr;
+  column-gap: 0.8rem;
+  align-items: center;
+}
+
+.account-activities-table-head {
+  color: #9C27B0;
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+  padding: 0 0.35rem;
+}
+
+.account-activities-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.account-activities-pagination {
+  margin-top: 1.75rem;
+}
+
+.account-row-open-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.account-activity-row {
+  border: 1.5px solid rgba(156, 39, 176, 0.7);
+  border-radius: 6px;
+  min-height: 44px;
+  padding: 0.2rem 0.35rem;
+  font-size: 1.02rem;
+}
+
+.account-row-open-btn {
+  height: 24px;
+  min-width: 56px;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  background: #9C27B0;
+  color: #ffffff;
+  font-family: "Exo 2", sans-serif;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.account-row-open-btn:hover,
+.account-row-open-btn:focus {
+  outline: none;
+  background: #7b1fa2;
+}
+
+.account-data-page {
+  max-width: 980px;
+  margin: 0 auto;
+  margin-left: 105px;
+}
+
+.account-data-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.05rem;
+}
+
+.account-data-key {
+  color: #9C27B0;
+  font-weight: 600;
+}
+
+.account-data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 25rem;
+}
+
+.account-data-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 1.05rem;
+}
+
+.account-data-field .MuiInputBase-root {
+  margin-bottom: 0 !important;
+}
+
+.account-data-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.45rem;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.account-data-save-btn {
+  display: block;
+  margin: 1.45rem auto 0.95rem;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  background: #9C27B0;
+  color: #ffffff;
+  height: 32px;
+  padding: 0 0.95rem;
+  font-family: "Exo 2", sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.account-data-save-btn:hover {
+  background: #7b1fa2;
+}
+
+.account-data-save-btn:focus {
+  outline: none;
+  background: #7b1fa2;
+}
+
+.account-data-bottom .account-data-checkbox {
+  display: flex !important;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 auto !important;
+  font-size: 0.9rem;
+  text-align: left;
+  max-width: min(100%, 34rem);
+}
+
+.account-data-checkbox {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto !important;
+  font-size: 0.9rem;
+}
+
+.account-data-checkbox .MuiFormControlLabel-label {
+  font-size: 0.9rem;
+}
+
+.account-data-modal {
+  width: min(660px, calc(100vw - 32px));
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.3rem 1.3rem 1.1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.account-data-modal p {
+  margin: 0 0 1rem;
+}
+
+.account-data-modal p:last-child {
+  margin-bottom: 0;
+}
+
+.account-data-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #333333;
+}
+
+.account-sidebar li {
+  margin: 1rem 0;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.account-sidebar li a {
+  text-decoration: none;
+  color: #000000;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.account-sidebar li a.active {
+  color: #9C27B0;
+  font-weight: 600;
+}
+
+.account-main {
+  flex: 1;
+  padding-left: 2.2rem;
+}
+
+.account-greeting {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.account-main-grid {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.account-card-box {
+  border: 2px solid rgba(156, 39, 176, 1);
+  border-radius: 20px;
+  padding: 1.5rem 1.75rem;
+}
+
+.account-box-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.account-circle-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.account-donut {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: conic-gradient(#9c27b0 var(--donut-pct, 0%), #f6d7ff 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-donut--empty {
+  background: #f6d7ff;
+}
+
+.account-donut-inner {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 10px solid #f6d7ff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-circle-value {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.account-stats {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.account-stats > div + div {
+  margin-top: 0.35rem;
+}
+
+.account-stats .link-like {
+  color: #9C27B0;
+}
+
+.account-activities {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+}
+
+.account-activities li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.4rem 0;
+}
+
+.account-activities-overview li {
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.account-activities-overview li:last-child {
+  border-bottom: none;
+}
+
+.account-overview-activity-main {
+  display: flex;
+  gap: 0.45rem;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+
+.account-overview-activity-icon {
+  color: #9c27b0;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.percent-link {
+  color: #9C27B0;
+}
+
+.account-activity-date {
+  font-size: 0.85rem;
+  color: #757575;
+}
+
+.account-week-info {
+  margin-top: 1.75rem;
+  font-size: 0.95rem;
+}
+
+.account-week-info .star {
+  color: #f0c418;
+  margin-right: 0.25rem;
+}
+
+.account-progress-bar {
+  margin-top: 0.5rem;
+  width: 260px;
+  height: 12px;
+  border-radius: 999px;
+  background-color: #e0e0e0;
+  overflow: hidden;
+}
+
+.account-progress-bar-wide {
+  width: 100%;
+  max-width: 520px;
+}
+
+.account-progress-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background-color: #9c27b0;
+  transition: width 0.35s ease;
+}
+
+@media (max-width: 900px) {
+  .account-content {
+    flex-direction: column;
+  }
+
+  .account-sidebar {
+    border-right: none;
+    border-bottom: 2px solid #9C27B0;
+    padding-bottom: 1rem;
+  }
+
+  .account-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Minu tekstid page ── */
+
+.account-texts-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-texts-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Text cards ── */
+
+.account-text-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.account-text-card {
+  border: 1.5px solid #e8d5f0;
+  border-radius: 10px;
+  padding: 1rem 1.1rem 0.85rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.text-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.text-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.text-card-icons {
+  display: flex;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+
+.text-card-icons .MuiIconButton-root {
+  color: #9e9e9e;
+  padding: 4px;
+}
+
+.text-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+  color: #444;
+}
+
+.text-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* ── Add text modal ── */
+
+.add-text-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(860px, calc(100vw - 32px));
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.add-text-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-text-modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-family: "Exo 2", sans-serif;
+}
+
+.add-text-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.add-text-modal-body .MuiInputBase-root {
+  margin-bottom: 0 !important;
+}
+
+.add-text-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.add-text-label .MuiInputBase-root {
+  margin-bottom: 0 !important;
+}
+
+/* ===== Модалка выбора материала ===== */
+.add-material-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.add-material-modal-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-family: "Exo 2", sans-serif;
+  font-weight: 700;
+  color: #222;
+  flex: 1;
+  text-align: center;
+}
+
+.add-material-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(900px, calc(100vw - 32px));
+  max-height: 85vh;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.view-mat-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.view-mat-tag {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.view-mat-body {
+  margin-top: 0.5rem;
+}
+
+.view-mat-iframe {
+  width: 100%;
+  min-height: 62vh;
+  max-height: 74vh;
+  border: 0;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.view-mat-file-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1.5px solid #e1bee7;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  background: #faf5ff;
+}
+
+.view-mat-filename {
+  font-size: 0.9rem;
+  color: #444;
+  font-weight: 500;
+}
+
+.view-mat-link {
+  font-size: 0.85rem;
+  color: #9C27B0;
+  text-decoration: underline;
+  word-break: break-all;
+  flex: 1;
+}
+
+.add-exercise-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.add-exercise-saved-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.account-exercise-saved-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.exercise-saved-card {
+  border: 1.5px solid #e1bee7;
+  border-radius: 10px;
+  padding: 1rem 1.1rem 0.9rem;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.exercise-saved-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.15rem;
+}
+
+.exercise-e-harjutus-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: #FFD0FD;
+  color: #9C27B0;
+}
+
+.exercise-saved-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.exercise-saved-card-desc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #555;
+  line-height: 1.35;
+}
+
+.exercise-saved-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.15rem;
+}
+
+.exercise-saved-card-tags {
+  font-size: 0.8rem;
+  color: #888;
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-saved-card-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.exercise-saved-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.45rem;
+  padding-top: 0.35rem;
+}
+
+.exercise-saved-footer-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  min-width: 0;
+}
+
+.exercise-saved-tulemus {
+  font-size: 0.88rem;
+  color: #1a1a1a;
+}
+
+.exercise-saved-tulemus-pct {
+  color: #9C27B0;
+  font-weight: 700;
+}
+
+.exercise-saved-card .exercise-status-dot.alustamata {
+  border-color: #9C27B0;
+}
+
+.exercise-picker-card {
+  border: 1.5px solid #ce93d8;
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  background: #fff;
+}
+
+.exercise-picker-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.exercise-picker-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.exercise-picker-desc {
+  margin: 0.35rem 0 0.25rem;
+  font-size: 0.88rem;
+  color: #555;
+}
+
+.exercise-picker-tags {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.exercise-picker-url {
+  display: block;
+  font-size: 0.78rem;
+  color: #9C27B0;
+  text-decoration: underline;
+  word-break: break-all;
+  margin-bottom: 0.5rem;
+}
+
+.exercise-picker-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.add-material-search-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.add-material-search-row .account-materials-search {
+  width: 220px;
+  margin-bottom: 0 !important;
+}
+
+.add-material-search-row .account-materials-search .MuiOutlinedInput-root {
+  border-radius: 15px !important;
+  height: 40px;
+}
+
+.add-material-search-row .account-materials-filter .MuiOutlinedInput-root {
+  height: 40px;
+}
+
+.add-material-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.avail-mat-card {
+  border: 1.5px solid #e1bee7;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.avail-mat-card:hover {
+  border-color: #9C27B0;
+}
+
+/* ===== Карточки сохранённых материалов ===== */
+.account-mat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.account-mat-card {
+  border: 1.5px solid #e1bee7;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #fff;
+}
+
+.mat-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mat-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.mat-badge-oppematerjal {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: #FFC5C5;
+  color: #9C27B0;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mat-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.mat-card-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #222;
+  margin: 0.3rem 0 0.1rem;
+}
+
+.mat-type-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mat-type-tekst { background: #FFD0FD; color: #9C27B0; }
+.mat-type-video { background: #FFC5C5; color: #c0392b; }
+.mat-type-fail  { background: #D0EAFF; color: #1565c0; }
+.mat-type-link  { background: #D2F1C7; color: #2e7d32; }
+
+.mat-card-desc {
+  font-size: 0.82rem;
+  color: #555;
+  margin: 0;
+}
+
+.mat-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.mat-card-tag {
+  font-size: 0.72rem;
+  color: #888;
+}
+
+.mat-card-tag:not(:last-child)::after {
+  content: ',';
+}
+
+.mat-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.3rem;
+}
+
+.view-text-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.82rem;
+  color: #888;
+  flex-wrap: wrap;
+}
+
+.view-text-content {
+  background: #faf5ff;
+  border: 1px solid #e1bee7;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  min-height: 120px;
+  max-height: 55vh;
+  overflow-y: auto;
+  color: #333;
+}
+
+.add-text-modal-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+/* LearningApps / embed harjutus */
+.exercise-embed-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(960px, calc(100vw - 24px));
+  height: min(88vh, 820px);
+  max-height: calc(100vh - 24px);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.exercise-embed-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e1bee7;
+  flex-shrink: 0;
+}
+
+.exercise-embed-modal-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding-right: 0.5rem;
+}
+
+.exercise-embed-fallback {
+  flex: 1;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem 1.25rem;
+  background: #faf5ff;
+}
+
+.exercise-embed-fallback-text {
+  margin: 0;
+  max-width: 420px;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.45;
+}
+
+.exercise-embed-iframe {
+  border: 0;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  background: #fafafa;
+}
+
+.exercise-embed-modal-footer {
+  padding: 0.75rem 1rem 1rem;
+  border-top: 1px solid #e1bee7;
+  flex-shrink: 0;
+}
+
+.exercise-embed-score {
+  margin-bottom: 0.6rem;
+  color: #9c27b0;
+  font-weight: 600;
+}
+
+.exercise-embed-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+/* ── Harjutused page ── */
+
+.account-exercises-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-exercises-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.account-exercises-checkboxes {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-exercises-checkboxes .MuiFormControlLabel-label {
+  font-size: 0.95rem;
+}
+
+.account-exercises-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.account-exercise-card {
+  border: 1.5px solid #e8d5f0;
+  border-radius: 10px;
+  padding: 1rem 1.1rem 0.85rem;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.exercise-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+
+.exercise-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #9C27B0;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.exercise-tag-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.6);
+  flex-shrink: 0;
+}
+
+.exercise-card-icons {
+  display: flex;
+  gap: 0.1rem;
+  color: #9e9e9e;
+}
+
+.exercise-card-icons .MuiIconButton-root {
+  color: #9e9e9e;
+  padding: 4px;
+}
+
+.exercise-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.exercise-card-desc {
+  font-size: 0.85rem;
+  color: #555;
+  margin: 0;
+}
+
+.exercise-card-meta {
+  font-size: 0.78rem;
+  color: #777;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.15rem;
+}
+
+.exercise-card-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.exercise-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+}
+
+.exercise-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.exercise-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.exercise-status-dot.tehtud {
+  background: #9C27B0;
+}
+
+.exercise-status-dot.alustamata {
+  border: 2px solid #9e9e9e;
+  background: transparent;
+}
+
+.exercise-score {
+  color: #9C27B0;
+  font-weight: 600;
+}
+
+.account-exercises-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 0;
+}
+
+.pagination-btn {
+  border: 1.5px solid #bdbdbd;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #333;
+  font-family: "Exo 2", sans-serif;
+  font-size: 0.9rem;
+  padding: 5px 18px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.pagination-btn:hover {
+  border-color: #9C27B0;
+  color: #9C27B0;
+}
+
+.pagination-btn:focus {
+  outline: none;
+}
+
+.pagination-page {
+  font-size: 0.9rem;
+  color: #555;
+}

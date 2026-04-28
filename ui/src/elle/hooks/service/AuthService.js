@@ -36,10 +36,11 @@ export const useRenew = () => {
   const { setContext } = useContext(RootContext);
 
   const renew = useCallback(() => {
-    fetchData(`${AUTH_PATH}/renew`, {
+    return fetchData(`${AUTH_PATH}/renew`, {
       method: 'POST'
     }, {
-      disableResponseParsing: true
+      disableResponseParsing: true,
+      forceAuthHeader: true
     }).then(() => setContext(true));
   }, [fetchData, setContext]);
 

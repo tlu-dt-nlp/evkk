@@ -3,8 +3,7 @@ FROM python:3.10.14
 RUN apt-get update \
     && apt-get install -y libpcre3 locales \
     && apt-get clean \
-    && wget https://old-releases.ubuntu.com/ubuntu/pool/universe/s/swig/swig3.0_3.0.12-2_amd64.deb -O swig3.deb \
-    && dpkg -i swig3.deb \
+    && pip install --no-cache-dir swig==3.0.12 \
     && sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
     && locale-gen
 

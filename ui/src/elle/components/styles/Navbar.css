@@ -191,3 +191,68 @@
     padding-left: 0.5rem;
   }
 }
+
+.nav-login {
+  display: flex;
+  align-items: center;
+  padding-right: 1.5rem;
+  color: #1B1B1B;
+} 
+
+.nav-login:hover {
+  color: #9C27B0;
+  cursor: pointer;
+}
+
+.profile-popover {
+  padding: 20px 24px 18px 24px;
+  border-radius: 20px;
+  border: 2px solid #9C27B0;
+  background-color: #ffffff;
+  min-width: 220px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+  margin-left: -13px;
+}
+
+.profile-name {
+  font-family: "Exo 2", sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.profile-role {
+  font-family: "Exo 2", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.profile-role-label {
+  font-weight: 600;
+}
+
+.profile-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile-button {
+  text-transform: none !important;
+  font-family: "Exo 2", sans-serif !important;
+  font-size: 14px !important;
+  border-radius: 8px !important;
+}
+
+.profile-button.primary {
+  background-color: #9C27B0 !important;
+}
+
+.profile-button.secondary {
+  background-color: #ffffff !important;
+  color: #9C27B0 !important;
+  border: 1px solid #9C27B0 !important;
+}

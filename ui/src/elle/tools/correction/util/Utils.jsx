@@ -9,6 +9,8 @@ import { accordionDetails, errorTypes } from '../const/TabValuesConstant';
 import { ARROW_KEYS, CORRECTION, SPELLCHECKER, TEXTSPAN } from '../const/Constants';
 import { Paper, Tooltip } from '@mui/material';
 import SingleError from '../tabviews/correction/components/SingleError';
+import { RouteConstants } from '../../../const/RouteConstants';
+import { prependAccountActivity } from '../../../utils/accountActivityLog';
 
 export const handleCopy = (event) => {
   event.preventDefault();
@@ -83,6 +85,19 @@ export const queryCaller = (textBoxRef, inputText, setRequestingText, setGrammar
         setAbstractWords(answer.abstraktsus);
         setGrammarErrorList(answer.grammatikaVead);
         setSpellerErrorList(answer.spelleriVead);
+        const fixCount = (answer.grammatikaVead?.length || 0) + (answer.spelleriVead?.length || 0);
+        const snippet = (fetchInputText || '').replace(/\s+/g, ' ').trim();
+        const label = !snippet ? 'Teksti analüüs' : (snippet.length > 36 ? `${snippet.slice(0, 36)}…` : snippet);
+        const correctorPath = typeof window !== 'undefined' && window.location.pathname.includes(RouteConstants.CORRECTOR_TEST)
+          ? `/${RouteConstants.CORRECTOR_TEST}`
+          : `/${RouteConstants.CORRECTOR}`;
+        prependAccountActivity({
+          type: 'tekstihindaja',
+          label,
+          result: `Parandusi: ${fixCount}`,
+          status: 'analüüsitud',
+          openPath: correctorPath,
+        });
       }).then(() => setRequestingText(null));
   }
 };

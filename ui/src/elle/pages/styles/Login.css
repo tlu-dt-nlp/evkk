@@ -1,7 +1,69 @@
+.login-page-container {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.login-title {
+  font-family: "Exo 2", sans-serif;
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.login-subtitle {
+  font-family: "Exo 2", sans-serif;
+  font-size: 1rem;
+  margin-bottom: 2.5rem;
+}
+
 .harid-image {
   cursor: pointer;
   display: block;
   margin-left: auto;
   margin-right: auto;
   max-width: 12.5%;
+}
+
+.native-language-page-container {
+  text-align: center;
+  margin-top: 4rem;
+}
+
+.native-language-card {
+  margin: 3rem auto 0 auto;
+  max-width: 320px;
+}
+
+.native-language-button-container {
+  margin-top: 2.5rem;
+}
+
+.native-language-label {
+  font-family: "Exo 2", sans-serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.6rem;
+  text-align: center;
+  color: #000000;
+}
+
+.native-language-select .MuiOutlinedInput-notchedOutline {
+  border-color: #9C27B0;
+}
+
+.native-language-select:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #852197;
+}
+
+.native-language-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #852197;
+}
+
+.native-language-placeholder {
+  opacity: 1;
+  pointer-events: none;
+  width: 100%;
+  box-sizing: border-box;
+  margin-right: 230px;
+  text-align: left;
+  color: #9E9E9E;
 }

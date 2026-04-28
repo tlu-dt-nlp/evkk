@@ -72,7 +72,8 @@ export const useFetch = () => {
       disableResponseParsing: false,
       disableContentTypeJson: false,
       parseType: FetchParseType.JSON,
-      ignoreNotFoundError: false
+      ignoreNotFoundError: false,
+      forceAuthHeader: false
     };
     const options = { ...defaultOptions, ...userOptions };
 
@@ -88,7 +89,7 @@ export const useFetch = () => {
         };
       }
 
-      if (hasNonExpiredToken(accessToken)) {
+      if (options.forceAuthHeader || hasNonExpiredToken(accessToken)) {
         fetchParams.headers = {
           ...fetchParams.headers,
           Authorization: `Bearer ${accessToken}`
