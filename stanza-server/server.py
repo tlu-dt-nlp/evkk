@@ -148,11 +148,11 @@ def keerukus_sonaliigid_mitmekesisus():
     serializable_word_analysis = make_serializable(abstract_answer["wordAnalysis"])
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
 
-    grammar_response = fetch_grammar(text_with_no_line_breaks)
-
     if model_type == "grammarcheckerTest":
-        grammar_output = generate_test_grammar_output(tekst, fetch_test_grammar(text_with_no_line_breaks))
+        grammar_response = fetch_test_grammar(text_with_no_line_breaks)
+        grammar_output = generate_test_grammar_output(tekst, grammar_response)
     else:
+        grammar_response = fetch_grammar(text_with_no_line_breaks)
         grammar_output = generate_grammar_output(tekst, grammar_response)
 
     speller_output = generate_grammar_output(tekst, fetch_speller(text_with_no_line_breaks),
