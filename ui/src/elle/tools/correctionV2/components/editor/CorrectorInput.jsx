@@ -1,6 +1,7 @@
 import './styles/CorrectorInput.css';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { Fragment, Slice } from '@tiptap/pm/model';
 import { EditorState } from '@tiptap/pm/state';
 import { useEffect, useRef } from 'react';
 import MarkComponentExtension from './MarkComponentExtension.js';
@@ -10,6 +11,34 @@ import TextUpload from '../../../../components/TextUpload';
 import { IconButton } from '@mui/material';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
+
+const buildPlainTextPasteSlice = (schema, plainText) => {
+  const normalizedText = plainText.replaceAll(/\r\n?/g, '\n');
+  const hasDoubleNewline = normalizedText.includes('\n\n');
+  const paragraphTexts = hasDoubleNewline
+    ? normalizedText.split(/\n{2,}/)
+    : normalizedText.split('\n');
+
+  const paragraphNodes = paragraphTexts.map(paragraphText => {
+    if (!paragraphText) return schema.nodes.paragraph.create();
+
+    const lineParts = paragraphText.split('\n');
+    const content = [];
+
+    lineParts.forEach((part, index) => {
+      if (part) content.push(schema.text(part));
+
+      // add hard break only if it's not the last part
+      if (index < lineParts.length - 1) {
+        content.push(schema.nodes.hardBreak.create());
+      }
+    });
+
+    return schema.nodes.paragraph.create(null, content.length > 0 ? content : undefined);
+  });
+
+  return new Slice(Fragment.fromArray(paragraphNodes), 0, 0);
+};
 
 export default function CorrectorInput() {
   const {
@@ -53,11 +82,14 @@ export default function CorrectorInput() {
     content: `<p>${text}</p>`,
     editorProps: {
       handlePaste(view, event) {
-        const plainText = event.clipboardData.getData('text/plain');
-        if (!plainText) return false;
+        const plainText = event.clipboardData?.getData('text/plain');
+        if (!plainText || plainText === '') return false;
+
         event.preventDefault();
         const { state, dispatch } = view;
-        dispatch(state.tr.insertText(plainText).scrollIntoView());
+        const slice = buildPlainTextPasteSlice(state.schema, plainText);
+
+        dispatch(state.tr.replaceSelection(slice).scrollIntoView());
         return true;
       }
     }
