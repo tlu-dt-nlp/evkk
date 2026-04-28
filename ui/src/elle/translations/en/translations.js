@@ -210,7 +210,7 @@ export const TRANSLATIONS_EN = {
   corrector_proficiency_level_infobox_list_grammar: '<bold>Grammar</bold> – proportions of parts of speech and grammatical forms, variety of word forms;',
   corrector_proficiency_level_infobox_list_header: 'The corrector evaluates the following text features:',
   corrector_proficiency_level_infobox_list_overall: '<bold>Overall complexity</bold> – length of text, words and sentences;',
-  corrector_proficiency_level_infobox_list_overall_score: '<bold>The overall score</bold> – takes all these aspects into consideration. The sub-scores can differ from one another and from the overall score.',
+  corrector_proficiency_level_infobox_list_overall_score: '<bold>The overall score</bold> – considers all the listed aspects, as well as the frequency of grammatical error corrections. The sub-scores can differ from one another and from the overall score.',
   corrector_proficiency_level_infobox_list_vocabulary: '<bold>Vocabulary</bold> – lexical diversity (the number of unique words relative to the total number of words in the text), range (the proportion of less frequently occurring vocabulary) and noun abstractness.',
   corrector_proficiency_level_infobox_outro: 'In the case of a text written by a native Estonian speaker, the assessment provides an indication of the level of language skills required to write such a text. The appropriateness of a reading text can only be approximated because texts written and read at different levels do not have a one-to-one relationship.',
   corrector_proficiency_level_overall_score: 'Overall score',
