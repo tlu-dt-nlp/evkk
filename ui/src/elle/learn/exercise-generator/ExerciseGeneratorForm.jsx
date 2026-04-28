@@ -133,7 +133,7 @@ export default function ExerciseGeneratorForm() {
               >
                 <FormControl error={typeError}>
                   <InputLabel>
-                    {t('common_type')}
+                    {t('exercise_generator_exercise_type')}
                     <TooltipButton>
                       <Translate i18nKey="exercise_generator_exercise_type_hover" />
                     </TooltipButton>
