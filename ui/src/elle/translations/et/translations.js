@@ -208,7 +208,7 @@ export const TRANSLATIONS_ET = {
   corrector_proficiency_level_infobox_list_grammar: '<bold>Grammatika</bold> – sõnaliikide ja grammatiliste vormide osakaalud, sõnavormide rohkus;',
   corrector_proficiency_level_infobox_list_header: 'Rakendus hindab järgmisi teksti omadusi:',
   corrector_proficiency_level_infobox_list_overall: '<bold>Üldine keerukus</bold> – teksti, sõnade ja lausete pikkus;',
-  corrector_proficiency_level_infobox_list_overall_score: '<bold>Üldhinnang</bold> – võtab arvesse kõiki neid aspekte. Alamhinnangud võivad üksteisest ja üldhinnangust erineda.',
+  corrector_proficiency_level_infobox_list_overall_score: '<bold>Üldhinnang</bold> – võtab arvesse kõiki neid aspekte ja lisaks grammatikakorrektori paranduste sagedust. Alamhinnangud võivad üksteisest ja üldhinnangust erineda.',
   corrector_proficiency_level_infobox_list_vocabulary: '<bold>Sõnavara</bold> – sõnade mitmekesisus (unikaalsete sõnade hulk kõigi teksti sõnade suhtes), ulatus (harvem esineva sõnavara osakaal) ja nimisõnade abstraktsus.',
   corrector_proficiency_level_infobox_outro: 'Eesti emakeelega autori teksti puhul annab hinnang aimu, millise taseme keeleoskust oleks sellise teksti kirjutamiseks vaja. Lugemisteksti tasemekohasust saab hinnata vaid ligikaudselt, sest eri tasemetel loetavate ja kirjutatavate tekstide keerukus ei ole üks-ühele seotud.',
   corrector_proficiency_level_overall_score: 'Üldhinnang',
