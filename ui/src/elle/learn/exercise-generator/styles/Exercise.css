@@ -199,7 +199,7 @@
 
 .matching-bank-sticky .matching-options-wrapper {
   max-height: var(--matching-options-max-height, none);
-  overflow-y: auto;
+  overflow-y: var(--matching-options-overflow-y, visible);
 }
 
 .matching-helper-text,

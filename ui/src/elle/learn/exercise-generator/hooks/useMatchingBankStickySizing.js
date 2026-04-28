@@ -61,6 +61,14 @@ export const useMatchingBankStickySizing = ({
       const minHeight = Math.min(initialHeight, Math.round(window.innerHeight * minHeightRatio));
       const maxCollapse = Math.max(0, initialHeight - minHeight);
       const rawScrolledWhilePinned = Math.max(0, window.scrollY - matchingStickyScrollStartRef.current);
+
+      // for a word to not get stuck while dragging it from a non-collapsed bank
+      if (maxCollapse <= 0) {
+        setMatchingOptionsMaxHeight(null);
+        setMatchingCollapseSpacerHeight(0);
+        return;
+      }
+
       const collapseProgress = Math.min(maxCollapse, rawScrolledWhilePinned * MATCHING_COLLAPSE_SPEED);
       const nextHeight = Math.round(initialHeight - collapseProgress);
 
@@ -97,7 +105,8 @@ export const useMatchingBankStickySizing = ({
   const matchingBankStyle = matchingOptionsMaxHeight
     ? {
       '--matching-options-max-height': `${matchingOptionsMaxHeight}px`,
-      '--matching-bank-collapse-spacer': `${matchingCollapseSpacerHeight}px`
+      '--matching-bank-collapse-spacer': `${matchingCollapseSpacerHeight}px`,
+      '--matching-options-overflow-y': 'auto'
     }
     : undefined;
 
