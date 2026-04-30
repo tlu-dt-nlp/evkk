@@ -14,10 +14,7 @@ import RedoIcon from '@mui/icons-material/Redo';
 
 const buildPlainTextPasteSlice = (schema, plainText) => {
   const normalizedText = plainText.replaceAll(/\r\n?/g, '\n');
-  const hasDoubleNewline = normalizedText.includes('\n\n');
-  const paragraphTexts = hasDoubleNewline
-    ? normalizedText.split(/\n{2,}/)
-    : normalizedText.split('\n');
+  const paragraphTexts = normalizedText.split(/\n{2,}/);
 
   const paragraphNodes = paragraphTexts.map(paragraphText => {
     if (!paragraphText) return schema.nodes.paragraph.create();
