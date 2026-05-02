@@ -6,7 +6,7 @@ const MATCHING_COLLAPSE_SPEED = 0.8;
 const MATCHING_SPACER_RELEASE_DELAY = 48;
 
 export const useMatchingBankStickySizing = ({
-                                              isMatchingFormat,
+                                              showMatchingBank,
                                               isAnswered,
                                               availableMatchingOptionsCount
                                             }) => {
@@ -18,7 +18,7 @@ export const useMatchingBankStickySizing = ({
   const matchingAnimationFrameRef = useRef(null);
 
   useEffect(() => {
-    if (!isMatchingFormat || isAnswered) {
+    if (!showMatchingBank || isAnswered) {
       setMatchingOptionsMaxHeight(null);
       setMatchingCollapseSpacerHeight(0);
       return;
@@ -100,7 +100,7 @@ export const useMatchingBankStickySizing = ({
         matchingAnimationFrameRef.current = null;
       }
     };
-  }, [availableMatchingOptionsCount, isAnswered, isMatchingFormat]);
+  }, [availableMatchingOptionsCount, isAnswered, showMatchingBank]);
 
   const matchingBankStyle = matchingOptionsMaxHeight
     ? {

@@ -30,6 +30,7 @@ import TooltipButton from '../../components/tooltip/TooltipButton';
 import NewTabHyperlink from '../../components/NewTabHyperlink';
 import Translate from '../../components/Translate';
 import { EKI_VOCABULARY_LIST_PATH } from '../../const/PathConstants';
+import { ExerciseType } from '../../enum/ExerciseType';
 
 export default function ExerciseGeneratorForm() {
 
@@ -37,6 +38,7 @@ export default function ExerciseGeneratorForm() {
   const [paramsExpanded, setParamsExpanded] = useState(true);
   const [response, setResponse] = useState(null);
   const [responseFormat, setResponseFormat] = useState(null);
+  const [responseType, setResponseType] = useState(null);
   const [typeValue, setTypeValue] = useState(null);
   const [typeError, setTypeError] = useState(false);
   const [structureValue, setStructureValue] = useState(ExerciseStructureType.SENTENCE);
@@ -60,6 +62,7 @@ export default function ExerciseGeneratorForm() {
           if (!response) return;
           setResponse(response);
           setResponseFormat(requestData.format);
+          setResponseType(requestData.type);
           setParamsExpanded(false);
         });
     } else {
@@ -152,6 +155,11 @@ export default function ExerciseGeneratorForm() {
                       value={ExerciseType.OBJECT}
                       control={<Radio />}
                       label={t('exercise_generator_exercise_type_object')}
+                    />
+                    <FormControlLabel
+                      value={ExerciseType.ADJECTIVE}
+                      control={<Radio />}
+                      label={t('exercise_generator_exercise_type_adjective')}
                     />
                   </RadioGroup>
                   {typeError &&
@@ -400,6 +408,7 @@ export default function ExerciseGeneratorForm() {
         <Exercise
           content={response}
           exerciseFormat={responseFormat}
+          exerciseType={responseType}
           setContent={setResponse}
           setParamsExpanded={setParamsExpanded}
         />
@@ -407,11 +416,6 @@ export default function ExerciseGeneratorForm() {
     </>
   );
 }
-
-const ExerciseType = {
-  INFINITIVE: 'INFINITIVE',
-  OBJECT: 'OBJECT'
-};
 
 const ExerciseStructureType = {
   SENTENCE: 'SENTENCE',

@@ -18,6 +18,7 @@ const MATCHING_OPTION_ID_PREFIX = 'matching-option-';
 export function useMatchingExercise({
                                       contentBlanks,
                                       isMatchingFormat,
+                                      showMatchingBank,
                                       isAnswered,
                                       answers,
                                       handleAnswerChange,
@@ -35,14 +36,14 @@ export function useMatchingExercise({
   );
 
   const matchingOptions = useMemo(() => {
-    if (!isMatchingFormat) {
+    if (!showMatchingBank) {
       return [];
     }
 
     return (contentBlanks ?? [])
       .map((blank, index) => ({ id: `${MATCHING_OPTION_ID_PREFIX}${index}`, value: blank.hint }))
       .filter(item => !!item.value);
-  }, [contentBlanks, isMatchingFormat]);
+  }, [contentBlanks, showMatchingBank]);
 
   const matchingOptionById = useMemo(() => (
     new Map(matchingOptions.map(option => [option.id, option.value]))
@@ -57,15 +58,19 @@ export function useMatchingExercise({
   }, [matchingOptionById, selectedMatchingOptionId]);
 
   const availableMatchingOptions = useMemo(() => {
-    if (!isMatchingFormat) {
+    if (!showMatchingBank) {
       return [];
     }
 
-    return matchingOptions.filter(option => !new Set(answers).has(option.value));
-  }, [answers, isMatchingFormat, matchingOptions]);
+    if (isMatchingFormat) {
+      return matchingOptions.filter(option => !new Set(answers).has(option.value));
+    }
+
+    return matchingOptions;
+  }, [answers, isMatchingFormat, matchingOptions, showMatchingBank]);
 
   const { matchingBankRef, matchingBankStyle } = useMatchingBankStickySizing({
-    isMatchingFormat,
+    showMatchingBank,
     isAnswered,
     availableMatchingOptionsCount: availableMatchingOptions.length
   });
@@ -190,6 +195,7 @@ export function useMatchingExercise({
   return {
     sensors,
     matchingCollisionDetection,
+    matchingOptions,
     selectedMatchingOptionId,
     selectedMatchingValue,
     availableMatchingOptions,

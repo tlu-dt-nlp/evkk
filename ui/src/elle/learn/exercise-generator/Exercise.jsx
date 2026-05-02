@@ -16,8 +16,9 @@ import {
   useMatchingExercise
 } from './hooks/useMatchingExercise';
 import { ExerciseFormat } from '../../enum/ExerciseFormat';
+import { ExerciseType } from '../../enum/ExerciseType';
 
-export default function Exercise({ content, exerciseFormat, setContent, setParamsExpanded }) {
+export default function Exercise({ content, exerciseFormat, exerciseType, setContent, setParamsExpanded }) {
 
   const { t } = useTranslation();
   const [answers, setAnswers] = useState([]);
@@ -25,13 +26,16 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
   const [isAnswered, setIsAnswered] = useState(false);
   const [showMissingAnswers, setShowMissingAnswers] = useState(false);
   const { submitExerciseAnswers } = useSubmitExerciseAnswers();
+  const isAdjectiveFillHybrid = exerciseFormat === ExerciseFormat.FILL_IN_THE_BLANKS
+    && exerciseType === ExerciseType.ADJECTIVE;
   const isMatchingFormat = exerciseFormat === ExerciseFormat.MATCHING;
+  const showMatchingBank = isMatchingFormat || isAdjectiveFillHybrid;
 
   const textBlanks = useMemo(() => (
-    isMatchingFormat
+    showMatchingBank
       ? (content.textBlankIndexes ?? [])
       : (content.blanks ?? [])
-  ), [content.blanks, content.textBlankIndexes, isMatchingFormat]);
+  ), [content.blanks, content.textBlankIndexes, showMatchingBank]);
 
   const sentenceBlankBaseIndexes = useMemo(() => {
     let total = 0;
@@ -95,6 +99,7 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
   const {
     sensors,
     matchingCollisionDetection,
+    matchingOptions,
     selectedMatchingOptionId,
     selectedMatchingValue,
     availableMatchingOptions,
@@ -108,6 +113,7 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
   } = useMatchingExercise({
     contentBlanks: content.blanks,
     isMatchingFormat,
+    showMatchingBank,
     isAnswered,
     answers,
     handleAnswerChange,
@@ -179,7 +185,7 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
             <span className="expected-answer">{incorrectAnswer.correctAnswer}</span>
           )}
         </div>
-        {blank.hint && (
+        {!isAdjectiveFillHybrid && blank.hint && (
           <span className="hint">
             ({blank.hint})
           </span>
@@ -284,36 +290,51 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
     );
   };
 
-  const renderMatchingBank = () => (
-    <div
-      className="matching-bank-sticky"
-      ref={matchingBankRef}
-      style={matchingBankStyle}
-    >
-      <p className="matching-helper-text">
-        {t('exercise_generator_matching_interaction_hint')}
-      </p>
-      {selectedMatchingValue && (
-        <p className="matching-selected-text">
-          {t('exercise_generator_matching_selected_word_hint', {
-            word: selectedMatchingValue
-          })}
+  const renderMatchingBank = readOnly => {
+    const bankOptions = readOnly ? matchingOptions : availableMatchingOptions;
+
+    return (
+      <div
+        className="matching-bank-sticky"
+        ref={matchingBankRef}
+        style={matchingBankStyle}
+      >
+        <p className="matching-helper-text">
+          {t(readOnly
+            ? 'exercise_generator_fill_in_the_blanks_interaction_hint'
+            : 'exercise_generator_matching_interaction_hint')}
         </p>
-      )}
-      <MatchingBankDropzone id={MATCHING_BANK_DROPPABLE_ID}>
-        {availableMatchingOptions.map(option => (
-          <MatchingOption
-            key={option.id}
-            id={option.id}
-            value={option.value}
-            selected={selectedMatchingOptionId === option.id}
-            disabled={isAnswered}
-            onClick={() => handleMatchingOptionClick(option.id)}
-          />
-        ))}
-      </MatchingBankDropzone>
-    </div>
-  );
+        {!readOnly && selectedMatchingValue && (
+          <p className="matching-selected-text">
+            {t('exercise_generator_matching_selected_word_hint', {
+              word: selectedMatchingValue
+            })}
+          </p>
+        )}
+        <MatchingBankDropzone id={MATCHING_BANK_DROPPABLE_ID}>
+          {bankOptions.map(option => readOnly ? (
+            <button
+              key={option.id}
+              type="button"
+              className="matching-option readonly"
+              disabled
+            >
+              {option.value}
+            </button>
+          ) : (
+            <MatchingOption
+              key={option.id}
+              id={option.id}
+              value={option.value}
+              selected={selectedMatchingOptionId === option.id}
+              disabled={isAnswered}
+              onClick={() => handleMatchingOptionClick(option.id)}
+            />
+          ))}
+        </MatchingBankDropzone>
+      </div>
+    );
+  };
 
   const renderExerciseTextContent = () => (
     <>
@@ -386,11 +407,14 @@ export default function Exercise({ content, exerciseFormat, setContent, setParam
           onDragStart={clearMatchingSelection}
           onDragEnd={handleMatchingDrop}
         >
-          {!isAnswered && renderMatchingBank()}
+          {!isAnswered && renderMatchingBank(false)}
           {renderExerciseTextContent()}
         </DndContext>
       ) : (
-        renderExerciseTextContent()
+        <>
+          {!isAnswered && isAdjectiveFillHybrid && renderMatchingBank(true)}
+          {renderExerciseTextContent()}
+        </>
       )}
       <br />
       <Button

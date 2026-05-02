@@ -32,7 +32,7 @@ CREATE TABLE core.exercise_answer
   exercise_data  jsonb NOT NULL,
 
   CONSTRAINT exercise_answer_pk PRIMARY KEY (id),
-  CONSTRAINT exercise_answer_chk_type CHECK (type IN ('INFINITIVE', 'OBJECT')),
+  CONSTRAINT exercise_answer_chk_type CHECK (type IN ('INFINITIVE', 'OBJECT', 'ADJECTIVE')),
   CONSTRAINT exercise_answer_chk_structure_type CHECK (structure_type IN ('TEXT', 'SENTENCE')),
   CONSTRAINT exercise_answer_chk_format CHECK (format IN ('FILL_IN_THE_BLANKS', 'MATCHING'))
 );

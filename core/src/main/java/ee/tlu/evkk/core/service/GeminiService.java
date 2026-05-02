@@ -12,6 +12,7 @@ import com.google.genai.types.ThinkingLevel;
 import ee.evkk.dto.ExerciseDto;
 import ee.evkk.dto.ExerciseIncorrectAnswerDto;
 import ee.evkk.dto.ExerciseRequestDto;
+import ee.evkk.dto.enums.ExerciseType;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
 import static ee.evkk.dto.enums.ExerciseStructureType.TEXT;
+import static ee.evkk.dto.enums.ExerciseType.ADJECTIVE;
 import static ee.evkk.dto.enums.ExerciseType.INFINITIVE;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_FORMAT_FILL_IN_THE_BLANKS_PROMPT_PART;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_FORMAT_MATCHING_PROMPT_PART;
@@ -28,6 +30,7 @@ import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_INCORR
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_QUALITY_CHECK_PROMPT_BASE;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_STRUCTURE_TYPE_SENTENCE_PROMPT_PART;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_STRUCTURE_TYPE_TEXT_PROMPT_PART;
+import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_TYPE_ADJECTIVE_PROMPT_PART;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_TYPE_INFINITIVE_PROMPT_PART;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.EXERCISE_TYPE_OBJECT_PROMPT_PART;
 import static ee.tlu.evkk.core.service.constants.GeminiConstants.MODEL_NAME;
@@ -86,6 +89,7 @@ public class GeminiService {
     }
   }
 
+  @SuppressWarnings("java:S1168")
   public List<String> generateIncorrectAnswerExplanations(List<String> userAnswers, ExerciseAnswer exerciseAnswer, List<ExerciseIncorrectAnswerDto> mistakes) {
     try {
       String response = client.models.generateContent(
@@ -97,7 +101,7 @@ public class GeminiService {
       return response == null ? List.of() : asList(response.split(";"));
     } catch (Exception ex) {
       log.error("Unable to generate incorrect answer explanations", ex);
-      return List.of();
+      return null;
     }
   }
 
@@ -107,7 +111,7 @@ public class GeminiService {
       EXERCISE_QUALITY_CHECK_PROMPT_BASE,
       TEXT.equals(request.getStructureType()) ? EXERCISE_STRUCTURE_TYPE_TEXT_PROMPT_PART : EXERCISE_STRUCTURE_TYPE_SENTENCE_PROMPT_PART,
       FILL_IN_THE_BLANKS.equals(request.getFormat()) ? EXERCISE_FORMAT_FILL_IN_THE_BLANKS_PROMPT_PART : EXERCISE_FORMAT_MATCHING_PROMPT_PART,
-      INFINITIVE.equals(request.getType()) ? EXERCISE_TYPE_INFINITIVE_PROMPT_PART : EXERCISE_TYPE_OBJECT_PROMPT_PART,
+      getExerciseTypePromptPart(request.getType()),
       objectMapper.writeValueAsString(answers),
       objectMapper.writeValueAsString(exercise)
     );
@@ -119,11 +123,23 @@ public class GeminiService {
       EXERCISE_INCORRECT_ANSWER_EXPLANATIONS_PROMPT_BASE,
       TEXT.equals(exerciseAnswer.getStructureType()) ? EXERCISE_STRUCTURE_TYPE_TEXT_PROMPT_PART : EXERCISE_STRUCTURE_TYPE_SENTENCE_PROMPT_PART,
       FILL_IN_THE_BLANKS.equals(exerciseAnswer.getFormat()) ? EXERCISE_FORMAT_FILL_IN_THE_BLANKS_PROMPT_PART : EXERCISE_FORMAT_MATCHING_PROMPT_PART,
-      INFINITIVE.equals(exerciseAnswer.getType()) ? EXERCISE_TYPE_INFINITIVE_PROMPT_PART : EXERCISE_TYPE_OBJECT_PROMPT_PART,
+      getExerciseTypePromptPart(exerciseAnswer.getType()),
       objectMapper.writeValueAsString(exerciseAnswer.getAnswers()),
       objectMapper.writeValueAsString(mistakes),
       objectMapper.writeValueAsString(userAnswers),
       objectMapper.writeValueAsString(exerciseAnswer.getExerciseData())
     );
+  }
+
+  private static String getExerciseTypePromptPart(ExerciseType type) {
+    if (INFINITIVE.equals(type)) {
+      return EXERCISE_TYPE_INFINITIVE_PROMPT_PART;
+    }
+
+    if (ADJECTIVE.equals(type)) {
+      return EXERCISE_TYPE_ADJECTIVE_PROMPT_PART;
+    }
+
+    return EXERCISE_TYPE_OBJECT_PROMPT_PART;
   }
 }

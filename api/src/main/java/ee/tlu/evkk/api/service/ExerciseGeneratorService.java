@@ -29,10 +29,12 @@ import java.util.Set;
 import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
 import static ee.evkk.dto.enums.ExerciseStructureType.SENTENCE;
 import static ee.evkk.dto.enums.ExerciseStructureType.TEXT;
+import static ee.evkk.dto.enums.ExerciseType.ADJECTIVE;
 import static ee.evkk.dto.enums.ExerciseType.INFINITIVE;
 import static ee.evkk.dto.enums.TargetWordCriteria.C1_OR_B2;
 import static ee.evkk.dto.enums.TargetWordCriteria.NONE;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.calculateFirstWordOffset;
+import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isAdjectiveTarget;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isInfinitiveTarget;
 import static ee.tlu.evkk.api.util.ExerciseGeneratorUtils.isObjectTarget;
 import static ee.tlu.evkk.api.util.FileUtils.readResourceAsString;
@@ -57,7 +59,7 @@ public class ExerciseGeneratorService {
 
   public ExerciseDto generateExercise(ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException, ExerciseDidNotPassQualityGateException {
     List<String> criteriaWords = loadCriteriaWords(request.getType(), request.getTargetWordCriteria());
-    boolean isFillInTheBlanks = FILL_IN_THE_BLANKS.equals(request.getFormat());
+    boolean isFillInTheBlanks = isFillInTheBlanksOutput(request);
     GenerationContext generationContext = new GenerationContext(criteriaWords, isFillInTheBlanks);
 
     ExerciseDto exercise = TEXT.equals(request.getStructureType())
@@ -79,6 +81,10 @@ public class ExerciseGeneratorService {
     exercise.setExerciseId(randomUUID());
     storeAnswers(generationContext.getCorrectAnswers(), request, exercise);
     return exercise;
+  }
+
+  private static boolean isFillInTheBlanksOutput(ExerciseRequestDto request) {
+    return FILL_IN_THE_BLANKS.equals(request.getFormat()) && !ADJECTIVE.equals(request.getType());
   }
 
   private ExerciseDto generateFromTexts(ExerciseRequestDto request, GenerationContext generationContext) {
@@ -106,8 +112,7 @@ public class ExerciseGeneratorService {
       .filter(source -> {
         ExerciseGeneratorAnalysisDto textAsObject = source.getTextAsObject();
         long matchingWordCount = textAsObject.getSentences().stream()
-          .flatMap(sentence -> sentence.getWords().stream())
-          .filter(word -> isTargetWord(word, request, criteriaWords))
+          .flatMap(sentence -> filterTargetWords(sentence.getWords(), request, criteriaWords).stream())
           .map(Word::getWord)
           .distinct()
           .count();
@@ -135,8 +140,8 @@ public class ExerciseGeneratorService {
   private List<ExerciseGeneratorSource> findSentenceTargetSources(ExerciseRequestDto request, List<String> criteriaWords) {
     List<ExerciseGeneratorSource> sources = exerciseGeneratorSourceDao.findSourcesForExercise(SENTENCE, request.getType(), request.getTopic());
     return sources.stream()
-      .filter(source -> source.getSentenceAsObject().getWords().stream()
-        .anyMatch(word -> isTargetWord(word, request, criteriaWords))
+      .filter(source ->
+        !filterTargetWords(source.getSentenceAsObject().getWords(), request, criteriaWords).isEmpty()
       )
       .collect(toList());
   }
@@ -158,18 +163,31 @@ public class ExerciseGeneratorService {
       return new ArrayList<>();
     }
 
-    boolean isInfinitive = INFINITIVE.equals(type);
+    String resourceSuffix = getCriteriaResourceSuffix(type);
     List<String> words = new ArrayList<>(asList(readResourceAsString(
-      isInfinitive ? "c1_verbs.txt" : "c1_nouns.txt"
+      "c1_" + resourceSuffix + ".txt"
     ).split(",")));
 
     if (C1_OR_B2.equals(targetWordCriteria)) {
       words.addAll(asList(readResourceAsString(
-        isInfinitive ? "b2_verbs.txt" : "b2_nouns.txt"
+        "b2_" + resourceSuffix + ".txt"
       ).split(",")));
     }
 
     return words;
+  }
+
+  private static String getCriteriaResourceSuffix(ExerciseType type) {
+    switch (type) {
+      case INFINITIVE:
+        return "verbs";
+      case OBJECT:
+        return "nouns";
+      case ADJECTIVE:
+        return "adjectives";
+      default:
+        throw new IllegalArgumentException("Unsupported exercise type for criteria words: " + type);
+    }
   }
 
   private static void collectTextBlanks(ExerciseRequestDto request, GenerationContext generationContext, ExerciseGeneratorSource targetSource, List<Blank> textBlankIndexes, List<Blank> blanks, StringBuilder modifiedContent) {
@@ -220,17 +238,35 @@ public class ExerciseGeneratorService {
     return new ExerciseDto(sentencesWithBlanks);
   }
 
-  private static boolean isTargetWord(Word word, ExerciseRequestDto request, List<String> criteriaWords) {
+  private static boolean isTargetWord(Word word, Word nextWord, ExerciseRequestDto request, List<String> criteriaWords) {
     TargetWordCriteria targetWordCriteria = request.getTargetWordCriteria();
 
-    return INFINITIVE.equals(request.getType())
-      ? isInfinitiveTarget(word, criteriaWords, targetWordCriteria)
-      : isObjectTarget(word, criteriaWords, targetWordCriteria);
+    if (INFINITIVE.equals(request.getType())) {
+      return isInfinitiveTarget(word, criteriaWords, targetWordCriteria);
+    }
+
+    if (ADJECTIVE.equals(request.getType())) {
+      return nextWord != null && isAdjectiveTarget(word, nextWord, criteriaWords, targetWordCriteria);
+    }
+
+    return isObjectTarget(word, criteriaWords, targetWordCriteria);
   }
 
   private static List<Word> filterTargetWords(List<Word> words, ExerciseRequestDto request, List<String> criteriaWords) {
-    return words.stream()
-      .filter(word -> isTargetWord(word, request, criteriaWords))
+    List<Word> targetWords = new ArrayList<>();
+
+    for (int i = 0; i < words.size(); i++) {
+      Word word = words.get(i);
+      Word nextWord = i + 1 < words.size()
+        ? words.get(i + 1)
+        : null;
+
+      if (isTargetWord(word, nextWord, request, criteriaWords)) {
+        targetWords.add(word);
+      }
+    }
+
+    return targetWords.stream()
       .sorted(comparingInt(Word::getStartChar))
       .collect(toList());
   }

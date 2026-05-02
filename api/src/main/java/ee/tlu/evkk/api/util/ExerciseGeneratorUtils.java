@@ -14,6 +14,8 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class ExerciseGeneratorUtils {
 
+  private static final String UPOS_NOUN = "NOUN";
+
   public static boolean isInfinitiveTarget(Word word, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
     List<String> feats = word.getFeats();
 
@@ -33,13 +35,24 @@ public class ExerciseGeneratorUtils {
     String deprel = word.getDeprel();
     List<String> feats = word.getFeats();
 
-    boolean isNoun = word.getUpos().equals("NOUN");
+    boolean isNoun = word.getUpos().equals(UPOS_NOUN);
     boolean isMatchingDeprel = deprel.equals("obj") || deprel.equals("obl");
     boolean isMatchingCase = feats.contains("Case=Nom") || feats.contains("Case=Gen") || feats.contains("Case=Par");
     boolean isPlural = feats.contains("Number=Plur");
     boolean meetsGrammarRules = isNoun && isMatchingDeprel && isMatchingCase && isPlural;
 
     if (!meetsGrammarRules) {
+      return false;
+    }
+
+    return matchesCriteria(word, criteriaWords, targetWordCriteria);
+  }
+
+  public static boolean isAdjectiveTarget(Word word, Word nextWord, List<String> criteriaWords, TargetWordCriteria targetWordCriteria) {
+    boolean isInitialWordAdjectivalModifier = word.getUpos().equals("ADJ") && word.getDeprel().equals("amod");
+    boolean isFollowingWordNoun = nextWord.getUpos().equals(UPOS_NOUN);
+
+    if (!isInitialWordAdjectivalModifier || !isFollowingWordNoun) {
       return false;
     }
 

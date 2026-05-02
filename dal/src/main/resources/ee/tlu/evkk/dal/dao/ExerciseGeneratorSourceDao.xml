@@ -23,10 +23,10 @@
       <choose>
         <when test="structureType.name() == 'TEXT'">
           jsonb_array_elements(analysis->'sentences') as sentence,
-          jsonb_array_elements(sentence->'words') as word
+          jsonb_array_elements(sentence->'words') with ordinality as word(word, word_index)
         </when>
         <when test="structureType.name() == 'SENTENCE'">
-          jsonb_array_elements(analysis->'words') as word
+          jsonb_array_elements(analysis->'words') with ordinality as word(word, word_index)
         </when>
       </choose>
       <choose>
@@ -39,6 +39,20 @@
           where word->>'upos' = 'NOUN'
           and (word->>'deprel' = 'obj' or word->>'deprel' = 'obl')
           and (word->'feats' @> '["Case=Nom"]'::jsonb or word->'feats' @> '["Case=Gen"]'::jsonb or word->'feats' @> '["Case=Par"]'::jsonb)
+        </when>
+        <when test="type.name() == 'ADJECTIVE'">
+          where word->>'upos' = 'ADJ'
+          and word->>'deprel' = 'amod'
+          -- WITH ORDINALITY is 1-based for current row; JSON array access is 0-based,
+          -- so word_index points to the next token (current would be word_index - 1).
+          <choose>
+            <when test="structureType.name() == 'TEXT'">
+              and (sentence->'words')->(word_index::int)->>'upos' = 'NOUN'
+            </when>
+            <when test="structureType.name() == 'SENTENCE'">
+              and (analysis->'words')->(word_index::int)->>'upos' = 'NOUN'
+            </when>
+          </choose>
         </when>
       </choose>
       ) >=
