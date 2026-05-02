@@ -88,6 +88,19 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
     return missingIndexes;
   }, [answers, totalBlankCount]);
 
+  const typedHybridAnswerValues = useMemo(() => {
+    if (!isAdjectiveFillHybrid) {
+      return new Set();
+    }
+
+    return new Set(
+      answers
+        .filter(answer => typeof answer === 'string')
+        .map(answer => answer.trim().toLowerCase())
+        .filter(answer => answer.length > 0)
+    );
+  }, [answers, isAdjectiveFillHybrid]);
+
   const handleAnswerChange = (answerIndex, value) => {
     setAnswers(prevAnswers => {
       const updatedAnswers = [...prevAnswers];
@@ -291,7 +304,9 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
   };
 
   const renderMatchingBank = readOnly => {
-    const bankOptions = readOnly ? matchingOptions : availableMatchingOptions;
+    const bankOptions = readOnly
+      ? matchingOptions.filter(option => !typedHybridAnswerValues.has(option.value.trim().toLowerCase()))
+      : availableMatchingOptions;
 
     return (
       <div

@@ -336,7 +336,7 @@ export const TRANSLATIONS_ET = {
   exercise_generator_exercise_type_adjective: 'omadussõnad',
   exercise_generator_exercise_type_infinitive: 'da- ja ma-infinitiiv',
   exercise_generator_exercise_type_object: 'sihitise käänded',
-  exercise_generator_fill_in_the_blanks_interaction_hint: 'Vali sobiv sõna ja kirjuta see lünka.',
+  exercise_generator_fill_in_the_blanks_interaction_hint: 'Kirjuta lünkadesse sobivad sõnad valikvastuste hulgast.',
   exercise_generator_generate_exercise: 'Genereeri harjutus',
   exercise_generator_matching_interaction_hint: 'Kliki või lohista sõnad lünkadesse.',
   exercise_generator_matching_selected_word_hint: 'Valitud sõna: {{word}}',
