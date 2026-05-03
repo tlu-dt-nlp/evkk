@@ -17,11 +17,13 @@ import {
 } from './hooks/useMatchingExercise';
 import { ExerciseFormat } from '../../enum/ExerciseFormat';
 import { ExerciseType } from '../../enum/ExerciseType';
+import Translate from '../../components/Translate';
 
 export default function Exercise({ content, exerciseFormat, exerciseType, setContent, setParamsExpanded }) {
 
   const { t } = useTranslation();
   const [answers, setAnswers] = useState([]);
+  const [usedHybridOptionIds, setUsedHybridOptionIds] = useState(new Set());
   const [response, setResponse] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [showMissingAnswers, setShowMissingAnswers] = useState(false);
@@ -88,18 +90,22 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
     return missingIndexes;
   }, [answers, totalBlankCount]);
 
-  const typedHybridAnswerValues = useMemo(() => {
-    if (!isAdjectiveFillHybrid) {
-      return new Set();
+  const toggleHybridOptionUsed = optionId => {
+    if (!isAdjectiveFillHybrid || isAnswered) {
+      return;
     }
 
-    return new Set(
-      answers
-        .filter(answer => typeof answer === 'string')
-        .map(answer => answer.trim().toLowerCase())
-        .filter(answer => answer.length > 0)
-    );
-  }, [answers, isAdjectiveFillHybrid]);
+    setUsedHybridOptionIds(prevUsedOptionIds => {
+      const updatedUsedOptionIds = new Set(prevUsedOptionIds);
+      if (updatedUsedOptionIds.has(optionId)) {
+        updatedUsedOptionIds.delete(optionId);
+      } else {
+        updatedUsedOptionIds.add(optionId);
+      }
+
+      return updatedUsedOptionIds;
+    });
+  };
 
   const handleAnswerChange = (answerIndex, value) => {
     setAnswers(prevAnswers => {
@@ -140,6 +146,7 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
   useEffect(() => {
     window.scrollTo(0, 0);
     setAnswers([]);
+    setUsedHybridOptionIds(new Set());
     setResponse(null);
     setIsAnswered(false);
     setShowMissingAnswers(false);
@@ -304,9 +311,7 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
   };
 
   const renderMatchingBank = readOnly => {
-    const bankOptions = readOnly
-      ? matchingOptions.filter(option => !typedHybridAnswerValues.has(option.value.trim().toLowerCase()))
-      : availableMatchingOptions;
+    const bankOptions = readOnly ? matchingOptions : availableMatchingOptions;
 
     return (
       <div
@@ -315,9 +320,11 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
         style={matchingBankStyle}
       >
         <p className="matching-helper-text">
-          {t(readOnly
-            ? 'exercise_generator_fill_in_the_blanks_interaction_hint'
-            : 'exercise_generator_matching_interaction_hint')}
+          <Translate
+            i18nKey={readOnly
+              ? 'exercise_generator_fill_in_the_blanks_interaction_hint'
+              : 'exercise_generator_matching_interaction_hint'}
+          />
         </p>
         {!readOnly && selectedMatchingValue && (
           <p className="matching-selected-text">
@@ -331,8 +338,9 @@ export default function Exercise({ content, exerciseFormat, exerciseType, setCon
             <button
               key={option.id}
               type="button"
-              className="matching-option readonly"
-              disabled
+              className={`matching-option readonly ${usedHybridOptionIds.has(option.id) ? 'used' : ''}`}
+              aria-pressed={usedHybridOptionIds.has(option.id)}
+              onClick={() => toggleHybridOptionUsed(option.id)}
             >
               {option.value}
             </button>

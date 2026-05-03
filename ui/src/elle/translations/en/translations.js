@@ -336,7 +336,7 @@ export const TRANSLATIONS_EN = {
   exercise_generator_exercise_type_adjective: 'adjectives',
   exercise_generator_exercise_type_infinitive: 'da- and ma-infinitive',
   exercise_generator_exercise_type_object: 'object cases',
-  exercise_generator_fill_in_the_blanks_interaction_hint: 'Write suitable words into the blanks from the given choices.',
+  exercise_generator_fill_in_the_blanks_interaction_hint: 'Write suitable words in the correct form into the blanks.<br />Click on a choice to mark it as used or to remove the mark.',
   exercise_generator_generate_exercise: 'Generate exercise',
   exercise_generator_matching_interaction_hint: 'Click or drag words into blanks.',
   exercise_generator_matching_selected_word_hint: 'Selected word: {{word}}',

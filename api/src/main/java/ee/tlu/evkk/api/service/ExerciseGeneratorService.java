@@ -59,8 +59,9 @@ public class ExerciseGeneratorService {
 
   public ExerciseDto generateExercise(ExerciseRequestDto request) throws ExerciseCouldNotBeGeneratedException, ExerciseDidNotPassQualityGateException {
     List<String> criteriaWords = loadCriteriaWords(request.getType(), request.getTargetWordCriteria());
-    boolean isFillInTheBlanks = isFillInTheBlanksOutput(request);
-    GenerationContext generationContext = new GenerationContext(criteriaWords, isFillInTheBlanks);
+    boolean isFillInTheBlanksOutput = isFillInTheBlanksOutput(request);
+    boolean shouldLemmatizeHints = FILL_IN_THE_BLANKS.equals(request.getFormat());
+    GenerationContext generationContext = new GenerationContext(criteriaWords, isFillInTheBlanksOutput, shouldLemmatizeHints);
 
     ExerciseDto exercise = TEXT.equals(request.getStructureType())
       ? generateFromTexts(request, generationContext)
@@ -271,8 +272,8 @@ public class ExerciseGeneratorService {
       .collect(toList());
   }
 
-  private static String getHint(Word word, boolean isFillInTheBlanks) {
-    return isFillInTheBlanks ? sanitizeLemmaString(word.getLemma()) : word.getWord();
+  private static String getHint(Word word, boolean shouldLemmatizeHint) {
+    return shouldLemmatizeHint ? sanitizeLemmaString(word.getLemma()) : word.getWord();
   }
 
   private static Blank createIndexOnlyBlank(Blank blank) {
@@ -327,7 +328,7 @@ public class ExerciseGeneratorService {
   }
 
   private static ProcessedTargetWord processTargetWord(Word targetWord, StringBuilder text, GenerationContext generationContext, int sentenceOffset, int firstWordOffset, int lengthDelta) {
-    String hint = getHint(targetWord, generationContext.isFillInTheBlanks());
+    String hint = getHint(targetWord, generationContext.isShouldLemmatizeHints());
 
     if (generationContext.getUsedHints().contains(hint)) {
       return null;
@@ -359,12 +360,14 @@ public class ExerciseGeneratorService {
 
     private List<String> criteriaWords;
     private boolean isFillInTheBlanks;
+    private boolean shouldLemmatizeHints;
     private Set<String> usedHints = new HashSet<>();
     private List<String> correctAnswers = new ArrayList<>();
 
-    private GenerationContext(List<String> criteriaWords, boolean isFillInTheBlanks) {
+    private GenerationContext(List<String> criteriaWords, boolean isFillInTheBlanks, boolean shouldLemmatizeHints) {
       this.criteriaWords = criteriaWords;
       this.isFillInTheBlanks = isFillInTheBlanks;
+      this.shouldLemmatizeHints = shouldLemmatizeHints;
     }
   }
 }

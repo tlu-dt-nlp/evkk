@@ -169,7 +169,14 @@
 
   .matching-option.readonly,
   .matching-option.readonly:active {
-    cursor: default;
+    cursor: pointer;
+  }
+
+  .matching-option.readonly.used {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
+    color: #6b7280;
+    text-decoration: line-through;
   }
 
   .matching-option:active {
