@@ -332,7 +332,7 @@ export const TRANSLATIONS_EN = {
   exercise_generator_exercise_topic_travel_and_tourism: 'travel & tourism',
   exercise_generator_exercise_topic_video_games: 'video games',
   exercise_generator_exercise_type: 'Content',
-  exercise_generator_exercise_type_hover: '<bold>Da- and ma-infinitive:</bold> forming and correctly using verbs with the -da and -ma endings.<br /><br /><bold>Object cases:</bold> the object shows who or what the action is directed at. In the exercise, you must use a plural noun in the correct object case – nominative, genitive, or partitive.<br /><br /><bold>Adjectives:</bold> practice your vocabulary by choosing which adjective fits best before a noun.',
+  exercise_generator_exercise_type_hover: '<bold>Da- and ma-infinitive:</bold> forming and correctly using verbs with the -da and -ma endings.<br /><br /><bold>Object cases:</bold> the object shows who or what the action is directed at. In the exercise, you must use a plural noun in the correct object case – nominative or partitive.<br /><br /><bold>Adjectives:</bold> practice your vocabulary by choosing which adjective fits best before a noun.',
   exercise_generator_exercise_type_adjective: 'adjectives',
   exercise_generator_exercise_type_infinitive: 'da- and ma-infinitive',
   exercise_generator_exercise_type_object: 'object cases',

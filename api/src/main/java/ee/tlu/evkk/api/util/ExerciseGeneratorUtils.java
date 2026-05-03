@@ -37,7 +37,7 @@ public class ExerciseGeneratorUtils {
 
     boolean isNoun = word.getUpos().equals(UPOS_NOUN);
     boolean isMatchingDeprel = deprel.equals("obj") || deprel.equals("obl");
-    boolean isMatchingCase = feats.contains("Case=Nom") || feats.contains("Case=Gen") || feats.contains("Case=Par");
+    boolean isMatchingCase = feats.contains("Case=Nom") || feats.contains("Case=Par");
     boolean isPlural = feats.contains("Number=Plur");
     boolean meetsGrammarRules = isNoun && isMatchingDeprel && isMatchingCase && isPlural;
 

@@ -332,7 +332,7 @@ export const TRANSLATIONS_ET = {
   exercise_generator_exercise_topic_travel_and_tourism: 'reisimine ja turism',
   exercise_generator_exercise_topic_video_games: 'videomängud',
   exercise_generator_exercise_type: 'Sisu',
-  exercise_generator_exercise_type_hover: '<bold>Da- ja ma-infinitiiv:</bold> da- ja ma- lõpuliste tegusõnade moodustamine ja õige kasutus.<br /><br /><bold>Sihitise käänded:</bold> sihitis näitab, kellele või millele on tegevus suunatud. Harjutuses tuleb kasutada mitmuses nimisõna õiges sihitise käändes – nimetavas, omastavas või osastavas.<br /><br /><bold>Omadussõnad:</bold> harjuta oma sõnavara, valides, milline omadussõna sobib nimisõna ette kõige paremini.',
+  exercise_generator_exercise_type_hover: '<bold>Da- ja ma-infinitiiv:</bold> da- ja ma- lõpuliste tegusõnade moodustamine ja õige kasutus.<br /><br /><bold>Sihitise käänded:</bold> sihitis näitab, kellele või millele on tegevus suunatud. Harjutuses tuleb kasutada mitmuses nimisõna õiges sihitise käändes – nimetavas või osastavas.<br /><br /><bold>Omadussõnad:</bold> harjuta oma sõnavara, valides, milline omadussõna sobib nimisõna ette kõige paremini.',
   exercise_generator_exercise_type_adjective: 'omadussõnad',
   exercise_generator_exercise_type_infinitive: 'da- ja ma-infinitiiv',
   exercise_generator_exercise_type_object: 'sihitise käänded',
