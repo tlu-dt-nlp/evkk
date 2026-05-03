@@ -61,7 +61,12 @@ public class ExerciseSubmissionService {
     }
 
     List<String> explanations = geminiService.generateIncorrectAnswerExplanations(userAnswers, exerciseAnswer, mistakes);
-    if (explanations != null && mistakes.size() != explanations.size()) {
+    if (explanations == null) {
+      log.warn("LLM did not return explanations!");
+      return;
+    }
+
+    if (mistakes.size() != explanations.size()) {
       log.warn("LLM returned {} explanations, although there were {} mistakes!", explanations.size(), mistakes.size());
       return;
     }

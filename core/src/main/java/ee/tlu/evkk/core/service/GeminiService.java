@@ -72,6 +72,7 @@ public class GeminiService {
       ).text();
 
       if (response == null) {
+        log.error("Quality check skipped: empty LLM response");
         return true;
       }
 
