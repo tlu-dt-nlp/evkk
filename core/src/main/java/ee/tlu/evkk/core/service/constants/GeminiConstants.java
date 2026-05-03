@@ -10,7 +10,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class GeminiConstants {
 
   public static final String MODEL_NAME = "gemini-3-flash-preview";
-  public static final String THINKING_LEVEL = "low";
+  public static final String THINKING_LEVEL = "high";
   public static final String SYSTEM_INSTRUCTION = "Sa oled eesti keele ekspert, kes aitab õpetada eesti keelt teise keelena. Sa tegeled eesti keele õppimiseks mõeldud automaatselt genereeritud harjutustega.";
 
   public static final int RETRY_ATTEMPTS = 3;
