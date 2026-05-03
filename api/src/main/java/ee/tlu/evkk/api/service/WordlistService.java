@@ -6,7 +6,6 @@ import ee.evkk.dto.WordlistResponseEntryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +28,7 @@ public class WordlistService {
 
   private final StanzaAnalysisService stanzaAnalysisService;
 
-  public WordlistResponseDto getWordlistResponse(WordlistRequestDto dto) throws IOException {
+  public WordlistResponseDto getWordlistResponse(WordlistRequestDto dto) {
     List<String> wordlist = WORDS.equals(dto.getType())
       ? sanitizeWordStrings(stanzaAnalysisService.getSonad(dto))
       : sanitizeLemmaStrings(stanzaAnalysisService.getLemmad(dto));
@@ -44,7 +43,7 @@ public class WordlistService {
     );
   }
 
-  private List<WordlistResponseEntryDto> filteredWordlistResponse(WordlistRequestDto dto, List<String> wordlist, Map<String, Long> frequencyCounts, Map<String, BigDecimal> frequencyPercentages) throws IOException {
+  private List<WordlistResponseEntryDto> filteredWordlistResponse(WordlistRequestDto dto, List<String> wordlist, Map<String, Long> frequencyCounts, Map<String, BigDecimal> frequencyPercentages) {
     List<String> defaultStopwords = new ArrayList<>(asList(readResourceAsString("Stopwords.txt").split(",")));
     List<String> customStopwords = dto.getCustomStopwords() != null
       ? new ArrayList<>(dto.getCustomStopwords())

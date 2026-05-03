@@ -76,6 +76,13 @@ def full_text_analysis():
     return Response(json.dumps(result), mimetype=mimetype)
 
 
+@app.route('/speller', methods=post)
+def speller():
+    tekst = request.json["tekst"]
+    speller_output = generate_grammar_output(tekst, fetch_speller(tekst))
+    return Response(json.dumps(speller_output), mimetype=mimetype)
+
+
 @app.route('/sonad-lemmad-silbid-sonaliigid-vormimargendid', methods=post)
 def sonad_lemmad_silbid_sonaliigid_vormimargendid():
     tekst = request.json["tekst"]
@@ -87,7 +94,8 @@ def sonad_lemmad_silbid_sonaliigid_vormimargendid():
 def keerukus_sonaliigid_mitmekesisus():
     tekst = request.json["tekst"]
     model_type = request.json["model"]
-    doc = nlp_tpl(tekst)
+    text_with_no_line_breaks = tekst.replace('\r', ' ')
+    doc = nlp_tpl(text_with_no_line_breaks)
 
     sonad = []
     eestikeelsed_sonad = []
@@ -103,7 +111,8 @@ def keerukus_sonaliigid_mitmekesisus():
         laused.append(sentence.text)
         sentence_array = []
         for word in sentence.words:
-            total_words += 1
+            if word.upos != 'PUNCT' and word.upos != 'SYM':
+                total_words += 1
             data_row = [word.id, word.text, word.lemma, word.upos, word.xpos, word.feats]
             linguistic_data.append(data_row)
             corrected_word = common_errors_map.get(word.text.lower(), None)
@@ -134,36 +143,33 @@ def keerukus_sonaliigid_mitmekesisus():
                     eestikeelsed_sonad.append("–")
         word_start_and_end.append(sentence_array)
 
-    syllables = silbita_sisemine(" ".join(puhasta_sonad(eestikeelsed_sonad)))
     abstract_answer = utils.analyze(' '.join(lemmad), "estonian")
     serializable_word_analysis = make_serializable(abstract_answer["wordAnalysis"])
     vocabulary = check_both_sentence_repetition(laused, word_start_and_end)
 
     if model_type == "grammarcheckerTest":
-        grammar_output = generate_test_grammar_output(tekst, fetch_test_grammar(tekst))
+        grammar_response = fetch_test_grammar(text_with_no_line_breaks)
+        grammar_output = generate_test_grammar_output(tekst, grammar_response)
     else:
-        grammar_output = generate_grammar_output(tekst, fetch_grammar(tekst))
+        grammar_response = fetch_grammar(text_with_no_line_breaks)
+        grammar_output = generate_grammar_output(tekst, grammar_response)
 
-    speller_output = generate_grammar_output(tekst, fetch_speller(tekst), list_checked_speller_errors)
+    speller_output = generate_grammar_output(tekst, fetch_speller(text_with_no_line_breaks),
+                                             list_checked_speller_errors)
 
-    uncommon_marked, uncommon_count = handle_uncommon_words_marking(tekst, sonaliigid, lemmad, sonad)
-    abstract_marked = handle_abstract_words_marking(tekst, serializable_word_analysis, sonaliigid, sonad)
-    content_marked = handle_content_words_marking(tekst, sonaliigid, lemmad, sonad)
-    repetition_marked = handle_repetition_marking(tekst, vocabulary)
-    nouns_marked = handle_noun_marking(tekst, sonaliigid, sonad)
-    long_words_marked = handle_long_word_marking(tekst, sonad)
-    long_sentences_marked = handle_long_sentence_marking(tekst, doc)
+    uncommon_marked, uncommon_count = handle_uncommon_words_marking(text_with_no_line_breaks, sonaliigid, lemmad, sonad)
+    abstract_marked = handle_abstract_words_marking(text_with_no_line_breaks, serializable_word_analysis, sonaliigid,
+                                                    sonad)
+    content_marked = handle_content_words_marking(text_with_no_line_breaks, sonaliigid, lemmad, sonad)
+    repetition_marked = handle_repetition_marking(text_with_no_line_breaks, vocabulary)
+    nouns_marked = handle_noun_marking(text_with_no_line_breaks, sonaliigid, sonad)
+    long_words_marked = handle_long_word_marking(text_with_no_line_breaks, sonad)
+    long_sentences_marked = handle_long_sentence_marking(text_with_no_line_breaks, doc)
 
-    syllable_count = 0
-    polysyllabic_words = 0
-    for word in syllables:
-        word_syllable_count = word.count('-') + 1
-        syllable_count += word_syllable_count
-        if word_syllable_count >= 3:
-            polysyllabic_words += 1
+    syllable_count, polysyllabic_words = get_syllable_info(eestikeelsed_sonad)
 
-    errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
-    errors_per_word = grammar_output["error_count"] / total_words
+    errors_per_sentence = len(grammar_response["corrections"]) / len(doc.sentences)
+    errors_per_word = len(grammar_response["corrections"]) / total_words
 
     feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
                                    polysyllabic_words)
@@ -322,6 +328,85 @@ def sonadjaposinfo():
 @app.route('/keeletase', methods=post)
 def keeletase():
     return Response(json.dumps(arvuta(request.json["tekst"])), mimetype="application/json")
+
+
+@app.route('/keeletase-grammatika-oigekiri-analuus', methods=post)
+def keeletase_grammatika_oigekiri_analuus():
+    tekst = request.json["tekst"]
+    total_tokens = 0
+    total_words = 0
+    total_sentences = 0
+    linguistic_data = []
+    eestikeelsed_sonad = []
+    sentences = []
+
+    text_with_no_line_breaks = tekst.replace('\r', ' ')
+    doc = nlp_all(text_with_no_line_breaks)
+
+    for sentence in doc.sentences:
+        total_sentences += 1
+        sentence_words = []
+        sentence_word_count = 0
+        for word in sentence.words:
+            total_tokens += 1
+            linguistic_data.append([word.id, word.text, word.lemma, word.upos, word.xpos, word.feats])
+            if word.upos not in sona_upos_piirang:
+                total_words += 1
+                sentence_word_count += 1
+                lemma = "–"
+                upos = "–"
+                feats = None
+
+                if sona_on_eestikeelne(word.text):
+                    eestikeelsed_sonad.append(word.text)
+                    lemma = word.lemma
+                    upos = word.upos
+                    if word.upos not in vormimargend_upos_piirang:
+                        feats = word.feats
+                else:
+                    eestikeelsed_sonad.append("–")
+
+                sentence_words.append({
+                    "word": word.text,
+                    "lemma": lemma,
+                    "upos": upos,
+                    "feats": [] if feats is None else feats.split("|"),
+                    "start_char": word.start_char,
+                    "end_char": word.end_char,
+                    "deprel": word.deprel
+                })
+
+        sentences.append({
+            "text": sentence.text,
+            "word_count": sentence_word_count,
+            "words": sentence_words
+        })
+
+    grammar_output = generate_grammar_output(tekst, fetch_grammar(text_with_no_line_breaks))
+    speller_output = generate_grammar_output(tekst, fetch_speller(text_with_no_line_breaks))
+    syllable_count, polysyllabic_words = get_syllable_info(eestikeelsed_sonad)
+
+    errors_per_sentence = grammar_output["error_count"] / len(doc.sentences)
+    errors_per_word = grammar_output["error_count"] / total_tokens
+    feat_values = extract_features(errors_per_sentence, errors_per_word, linguistic_data, syllable_count,
+                                   polysyllabic_words)
+
+    return Response(json.dumps({
+        "keeletasemed": {
+            "keerukus": linguistic_analysis("complexity", feat_values)["level"],
+            "grammatika": linguistic_analysis("grammatical", feat_values)["level"],
+            "sonavara": linguistic_analysis("lexical", feat_values)["level"],
+        },
+        "oigekirjavigu": speller_output["error_count"],
+        "grammatikavigu": len(grammar_output["error_list"]),
+        "analuus": {
+            "sentences": sentences,
+            "metadata": {
+                "total_words": total_words,
+                "total_sentences": total_sentences,
+            }
+        }
+    }), mimetype=mimetype)
 
 
 @app.route('/stanzaconllu', methods=post)
@@ -648,6 +733,20 @@ def detokenize_quotemarks(sentence):
         if char != '"':
             no_space_after = False
     return ''.join(chars)
+
+
+def get_syllable_info(eestikeelsed_sonad):
+    syllables = silbita_sisemine(" ".join(puhasta_sonad(eestikeelsed_sonad)))
+    syllable_count = 0
+    polysyllabic_words = 0
+
+    for word in syllables:
+        word_syllable_count = word.count('-') + 1
+        syllable_count += word_syllable_count
+        if word_syllable_count >= 3:
+            polysyllabic_words += 1
+
+    return syllable_count, polysyllabic_words
 
 
 app.run(host="0.0.0.0", threaded=True, port=5300, use_reloader=False)

@@ -3,6 +3,7 @@ apply plugin: "java-library"
 dependencies {
 
   api project(":common")
+  api project(":dto")
 
   // Spring
   api "org.springframework.boot:spring-boot-starter-json"

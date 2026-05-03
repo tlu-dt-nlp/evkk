@@ -119,11 +119,20 @@ a:hover {
   padding: 7px;
   margin-bottom: 50px;
 
+  @media (max-width: 677px) {
+    border-radius: 0;
+    padding: 7px 0;
+  }
+
   .global-page-content-container-inner {
     background-color: white;
     border-radius: 15px;
-    padding-top: 50px;
+    padding-top: 20px;
     padding-bottom: 50px;
+
+    @media (max-width: 677px) {
+      border-radius: 0;
+    }
   }
 }
 
@@ -138,6 +147,11 @@ h3, h4 {
   hyphens: auto;
   -webkit-hyphens: auto;
   -ms-hyphens: auto;
+}
+
+.page-title {
+  text-align: center;
+  padding-bottom: 2vh;
 }
 
 /* Prevent MUI Select from scrolling viewport on focus */
@@ -156,4 +170,8 @@ h3, h4 {
 
 .MuiMenu-paper .MuiMenuItem-root {
   min-width: fit-content;
+}
+
+.MuiAccordionSummary-root:focus {
+  outline: none;
 }

@@ -5,6 +5,7 @@ import ee.evkk.dto.CommonTextRequestDto;
 import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.CorpusTextContentsDto;
+import ee.evkk.dto.KeeletaseGrammatikaOigekiriAnaluusResponseDto;
 import ee.tlu.evkk.api.annotation.RateLimit;
 import ee.tlu.evkk.api.service.WordAnalyserService;
 import ee.tlu.evkk.core.integration.CorrectorServerClient;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static java.util.UUID.fromString;
@@ -111,6 +113,11 @@ public class TextController {
     return ok(body);
   }
 
+  @PostMapping("/keeletase-grammatika-oigekiri-analuus")
+  public ResponseEntity<KeeletaseGrammatikaOigekiriAnaluusResponseDto> keeletaseGrammatikaOigekiriAnaluus(@RequestBody CommonTextRequestDto request) {
+    return ok(stanzaServerClient.getKeeletaseGrammatikaOigekiriAnaluus(request.getTekst()));
+  }
+
   @PostMapping("/keerukus")
   public ResponseEntity<List<String>> keerukus(@RequestBody CommonTextRequestDto request) {
     String[] m = stanzaServerClient.getKeerukus(request.getTekst());
@@ -142,5 +149,11 @@ public class TextController {
   @PostMapping("/lisatekst")
   public String lisatekst(@Valid @RequestBody AddingRequestDto andmed) {
     return textService.lisatekst(andmed);
+  }
+
+  @RateLimit
+  @PostMapping("/spellcheck")
+  public Object spellcheck(@RequestBody Map<String, String> body) {
+    return stanzaServerClient.getSpeller(body.get("tekst"));
   }
 }

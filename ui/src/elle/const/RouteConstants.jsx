@@ -44,7 +44,9 @@ export const RouteConstants = {
   COLLOCATES: 'collocates',
   CORRECTOR: 'corrector',
   CORRECTOR_TEST: 'corrector-test',
+  EXERCISE_GENERATOR: 'exercise-generator',
   GRANTS: 'grants',
+  LEARN: 'learn',
   LINKS: 'links',
   LOGIN: 'login',
   PEOPLE: 'people',
@@ -61,6 +63,7 @@ export const RouteFullPathConstants = {
   ABOUT_PEOPLE: `/${RouteConstants.ABOUT}/${RouteConstants.PEOPLE}`,
   ABOUT_PUBLICATIONS: `/${RouteConstants.ABOUT}/${RouteConstants.PUBLICATIONS}`,
   ABOUT_US: `/${RouteConstants.ABOUT}/${RouteConstants.US}`,
+  LEARN_EXERCISE_GENERATOR: `/${RouteConstants.LEARN}/${RouteConstants.EXERCISE_GENERATOR}`,
   TOOLS_CLUSTERFINDER: `/${RouteConstants.TOOLS}/${RouteConstants.CLUSTERFINDER}`,
   TOOLS_COLLOCATES: `/${RouteConstants.TOOLS}/${RouteConstants.COLLOCATES}`,
   TOOLS_WORDANALYSER: `/${RouteConstants.TOOLS}/${RouteConstants.WORDANALYSER}`,
@@ -145,6 +148,19 @@ export const ToolsDrawerList = [
         text: 'common_clusters',
         icon: <img src={ClusterfinderIcon} className="tool-drawer-icon" alt="clusterfinder" />,
         navigateTo: RouteConstants.CLUSTERFINDER
+      }
+    ]
+  }
+];
+
+export const LearnDrawerList = [
+  {
+    key: 'learn',
+    items: [
+      {
+        text: 'common_exercise_generator',
+        icon: <Dvr />,
+        navigateTo: RouteConstants.EXERCISE_GENERATOR
       }
     ]
   }

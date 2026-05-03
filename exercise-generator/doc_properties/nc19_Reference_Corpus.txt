@@ -1,0 +1,109 @@
+
+exercise:
+  Kokku unikaalseid väärtusi: 42
+    - Aleana
+    - Capaneusi Harta
+    - Chadis
+    - Cuncti simus concanentes: Ave Maria
+    - Deja-vu
+    - Eeben
+    - Energiaõpik
+    - Enesemääramisõigus
+    - Excelsuse konkistadoorid Bent vris Zemani juhtum
+    - Fusion
+    - Gondvana lapsed
+    - Kevade tulek
+    - Kindel linn
+    - Kliendi soov
+    - Kohtumine
+    - Kuningas Christeri mõõk ja Ingrid
+    - Kuningvesi
+    - Kuu Ordu
+    - Kõik võimalused maailmas
+    - Kõiksuse hääl
+    - Kõver mets
+    - Lihtne lugu lendavate taldrikutega
+    - Maa ja armastus 10
+    - Maa ja armastus 9
+    - Maris stella
+    - Nad tulevad täna öösel
+    - Operatsioon Ogaline Päike
+    - Pan Grpowski jõulud
+    - Püha Graal - 1984
+    - Pühapaikade pime lend
+    - Rabaröövel
+    - Sarmikas mõtleja: kaks romaani ühest mehest
+    - Sierra Titauna nekropol
+    - Sindbadi kaheksas reis
+    - Sindbadi üheksas reis
+    - Spitzbergeni nokturn
+    - Tagasi tulevikku IV
+    - Ukuaru
+    - Uskmatuse hind
+    - Vabaduse kõrgeim määr
+    - Vend Rus
+    - Õnnekosk
+
+genre:
+  Kokku unikaalseid väärtusi: 4
+    - academic
+    - fiction
+    - forums
+    - periodicals
+
+genre_src:
+  Kokku unikaalseid väärtusi: 2
+    - classifier
+    - source
+
+src:
+  Kokku unikaalseid väärtusi: 1
+    - Reference Corpus
+
+sub_text_type:
+  Kokku unikaalseid väärtusi: 1
+    - original
+
+text_type:
+  Kokku unikaalseid väärtusi: 2
+    - novel
+    - short story
+
+texttype_nc:
+  Kokku unikaalseid väärtusi: 4
+    - legislation
+    - parliament
+    - periodicals
+    - science
+
+topic:
+  Kokku unikaalseid väärtusi: 24
+    - agriculture
+    - beauty
+    - cars
+    - construction & real estate
+    - culture & entertainment
+    - economy, finance & business
+    - education
+    - food & drinks
+    - gambling & casinos
+    - health
+    - history
+    - home, family & children
+    - law & justice
+    - nature & environment
+    - pets and animals
+    - politics & government
+    - religion
+    - science
+    - sex
+    - sports
+    - technology & IT
+    - travel & tourism
+    - video games
+    - women
+
+topic_src:
+  Kokku unikaalseid väärtusi: 2
+    - classifier
+    - source

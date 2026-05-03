@@ -1,3 +1,4 @@
+// TODO ELLE-386 needs checking which to keep and which to remove
 export const LONG_SENTENCE = 'longsentence';
 export const LONG_WORD = 'longword';
 export const NOUNS = 'nouns';
@@ -14,4 +15,3 @@ export const TEXTLEVEL = 'corrector_proficiency_level';
 export const TEXTSPAN = 'text-span';
 export const ACCEPT_ERROR = 'acceptError';
 export const DECLINE_ERROR = 'declineError';
-

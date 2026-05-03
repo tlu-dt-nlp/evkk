@@ -311,7 +311,29 @@ def merge_corrections(processed_corrections, list_checked_spelling_errors):
     return sorted(merged_by_start_map.values(), key=lambda x: x['start'])
 
 
+def split_text_with_breaks(text, error_id_prefix):
+    tokens = []
+    chunk = ''
+    for ch in text:
+        if ch in ('\n', '\r'):
+            if chunk:
+                tokens.append({'corrected': False, 'text': chunk, 'error_id': f"{error_id_prefix}_unmarked"})
+                chunk = ''
+            tokens.append({'type': 'paragraphBreak' if ch == '\n' else 'lineBreak'})
+        else:
+            chunk += ch
+    if chunk:
+        tokens.append({'corrected': False, 'text': chunk, 'error_id': f"{error_id_prefix}_unmarked"})
+    return tokens
+
+
 def generate_grammar_output(input_text, corrections, list_checked_spelling_errors=None):
+    if corrections is None:
+        return {
+            "corrector_results": [{"corrected": False, "text": input_text, "error_id": "0_unmarked"}],
+            "error_list": {},
+            "error_count": 0
+        }
     processed_corrections = process_corrections(corrections['corrections'])
     sorted_corrections = merge_corrections(processed_corrections, list_checked_spelling_errors)
 
@@ -332,11 +354,7 @@ def generate_grammar_output(input_text, corrections, list_checked_spelling_error
                 is_index_shifted = True
                 start = start - 1
 
-            result.append({
-                'corrected': False,
-                'text': input_text[current_position:start],
-                'error_id': f"{index}_unmarked"
-            })
+            result.extend(split_text_with_breaks(input_text[current_position:start], index))
 
         error_data = {
             'corrected': True,
@@ -360,11 +378,7 @@ def generate_grammar_output(input_text, corrections, list_checked_spelling_error
         error_list[correction['correction_type']].append(error_data)
 
     if current_position < len(input_text):
-        result.append({
-            'corrected': False,
-            'text': input_text[current_position:],
-            'error_id': f"{len(sorted_corrections)}_unmarked"
-        })
+        result.extend(split_text_with_breaks(input_text[current_position:], len(sorted_corrections)))
 
     return {"corrector_results": result, "error_list": error_list, "error_count": error_count}
 
@@ -406,6 +420,8 @@ def calculate_content_word(lemmas, word_types):
 def calculate_abstract_words(abstract_answer, word_types):
     abstract_count = 0
     for index, word in enumerate(abstract_answer):
+        if index >= len(word_types):
+            break
         if (word.get("abstractness") == 3
             and word_types[index] != PROPN
             and word_types[index] == NOUN):
@@ -431,6 +447,8 @@ def handle_uncommon_words_marking(text, word_types, lemmas, words):
 def handle_abstract_words_marking(text, abstract_answer, word_types, words):
     temp_text = replace_combined.sub('', text)
     for index, word in enumerate(abstract_answer):
+        if index >= len(word_types):
+            break
         if word['abstractness'] == 3 and word_types[index] != PROPN and \
             word_types[index] == NOUN:
             new_word = f'<span class="abstract-word-color">{words[index]}</span>'

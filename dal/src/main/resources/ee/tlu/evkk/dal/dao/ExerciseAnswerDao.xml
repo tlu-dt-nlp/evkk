@@ -1,0 +1,24 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.ExerciseAnswerDao">
+
+  <insert id="insert">
+    INSERT INTO core.exercise_answer (id, type, structure_type, format, answers, exercise_data)
+    VALUES (#{id}, #{type}, #{structureType}, #{format}, #{answers}::jsonb, #{exerciseData}::jsonb)
+  </insert>
+
+  <select id="findById" resultType="ee.tlu.evkk.dal.dto.ExerciseAnswer">
+    SELECT id, type, structure_type, format, answers, exercise_data
+    FROM core.exercise_answer
+    WHERE id = #{id}
+  </select>
+
+  <delete id="deleteOlderThan24Hours">
+    <![CDATA[
+    DELETE FROM core.exercise_answer
+    WHERE (_meta ->> 'created_at')::timestamp < NOW() - INTERVAL '24 hours'
+    ]]>
+  </delete>
+
+</mapper>

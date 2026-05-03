@@ -1,0 +1,50 @@
+
+domain_distance:
+  Kokku unikaalseid väärtusi: 1
+    - 0
+
+genre:
+  Kokku unikaalseid väärtusi: 1
+    - forums
+
+genre_src:
+  Kokku unikaalseid väärtusi: 1
+    - source
+
+lang_old2:
+  Kokku unikaalseid väärtusi: 1
+    - estonian
+
+src:
+  Kokku unikaalseid väärtusi: 1
+    - Wikipedia Talk 2017
+
+topic:
+  Kokku unikaalseid väärtusi: 23
+    - agriculture
+    - beauty
+    - cars
+    - construction & real estate
+    - culture & entertainment
+    - economy, finance & business
+    - education
+    - food & drinks
+    - gambling & casinos
+    - health
+    - history
+    - home, family & children
+    - law & justice
+    - nature & environment
+    - pets and animals
+    - politics & government
+    - religion
+    - science
+    - sex
+    - sports
+    - technology & IT
+    - travel & tourism
+    - video games
+
+topic_src:
+  Kokku unikaalseid väärtusi: 1
+    - classifier

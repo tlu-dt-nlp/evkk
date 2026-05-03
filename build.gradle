@@ -27,6 +27,20 @@ subprojects {
     imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}") }
   }
 
+  // needed for Google GenAI dependencies to work
+  configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+      if (details.requested.group == 'com.fasterxml.jackson.core' ||
+          details.requested.group == 'com.fasterxml.jackson.datatype' ||
+          details.requested.group == 'com.fasterxml.jackson.module') {
+        details.useVersion '2.15.2'
+      }
+      if (details.requested.group == 'com.squareup.okhttp3') {
+        details.useVersion '4.12.0'
+      }
+    }
+  }
+
   dependencies {
 
     // mapstruct

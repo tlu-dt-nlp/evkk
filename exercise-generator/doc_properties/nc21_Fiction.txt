@@ -1,0 +1,28 @@
+
+genre:
+  Kokku unikaalseid väärtusi: 2
+    - fiction
+    - non-fiction
+
+src:
+  Kokku unikaalseid väärtusi: 1
+    - Literature
+
+sub_text_type:
+  Kokku unikaalseid väärtusi: 2
+    - Original
+    - Translation
+
+text_type:
+  Kokku unikaalseid väärtusi: 11
+    - Biography
+    - Essay
+    - Handbook
+    - Memoir
+    - Novel
+    - Poetry
+    - Popular science
+    - Set of stories
+    - Short Story
+    - Short story
+    - Travel writing

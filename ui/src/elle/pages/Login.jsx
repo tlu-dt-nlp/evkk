@@ -15,7 +15,7 @@ export default function Login() {
 
   return (
     <div>
-      <h2 className="tool-title">{t('common_login_for_admins')}</h2>
+      <h2 className="page-title">{t('common_login_for_admins')}</h2>
       <img
         src={haridLogo}
         alt="HarID logo"
