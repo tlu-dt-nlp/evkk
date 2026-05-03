@@ -202,7 +202,7 @@ export default function WordContext() {
 
   return (
     <span className="wordcontext-app">
-      <h2 className="tool-title">
+      <h2 className="page-title">
         {t('common_word_in_context')}
       </h2>
       <Accordion

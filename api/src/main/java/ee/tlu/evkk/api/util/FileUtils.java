@@ -1,6 +1,7 @@
 package ee.tlu.evkk.api.util;
 
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,8 @@ import static org.springframework.util.StreamUtils.copyToString;
 @NoArgsConstructor(access = PRIVATE)
 public class FileUtils {
 
-  public static String readResourceAsString(@NotNull String path) throws IOException {
+  @SneakyThrows
+  public static String readResourceAsString(@NotNull String path) {
     ClassPathResource resource = new ClassPathResource(path);
     try (InputStream stream = resource.getInputStream()) {
       return readFromStream(stream);

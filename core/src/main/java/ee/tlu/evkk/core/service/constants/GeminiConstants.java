@@ -1,0 +1,31 @@
+package ee.tlu.evkk.core.service.constants;
+
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
+public class GeminiConstants {
+
+  public static final String MODEL_NAME = "gemini-3-flash-preview";
+  public static final String THINKING_LEVEL = "high";
+  public static final String SYSTEM_INSTRUCTION = "Sa oled eesti keele ekspert, kes aitab õpetada eesti keelt teise keelena. Sa tegeled eesti keele õppimiseks mõeldud automaatselt genereeritud harjutustega.";
+
+  public static final int RETRY_ATTEMPTS = 3;
+  public static final List<Integer> RETRY_HTTP_STATUS_CODES = List.of(408, 429, 500, 502, 503, 504);
+
+  public static final String EXERCISE_QUALITY_CHECK_PROMPT_BASE = "Sinu ülesanne on hinnata, kas automaatselt genereeritud keeleharjutus on õppijale sobilik või mitte. Vaadata tuleks näiteks õigekirja, grammatikat, aga ka muid subjektiivsemaid aspekte, näiteks loetavus või arusaadavus. Hinnang ei tohi olla liiga range, st et negatiivne hinnang peab olema selgelt põhjendatud, mitte tulenema mõnest üksikust veast kogu harjutuse peale - kui viga ei takista lüngast/lausest/tekstist arusaamist, siis ei ole vaja seda arvestada. Harjutus on umbes C1 tasemel. Negatiivne arvamus peab olema põhjendatud, positiivne mitte. Vastus peab olema esitatud kujul 'true/false;põhjendus'. Näide 1: 'true'. Näide 2: 'false;Viies lause ei ole loetav ning sisaldab mitmeid vigu'. Näide 3: 'false;1. Teine valikvastus on ebatsensuurne sõna 2. Neljas valikvastus ei ole harjutuse jaoks õiges käändes'. Harjutuse sisu on JSON kujul ning selle sisu sõltub täpsemalt harjutuse loomisel tehtud valikutest. Harjutus saab olla kas tekstipõhine või lausepõhine. %s %s %s Õiged vastused on toodud õiges järjekorras, nii nagu nad tekstis olevatesse lünkadesse paigutuvad. Vastused on järgnevad: %s. Kogu ülesanne ise on järgnev: %s";
+  public static final String EXERCISE_INCORRECT_ANSWER_EXPLANATIONS_PROMPT_BASE = "Sinu ülesanne on lühidalt selgitada valesid vastuseid - miks see ei sobi, mida tasub sellest õppida/meelde jätta vms abistav tekst, mis aitaks õppijat. Harjutus on umbes C1 tasemel. Iga selgitus peaks olema umbes 1-2 lauset pikk, iga vea kohta peab olema üks selgitus ning kogu sinu lõppvastus peab olema esitatud kujul 'selgitus1;selgitus2;selgitus3'. Selgitus ei tohiks olla liiga pealiskaudne, vaid seletama viga nii, et õppijal oleks võimalik sellest õppida. Selgituses pead kasutama eestikeelseid keeleteaduslikke termineid. Samas on oluline, et selgitus oleks piisavalt lihtne, et õppija seda mõistaks. Seega ära kasuta keerukaid termineid, vaid pigem lihtsamaid alternatiive. Vältima peab keeleterminite valet kasutust ja termineid, mida pole olemas. Väldi liigset infot, kordusi ja üldisi sisutühje selgitusi. Kõik selgitused peavad olema õiges järjekorras ning üksteisest semikoolonitega eraldatud. Ära kasuta semikooloneid mitte millegi muu jaoks kui ainult selgituste eraldamiseks üksteisest. Ära kasuta markdown märgendust, vaid vasta lihttekstis. Lõpeta laused/selgitused punktiga ning kasuta jutumärkidena alati \" sümbolit (double quote). Näide 1: 'Sõna on ainsuses ning ei haaku tähendusega.'. Näide 2: 'Sõna käändevorm on vale ning ei sobitu lauseehitusega.;Pärast väljendit X kasutatakse da-infinitiivi.'. Harjutuse sisu on JSON kujul ning selle sisu sõltub täpsemalt harjutuse loomisel tehtud valikutest. Harjutus saab olla kas tekstipõhine või lausepõhine. %s %s %s Õiged vastused on toodud õiges järjekorras, nii nagu nad tekstis olevatesse lünkadesse paigutuvad. Õiged vastused on järgnevad: %s. Valed vastused on samuti toodud õiges järjekorras, kuid sealt loendist puuduvad õiged vastused, seega on neile kaasa antud indeksid, et saada aru, millise lünga kohta konkreetne viga käib (kuigi neid on võimalik kokku viia ka õige vastuse alusel, mis on igas vea objektis välja toodud). Valed vastused on järgnevad: %s. Selguse mõttes on järgnevalt välja toodud ka kõik õppija sisestatud vastused õiges järjekorras ehk siin on läbisegi nii õiged kui ka valed vastused: %s. Kogu ülesanne ise on järgnev: %s";
+
+  public static final String EXERCISE_STRUCTURE_TYPE_TEXT_PROMPT_PART = "Antud harjutus on tekstipõhine, seega on kogu tekst 'textWithBlanks' väärtusena ning kõik lüngad/vastusevariandid 'blanks' nimekirjas.";
+  public static final String EXERCISE_STRUCTURE_TYPE_SENTENCE_PROMPT_PART = "Antud harjutus on lausepõhine, seega on iga lause eraldi objekt 'sentencesWithBlanks' nimekirjas.";
+
+  public static final String EXERCISE_FORMAT_FILL_IN_THE_BLANKS_PROMPT_PART = "Kuna ülesande formaat on 'fill-in-the-blanks' ehk lünkade täitmine, siis on iga 'hint' ehk vihje väärtuseks korrektse vastuse sõna algvorm ehk lemma, mille õppija peab panema õigesse vormi. Ignoreeri 'hint', 'startChar' ja 'endChar' võimalikke null-väärtusi, mis on seal tehnilistel põhjustel. Kõik lüngad on välja toodud nende õiges esinemise järjekorras.";
+  public static final String EXERCISE_FORMAT_MATCHING_PROMPT_PART = "Kuna ülesande formaat on 'matching' ehk etteantud õigete vastuste sobitamine õigetesse lünkadesse, siis on iga 'hint' väärtuseks korrektne vastuse sõna tema õiges vormis ning need on segatud suvalisse järjekorda - seda selleks, et ülesande struktuurist ei oleks võimalik õigeid vastuseid välja lugeda. Ignoreeri 'hint', 'startChar' ja 'endChar' võimalikke null-väärtusi, mis on seal tehnilistel põhjustel.";
+
+  public static final String EXERCISE_TYPE_ADJECTIVE_PROMPT_PART = "Harjutuse tüüp on 'omadussõnad'. Harjutuse mõte on seega harjutada sõnavara, valides, milline omadussõna sobib nimisõna ette kõige paremini. Sisult tähendab see, et lüngas olevale omadussõnale järgneb nimisõna ning omadussõna roll on eestäiend.";
+  public static final String EXERCISE_TYPE_INFINITIVE_PROMPT_PART = "Harjutuse tüüp on 'da- ja ma-infinitiiv ehk tegevusnimi'. See tähendab, et harjutuse mõte on praktiseerida da-/ta- ja ma- lõpuliste tegusõnade moodustamist ja õiget kasutust.";
+  public static final String EXERCISE_TYPE_OBJECT_PROMPT_PART = "Harjutuse tüüp on 'sihitise käänded'. Sihitis on tegusõna laiend, mis näitab, kellele või millele on tegevus suunatud. Harjutuses tuleb kasutada mitmuses nimisõna õiges sihitise käändes – nimetavas, omastavas või osastavas.";
+}

@@ -13,19 +13,27 @@ import Wordlist from './elle/tools/wordlist/Wordlist';
 import WordContext from './elle/tools/wordcontext/WordContext';
 import Collocates from './elle/tools/Collocates';
 import Tools from './elle/pages/Tools';
+// TODO ELLE-386 remove this unused import
+// it is only necessary because it imports Correction.css which is still in use in the new correction components
 import Correction from './elle/tools/correction/Correction';
 import Login from './elle/pages/Login';
 import Admin from './elle/pages/Admin';
 import RequireAuth from './elle/components/security/RequireAuth';
 import { UserRoles } from './elle/const/Constants';
 import ResponsiveDrawer from './elle/components/ResponsiveDrawer';
-import { AboutUsDrawerList, RouteConstants, RouteFullPathConstants } from './elle/const/RouteConstants';
+import {
+  AboutUsDrawerList,
+  LearnDrawerList,
+  RouteConstants,
+  RouteFullPathConstants
+} from './elle/const/RouteConstants';
 import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
 import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
 import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
-import CorrectionNotAvailableAlert from "./elle/tools/correctionV2/components/CorrectionNotAvailableAlert";
+import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
+import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
 
 export const routes = [
   {
@@ -166,6 +174,22 @@ export const routes = [
               {
                 path: 'masinoppe-ennustus',
                 element: <MasinoppeEnnustus />
+              }
+            ]
+          },
+          {
+            path: RouteConstants.LEARN,
+            element: <ResponsiveDrawer lists={LearnDrawerList} />,
+            handle: { crumb: () => ({ to: RouteConstants.LEARN, translateKey: 'common_learn' }) },
+            children: [
+              {
+                index: true,
+                element: <Navigate to={RouteConstants.EXERCISE_GENERATOR} replace />
+              },
+              {
+                path: RouteConstants.EXERCISE_GENERATOR,
+                element: <ExerciseGeneratorForm />,
+                handle: { crumb: () => ({ to: RouteFullPathConstants.LEARN_EXERCISE_GENERATOR, translateKey: 'common_exercise_generator' }) }
               }
             ]
           },

@@ -1,5 +1,9 @@
-.tooltip-on-text {
+.tooltip-on-text-trigger {
   border-bottom: 1px dotted black;
   padding-bottom: 2px;
   cursor: help;
+}
+
+.tooltip-on-text-content {
+  pointer-events: none;
 }

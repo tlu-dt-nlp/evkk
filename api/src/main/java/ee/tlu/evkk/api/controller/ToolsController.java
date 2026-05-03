@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.COLLOCATES;
 import static ee.tlu.evkk.api.controller.paths.ToolsControllerPaths.WORDANALYSER;
@@ -40,7 +39,7 @@ public class ToolsController {
 
   @RateLimit
   @PostMapping(WORDLIST)
-  public WordlistResponseDto getWordlistResponse(@RequestBody @Valid WordlistRequestDto dto) throws IOException {
+  public WordlistResponseDto getWordlistResponse(@RequestBody @Valid WordlistRequestDto dto) {
     return wordlistService.getWordlistResponse(dto);
   }
 
@@ -52,7 +51,7 @@ public class ToolsController {
 
   @RateLimit
   @PostMapping(COLLOCATES)
-  public CollocateResponseDto getCollocateResponse(@RequestBody @Valid CollocateRequestDto dto) throws IOException {
+  public CollocateResponseDto getCollocateResponse(@RequestBody @Valid CollocateRequestDto dto) {
     return collocateService.getCollocateResponse(dto);
   }
 
