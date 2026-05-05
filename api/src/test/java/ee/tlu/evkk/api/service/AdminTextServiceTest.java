@@ -11,6 +11,7 @@ import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
 import ee.tlu.evkk.dal.dto.TextMetadata;
 import ee.tlu.evkk.dal.dto.TextProperty;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,6 +50,7 @@ class AdminTextServiceTest {
   private AdminTextService adminTextService;
 
   @Test
+  @DisplayName("Get texts to review returns count")
   void getTextsToReview_shouldReturnCount() {
     // Given
     Integer expectedCount = 10;
@@ -63,21 +65,23 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Get donated texts returns JSON from text service")
   void getDonatedTexts_shouldReturnJsonFromTextService() {
     // Given
-    CorpusRequestDto request = new CorpusRequestDto();
+    DonatedTextRequestDto request = new DonatedTextRequestDto();
     String expectedJson = "[]";
-    when(textService.detailneparing(any())).thenReturn(expectedJson);
+    when(textService.getDonatedTexts(request, true)).thenReturn(expectedJson);
 
     // When
     String response = adminTextService.getDonatedTexts(request);
 
     // Then
     assertThat(response).isEqualTo(expectedJson);
-    verify(textService).detailneparing(any());
+    verify(textService).getDonatedTexts(request, true);
   }
 
   @Test
+  @DisplayName("Get donated text details returns text when donated text exists")
   void getDonatedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -95,6 +99,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Get donated text details returns empty when donated text is not found")
   void getDonatedTextDetails_whenTextNotFound_shouldReturnEmpty() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -109,6 +114,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text updates text and properties")
   void updateDonatedText_shouldUpdateTextAndProperties() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -162,6 +168,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text does not update properties when property value is unchanged")
   void updateDonatedText_whenPropertyValueUnchanged_shouldNotUpdate() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -203,6 +210,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text handles multi-value properties correctly")
   void updateDonatedText_withMultiValueProperties_shouldHandleCorrectly() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -264,6 +272,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text handles mixed single-value and multi-value properties correctly")
   void updateDonatedText_withMixedSingleAndMultiValueProperties_shouldHandleCorrectly() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -325,6 +334,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text deletes removed properties")
   void updateDonatedText_whenPropertyRemoved_shouldDelete() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -379,6 +389,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text deletes all properties when all properties are removed")
   void updateDonatedText_whenAllPropertiesRemoved_shouldDeleteAll() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -418,6 +429,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text does not update content when text is unchanged")
   void updateDonatedText_whenTextUnchanged_shouldNotUpdateContent() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -442,6 +454,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update donated text throws exception when donated text is not found")
   void updateDonatedText_whenTextNotFound_shouldThrowException() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -459,6 +472,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Delete donated text deletes properties and text")
   void deleteDonatedText_shouldDeletePropertiesAndText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -476,6 +490,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Delete donated text throws exception when donated text is not found")
   void deleteDonatedText_whenNotFound_shouldThrowException() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -489,6 +504,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Publish donated text moves text and properties to published tables")
   void publishDonatedText_shouldMoveTextAndPropertiesToPublishedTables() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -521,6 +537,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Publish donated text updates donated text before publishing when request is provided")
   void publishDonatedText_withRequest_shouldUpdateDonatedTextBeforePublish() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -585,6 +602,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Publish donated text throws exception when donated text is not found")
   void publishDonatedText_whenNotFound_shouldThrowException() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -600,21 +618,23 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Get published texts returns JSON from text service")
   void getPublishedTexts_shouldReturnJsonFromTextService() {
     // Given
     CorpusRequestDto request = new CorpusRequestDto();
     String expectedJson = "[]";
-    when(textService.detailneparing(any())).thenReturn(expectedJson);
+    when(textService.detailneparing(request, true)).thenReturn(expectedJson);
 
     // When
     String response = adminTextService.getPublishedTexts(request);
 
     // Then
     assertThat(response).isEqualTo(expectedJson);
-    verify(textService).detailneparing(any());
+    verify(textService).detailneparing(request, true);
   }
 
   @Test
+  @DisplayName("Get published text details returns text when published text exists")
   void getPublishedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -632,6 +652,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Get published text details returns empty when published text is not found")
   void getPublishedTextDetails_whenTextNotFound_shouldReturnEmpty() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -646,6 +667,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update published text updates text and properties")
   void updatePublishedText_shouldUpdateTextAndProperties() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -699,6 +721,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update published text does not update content when text is unchanged")
   void updatePublishedText_whenTextUnchanged_shouldNotUpdateContent() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -723,6 +746,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Update published text throws exception when published text is not found")
   void updatePublishedText_whenTextNotFound_shouldThrowException() {
     // Given
     UUID testId = UUID.randomUUID();
@@ -740,6 +764,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Delete published text deletes properties and text")
   void deletePublishedText_shouldDeletePropertiesAndText() throws Exception {
     // Given
     UUID testId = UUID.randomUUID();
@@ -757,6 +782,7 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Delete published text throws exception when published text is not found")
   void deletePublishedText_whenNotFound_shouldThrowException() {
     // Given
     UUID testId = UUID.randomUUID();

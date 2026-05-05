@@ -2,6 +2,7 @@ package ee.tlu.evkk.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ee.evkk.dto.CorpusRequestDto;
+import ee.evkk.dto.DonatedTextRequestDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.tlu.evkk.api.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +51,7 @@ class AdminControllerTest extends IntegrationTest {
   @Test
   @DisplayName("Unauthenticated user cannot get donated texts")
   void unauthenticatedUserCannotGetDonatedTexts() throws Exception {
-    CorpusRequestDto request = new CorpusRequestDto();
+    DonatedTextRequestDto request = new DonatedTextRequestDto();
     mockMvc.perform(
         post("/admin/donated-texts")
           .contentType(MediaType.APPLICATION_JSON)
@@ -62,7 +63,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Authenticated non-admin user cannot get donated texts")
   @WithMockUser(username = "user")
   void authenticatedUserCannotGetDonatedTexts() throws Exception {
-    CorpusRequestDto request = new CorpusRequestDto();
+    DonatedTextRequestDto request = new DonatedTextRequestDto();
     mockMvc.perform(
         post("/admin/donated-texts")
           .contentType(MediaType.APPLICATION_JSON)
@@ -74,8 +75,8 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Authenticated admin user can get donated texts")
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserCanGetDonatedTexts() throws Exception {
-    CorpusRequestDto request = new CorpusRequestDto();
-    request.setLanguage("nonExistentLanguage");
+    DonatedTextRequestDto request = new DonatedTextRequestDto();
+    request.setAutoriEmakeel("nonExistentLanguage");
 
     mockMvc.perform(
         post("/admin/donated-texts")

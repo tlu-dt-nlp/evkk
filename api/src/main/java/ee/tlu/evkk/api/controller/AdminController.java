@@ -1,9 +1,6 @@
 package ee.tlu.evkk.api.controller;
 
-import ee.evkk.dto.CorpusRequestDto;
-import ee.evkk.dto.TextDetailsResponseDto;
-import ee.evkk.dto.TextUpdateRequestDto;
-import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.evkk.dto.*;
 import ee.tlu.evkk.api.service.AdminTextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -29,7 +26,7 @@ public class AdminController {
 
   // Result is already JSON-formatted by the DAO; DTO mapping is unnecessary
   @PostMapping(value = "/donated-texts", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<String> getDonatedTexts(@RequestBody CorpusRequestDto request) {
+  public ResponseEntity<String> getDonatedTexts(@RequestBody DonatedTextRequestDto request) {
     return ResponseEntity.ok(adminTextService.getDonatedTexts(request));
   }
 

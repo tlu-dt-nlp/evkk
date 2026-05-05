@@ -1,10 +1,8 @@
 package ee.tlu.evkk.api.service;
 
 import ee.evkk.dto.*;
-import ee.evkk.dto.enums.CorpusTextContext;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
-import ee.tlu.evkk.core.service.helpers.CorpusSearchCriteria;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
@@ -33,6 +31,7 @@ public class AdminTextService {
   private final TextDao textDao;
   private final TextPropertyDao textPropertyDao;
 
+  @Transactional(readOnly = true)
   public TextsToReviewResponseDto getTextsToReview() {
     log.info("Fetching texts to review");
     return TextsToReviewResponseDto.builder()
@@ -40,18 +39,13 @@ public class AdminTextService {
       .build();
   }
 
-  public String getDonatedTexts(CorpusRequestDto request) {
+  @Transactional(readOnly = true)
+  public String getDonatedTexts(DonatedTextRequestDto request) {
     log.info("Fetching donated texts");
-
-    CorpusSearchCriteria searchCriteria = CorpusSearchCriteria.builder()
-      .corpusRequestDto(request)
-      .corpusTextContext(CorpusTextContext.DONATED)
-      .includeMeta(true)
-      .build();
-
-    return textService.detailneparing(searchCriteria);
+    return textService.getDonatedTexts(request, true);
   }
 
+  @Transactional(readOnly = true)
   public Optional<TextDetailsResponseDto> getDonatedTextDetails(UUID id) {
     log.info("Fetching donated text details id={}", id);
     return Optional.ofNullable(textAddedDao.findTextAndMetadataById(id))
@@ -98,18 +92,13 @@ public class AdminTextService {
     return toTextDetailsResponseDto(textDao.findTextAndMetadataById(publishedTextId));
   }
 
+  @Transactional(readOnly = true)
   public String getPublishedTexts(CorpusRequestDto request) {
     log.info("Fetching published texts");
-
-    CorpusSearchCriteria searchCriteria = CorpusSearchCriteria.builder()
-      .corpusRequestDto(request)
-      .corpusTextContext(CorpusTextContext.PUBLISHED)
-      .includeMeta(true)
-      .build();
-
-    return textService.detailneparing(searchCriteria);
+    return textService.detailneparing(request, true);
   }
 
+  @Transactional(readOnly = true)
   public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
     log.info("Fetching published text details id={}", id);
     return Optional.ofNullable(textDao.findTextAndMetadataById(id))
