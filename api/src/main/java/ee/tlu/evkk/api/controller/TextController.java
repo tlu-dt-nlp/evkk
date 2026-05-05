@@ -5,14 +5,12 @@ import ee.evkk.dto.CommonTextRequestDto;
 import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.CorpusTextContentsDto;
-import ee.evkk.dto.enums.CorpusTextContext;
 import ee.tlu.evkk.api.annotation.RateLimit;
 import ee.tlu.evkk.api.service.WordAnalyserService;
 import ee.tlu.evkk.core.integration.CorrectorServerClient;
 import ee.tlu.evkk.core.integration.StanzaServerClient;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.core.service.dto.TextWithComplexity;
-import ee.tlu.evkk.core.service.helpers.CorpusSearchCriteria;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
 import lombok.RequiredArgsConstructor;
@@ -130,12 +128,7 @@ public class TextController {
 
   @PostMapping("/detailneparing")
   public ResponseEntity<String> detailneparing(@RequestBody CorpusRequestDto vaartused) {
-    CorpusSearchCriteria searchCriteria = CorpusSearchCriteria.builder()
-      .corpusRequestDto(vaartused)
-      .corpusTextContext(CorpusTextContext.PUBLISHED)
-      .includeMeta(false)
-      .build();
-    return ok(textService.detailneparing(searchCriteria));
+    return ok(textService.detailneparing(vaartused, false));
   }
 
   @PostMapping("/tekstidfailina")

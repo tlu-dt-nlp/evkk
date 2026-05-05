@@ -4,13 +4,12 @@ import ee.evkk.dto.AddingRequestDto;
 import ee.evkk.dto.CommonTextRequestDto;
 import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
+import ee.evkk.dto.DonatedTextRequestDto;
 import ee.evkk.dto.enums.CorpusDownloadForm;
-import ee.evkk.dto.enums.CorpusTextContext;
 import ee.tlu.evkk.core.integration.StanzaServerClient;
 import ee.tlu.evkk.core.service.dto.TextWithComplexity;
-import ee.tlu.evkk.core.service.helpers.CorpusSearchCriteria;
+import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
-import ee.tlu.evkk.dal.dao.TextQueryDao;
 import ee.tlu.evkk.dal.dto.CorpusDownloadResponseEntity;
 import ee.tlu.evkk.dal.dto.TextQueryDisjunctionParamHelper;
 import ee.tlu.evkk.dal.dto.TextQueryMultiParamHelper;
@@ -59,7 +58,7 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class TextService {
 
   private final TextDao textDao;
-  private final TextQueryDao textQueryDao;
+  private final TextAddedDao textAddedDao;
   private final StanzaServerClient stanzaServerClient;
 
   private static final Pattern fileNameCharacterWhitelist = compile("[\\p{L}0-9& ._()!-]");
@@ -77,11 +76,7 @@ public class TextService {
     return result.toString().trim();
   }
 
-  public String detailneparing(CorpusSearchCriteria corpusSearchCriteria) {
-    CorpusRequestDto corpusRequestDto = corpusSearchCriteria.getCorpusRequestDto();
-    CorpusTextContext corpusTextContext = corpusSearchCriteria.getCorpusTextContext();
-    boolean isIncludeMeta = corpusSearchCriteria.isIncludeMeta();
-
+  public String detailneparing(CorpusRequestDto corpusRequestDto, boolean includeMeta) {
     List<TextQuerySingleParamHelper> singleParamHelpers = new ArrayList<>();
     List<TextQueryRangeParamBaseHelper> rangeParamBaseHelpers = new ArrayList<>();
     List<TextQueryMultiParamHelper> multiParamHelpers = new ArrayList<>();
@@ -169,16 +164,47 @@ public class TextService {
       rangeParamBaseHelpers.add(createRangeBaseHelper("p22", "sentenceCount", corpusRequestDto.getSentences()));
     }
 
-    String daoResponse = textQueryDao.detailedTextQueryByParameters(
-      corpusTextContext.getTextTable(),
-      corpusTextContext.getPropertyTable(),
-      isIncludeMeta,
-      multiParamHelpers,
+    String daoResponse = textDao.detailedTextQueryByParameters(multiParamHelpers, singleParamHelpers, rangeParamBaseHelpers, studyLevelAndDegreeHelper, otherLangHelper, usedMultiMaterialsHelper, includeMeta);
+    return isNotBlank(daoResponse) ? daoResponse : new ArrayList<>().toString();
+  }
+
+  public String getDonatedTexts(DonatedTextRequestDto request, boolean includeMeta) {
+    List<TextQuerySingleParamHelper> singleParamHelpers = new ArrayList<>();
+    List<TextQueryMultiParamHelper> multiParamHelpers = new ArrayList<>();
+    TextQuerySingleParamHelper otherLangHelper = new TextQuerySingleParamHelper();
+
+    addSingleParam(singleParamHelpers, "p3", "tekstityyp", request.getLiik());
+    if (request.getOppematerjal() != null) {
+      addSingleParam(singleParamHelpers, "p4", "abivahendid", booleanToJahEi(request.getOppematerjal()));
+    }
+    addMultiParam(multiParamHelpers, "p5", "akad_oppematerjal", request.getAkadOppematerjal());
+    addSingleParam(singleParamHelpers, "p6", "akad_oppematerjal_muu", request.getAkadOppematerjalMuu());
+    addSingleParam(singleParamHelpers, "p7", "mitteakad_alamliik", request.getMitteakadAlamliik());
+    addSingleParam(singleParamHelpers, "p8", "akad_alamliik", request.getAkadAlamliik());
+    addSingleParam(singleParamHelpers, "p9", "artikkel_valjaanne", request.getArtikkelValjaanne());
+    addSingleParam(singleParamHelpers, "p10", "artikkel_aasta", request.getArtikkelAasta());
+    addSingleParam(singleParamHelpers, "p11", "artikkel_number", request.getArtikkelNumber());
+    addSingleParam(singleParamHelpers, "p12", "artikkel_lehekyljed", request.getArtikkelLehekyljed());
+    addSingleParam(singleParamHelpers, "p13", "kasAutor", request.getTekstiAutor());
+    addSingleParam(singleParamHelpers, "p14", "vanus", request.getAutoriVanus());
+    addSingleParam(singleParamHelpers, "p15", "sugu", request.getAutoriSugu());
+    addSingleParam(singleParamHelpers, "p16", "oppeaste", request.getAutoriOppeaste());
+    addSingleParam(singleParamHelpers, "p17", "teaduskraad", request.getAutoriTeaduskraad());
+    addSingleParam(singleParamHelpers, "p18", "haridus", request.getAutoriHaridus());
+    addSingleParam(singleParamHelpers, "p19", "valdkond", request.getAutoriValdkond());
+    addSingleParam(singleParamHelpers, "p20", "emakeel", request.getAutoriEmakeel());
+    if (isNotBlank(request.getAutoriMuudKeeled())) {
+      otherLangHelper.setTable("p21");
+      otherLangHelper.setParameter("muudkeeled");
+      otherLangHelper.setValue(request.getAutoriMuudKeeled());
+    }
+    addSingleParam(singleParamHelpers, "p22", "riik", request.getAutoriElukohariik());
+
+    String daoResponse = textAddedDao.detailedTextQueryByParameters(
       singleParamHelpers,
-      rangeParamBaseHelpers,
-      studyLevelAndDegreeHelper,
+      multiParamHelpers,
       otherLangHelper,
-      usedMultiMaterialsHelper
+      includeMeta
     );
     return isNotBlank(daoResponse) ? daoResponse : new ArrayList<>().toString();
   }
@@ -356,6 +382,18 @@ public class TextService {
   private static String booleanToJahEi(Boolean bool) {
     if (bool == null) return null;
     return bool ? "jah" : "ei";
+  }
+
+  private static void addSingleParam(List<TextQuerySingleParamHelper> helpers, String table, String parameter, String value) {
+    if (isNotBlank(value)) {
+      helpers.add(new TextQuerySingleParamHelper(table, parameter, value));
+    }
+  }
+
+  private static void addMultiParam(List<TextQueryMultiParamHelper> helpers, String table, String parameter, Set<String> values) {
+    if (values != null && !values.isEmpty()) {
+      helpers.add(new TextQueryMultiParamHelper(table, parameter, values));
+    }
   }
 
   private void lisaTekstiOmadus(UUID kood, String tunnus, String omadus) {
