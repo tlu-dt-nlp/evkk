@@ -48,7 +48,7 @@ public class AdminController {
   @DeleteMapping("/donated-texts/{id}")
   public ResponseEntity<Void> deleteDonatedText(@PathVariable UUID id) {
     adminTextService.deleteDonatedText(id);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @PostMapping("/donated-texts/{id}/publish")
@@ -83,6 +83,6 @@ public class AdminController {
   @DeleteMapping("/published-texts/{id}")
   public ResponseEntity<Void> deletePublishedText(@PathVariable UUID id) {
     adminTextService.deletePublishedText(id);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 }
