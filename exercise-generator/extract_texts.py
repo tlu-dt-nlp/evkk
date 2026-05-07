@@ -36,6 +36,46 @@ def should_exclude_doc(topic, genre):
     return False
 
 
+def parse_doc_attributes(attrs_string, attr_pattern):
+    attrs = {}
+
+    for attr_match in attr_pattern.finditer(attrs_string):
+        key = attr_match.group(1)
+        value = attr_match.group(3)
+        attrs[key] = value
+
+    return attrs
+
+
+def extract_clean_sentences(current_doc_content, tag_removal_pattern):
+    sentences = []
+
+    for content_line in current_doc_content:
+        clean_line = tag_removal_pattern.sub('', content_line).strip()
+        if clean_line:
+            sentences.append(clean_line)
+
+    return sentences
+
+
+def append_text_if_included(texts, current_doc_attrs, current_doc_content, tag_removal_pattern):
+    topic = current_doc_attrs.get('topic')
+    genre = current_doc_attrs.get('genre')
+
+    if should_exclude_doc(topic, genre):
+        return
+
+    sentences = extract_clean_sentences(current_doc_content, tag_removal_pattern)
+    if not sentences:
+        return
+
+    texts.append({
+        'topic': topic,
+        'full_text': ' '.join(sentences),
+        'sentences': sentences
+    })
+
+
 def extract_texts_from_prevert(file_path, limit=None):
     texts = []
     total_docs_found = 0
@@ -68,40 +108,18 @@ def extract_texts_from_prevert(file_path, limit=None):
                 doc_start_match = doc_start_pattern.search(line)
                 if doc_start_match:
                     in_doc = True
-                    current_doc_attrs = {}
-                    current_doc_content = []
-
                     attrs_string = doc_start_match.group(1)
-                    for attr_match in attr_pattern.finditer(attrs_string):
-                        key = attr_match.group(1)
-                        value = attr_match.group(3)
-                        current_doc_attrs[key] = value
-
+                    current_doc_attrs = parse_doc_attributes(attrs_string, attr_pattern)
+                    current_doc_content = []
                     continue
 
                 if doc_end_pattern.search(line):
                     if in_doc:
                         total_docs_found += 1
-                        topic = current_doc_attrs.get('topic')
-                        genre = current_doc_attrs.get('genre')
+                        append_text_if_included(texts, current_doc_attrs, current_doc_content, tag_removal_pattern)
 
-                        if not should_exclude_doc(topic, genre):
-                            sentences = []
-
-                            for content_line in current_doc_content:
-                                clean_line = tag_removal_pattern.sub('', content_line).strip()
-                                if clean_line:
-                                    sentences.append(clean_line)
-
-                            if sentences:
-                                texts.append({
-                                    'topic': topic,
-                                    'full_text': ' '.join(sentences),
-                                    'sentences': sentences
-                                })
-
-                                if limit and len(texts) >= limit:
-                                    return texts, total_docs_found
+                        if limit and len(texts) >= limit:
+                            return texts, total_docs_found
 
                         in_doc = False
                         current_doc_attrs = {}
