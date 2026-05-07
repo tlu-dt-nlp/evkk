@@ -468,3 +468,8 @@ export const textToSpeechVoices = {
   albert: 'Albert',
   kalev: 'Kalev'
 };
+
+export const DonatedTextDetailsFormMode = {
+  PUBLISH: 'PUBLISH',
+  SEARCH: 'SEARCH'
+};

@@ -491,6 +491,7 @@ export const TRANSLATIONS_EN = {
   query_download_zip: 'ZIP file',
   query_filters: 'Search filters',
   query_results_accordion_title: 'Search results',
+  query_results_added_at: 'Added at',
   query_results_found_texts: 'Texts found',
   query_results_no_texts_found: 'No texts were found.',
   query_results_preview_metadata_modal_title: 'Text metadata',
