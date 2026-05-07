@@ -69,7 +69,7 @@ class TextFilterer:
         with open(self.output_path, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
 
-    def filter_texts(self, input_file, limit=None, skip=0):
+    def load_texts(self, input_file, skip):
         with open(input_file, 'r', encoding='utf-8') as f:
             data = json.load(f)
 
@@ -78,6 +78,42 @@ class TextFilterer:
         if skip > 0:
             print(f"Vahele jäetakse esimesed {skip} teksti")
             texts = texts[skip:]
+
+        return texts
+
+    def print_analysis_summary(self, levels, api_response):
+        print(
+            f"  Tasemed: keerukus {levels['keerukus']}, grammatika {levels['grammatika']}, sõnavara {levels['sonavara']}")
+        print(f"  Õigekirjavigu leitud: {api_response['oigekirjavigu']}")
+        print(f"  Grammatikavigu leitud: {api_response['grammatikavigu']}")
+
+    def passes_filters(self, levels, api_response):
+        cefr_criteria = meets_cefr_criteria(levels)
+        if not cefr_criteria:
+            print("  ✗ Tasemehinnang ei sobi")
+
+        if api_response["oigekirjavigu"] > 0:
+            print("  ✗ Leiti õigekirjavigu")
+
+        if api_response["grammatikavigu"] > 0:
+            print("  ! Leiti grammatikavigu")
+
+        if not cefr_criteria or api_response["oigekirjavigu"] > 0:
+            return False
+
+        return True
+
+    def append_filtered_text(self, text_obj, levels, api_response):
+        text_obj['levels'] = levels
+        text_obj['spellcheck_error_count'] = 0
+        text_obj['grammarcheck_error_count'] = api_response["grammatikavigu"]
+        text_obj['analysis'] = api_response["analuus"]
+        self.filtered_texts.append(text_obj)
+        self.total_kept += 1
+        print("  ✓ Sobiv tekst")
+
+    def filter_texts(self, input_file, limit=None, skip=0):
+        texts = self.load_texts(input_file, skip)
 
         for i, text_obj in enumerate(texts, 1):
             actual_index = i + skip
@@ -94,36 +130,18 @@ class TextFilterer:
                 continue
 
             levels = api_response["keeletasemed"]
-            print(
-                f"  Tasemed: keerukus {levels["keerukus"]}, grammatika {levels["grammatika"]}, sõnavara {levels["sonavara"]}")
-            print(f"  Õigekirjavigu leitud: {api_response["oigekirjavigu"]}")
-            print(f"  Grammatikavigu leitud: {api_response["grammatikavigu"]}")
+            self.print_analysis_summary(levels, api_response)
 
-            if not meets_cefr_criteria(levels):
-                print("  ✗ Tasemehinnang ei sobi")
-
-            if api_response["oigekirjavigu"] > 0:
-                print("  ✗ Leiti õigekirjavigu")
-
-            if api_response["grammatikavigu"] > 0:
-                print("  ! Leiti grammatikavigu")
-
-            if not meets_cefr_criteria(levels) or api_response["oigekirjavigu"] > 0:
+            if not self.passes_filters(levels, api_response):
                 continue
 
-            text_obj['levels'] = levels
-            text_obj['spellcheck_error_count'] = 0
-            text_obj['grammarcheck_error_count'] = api_response["grammatikavigu"]
-            text_obj['analysis'] = api_response["analuus"]
-            self.filtered_texts.append(text_obj)
-            self.total_kept += 1
-            print("  ✓ Sobiv tekst")
+            self.append_filtered_text(text_obj, levels, api_response)
 
             if limit and self.total_kept >= limit:
                 print(f"Limiit saavutatud: {limit} sobivat teksti leitud")
                 break
 
-        return self.filtered_texts, self.total_processed, self.total_kept
+        return self.total_processed, self.total_kept
 
 
 def main():
@@ -164,8 +182,7 @@ def main():
     filterer = TextFilterer(output_path)
     signal.signal(signal.SIGINT, filterer.signal_handler)
 
-    filtered_texts, total_processed, total_kept = filterer.filter_texts(args.input_file, limit=args.limit,
-                                                                        skip=args.skip)
+    total_processed, total_kept = filterer.filter_texts(args.input_file, limit=args.limit, skip=args.skip)
     filterer.save_results()
 
     print(f"Kokku töödeldud tekste: {total_processed}")
