@@ -80,7 +80,7 @@ export const useGetQueryResults = () => {
   const getQueryResults = useCallback(body => {
     return fetchData('/api/texts/detailneparing', {
       method: 'POST',
-      body
+      body: JSON.stringify(body)
     });
   }, [fetchData]);
 
