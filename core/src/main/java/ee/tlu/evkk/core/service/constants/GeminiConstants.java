@@ -27,5 +27,5 @@ public class GeminiConstants {
 
   public static final String EXERCISE_TYPE_ADJECTIVE_PROMPT_PART = "Harjutuse tüüp on 'omadussõnad'. Harjutuse mõte on seega harjutada sõnavara, valides, milline omadussõna sobib nimisõna ette kõige paremini. Sisult tähendab see, et lüngas olevale omadussõnale järgneb nimisõna ning omadussõna roll on eestäiend.";
   public static final String EXERCISE_TYPE_INFINITIVE_PROMPT_PART = "Harjutuse tüüp on 'da- ja ma-infinitiiv ehk tegevusnimi'. See tähendab, et harjutuse mõte on praktiseerida da-/ta- ja ma- lõpuliste tegusõnade moodustamist ja õiget kasutust.";
-  public static final String EXERCISE_TYPE_OBJECT_PROMPT_PART = "Harjutuse tüüp on 'sihitise käänded'. Sihitis on tegusõna laiend, mis näitab, kellele või millele on tegevus suunatud. Harjutuses tuleb kasutada mitmuses nimisõna õiges sihitise käändes – nimetavas, omastavas või osastavas.";
+  public static final String EXERCISE_TYPE_OBJECT_PROMPT_PART = "Harjutuse tüüp on 'sihitise käänded'. Sihitis on tegusõna laiend, mis näitab, kellele või millele on tegevus suunatud. Harjutuses tuleb kasutada mitmuses nimisõna õiges sihitise käändes – nimetavas või osastavas.";
 }
