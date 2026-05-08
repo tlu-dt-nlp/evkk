@@ -35,12 +35,14 @@ import { loadingEmitter } from '../../App';
 import { LoadingSpinnerEventType } from '../components/LoadingSpinner';
 import TooltipButton from '../components/tooltip/TooltipButton';
 import './styles/Collocates.css';
+import { useAnalytics } from '../../analytics.jsx';
 
 export default function Collocates() {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [urlParams] = useSearchParams();
+  const { trackToolAnalyze } = useAnalytics();
   const [paramsExpanded, setParamsExpanded] = useState(true);
   const [typeValue, setTypeValue] = useState('');
   const [typeError, setTypeError] = useState(false);
@@ -167,6 +169,7 @@ export default function Collocates() {
   const sendRequest = () => {
     setTypeError(!typeValue);
     if (typeValue) {
+      trackToolAnalyze('collocates');
       setShowTable(false);
       getCollocatesResult(generateRequestData())
         .then(response => {

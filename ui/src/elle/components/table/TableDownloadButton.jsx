@@ -10,6 +10,7 @@ import '../../translations/i18n';
 import './styles/TableDownloadButton.css';
 import { sortTableDataByColumn } from '../../util/TableUtils';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { useAnalytics } from '../../../analytics.jsx';
 
 export const TableType = {
   GRAMMATICAL_ANALYSIS: 'GRAMMATICAL_ANALYSIS',
@@ -34,6 +35,7 @@ export default function TableDownloadButton({
                                             }) {
 
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics();
   const [fileType, setFileType] = useState(false);
   const fileDownloadElement = createRef();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -169,6 +171,7 @@ export default function TableDownloadButton({
   }
 
   function showButton() {
+    trackEvent('Download', 'export', 'table-xlsx');
     switch (tableType) {
       case TableType.GRAMMATICAL_ANALYSIS:
         grammaticalAnalysisButton();

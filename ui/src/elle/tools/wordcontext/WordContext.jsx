@@ -33,12 +33,14 @@ import { useGetWordContextResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
 import TooltipButton from '../../components/tooltip/TooltipButton';
+import { useAnalytics } from '../../../analytics.jsx';
 
 export default function WordContext() {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [urlParams] = useSearchParams();
+  const { trackToolAnalyze } = useAnalytics();
   const [paramsExpanded, setParamsExpanded] = useState(true);
   const [typeValue, setTypeValue] = useState('');
   const [typeError, setTypeError] = useState(false);
@@ -159,6 +161,7 @@ export default function WordContext() {
   const sendRequest = () => {
     setTypeError(!typeValue);
     if (typeValue) {
+      trackToolAnalyze('word-context');
       setShowTable(false);
       getWordContextResult(generateRequestData())
         .then(response => {

@@ -33,11 +33,13 @@ import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
 import TooltipButton from '../../components/tooltip/TooltipButton';
 import './styles/Wordlist.css';
+import { useAnalytics } from '../../../analytics.jsx';
 
 export default function Wordlist() {
 
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { trackToolAnalyze } = useAnalytics();
   const [paramsExpanded, setParamsExpanded] = useState(true);
   const [typeValue, setTypeValue] = useState('');
   const [typeValueToDisplay, setTypeValueToDisplay] = useState('');
@@ -136,6 +138,7 @@ export default function Wordlist() {
     event.preventDefault();
     setTypeError(!typeValue);
     if (typeValue) {
+      trackToolAnalyze('wordlist');
       setShowTable(false);
       getWordlistResult(generateRequestData())
         .then(response => {

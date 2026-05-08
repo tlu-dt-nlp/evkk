@@ -23,6 +23,7 @@ import { useGetWordAnalyserResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { useAnalytics } from '../../../analytics.jsx';
 
 function WordAnalyser() {
   const [analysedInput, setAnalysedInput] = useContext(AnalyseContext);
@@ -44,6 +45,7 @@ function WordAnalyser() {
   const previousStoreStateRef = useRef(queryStore.getState());
   const { t } = useTranslation();
   const { getWordAnalyserResult } = useGetWordAnalyserResult();
+  const { trackToolAnalyze } = useAnalytics();
 
   useEffect(() => {
     getResponse();
@@ -66,6 +68,7 @@ function WordAnalyser() {
   }, []);
 
   const getResponse = () => {
+    trackToolAnalyze('word-analyser');
     resetAnalyser();
     setIsFinishedLoading(false);
     getWordAnalyserResult(generateRequestData())

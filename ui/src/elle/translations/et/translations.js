@@ -764,5 +764,11 @@ export const TRANSLATIONS_ET = {
   wordlist_word_column: 'Sõnavorm',
   wordlist_wordcloud: 'Sõnapilv',
   wordlist_wordcloud_filename: 'sõnapilv',
-  wordlist_wordcloud_loading: 'Laadin sõnapilve...'
+  wordlist_wordcloud_loading: 'Laadin sõnapilve...',
+  cookie_consent_title: 'Küpsiste kasutamine',
+  cookie_consent_text: 'ELLE on tasuta veebikeskkond ja arendame seda projektide toel. Kasutame analüütilisi küpsiseid, et koguda anonüümset kasutusstatistikat. Need andmed aitavad keskkonda arendada ja on olulised toetuste taotlemisel, sest näitavad veebilehe külastatavust. Muid küpsiseid me ei kasuta.',
+  cookie_consent_learn_more: 'Loe lähemalt',
+  cookie_consent_accept: 'Nõustun',
+  cookie_consent_decline: 'Keeldun',
+  cookie_consent_settings: 'Küpsiste seaded'
 };
