@@ -9,3 +9,5 @@ export const LIGHT_GRAY = 'F2F2F2';
 export const MID_GRAY = 'CCCCCC';
 export const DARK_GRAY = '444444';
 export const STRIKE_GRAY = '888888'; // strikethrough color for original error text
+export const WHITE = 'FFFFFF';
+export const WHITE_HEX = '#EEEEEE';

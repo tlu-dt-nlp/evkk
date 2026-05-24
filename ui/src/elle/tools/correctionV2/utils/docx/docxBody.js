@@ -1,5 +1,5 @@
 import { AlignmentType, Paragraph, ShadingType, TextRun, UnderlineType } from 'docx';
-import { BODY_SIZE, FONT } from './docxConstants';
+import { BODY_SIZE, FONT, WHITE_HEX } from './docxConstants';
 import { hexColor } from './docxHelpers';
 import { errorTypes } from '../../../correction/const/TabValuesConstant';
 import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
@@ -19,7 +19,7 @@ const buildBodyFromTokens = (tokens) => {
     } else if (token.type === 'lineBreak') {
       paragraphRuns.at(-1).push(new TextRun({ text: '', break: 1 }));
     } else if (token.corrected) {
-      const color = hexColor(errorTypes[token.correction_type]?.color || '#EEEEEE');
+      const color = hexColor(errorTypes[token.correction_type]?.color || WHITE_HEX);
       paragraphRuns.at(-1).push(new TextRun({
         text: token.text, font: FONT, size: BODY_SIZE,
         shading: { type: ShadingType.SOLID, color, fill: color },
@@ -76,7 +76,7 @@ const buildBodyFromEditor = (editor) => {
 
         const mark = inline.marks.find((m) => m.type.name === 'reactComponent');
         if (mark) {
-          const color = hexColor(errorTypes[mark.attrs.errorType]?.color || '#EEEEEE');
+          const color = hexColor(errorTypes[mark.attrs.errorType]?.color || WHITE_HEX);
           currentRuns.push(new TextRun({
             text: inline.text, font: FONT, size: BODY_SIZE,
             shading: { type: ShadingType.SOLID, color, fill: color },

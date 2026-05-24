@@ -1,5 +1,14 @@
 import { Paragraph, ShadingType, TextRun, UnderlineType } from 'docx';
-import { BODY_SIZE, DARK_GRAY, FONT, HEADING_SIZE, LABEL_SIZE, STRIKE_GRAY, SUBLABEL_SIZE } from './docxConstants';
+import {
+  BODY_SIZE,
+  DARK_GRAY,
+  FONT,
+  HEADING_SIZE,
+  LABEL_SIZE,
+  STRIKE_GRAY,
+  SUBLABEL_SIZE,
+  WHITE_HEX
+} from './docxConstants';
 import { hexColor, sectionHeading, statTable, thinDivider } from './docxHelpers';
 import { errorTypes, textLevels } from '../../../correction/const/TabValuesConstant';
 import { errorMap } from '../../constants/maps';
@@ -18,7 +27,7 @@ export const buildCorrectorHeader = (subTab, errorResponse, t) => {
   const result = Object.entries(errorList).flatMap(([type, errors]) => {
     if (!errors || errors.length === 0) return [];
     const errorType = errorTypes[type];
-    const color = hexColor(errorType?.color || '#EEEEEE');
+    const color = hexColor(errorType?.color || WHITE_HEX);
 
     return [
       new Paragraph({
