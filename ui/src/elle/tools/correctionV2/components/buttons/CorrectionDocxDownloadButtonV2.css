@@ -15,7 +15,8 @@
 
 .download-popover-box {
   padding: 16px;
-  min-width: 240px;
+  width: 240px;
+  box-sizing: border-box;
 }
 
 .download-popover-title {

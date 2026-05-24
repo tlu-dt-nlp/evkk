@@ -1,15 +1,6 @@
 import './CorrectionDocxDownloadButtonV2.css';
 import DownloadIcon from '@mui/icons-material/Download';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Popover,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import { Box, Button, Checkbox, Divider, FormControlLabel, Popover, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useEditorContext } from '../../providers/EditorProvider';
@@ -108,7 +99,6 @@ export default function CorrectionDocxDownloadButtonV2({ tab }) {
             }
             label={t('corrector_download_include_summary')}
           />
-          <Divider className="download-divider" />
           <Button
             sx={DefaultButtonStyle5px}
             variant="contained"
