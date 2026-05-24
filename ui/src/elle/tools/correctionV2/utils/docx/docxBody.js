@@ -46,7 +46,11 @@ const buildBodyFromHtml = (htmlString) => {
       } else if (node.nodeName === 'SPAN') {
         const color = correctorDocxColors[node.className];
         runs.push(color
-          ? new TextRun({ text: node.textContent, font: FONT, size: BODY_SIZE, shading: { type: ShadingType.SOLID, color, fill: color }, underline: { type: UnderlineType.SINGLE, color } })
+          ? new TextRun({
+            text: node.textContent, font: FONT, size: BODY_SIZE,
+            shading: { type: ShadingType.SOLID, color, fill: color },
+            underline: { type: UnderlineType.SINGLE, color }
+          })
           : new TextRun({ text: node.textContent, font: FONT, size: BODY_SIZE })
         );
       }
