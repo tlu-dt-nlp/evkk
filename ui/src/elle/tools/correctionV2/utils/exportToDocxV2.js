@@ -1,6 +1,6 @@
 import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
-import { tabValueMap } from '../constants/tabConfig';
+import { tabValueMap, ToggleButtonCategories } from '../constants/tabConfig';
 import { BODY_SIZE, FONT } from './docx/docxConstants';
 import { spacer } from './docx/docxHelpers';
 import { buildTitleBlock } from './docx/docxTitleBlock';
@@ -10,7 +10,7 @@ import {
   buildTextLevelHeader,
   buildVocabularyHeader
 } from './docx/docxHeaders';
-import { buildDocBody, formatTimestamp, getSubTabLabel } from './docx/docxBody';
+import { buildDocBody } from './docx/docxBody';
 
 const headerBuilders = {
   [tabValueMap.CORRECTOR]: (subTab, errorResponse, t) => buildCorrectorHeader(subTab, errorResponse, t),
@@ -44,4 +44,18 @@ export const downloadAsDocx = (editor, mainTab, subTab, errorResponse, t, includ
   const filename = `${subTabLabel}_${formatTimestamp()}.docx`;
 
   Packer.toBlob(doc).then((blob) => saveAs(blob, filename));
+};
+
+const formatTimestamp = () => {
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}`;
+};
+
+const getSubTabLabel = (subTab, t) => {
+  const textMap = Object.values(ToggleButtonCategories).flat().reduce((acc, { value, text }) => ({
+    ...acc,
+    [value]: text
+  }), {});
+  return t(textMap[subTab] ?? subTab);
 };

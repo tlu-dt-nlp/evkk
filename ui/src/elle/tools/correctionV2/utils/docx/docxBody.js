@@ -2,7 +2,6 @@ import { AlignmentType, Paragraph, ShadingType, TextRun, UnderlineType } from 'd
 import { BODY_SIZE, FONT } from './docxConstants';
 import { hexColor } from './docxHelpers';
 import { errorTypes } from '../../../correction/const/TabValuesConstant';
-import { ToggleButtonCategories } from '../../constants/tabConfig';
 import { GRAMMARCHECKER, SPELLCHECKER } from '../../../correction/const/Constants';
 import { correctorDocxColors } from '../../../../const/StyleConstants';
 
@@ -100,15 +99,4 @@ export const buildDocBody = (errorResponse, subTab, editor) => {
   const html = errorResponse?.margitudLaused?.[subTab];
   if (html) return buildBodyFromHtml(html);
   return buildBodyFromEditor(editor);
-};
-
-export const formatTimestamp = () => {
-  const now = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}`;
-};
-
-export const getSubTabLabel = (subTab, t) => {
-  const textMap = Object.values(ToggleButtonCategories).flat().reduce((acc, { value, text }) => ({ ...acc, [value]: text }), {});
-  return t(textMap[subTab] ?? subTab);
 };
