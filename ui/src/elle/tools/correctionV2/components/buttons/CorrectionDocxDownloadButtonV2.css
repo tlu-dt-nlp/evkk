@@ -1,0 +1,34 @@
+.download-icon {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.download-icon:hover {
+  color: #9C27B0;
+}
+
+.download-icon.disabled {
+  cursor: default;
+  color: rgba(0, 0, 0, 0.38);
+  pointer-events: none;
+}
+
+.download-popover-box {
+  padding: 16px;
+  min-width: 240px;
+}
+
+.download-popover-title {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.download-checkbox-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.download-divider {
+  margin: 8px 0;
+}
+
