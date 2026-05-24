@@ -13,8 +13,6 @@ import { DARK_GRAY, FONT, HEADING_SIZE, LABEL_SIZE, LIGHT_GRAY, MID_GRAY, PURPLE
 
 export const hexColor = (hex) => hex.replace('#', '').toUpperCase();
 
-export const fmt2 = (x) => x?.toFixed?.(2) ?? x;
-
 export const noBorder = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
 export const noBorders = { top: noBorder, bottom: noBorder, left: noBorder, right: noBorder };
 

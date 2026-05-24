@@ -1,4 +1,4 @@
-import { toDecimalScale2OrInteger } from '../util/Utils';
+import { toDecimalScale2OrInteger } from '../../correctionV2/utils/correctionUtils';
 
 export default function CorrectionScale({ title, startValue, endValue, value, startText, endText, percentage }) {
   let newEndValue = endValue;

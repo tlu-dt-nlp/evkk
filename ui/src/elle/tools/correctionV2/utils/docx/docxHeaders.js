@@ -1,8 +1,9 @@
 import { Paragraph, ShadingType, TextRun, UnderlineType } from 'docx';
 import { BODY_SIZE, DARK_GRAY, FONT, HEADING_SIZE, LABEL_SIZE, STRIKE_GRAY, SUBLABEL_SIZE } from './docxConstants';
-import { fmt2, hexColor, sectionHeading, statTable, thinDivider } from './docxHelpers';
+import { hexColor, sectionHeading, statTable, thinDivider } from './docxHelpers';
 import { errorTypes, textLevels } from '../../../correction/const/TabValuesConstant';
 import { errorMap } from '../../constants/maps';
+import { generateComplexityAnswer, toDecimalScale2OrInteger } from '../correctionUtils';
 
 const TEXT_LEVEL_DIMENSIONS = [
   { label: 'corrector_proficiency_level_evaluation_text_complexity', key: 'complexity' },
@@ -25,7 +26,13 @@ export const buildCorrectorHeader = (subTab, errorResponse, t) => {
         children: [
           new TextRun({ text: '  ', size: LABEL_SIZE, shading: { type: ShadingType.SOLID, color, fill: color } }),
           new TextRun({ text: '  ', size: LABEL_SIZE }),
-          new TextRun({ text: t(errorType?.label ?? ''), font: FONT, size: SUBLABEL_SIZE, bold: true, underline: { type: UnderlineType.SINGLE, color } }),
+          new TextRun({
+            text: t(errorType?.label ?? ''),
+            font: FONT,
+            size: SUBLABEL_SIZE,
+            bold: true,
+            underline: { type: UnderlineType.SINGLE, color }
+          }),
           new TextRun({ text: `  (${errors.length})`, font: FONT, size: LABEL_SIZE, color: DARK_GRAY })
         ]
       }),
@@ -53,7 +60,12 @@ export const buildTextLevelHeader = (errorResponse, t) => {
   const pct = (p) => `${(p.value * 100).toFixed(0)}%`;
 
   const overallRuns = [
-    new TextRun({ text: `${t('corrector_proficiency_level_overall_score')}:  `, font: FONT, size: HEADING_SIZE, bold: true }),
+    new TextRun({
+      text: `${t('corrector_proficiency_level_overall_score')}:  `,
+      font: FONT,
+      size: HEADING_SIZE,
+      bold: true
+    }),
     ...(keeletase.mixed?.probabilities?.map((p) =>
       new TextRun({ text: ` ${t(textLevels[p.index])} ${pct(p)} `, font: FONT, size: SUBLABEL_SIZE, bold: true })
     ) ?? [])
@@ -82,17 +94,12 @@ export const buildComplexityHeader = (errorResponse, t) => {
 
   const [numPhrases, numWords, polysyllabic, numSyllables, longWords, smog, fleschKincaid, lix, , , , complexityLevelRaw] = k;
 
-  const complexityLabel = String(complexityLevelRaw ?? '')
-    .split('/')
-    .map((s) => t(s.trim()))
-    .join(' / ');
-
   return [
     new Paragraph({
       spacing: { after: 80 },
       children: [
-        new TextRun({ text: `${t('corrector_complexity_level')}: `, font: FONT, size: HEADING_SIZE, bold: true }),
-        new TextRun({ text: complexityLabel, font: FONT, size: HEADING_SIZE })
+        new TextRun({ text: `${t('corrector_complexity_level')} `, font: FONT, size: HEADING_SIZE, bold: true }),
+        new TextRun({ text: generateComplexityAnswer(complexityLevelRaw, t).join(''), font: FONT, size: HEADING_SIZE })
       ]
     }),
     sectionHeading(t('common_statistics')),
@@ -106,10 +113,10 @@ export const buildComplexityHeader = (errorResponse, t) => {
     ]),
     sectionHeading(t('common_indexes')),
     statTable([
-      [t('corrector_smog_index'), smog],
-      [t('corrector_flesch_kincaid_grade_level'), fleschKincaid],
-      [t('corrector_lix_index'), lix],
-      [t('corrector_noun_to_verb_ratio'), fmt2(kl?.nimitegusuhe)]
+      [t('corrector_smog_index'), toDecimalScale2OrInteger(smog)],
+      [t('corrector_flesch_kincaid_grade_level'), toDecimalScale2OrInteger(fleschKincaid)],
+      [t('corrector_lix_index'), toDecimalScale2OrInteger(lix)],
+      [t('corrector_noun_to_verb_ratio'), toDecimalScale2OrInteger(kl?.nimitegusuhe)]
     ]),
     thinDivider()
   ];
@@ -132,10 +139,10 @@ export const buildVocabularyHeader = (errorResponse, t) => {
   ];
 
   const indexRows = [
-    [t('corrector_vocabulary_indexes_root_type_token_ratio'), fmt2(m[1])],
-    ...(m[4] > -1 ? [[t('corrector_vocabulary_mtld_index'), fmt2(m[4])]] : []),
-    ...(m[5] > 0 ? [[t('corrector_vocabulary_hdd_index'), fmt2(m[5])]] : []),
-    ...(hasAbstract && kl?.abskeskmine != null ? [[t('corrector_vocabulary_noun_abstractness'), fmt2(kl.abskeskmine)]] : [])
+    [t('corrector_vocabulary_indexes_root_type_token_ratio'), toDecimalScale2OrInteger(m[1])],
+    ...(m[4] > -1 ? [[t('corrector_vocabulary_mtld_index'), toDecimalScale2OrInteger(m[4])]] : []),
+    ...(m[5] > 0 ? [[t('corrector_vocabulary_hdd_index'), toDecimalScale2OrInteger(m[5])]] : []),
+    ...(hasAbstract && kl?.abskeskmine != null ? [[t('corrector_vocabulary_noun_abstractness'), toDecimalScale2OrInteger(kl.abskeskmine)]] : [])
   ];
 
   return [
