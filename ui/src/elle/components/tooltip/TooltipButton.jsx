@@ -18,6 +18,7 @@ export default function TooltipButton({ children }) {
         title={children}
         placement="top"
         className="tooltip-button"
+        slotProps={{ tooltip: { className: 'tooltip-content' } }}
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}

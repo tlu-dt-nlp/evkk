@@ -13,7 +13,6 @@ import ee.tlu.evkk.core.integration.StanzaServerClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public class CollocateService {
   private final StanzaServerClient stanzaServerClient;
   private final WordlistService wordlistService;
 
-  public CollocateResponseDto getCollocateResponse(CollocateRequestDto dto) throws IOException {
+  public CollocateResponseDto getCollocateResponse(CollocateRequestDto dto) {
     String keyword = dto.isKeepCapitalization()
       ? dto.getKeyword()
       : dto.getKeyword().toLowerCase();
@@ -50,14 +49,14 @@ public class CollocateService {
       : lemmaResponse(dto, keyword);
   }
 
-  private CollocateResponseDto wordResponse(CollocateRequestDto dto, String keyword) throws IOException {
+  private CollocateResponseDto wordResponse(CollocateRequestDto dto, String keyword) {
     WordlistResponseDto wordlistResponse = getWordlistResponse(dto, WORDS);
     Map<String, CollocateOccurrencesDto> collocates = getCollocates(wordlistResponse.getWordlist(), keyword, dto.getSearchCount());
 
     return combineFinalResult(collocates, wordlistResponse.getResultList(), keyword, dto.getFormula(), null);
   }
 
-  private CollocateResponseDto lemmaResponse(CollocateRequestDto dto, String keyword) throws IOException {
+  private CollocateResponseDto lemmaResponse(CollocateRequestDto dto, String keyword) {
     String initialKeyword = null;
     WordlistResponseDto wordlistResponse = getWordlistResponse(dto, LEMMAS);
     Map<String, CollocateOccurrencesDto> collocates = getCollocates(wordlistResponse.getWordlist(), keyword, dto.getSearchCount());
@@ -156,7 +155,7 @@ public class CollocateService {
     return valueOf(0);
   }
 
-  private WordlistResponseDto getWordlistResponse(CollocateRequestDto dto, WordType wordType) throws IOException {
+  private WordlistResponseDto getWordlistResponse(CollocateRequestDto dto, WordType wordType) {
     WordlistRequestDto wordlistDto = WordlistRequestDto.builder()
       .corpusTextIds(dto.getCorpusTextIds())
       .ownTexts(dto.getOwnTexts())

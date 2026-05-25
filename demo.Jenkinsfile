@@ -20,7 +20,12 @@ pipeline {
 
     stage('Build') {
       steps {
-        sh './build.sh'
+        withCredentials([string(credentialsId: 'gemini-api-key', variable: 'GEMINI_API_KEY')]) {
+          sh '''
+            ./build.sh
+            printf '\nGEMINI_API_KEY=%s\n' "$GEMINI_API_KEY" >> ./build/conf/common.env
+          '''
+        }
       }
     }
 

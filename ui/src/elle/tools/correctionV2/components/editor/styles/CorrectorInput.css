@@ -1,44 +1,46 @@
+.corrector-input-wrapper {
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.corrector-input-wrapper:hover {
+  border-color: rgba(0, 0, 0, 0.87);
+}
+
+.corrector-input-wrapper:focus-within,
+.corrector-input-wrapper:focus-within:hover {
+  border-color: #9C27B0;
+  border-width: 1px;
+}
+
 .ProseMirror {
   flex: 1;
   background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.23);
-  border-radius: 0.5rem;
   font-size: 1rem;
   color: black;
   text-align: left;
   height: 400px;
   overflow-y: auto;
-  padding-top: 2.5rem;
   padding-left: 0.2rem;
   white-space: normal !important;
   word-break: break-word !important;
-  transition: border-color 0.2s;
-}
-
-.ProseMirror:hover {
-  border-color: rgba(0, 0, 0, 0.87);
 }
 
 .ProseMirror.ProseMirror-focused,
 .ProseMirror.ProseMirror-focused:hover {
-  border-color: #9C27B0;
-  border-width: 1px;
   outline: none;
 }
 
 .corrector-input-icon-bar {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: calc(100% - 4px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.25rem;
   padding: 0.3rem 0.5rem;
-  border-radius: 0.5rem 0.5rem 0 0;
   border-bottom: 1px solid #e0e0e0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255);
   color: #666;
   transition: color 0.2s;
 }
