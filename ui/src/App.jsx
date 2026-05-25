@@ -6,6 +6,7 @@ import { TextSelectionProvider } from './elle/components/text-to-speech/TextSele
 import { routes } from './routes';
 import { theme } from './elle/const/StyleConstants';
 import { RootProvider } from './elle/context/RootContext';
+import { AnalyticsProvider } from './analytics';
 
 export const errorEmitter = new EventEmitter();
 export const loadingEmitter = new EventEmitter();
@@ -19,7 +20,9 @@ export default function App() {
       <TextSelectionProvider>
         <ThemeProvider theme={theme}>
           <RootProvider>
-            <RouterProvider router={router} />
+            <AnalyticsProvider>
+              <RouterProvider router={router} />
+            </AnalyticsProvider>
           </RootProvider>
         </ThemeProvider>
       </TextSelectionProvider>
