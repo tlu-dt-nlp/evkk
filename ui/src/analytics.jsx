@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import ReactGA from 'react-ga4';
 import { AnalyticsBanner, getAnalyticsConsent, resetAnalyticsConsent } from './elle/components/AnalyticsBanner';
 
@@ -7,7 +6,9 @@ const MEASUREMENT_ID = import.meta.env.VITE_GA_KEY;
 
 const AnalyticsContext = createContext(null);
 
-export function AnalyticsProvider({ children }) {
+const getPagePath = (location) => `${location.pathname}${location.search ?? ''}`;
+
+export function AnalyticsProvider({ children, router }) {
   const [consent, setConsent] = useState(getAnalyticsConsent);
   const [bannerOpen, setBannerOpen] = useState(() => consent === null);
   const isGranted = MEASUREMENT_ID && consent === 'granted';
@@ -18,13 +19,19 @@ export function AnalyticsProvider({ children }) {
     }
   }, [isGranted]);
 
-  const location = useLocation();
-
   useEffect(() => {
-    if (isGranted) {
-      ReactGA.send({ hitType: 'pageview', page: location.pathname + location.search });
+    if (!isGranted || !router) {
+      return undefined;
     }
-  }, [location, isGranted]);
+
+    const sendPageView = () => {
+      const currentLocation = router.state.location ?? globalThis.location;
+      ReactGA.send({ hitType: 'pageview', page: getPagePath(currentLocation) });
+    };
+
+    sendPageView();
+    return router.subscribe(sendPageView);
+  }, [isGranted, router]);
 
   const handleConsent = useCallback((value) => {
     setConsent(value);

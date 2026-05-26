@@ -20,7 +20,7 @@ export default function App() {
       <TextSelectionProvider>
         <ThemeProvider theme={theme}>
           <RootProvider>
-            <AnalyticsProvider>
+            <AnalyticsProvider router={router}>
               <RouterProvider router={router} />
             </AnalyticsProvider>
           </RootProvider>
