@@ -71,13 +71,14 @@
 }
 
 .footer-consent-link {
-  color: #1B1B1BDD;
-  margin-bottom: 8px;
-  text-decoration: none;
+  color: #0009 !important;
+  font-weight: bold !important;
+  margin-bottom: 10px !important;
+  text-decoration: underline !important;
 }
 
 .footer-consent-link:hover {
-  color: #9C27B0;
+  color: #9C27B0 !important;
 }
 
 @media (max-width: 1399px) {
