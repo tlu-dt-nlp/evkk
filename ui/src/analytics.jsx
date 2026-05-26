@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import ReactGA from 'react-ga4';
 import { AnalyticsBanner, getAnalyticsConsent, resetAnalyticsConsent } from './elle/components/AnalyticsBanner';
 
-const MEASUREMENT_ID = import.meta.env.VITE_GA_KEY;
+const MEASUREMENT_ID = import.meta.env.GA_MEASUREMENT_ID;
 
 const AnalyticsContext = createContext(null);
 

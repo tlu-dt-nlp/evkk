@@ -1,6 +1,8 @@
 FROM node:24.0-alpine3.20 AS ui-builder
 COPY ./ui /app
 WORKDIR /app
+ARG GA_MEASUREMENT_ID
+ENV GA_MEASUREMENT_ID=$GA_MEASUREMENT_ID
 RUN apk add --no-cache git \
     && corepack enable \
     && yarn install \
