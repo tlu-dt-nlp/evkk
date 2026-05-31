@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import ReactGA from 'react-ga4';
-import { AnalyticsBanner, getAnalyticsConsent, resetAnalyticsConsent } from './elle/components/AnalyticsBanner';
+import { AnalyticsBanner } from '../components/AnalyticsBanner';
+import { ANALYTICS_CONSENT_KEY } from '../const/Constants';
 
 const MEASUREMENT_ID = import.meta.env.GA_MEASUREMENT_ID;
 
@@ -8,10 +9,18 @@ const AnalyticsContext = createContext(null);
 
 const getPagePath = (location) => `${location.pathname}${location.search ?? ''}`;
 
+const getAnalyticsConsent = () => {
+  const value = localStorage.getItem(ANALYTICS_CONSENT_KEY);
+  if (value === 'granted') return true;
+  if (value === 'denied') return false;
+  return JSON.parse(value);
+};
+const resetAnalyticsConsent = () => localStorage.removeItem(ANALYTICS_CONSENT_KEY);
+
 export function AnalyticsProvider({ children, router }) {
   const [consent, setConsent] = useState(getAnalyticsConsent);
   const [bannerOpen, setBannerOpen] = useState(() => consent === null);
-  const isGranted = MEASUREMENT_ID && consent === 'granted';
+  const isGranted = MEASUREMENT_ID && consent === true;
 
   useEffect(() => {
     if (isGranted) {
@@ -75,3 +84,4 @@ export function AnalyticsProvider({ children, router }) {
 export function useAnalytics() {
   return useContext(AnalyticsContext);
 }
+

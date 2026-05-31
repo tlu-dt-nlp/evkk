@@ -6,7 +6,7 @@ import { TextSelectionProvider } from './elle/components/text-to-speech/TextSele
 import { routes } from './routes';
 import { theme } from './elle/const/StyleConstants';
 import { RootProvider } from './elle/context/RootContext';
-import { AnalyticsProvider } from './analytics';
+import { AnalyticsProvider } from './elle/context/AnalyticsContext';
 
 export const errorEmitter = new EventEmitter();
 export const loadingEmitter = new EventEmitter();

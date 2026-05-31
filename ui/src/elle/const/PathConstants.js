@@ -13,3 +13,6 @@ export const MIT_LICENSE_PATH = 'https://opensource.org/license/mit/';
 export const STOPWORDS_DATADOI_PATH = 'https://datadoi.ee/handle/33/78';
 
 export const EKI_VOCABULARY_LIST_PATH = 'https://sonaveeb.ee/teacher-tools/#/vocabulary';
+
+export const GOOGLE_PRIVACY_PATH = 'https://policies.google.com/technologies/partner-sites';
+

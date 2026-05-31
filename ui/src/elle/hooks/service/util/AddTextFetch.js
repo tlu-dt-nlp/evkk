@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useAddText } from '../TextService';
-import { useAnalytics } from '../../../../analytics.jsx';
+import { useAnalytics } from '../../../context/AnalyticsContext';
 
 const AddTextFetch = ({ request, onComplete, onSuccess, onFailure }) => {
   const { addText } = useAddText();

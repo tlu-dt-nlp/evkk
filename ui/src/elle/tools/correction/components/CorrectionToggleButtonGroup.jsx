@@ -3,7 +3,6 @@ import { Box, Tab, Tooltip } from '@mui/material';
 import { useGetCorrectorResult } from '../../../hooks/service/ToolsService';
 import { useTranslation } from 'react-i18next';
 import GenericTabs from '../../../components/GenericTabs';
-import { useAnalytics } from '../../../../analytics.jsx';
 
 export default function CorrectionToggleButtonGroup(
   {
@@ -27,14 +26,11 @@ export default function CorrectionToggleButtonGroup(
   const { getCorrectorResult } = useGetCorrectorResult();
   const { t } = useTranslation();
 
-  const { trackEvent } = useAnalytics();
-
   const handleChange = (_, newValue) => {
     if (!noQuery) {
       queryCaller(textBoxRef, inputText, setRequestingText, setGrammarAnswer, setSpellerAnswer, setInputText, newRef, setComplexityAnswer, setAbstractWords, getCorrectorResult, false, setGrammarErrorList, setSpellerErrorList, correctionModel);
     }
     setCorrectionModel(newValue);
-    trackEvent('Correction', `Correction model - ${newValue}`, newValue);
   };
 
   return (

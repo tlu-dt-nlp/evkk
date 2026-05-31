@@ -16,7 +16,7 @@ import {
   FooterReferencesValues,
   FooterToolsValues
 } from '../const/RouteConstants';
-import { useAnalytics } from '../../analytics.jsx';
+import { useAnalytics } from '../context/AnalyticsContext';
 
 export default function FooterElement() {
   const { t } = useTranslation();

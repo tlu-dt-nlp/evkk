@@ -1,32 +1,24 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Link, Paper, Slide, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Slide, Stack, Typography } from '@mui/material';
 import i18n from 'i18next';
 import { Languages } from '../translations/i18n';
 import './styles/AnalyticsBanner.css';
-
-const CONSENT_KEY = 'analytics_consent';
-
-export function getAnalyticsConsent() {
-  return localStorage.getItem(CONSENT_KEY);
-}
-
-export function resetAnalyticsConsent() {
-  localStorage.removeItem(CONSENT_KEY);
-}
+import { GOOGLE_PRIVACY_PATH } from '../const/PathConstants';
+import { ANALYTICS_CONSENT_KEY } from '../const/Constants';
+import NewTabHyperlink from './NewTabHyperlink';
 
 export function AnalyticsBanner({ onConsent, open }) {
   const { t } = useTranslation();
-  const privacyLink = 'https://policies.google.com/technologies/partner-sites'
-    + (i18n.language === Languages.ESTONIAN ? '?hl=et' : '');
+  const privacyLink = GOOGLE_PRIVACY_PATH + (i18n.language === Languages.ESTONIAN ? '?hl=et' : '');
 
   const handleAccept = () => {
-    localStorage.setItem(CONSENT_KEY, 'granted');
-    onConsent('granted');
+    localStorage.setItem(ANALYTICS_CONSENT_KEY, true);
+    onConsent(true);
   };
 
   const handleDecline = () => {
-    localStorage.setItem(CONSENT_KEY, 'denied');
-    onConsent('denied');
+    localStorage.setItem(ANALYTICS_CONSENT_KEY, false);
+    onConsent(false);
   };
 
   if (!open) return null;
@@ -43,13 +35,7 @@ export function AnalyticsBanner({ onConsent, open }) {
           </Typography>
           <Typography variant="body2" gutterBottom>
             {t('cookie_consent_text')}{' '}
-            <Link
-              href={privacyLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t('cookie_consent_learn_more')}
-            </Link>
+            <NewTabHyperlink path={privacyLink} content={t('cookie_consent_learn_more')} />
           </Typography>
           <Stack direction="row" spacing={2} className="analytics-banner-buttons">
             <Button variant="contained" color="primary" onClick={handleAccept}>

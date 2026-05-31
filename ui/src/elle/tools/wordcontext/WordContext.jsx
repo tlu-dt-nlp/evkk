@@ -33,7 +33,7 @@ import { useGetWordContextResult } from '../../hooks/service/ToolsService';
 import { loadingEmitter } from '../../../App';
 import { LoadingSpinnerEventType } from '../../components/LoadingSpinner';
 import TooltipButton from '../../components/tooltip/TooltipButton';
-import { useAnalytics } from '../../../analytics.jsx';
+import { useAnalytics } from '../../context/AnalyticsContext';
 
 export default function WordContext() {
 

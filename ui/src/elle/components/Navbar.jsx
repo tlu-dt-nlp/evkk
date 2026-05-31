@@ -14,7 +14,7 @@ import TextToSpeechMenu from './text-to-speech/TextToSpeechMenu';
 import flagEst from '../resources/images/flags/est.png';
 import flagEng from '../resources/images/flags/eng.png';
 import { NavbarPages } from '../const/RouteConstants';
-import { useAnalytics } from '../../analytics.jsx';
+import { useAnalytics } from '../context/AnalyticsContext';
 
 const MenuLink = styled(Link)({
   fontWeight: 600,

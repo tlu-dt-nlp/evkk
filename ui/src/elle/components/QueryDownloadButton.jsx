@@ -22,7 +22,7 @@ import { Languages } from '../translations/i18n';
 import { DefaultButtonStyle } from '../const/StyleConstants';
 import { useDownloadQueryResults } from '../hooks/service/TextService';
 import FileSaver from 'file-saver';
-import { useAnalytics } from '../../analytics.jsx';
+import { useAnalytics } from '../context/AnalyticsContext';
 
 export default function QueryDownloadButton({ selected }) {
   const [downloadForm, setDownloadForm] = useState(FileDownloadForm.BASIC_TEXT);
@@ -52,7 +52,7 @@ export default function QueryDownloadButton({ selected }) {
   };
 
   const downloadTexts = () => {
-    trackEvent('Download', 'export', 'query-results');
+    trackEvent('Download', 'export', `query-results-${downloadForm}-${downloadFileType}`);
     const fileName = i18n.language === Languages.ESTONIAN ? 'tekstid' : 'texts';
     const fileExtension =
       downloadFileType === FileDownloadType.SINGLE_FILE
