@@ -97,6 +97,14 @@ export const SecondaryButtonStyle = {
   borderRadius: '15px'
 };
 
+export const DangerButtonStyle = {
+  color: '#D32F2F',
+  borderColor: '#D32F2F',
+  fontWeight: 'bold',
+  lineHeight: '30px',
+  borderRadius: '15px'
+}
+
 export const ToggleButtonGroupStyle = {
   borderRadius: '5px',
   overflow: 'hidden',

@@ -1,5 +1,5 @@
 import { Alert, Button, Grid } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DonatedTextDetailsFormMode } from '../../const/Constants';
@@ -62,7 +62,7 @@ const FIELD_DEPENDENCIES = {
   ]
 };
 
-export default function DonatedTextSearchForm({ fetchTexts, onResults }) {
+export default function DonatedTextSearchForm({ fetchTexts, onResults, refetchTrigger }) {
   const { t } = useTranslation();
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
@@ -117,8 +117,7 @@ export default function DonatedTextSearchForm({ fetchTexts, onResults }) {
     return payload;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const submitForm = async () => {
     const payload = formatPayload(formData);
 
     const response = await fetchTexts(payload);
@@ -130,6 +129,17 @@ export default function DonatedTextSearchForm({ fetchTexts, onResults }) {
     setNoResultsError(!hasResults);
     onResults?.(response);
   };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    void submitForm();
+  };
+
+  useEffect(() => {
+    if (refetchTrigger > 0) {
+      void submitForm();
+    }
+  }, [refetchTrigger]);
 
   return (
     <form onSubmit={handleSubmit}>

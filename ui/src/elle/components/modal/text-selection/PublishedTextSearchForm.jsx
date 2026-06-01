@@ -33,6 +33,7 @@ import TooltipOnText from '../../tooltip/TooltipOnText';
 export default function PublishedTextSearchForm({
   fetchTexts,
   onResults,
+  refetchTrigger,
   scrollRef
 }) {
   const { t } = useTranslation();
@@ -167,6 +168,12 @@ export default function PublishedTextSearchForm({
         });
     }
   };
+
+  useEffect(() => {
+    if (refetchTrigger > 0) {
+      submitted();
+    }
+  }, [refetchTrigger]);
 
   const getSelectedCorpusList = () => {
     const selectedCorpuses = [];

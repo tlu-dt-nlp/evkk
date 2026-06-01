@@ -3,12 +3,13 @@ import { Typography } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccordionStyle } from '../../const/StyleConstants';
 import { useGetPublishedTexts } from '../../hooks/service/AdminService';
 import PublishedTextSearchForm from '../modal/text-selection/PublishedTextSearchForm';
+import PublishedTextDetailsModal from './PublishedTextDetailsModal';
 import PublishedTextsTable from './PublishedTextsTable';
 
 export default function PublishedTexts() {
@@ -17,6 +18,8 @@ export default function PublishedTexts() {
 
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
   const [results, setResults] = useState([]);
+  const [selectedTextId, setSelectedTextId] = useState(null);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   const rows = useMemo(() => (
     results.map(row => ({
@@ -26,10 +29,22 @@ export default function PublishedTexts() {
     }))
   ), [results]);
 
-  const handleResults = (response) => {
+  const handleResults = useCallback((response) => {
     setResults(response);
     setIsAccordionExpanded(response.length <= 0);
-  };
+  }, []);
+
+  const handleOpenDetails = useCallback((textId) => {
+    setSelectedTextId(textId);
+  }, []);
+
+  const handleTriggerRefetch = useCallback(() => {
+    setRefetchTrigger(prev => prev + 1);
+  }, []);
+
+  const handleSetIsOpen = useCallback((isOpen) => {
+    !isOpen && setSelectedTextId(null);
+  }, []);
 
   return (
     <>
@@ -52,15 +67,26 @@ export default function PublishedTexts() {
           <PublishedTextSearchForm
             fetchTexts={getPublishedTexts}
             onResults={handleResults}
+            refetchTrigger={refetchTrigger}
           />
         </AccordionDetails>
       </Accordion>
 
       {rows.length > 0 && (
         <div className="mt-4">
-          <PublishedTextsTable rows={rows} />
+          <PublishedTextsTable
+            onOpenDetails={handleOpenDetails}
+            rows={rows}
+          />
         </div>
       )}
+
+      <PublishedTextDetailsModal
+        isOpen={!!selectedTextId}
+        refetch={handleTriggerRefetch}
+        setIsOpen={handleSetIsOpen}
+        textId={selectedTextId}
+      />
     </>
   );
 }

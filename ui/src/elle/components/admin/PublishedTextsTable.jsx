@@ -1,11 +1,22 @@
+import { Link } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { formatDate } from '../../util/DateUtils';
 import GenericTable from '../table/GenericTable';
 
-export default function PublishedTextsTable({ rows }) {
+export default function PublishedTextsTable({ onOpenDetails, rows }) {
   const { t } = useTranslation();
+
+  const renderTitleButton = (textId, title) => (
+    <Link
+      component="button"
+      onClick={() => onOpenDetails(textId)}
+      underline="hover"
+    >
+      {title}
+    </Link>
+  );
 
   const columns = useMemo(() => [
     {
@@ -22,6 +33,7 @@ export default function PublishedTextsTable({ rows }) {
       id: 'title',
       header: t('query_results_text_title'),
       accessorKey: 'title',
+      cell: info => renderTitleButton(info.row.original.textId, info.getValue()),
       enableSorting: false,
       meta: {
         className: 'w-100'
