@@ -2,6 +2,7 @@ package ee.tlu.evkk.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ee.evkk.dto.*;
+import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
@@ -24,6 +25,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +35,9 @@ class AdminTextServiceTest {
 
   @Mock
   private TextService textService;
+
+  @Mock
+  private DonatedTextPropertyMapper donatedTextPropertyMapper;
 
   @Mock
   private TextAddedDao textAddedDao;
@@ -518,8 +523,16 @@ class AdminTextServiceTest {
       createTextMetadata("title", "Title")
     ));
 
+    List<TextMetadataDto> mappedProperties = List.of(
+      TextMetadataDto.builder()
+        .propertyName("title")
+        .propertyValue("Title")
+        .build()
+    );
+
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(existing);
     when(textDao.insertDonatedText("Donated content")).thenReturn(publishedId);
+    when(donatedTextPropertyMapper.map(any())).thenReturn(mappedProperties);
     when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
 
     // When
@@ -531,7 +544,7 @@ class AdminTextServiceTest {
     verify(textAddedDao, never()).updateTextContent(any(), any());
     verify(textPropertyAddedDao, never()).updateProperty(any(), any());
     verify(textDao).insertDonatedText("Donated content");
-    verify(textDao).copyPropertiesFromDonatedText(testId, publishedId);
+    verify(textPropertyDao).insertProperty(publishedId, "title", "Title");
     verify(textPropertyAddedDao).deleteByTextId(testId);
     verify(textAddedDao).deleteById(testId);
   }
@@ -580,11 +593,23 @@ class AdminTextServiceTest {
       createTextMetadata("type", "Article")
     ));
 
+    List<TextMetadataDto> mappedProperties = List.of(
+      TextMetadataDto.builder()
+        .propertyName("title")
+        .propertyValue("Updated Title")
+        .build(),
+      TextMetadataDto.builder()
+        .propertyName("type")
+        .propertyValue("Article")
+        .build()
+    );
+
     when(textAddedDao.findTextAndMetadataById(testId))
       .thenReturn(existing)
       .thenReturn(updatedDonated);
     when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
     when(textDao.insertDonatedText("Updated content")).thenReturn(publishedId);
+    when(donatedTextPropertyMapper.map(any())).thenReturn(mappedProperties);
     when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
 
     // When
@@ -596,7 +621,8 @@ class AdminTextServiceTest {
     verify(textPropertyAddedDao).updateProperty(titlePropertyId, "Updated Title");
     verify(textPropertyAddedDao).updateProperty(typePropertyId, "Article");
     verify(textDao).insertDonatedText("Updated content");
-    verify(textDao).copyPropertiesFromDonatedText(testId, publishedId);
+    verify(textPropertyDao).insertProperty(publishedId, "title", "Updated Title");
+    verify(textPropertyDao).insertProperty(publishedId, "type", "Article");
     verify(textPropertyAddedDao).deleteByTextId(testId);
     verify(textAddedDao).deleteById(testId);
   }
@@ -612,7 +638,7 @@ class AdminTextServiceTest {
     assertThatThrownBy(() -> adminTextService.publishDonatedText(testId, null))
       .isInstanceOf(EntityNotFoundException.class);
     verify(textDao, never()).insertDonatedText(any());
-    verify(textDao, never()).copyPropertiesFromDonatedText(any(), any());
+    verify(textPropertyDao, never()).insertProperty(any(), any(), any());
     verify(textPropertyAddedDao, never()).deleteByTextId(any());
     verify(textAddedDao, never()).deleteById(any());
   }

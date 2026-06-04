@@ -1,6 +1,7 @@
 package ee.tlu.evkk.api.service;
 
 import ee.evkk.dto.*;
+import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class AdminTextService {
 
   private final TextService textService;
+  private final DonatedTextPropertyMapper donatedTextPropertyMapper;
 
   private final TextAddedDao textAddedDao;
   private final TextPropertyAddedDao textPropertyAddedDao;
@@ -85,7 +87,8 @@ public class AdminTextService {
     }
 
     UUID publishedTextId = textDao.insertDonatedText(donatedTextToPublish.getText());
-    textDao.copyPropertiesFromDonatedText(id, publishedTextId);
+    donatedTextPropertyMapper.map(donatedTextToPublish.getProperties())
+      .forEach(p -> textPropertyDao.insertProperty(publishedTextId, p.getPropertyName(), p.getPropertyValue()));
     textPropertyAddedDao.deleteByTextId(id);
     textAddedDao.deleteById(id);
 

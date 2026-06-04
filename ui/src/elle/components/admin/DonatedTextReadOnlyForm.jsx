@@ -40,6 +40,7 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
           <ReadOnlyField
             label={t('publish_your_text_content')}
             value={text}
+            multiline
           />
         </Grid>
       </Grid>

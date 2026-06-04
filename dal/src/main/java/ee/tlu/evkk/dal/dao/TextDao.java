@@ -44,6 +44,4 @@ public interface TextDao {
   void deleteById(@Param("textId") UUID textId);
 
   UUID insertDonatedText(@Param("content") String content);
-
-  void copyPropertiesFromDonatedText(@Param("donatedTextId") UUID donatedTextId, @Param("publishedTextId") UUID publishedTextId);
 }

@@ -241,7 +241,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
   };
 
   const handleTextChange = (event) => {
-    setText(event.target.value);
+    setText(event.target.value.replaceAll('\n', '\\n'));
   };
 
   const handleCancel = () => {
@@ -331,7 +331,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
                   onChange={handleTextChange}
                   required
                   rows={8}
-                  value={text}
+                  value={text.replaceAll('\\n', '\n')}
                 />
               </>
             ) : (
@@ -344,6 +344,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
                 <ReadOnlyField
                   label={t('publish_your_text_content')}
                   value={text}
+                  multiline
                 />
               </>
             )}
