@@ -57,13 +57,16 @@ public class TextUtils {
 
   public static List<String> sanitizeLemmaStrings(List<String> lemmas) {
     return lemmas.stream()
-      .map(lemma ->
-        lemma == null ? "–" : lemma
-          .replace("'", "")
-          .replace("*", "")
-          .replace("_", "")
-          .replace("=", ""))
+      .map(TextUtils::sanitizeLemmaString)
       .collect(toList());
+  }
+
+  public static String sanitizeLemmaString(String lemma) {
+    return lemma == null ? "–" : lemma
+        .replace("'", "")
+        .replace("*", "")
+        .replace("_", "")
+        .replace("=", "");
   }
 
   public static List<String> sanitizeWordStrings(List<String> words) {

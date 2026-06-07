@@ -1,6 +1,7 @@
 package ee.tlu.evkk.taskscheduler;
 
 import ee.tlu.evkk.core.CoreConfiguration;
+import ee.tlu.evkk.taskscheduler.task.ExerciseCleanupTask;
 import ee.tlu.evkk.taskscheduler.task.TextProcessingTask;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,17 +32,27 @@ public class TaskSchedulerConfiguration {
 
   private final Properties properties;
   private final TextProcessingTask textProcessingTask;
+  private final ExerciseCleanupTask exerciseCleanupTask;
 
   private static final long FIXED_DELAY = 30000L; // 30 seconds
   private static final long INITIAL_DELAY = 300000L; // 5 minutes
 
   @Scheduled(fixedDelay = FIXED_DELAY, initialDelay = INITIAL_DELAY)
   public void processTexts() {
-    if (properties.getTextProcessingEnabled() != TRUE) {
+    if (TRUE != properties.getTextProcessingEnabled()) {
       log.info("TextProcessingTask is not enabled");
       return;
     }
     textProcessingTask.execute().join();
+  }
+
+  @Scheduled(cron = "0 0 2 * * *")
+  public void cleanupOldExercises() {
+    if (TRUE != properties.getExerciseCleanupEnabled()) {
+      log.info("ExerciseCleanupTask is not enabled");
+      return;
+    }
+    exerciseCleanupTask.execute();
   }
 
   @ConfigurationProperties("evkk.task-scheduler")
@@ -50,6 +61,6 @@ public class TaskSchedulerConfiguration {
   public static class Properties {
 
     private Boolean textProcessingEnabled;
+    private Boolean exerciseCleanupEnabled;
   }
-
 }

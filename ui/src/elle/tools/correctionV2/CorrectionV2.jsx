@@ -106,7 +106,7 @@ export default function CorrectionV2() {
               </div>
               <div className="correction-input-group">
                 <div className="correction-input-group-inner">
-                  <CorrectorInput />
+                  <CorrectorInput tab={value} />
                   <CorrectorButton />
                 </div>
                 <div className="correction-input-group-inner">

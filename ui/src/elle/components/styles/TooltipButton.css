@@ -13,3 +13,11 @@
 .tooltip-button:focus {
   outline: none;
 }
+
+.tooltip-content a {
+  color: #6ea8fe;
+}
+
+.tooltip-content a:hover {
+  color: #8ab9ff;
+}

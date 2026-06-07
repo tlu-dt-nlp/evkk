@@ -10,6 +10,7 @@
 .tool-intro-container {
   max-width: 590px;
   margin: auto auto 10px;
+  padding-top: 30px;
 }
 
 .tool-card-container {
@@ -54,11 +55,6 @@
     width: 100%;
     justify-content: center;
   }
-}
-
-.tool-title {
-  text-align: center;
-  padding-bottom: 2vh;
 }
 
 .tool-drawer-icon {

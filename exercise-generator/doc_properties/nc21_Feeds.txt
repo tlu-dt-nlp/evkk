@@ -1,0 +1,102 @@
+
+feed_city:
+  Kokku unikaalseid väärtusi: 5
+    - Haapsalu
+    - Pärnu
+    - Tallinn
+    - Tartu
+    - Viljandi
+
+feed_country:
+  Kokku unikaalseid väärtusi: 10
+    - Canada
+    - Estonia
+    - Finland
+    - Germany
+    - Lithuania
+    - Luxembourg
+    - Saudi Arabia
+    - Sweden
+    - USA
+    - United States
+
+feed_name:
+  Kokku unikaalseid väärtusi: 7
+    - ETV 2 Estonia
+    - ETV Estonia
+    - Kesknadal
+    - Parnu Postimees
+    - Postimees
+    - TV3 Estonia
+    - Vaba Eesti Sona
+
+feed_source_tags:
+  Kokku unikaalseid väärtusi: 7
+    - geo_source:manual
+    - geo_source:whois
+    - geo_source:whois|usa_state:Kansas|usa_census_region:Midwest|usa_sub_region:W N Cen
+    - subtype:Entertainment Media|geo_source:manual|type:TV
+    - subtype:News Media|type:newspaper
+    - subtype:Race and Ethnic|geo_source:manual|type:newspaper|usa_state:Kansas|usa_census_region:Midwest|usa_sub_region:W N Cen
+    - type:TV|subtype:Entertainment Media
+
+genre:
+  Kokku unikaalseid väärtusi: 6
+    - academic
+    - blogs
+    - e-commerce
+    - encyclopedia
+    - forums
+    - periodicals
+
+genre_src:
+  Kokku unikaalseid väärtusi: 2
+    - classifier
+    - site list
+
+src:
+  Kokku unikaalseid väärtusi: 1
+    - Feeds 2014–2021
+
+topic:
+  Kokku unikaalseid väärtusi: 31
+    - agriculture
+    - agriculture|politics & government
+    - beauty
+    - cars
+    - construction & real estate
+    - culture & entertainment
+    - culture & entertainment|politics & government
+    - economy, finance & business
+    - economy, finance & business|politics & government
+    - education
+    - education|politics & government
+    - food & drinks
+    - gambling & casinos
+    - health
+    - health|food & drinks
+    - health|politics & government
+    - history
+    - home, family & children
+    - law & justice
+    - law & justice|politics & government
+    - nature & environment
+    - pets and animals
+    - politics & government
+    - religion
+    - science
+    - sex
+    - sports
+    - technology & IT
+    - travel & tourism
+    - video games
+    - women
+
+topic_src:
+  Kokku unikaalseid väärtusi: 2
+    - classifier
+    - site list
+
+uri:
+  Kokku unikaalseid väärtusi: 1
+    - http://feedproxy.google.com/~r/delfimajandus/~3/PCwiJOAggEY/89612105

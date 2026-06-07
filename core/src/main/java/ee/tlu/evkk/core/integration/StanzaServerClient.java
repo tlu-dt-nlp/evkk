@@ -1,5 +1,6 @@
 package ee.tlu.evkk.core.integration;
 
+import ee.evkk.dto.KeeletaseGrammatikaOigekiriAnaluusResponseDto;
 import ee.evkk.dto.SpellerResponseDto;
 import ee.tlu.evkk.core.service.dto.TextWithComplexity;
 import ee.tlu.evkk.dal.dto.StanzaResponseDto;
@@ -146,6 +147,14 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
     HttpEntity<?> requestEntity = new HttpEntity<>(map);
     ResponseEntity<String[][]> forEntity = retry()
       .execute(context -> rest.postForEntity("/keeletase", requestEntity, String[][].class));
+    return forEntity.getBody();
+  }
+
+  public KeeletaseGrammatikaOigekiriAnaluusResponseDto getKeeletaseGrammatikaOigekiriAnaluus(String tekst) {
+    Map<String, String> map = of(MAP_PARAMETER, tekst);
+    HttpEntity<?> requestEntity = new HttpEntity<>(map);
+    ResponseEntity<KeeletaseGrammatikaOigekiriAnaluusResponseDto> forEntity = retry()
+      .execute(context -> rest.postForEntity("/keeletase-grammatika-oigekiri-analuus", requestEntity, KeeletaseGrammatikaOigekiriAnaluusResponseDto.class));
     return forEntity.getBody();
   }
 

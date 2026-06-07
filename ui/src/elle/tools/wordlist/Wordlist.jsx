@@ -179,7 +179,7 @@ export default function Wordlist() {
 
   return (
     <span className="wordlist-app">
-      <h2 className="tool-title">
+      <h2 className="page-title">
         {t('common_wordlist')}
       </h2>
       <Accordion

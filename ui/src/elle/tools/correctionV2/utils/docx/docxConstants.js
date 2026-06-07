@@ -1,0 +1,13 @@
+export const FONT = 'Calibri';
+export const BODY_SIZE = 22; // half-points → 11pt
+export const LABEL_SIZE = 20; // 10pt for stat labels
+export const SUBLABEL_SIZE = 22; // 11pt for emphasis labels (error type, text level)
+export const HEADING_SIZE = 28; // 14pt for section headings
+export const TITLE_SIZE = 32; // 16pt for document title
+export const PURPLE = '9C27B0';
+export const LIGHT_GRAY = 'F2F2F2';
+export const MID_GRAY = 'CCCCCC';
+export const DARK_GRAY = '444444';
+export const STRIKE_GRAY = '888888'; // strikethrough color for original error text
+export const WHITE = 'FFFFFF';
+export const WHITE_HEX = '#EEEEEE';

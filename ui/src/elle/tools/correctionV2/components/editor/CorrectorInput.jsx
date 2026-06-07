@@ -1,6 +1,7 @@
 import './styles/CorrectorInput.css';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { Fragment, Slice } from '@tiptap/pm/model';
 import { EditorState } from '@tiptap/pm/state';
 import { useEffect, useRef } from 'react';
 import MarkComponentExtension from './MarkComponentExtension.js';
@@ -10,8 +11,34 @@ import TextUpload from '../../../../components/TextUpload';
 import { IconButton } from '@mui/material';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
+import CorrectionDocxDownloadButtonV2 from '../buttons/CorrectionDocxDownloadButtonV2';
 
-export default function CorrectorInput() {
+const buildPlainTextPasteSlice = (schema, plainText) => {
+  const normalizedText = plainText.replaceAll(/\r\n?/g, '\n');
+  const paragraphTexts = normalizedText.split(/\n{2,}/);
+
+  const paragraphNodes = paragraphTexts.map(paragraphText => {
+    if (!paragraphText) return schema.nodes.paragraph.create();
+
+    const lineParts = paragraphText.split('\n');
+    const content = [];
+
+    lineParts.forEach((part, index) => {
+      if (part) content.push(schema.text(part));
+
+      // add hard break only if it's not the last part
+      if (index < lineParts.length - 1) {
+        content.push(schema.nodes.hardBreak.create());
+      }
+    });
+
+    return schema.nodes.paragraph.create(null, content.length > 0 ? content : undefined);
+  });
+
+  return new Slice(Fragment.fromArray(paragraphNodes), 0, 0);
+};
+
+export default function CorrectorInput({ tab }) {
   const {
     errorResponse,
     setEditor,
@@ -35,6 +62,7 @@ export default function CorrectorInput() {
   const handleTextUpload = uploadedText => {
     setErrorResponse({});
     setText(uploadedText);
+    editor?.commands.setContent(`<p>${uploadedText}</p>`);
   };
 
   const handleTextChange = (newText, newContent) => {
@@ -49,7 +77,20 @@ export default function CorrectorInput() {
         onTextUpdate: handleTextChange
       })
     ],
-    content: `<p>${text}</p>`
+    content: `<p>${text}</p>`,
+    editorProps: {
+      handlePaste(view, event) {
+        const plainText = event.clipboardData?.getData('text/plain');
+        if (!plainText || plainText === '') return false;
+
+        event.preventDefault();
+        const { state, dispatch } = view;
+        const slice = buildPlainTextPasteSlice(state.schema, plainText);
+
+        dispatch(state.tr.replaceSelection(slice).scrollIntoView());
+        return true;
+      }
+    }
   });
 
   const replaceContent = (content) => {
@@ -146,8 +187,7 @@ export default function CorrectorInput() {
   }, [selectedSubTab, errorResponse, editor]);
 
   return (
-    <div className="position-relative">
-      <EditorContent editor={editor} />
+    <div className="corrector-input-wrapper">
       <div className="corrector-input-icon-bar">
         <div>
           <IconButton
@@ -169,12 +209,16 @@ export default function CorrectorInput() {
             <RedoIcon fontSize="small" />
           </IconButton>
         </div>
-        <TextUpload
-          className="corrector-input-icon-button"
-          sendTextFromFile={handleTextUpload}
-          disableStyles={true}
-        />
+        <div>
+          <TextUpload
+            className="corrector-input-icon-button"
+            sendTextFromFile={handleTextUpload}
+            disableStyles={true}
+          />
+          <CorrectionDocxDownloadButtonV2 tab={tab} />
+        </div>
       </div>
+      <EditorContent editor={editor} />
     </div>
   );
 }

@@ -9,5 +9,6 @@ dependencies {
   api "org.springframework.retry:spring-retry"
 
   implementation project(path: ':dto')
+  implementation "com.google.genai:google-genai:1.51.0"
 
 }

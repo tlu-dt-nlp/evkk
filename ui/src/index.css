@@ -127,7 +127,7 @@ a:hover {
   .global-page-content-container-inner {
     background-color: white;
     border-radius: 15px;
-    padding-top: 50px;
+    padding-top: 20px;
     padding-bottom: 50px;
 
     @media (max-width: 677px) {
@@ -149,6 +149,11 @@ h3, h4 {
   -ms-hyphens: auto;
 }
 
+.page-title {
+  text-align: center;
+  padding-bottom: 2vh;
+}
+
 /* Prevent MUI Select from scrolling viewport on focus */
 .MuiSelect-select:focus {
   scroll-margin: 0;
@@ -165,4 +170,8 @@ h3, h4 {
 
 .MuiMenu-paper .MuiMenuItem-root {
   min-width: fit-content;
+}
+
+.MuiAccordionSummary-root:focus {
+  outline: none;
 }

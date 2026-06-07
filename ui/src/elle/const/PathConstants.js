@@ -11,3 +11,5 @@ export const CC_BY_4_0_LICENSE_PATH = 'https://creativecommons.org/licenses/by/4
 export const MIT_LICENSE_PATH = 'https://opensource.org/license/mit/';
 
 export const STOPWORDS_DATADOI_PATH = 'https://datadoi.ee/handle/33/78';
+
+export const EKI_VOCABULARY_LIST_PATH = 'https://sonaveeb.ee/teacher-tools/#/vocabulary';

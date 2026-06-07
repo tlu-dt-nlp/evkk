@@ -3,29 +3,19 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import { useTranslation } from 'react-i18next';
 import { Divider } from '@mui/material';
-import { complexityValues } from '../../../correction/const/TabValuesConstant';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import CorrectionScale from '../../../correction/components/CorrectionScale';
+import { generateComplexityAnswer } from '../../utils/correctionUtils';
 
 export default function ComplexityAccordionV2({ complexityAnswer }) {
   const { t } = useTranslation();
-
-  const generateComplexityAnswer = answer => {
-    return answer
-      .split('/')
-      .sort((a, b) => complexityValues.indexOf(a) - complexityValues.indexOf(b))
-      .map(t)
-      .map((complexityWord, index, array) =>
-        index === array.length - 1 ? complexityWord : `${complexityWord} / `
-      );
-  };
 
   return (
     <div className="corrector-right">
       <div className="complexity-tab-header">
         <span>{t('corrector_complexity_level')}</span>
-        <span>{generateComplexityAnswer(complexityAnswer.keerukus[11])}</span>
+        <span>{generateComplexityAnswer(complexityAnswer.keerukus[11], t)}</span>
       </div>
       <Accordion
         square={true}
