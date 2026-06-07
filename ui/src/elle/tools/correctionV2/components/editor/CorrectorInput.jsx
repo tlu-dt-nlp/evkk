@@ -11,6 +11,7 @@ import TextUpload from '../../../../components/TextUpload';
 import { IconButton } from '@mui/material';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
+import CorrectionDocxDownloadButtonV2 from '../buttons/CorrectionDocxDownloadButtonV2';
 
 const buildPlainTextPasteSlice = (schema, plainText) => {
   const normalizedText = plainText.replaceAll(/\r\n?/g, '\n');
@@ -37,7 +38,7 @@ const buildPlainTextPasteSlice = (schema, plainText) => {
   return new Slice(Fragment.fromArray(paragraphNodes), 0, 0);
 };
 
-export default function CorrectorInput() {
+export default function CorrectorInput({ tab }) {
   const {
     errorResponse,
     setEditor,
@@ -208,11 +209,14 @@ export default function CorrectorInput() {
             <RedoIcon fontSize="small" />
           </IconButton>
         </div>
-        <TextUpload
-          className="corrector-input-icon-button"
-          sendTextFromFile={handleTextUpload}
-          disableStyles={true}
-        />
+        <div>
+          <TextUpload
+            className="corrector-input-icon-button"
+            sendTextFromFile={handleTextUpload}
+            disableStyles={true}
+          />
+          <CorrectionDocxDownloadButtonV2 tab={tab} />
+        </div>
       </div>
       <EditorContent editor={editor} />
     </div>
