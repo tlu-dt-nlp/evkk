@@ -340,7 +340,7 @@ public class TextService {
     lisaTekstiOmadus(kood, "kasAutor", andmed.getTekstiAutor());
     lisaTekstiOmadus(kood, "vanus", andmed.getAutoriVanus());
     lisaTekstiOmadus(kood, "sugu", andmed.getAutoriSugu());
-    lisaTekstiOmadus(kood, "haridus", andmed.getAutoriOppeaste()); // TODO: Should use getAutoriHaridus()?
+    lisaTekstiOmadus(kood, "haridus", andmed.getAutoriHaridus());
     lisaTekstiOmadus(kood, "emakeel", andmed.getAutoriEmakeel().toLowerCase());
     lisaTekstiOmadus(kood, "muudkeeled", andmed.getAutoriMuudKeeled());
     lisaTekstiOmadus(kood, "riik", andmed.getAutoriElukohariik());
