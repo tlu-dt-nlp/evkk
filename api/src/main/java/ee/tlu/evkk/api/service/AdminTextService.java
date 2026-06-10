@@ -16,6 +16,7 @@ import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
 import ee.tlu.evkk.dal.dto.TextMetadata;
 import ee.tlu.evkk.dal.dto.TextProperty;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -182,9 +183,9 @@ public class AdminTextService {
     for (TextMetadataDto newProperty : newProperties) {
       PropertyMatch match = findMatchingProperty(existingByName, newProperty, idsToKeep);
 
-      if (match.id() != null && match.valueChanged()) {
-        textPropertyAddedDao.updateProperty(match.id(), newProperty.getPropertyValue());
-      } else if (match.id() == null) {
+      if (match.getId() != null && match.isValueChanged()) {
+        textPropertyAddedDao.updateProperty(match.getId(), newProperty.getPropertyValue());
+      } else if (match.getId() == null) {
         textPropertyAddedDao.insertProperty(id, newProperty.getPropertyName(), newProperty.getPropertyValue());
       }
     }
@@ -267,9 +268,9 @@ public class AdminTextService {
     for (TextMetadataDto newProperty : newProperties) {
       PropertyMatch match = findMatchingProperty(existingByName, newProperty, idsToKeep);
 
-      if (match.id() != null && match.valueChanged()) {
-        textPropertyDao.updateProperty(match.id(), newProperty.getPropertyValue());
-      } else if (match.id() == null) {
+      if (match.getId() != null && match.isValueChanged()) {
+        textPropertyDao.updateProperty(match.getId(), newProperty.getPropertyValue());
+      } else if (match.getId() == null) {
         textPropertyDao.insertProperty(id, newProperty.getPropertyName(), newProperty.getPropertyValue());
       }
     }
@@ -277,21 +278,10 @@ public class AdminTextService {
     deleteUnusedProperties(existingProperties, idsToKeep, textPropertyDao::deleteByIds);
   }
 
+  @Data
+  @RequiredArgsConstructor
   private static class PropertyMatch {
     private final UUID id;
     private final boolean valueChanged;
-
-    PropertyMatch(UUID id, boolean valueChanged) {
-      this.id = id;
-      this.valueChanged = valueChanged;
-    }
-
-    UUID id() {
-      return id;
-    }
-
-    boolean valueChanged() {
-      return valueChanged;
-    }
   }
 }
