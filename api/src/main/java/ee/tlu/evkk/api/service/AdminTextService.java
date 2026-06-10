@@ -1,6 +1,11 @@
 package ee.tlu.evkk.api.service;
 
-import ee.evkk.dto.*;
+import ee.evkk.dto.CorpusRequestDto;
+import ee.evkk.dto.DonatedTextRequestDto;
+import ee.evkk.dto.TextDetailsResponseDto;
+import ee.evkk.dto.TextMetadataDto;
+import ee.evkk.dto.TextUpdateRequestDto;
+import ee.evkk.dto.TextsToReviewResponseDto;
 import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
@@ -16,7 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
