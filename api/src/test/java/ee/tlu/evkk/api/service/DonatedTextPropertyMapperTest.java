@@ -52,6 +52,7 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_PROFICIE
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.TEXT_TYPE_ACADEMIC;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2000_2005;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2021_2025;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2026_2030;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -133,6 +134,7 @@ class DonatedTextPropertyMapperTest {
       arguments("2000", YEAR_RANGE_2000_2005),
       arguments("2005", YEAR_RANGE_2000_2005),
       arguments("2023", YEAR_RANGE_2021_2025),
+      arguments("2026", YEAR_RANGE_2026_2030),
       arguments("1999", null),
       arguments("2026", null),
       arguments("abc", null)

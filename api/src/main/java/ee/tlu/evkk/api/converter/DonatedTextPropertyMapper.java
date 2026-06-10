@@ -60,6 +60,8 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2006_201
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2011_2015;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2016_2020;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2021_2025;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2026_2030;
+import static java.lang.Integer.parseInt;
 
 @Component
 public class DonatedTextPropertyMapper {
@@ -183,7 +185,7 @@ public class DonatedTextPropertyMapper {
       return null;
     }
     try {
-      int age = Integer.parseInt(rawAge.trim());
+      int age = parseInt(rawAge.trim());
       if (age <= 18) {
         return AGE_RANGE_UP_TO_18;
       }
@@ -204,7 +206,7 @@ public class DonatedTextPropertyMapper {
       return null;
     }
     try {
-      int year = Integer.parseInt(articleYear.trim());
+      int year = parseInt(articleYear.trim());
       if (year >= 2000 && year <= 2005) {
         return YEAR_RANGE_2000_2005;
       }
@@ -219,6 +221,9 @@ public class DonatedTextPropertyMapper {
       }
       if (year >= 2021 && year <= 2025) {
         return YEAR_RANGE_2021_2025;
+      }
+      if (year >= 2026 && year <= 2030) {
+        return YEAR_RANGE_2026_2030;
       }
       return null;
     } catch (NumberFormatException e) {

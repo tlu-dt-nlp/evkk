@@ -72,4 +72,5 @@ public class TextPropertyConstants {
   public static final String YEAR_RANGE_2011_2015 = "2011-2015";
   public static final String YEAR_RANGE_2016_2020 = "2016-2020";
   public static final String YEAR_RANGE_2021_2025 = "2021-2025";
+  public static final String YEAR_RANGE_2026_2030 = "2026-2030";
 }

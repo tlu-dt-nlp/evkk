@@ -26,7 +26,8 @@ export const addedYearOptions = [
   { key: '2006–2010', range: '2006-2010' },
   { key: '2011–2015', range: '2011-2015' },
   { key: '2016–2020', range: '2016-2020' },
-  { key: '2021–2025', range: '2021-2025' }
+  { key: '2021–2025', range: '2021-2025' },
+  { key: '2026–2030', range: '2026-2030' }
 ];
 
 export const charactersOptions = [
@@ -336,7 +337,7 @@ export const textPublishAcademicCategoryOptions = {
 };
 
 export const textPublishAcademicStudiesSubtypeOptions = {
-  'ak_analuus': 'query_text_data_type_academic_studies_analysis',
+  'ak_eriala_analuus': 'query_text_data_type_academic_studies_analysis',
   'ak_eriala_essee': 'query_text_data_type_academic_studies_essay',
   'ak_eriala_kursusetoo': 'query_text_data_type_academic_studies_course_paper',
   'ak_eriala_referaat': 'query_text_data_type_academic_studies_report',
