@@ -46,6 +46,7 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_STUDY_LEVEL;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TEXT_LANGUAGE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TITLE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TYPE;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_YEAR;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_YEAR_RANGE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_OLYMPIADE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_PROFICIENCY_EXAM;
@@ -60,8 +61,6 @@ class DonatedTextPropertyMapperTest {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
-  private final DonatedTextPropertyMapper mapper = new DonatedTextPropertyMapper();
-
   @ParameterizedTest(name = "mainType={0}, subtype={1} -> corpus={2}, textLanguage={3}")
   @MethodSource("corpusAndTextLanguageCases")
   @DisplayName("map should derive correct corpus and text language from text type and subtype")
@@ -70,7 +69,7 @@ class DonatedTextPropertyMapperTest {
     List<TextMetadata> properties = buildTypeProperties(mainType, subtype);
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
 
     // Then
     assertThat(propertyValue(result, PROP_CORPUS)).isEqualTo(expectedCorpus);
@@ -97,7 +96,7 @@ class DonatedTextPropertyMapperTest {
     List<TextMetadata> properties = List.of(createTextMetadata(PROP_AGE_RAW, rawAge));
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
 
     // Then
     assertThat(propertyValue(result, PROP_AGE_RANGE)).isEqualTo(expectedRange);
@@ -115,29 +114,29 @@ class DonatedTextPropertyMapperTest {
     );
   }
 
-  @ParameterizedTest(name = "articleYear={0} -> yearRange={1}")
+  @ParameterizedTest(name = "createdAt={0} -> aasta={1}, ajavahemik={2}")
   @MethodSource("yearCases")
-  @DisplayName("map should convert article year to year range")
-  void map_shouldMapArticleYearToYearRange(String articleYear, String expectedRange) throws Exception {
+  @DisplayName("map should derive aasta and ajavahemik from createdAt")
+  void map_shouldDeriveAastaAndAjavahemikFromCreatedAt(String createdAt, String expectedYear, String expectedRange) {
     // Given
-    List<TextMetadata> properties = List.of(createTextMetadata(PROP_ARTICLE_YEAR, articleYear));
+    List<TextMetadata> properties = List.of();
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, createdAt);
 
     // Then
+    assertThat(propertyValue(result, PROP_YEAR)).isEqualTo(expectedYear);
     assertThat(propertyValue(result, PROP_YEAR_RANGE)).isEqualTo(expectedRange);
   }
 
   static Stream<Arguments> yearCases() {
     return Stream.of(
-      arguments("2000", YEAR_RANGE_2000_2005),
-      arguments("2005", YEAR_RANGE_2000_2005),
-      arguments("2023", YEAR_RANGE_2021_2025),
-      arguments("2026", YEAR_RANGE_2026_2030),
-      arguments("1999", null),
-      arguments("2026", null),
-      arguments("abc", null)
+      arguments("2000-06-01T00:00:00+00:00", "2000", YEAR_RANGE_2000_2005),
+      arguments("2005-12-31T23:59:59+00:00", "2005", YEAR_RANGE_2000_2005),
+      arguments("2023-03-15T10:00:00+02:00", "2023", YEAR_RANGE_2021_2025),
+      arguments("2026-06-10 14:58:42.671584+03", "2026", YEAR_RANGE_2026_2030),
+      arguments("1999-01-01T00:00:00+00:00", "1999", null),
+      arguments(null, null, null)
     );
   }
 
@@ -151,7 +150,7 @@ class DonatedTextPropertyMapperTest {
     );
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
 
     // Then
     assertThat(propertyValue(result, "kasAutor")).isNull();
@@ -165,7 +164,7 @@ class DonatedTextPropertyMapperTest {
     List<TextMetadata> properties = buildTypeProperties("mitteakadeemiline", "k1eesti_harjutus");
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
 
     // Then
     assertThat(propertyValues(result, PROP_TYPE)).containsExactly("k1eesti_harjutus");
@@ -181,7 +180,7 @@ class DonatedTextPropertyMapperTest {
     );
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
 
     // Then
     assertThat(propertyValues(result, PROP_ACADEMIC_MATERIALS))
@@ -200,11 +199,12 @@ class DonatedTextPropertyMapperTest {
       createTextMetadata(PROP_DEGREE, "ma"),
       createTextMetadata(PROP_DOMAIN, "loodustehnika"),
       createTextMetadata(PROP_EDUCATION, "Kõrgharidus"),
-      createTextMetadata(PROP_OTHER_LANGUAGES, "inglise")
+      createTextMetadata(PROP_OTHER_LANGUAGES, "inglise"),
+      createTextMetadata(PROP_ARTICLE_YEAR, "2007")
     );
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
 
     // Then
     assertThat(propertyValue(result, PROP_GENDER)).isEqualTo("naine");
@@ -218,17 +218,48 @@ class DonatedTextPropertyMapperTest {
   }
 
   @Test
-  @DisplayName("map should keep raw article year alongside derived year range")
-  void map_shouldKeepArticleYearAndDeriveRange() throws Exception {
+  @DisplayName("map should derive aasta and ajavahemik from createdAt even when artikkel_aasta is present")
+  void map_shouldDeriveYearFromCreatedAtWhenArticleYearPresent() throws Exception {
     // Given
-    List<TextMetadata> properties = List.of(createTextMetadata(PROP_ARTICLE_YEAR, "2023"));
+    List<TextMetadata> properties = List.of(createTextMetadata(PROP_ARTICLE_YEAR, "2010"));
 
     // When
-    List<TextMetadataDto> result = mapper.map(properties);
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, "2023-03-15T10:00:00+02:00");
 
     // Then
-    assertThat(propertyValue(result, PROP_ARTICLE_YEAR)).isEqualTo("2023");
+    assertThat(propertyValue(result, PROP_ARTICLE_YEAR)).isEqualTo("2010");
+    assertThat(propertyValue(result, PROP_YEAR)).isEqualTo("2023");
     assertThat(propertyValue(result, PROP_YEAR_RANGE)).isEqualTo(YEAR_RANGE_2021_2025);
+  }
+
+  @Test
+  @DisplayName("map should split comma-separated muudkeeled into individual rows")
+  void map_shouldSplitMuudkeeled() throws Exception {
+    // Given
+    List<TextMetadata> properties = List.of(
+      createTextMetadata(PROP_OTHER_LANGUAGES, "inglise, vene,läti,  soome")
+    );
+
+    // When
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
+
+    // Then
+    assertThat(propertyValues(result, PROP_OTHER_LANGUAGES))
+      .containsExactlyInAnyOrder("inglise", "vene", "läti", "soome");
+  }
+
+  @Test
+  @DisplayName("map should pass through raw vanus value")
+  void map_shouldPassThroughRawAge() throws Exception {
+    // Given
+    List<TextMetadata> properties = List.of(createTextMetadata(PROP_AGE_RAW, "25"));
+
+    // When
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
+
+    // Then
+    assertThat(propertyValue(result, PROP_AGE_RAW)).isEqualTo("25");
+    assertThat(propertyValue(result, PROP_AGE_RANGE)).isEqualTo(AGE_RANGE_19_TO_26);
   }
 
   private List<TextMetadata> buildTypeProperties(String mainType, String subtype) throws Exception {
@@ -242,7 +273,12 @@ class DonatedTextPropertyMapperTest {
     return props;
   }
 
-  private String propertyValue(List<TextMetadataDto> properties, String name) {
+  private TextMetadata createTextMetadata(String name, String value) throws Exception {
+    String json = String.format("{\"propertyName\":\"%s\", \"propertyValue\":\"%s\"}", name, value);
+    return objectMapper.readValue(json, TextMetadata.class);
+  }
+
+  private static String propertyValue(List<TextMetadataDto> properties, String name) {
     return properties.stream()
       .filter(p -> name.equals(p.getPropertyName()))
       .map(TextMetadataDto::getPropertyValue)
@@ -250,15 +286,10 @@ class DonatedTextPropertyMapperTest {
       .orElse(null);
   }
 
-  private List<String> propertyValues(List<TextMetadataDto> properties, String name) {
+  private static List<String> propertyValues(List<TextMetadataDto> properties, String name) {
     return properties.stream()
       .filter(p -> name.equals(p.getPropertyName()))
       .map(TextMetadataDto::getPropertyValue)
       .collect(Collectors.toList());
-  }
-
-  private TextMetadata createTextMetadata(String name, String value) throws Exception {
-    String json = String.format("{\"propertyName\":\"%s\", \"propertyValue\":\"%s\"}", name, value);
-    return objectMapper.readValue(json, TextMetadata.class);
   }
 }

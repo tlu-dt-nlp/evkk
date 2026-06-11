@@ -61,6 +61,12 @@
     ) t
   </select>
 
+  <select id="findCreatedAtById" resultType="java.lang.String">
+    select _meta ->> 'created_at'
+    from core.text_added
+    where id = #{textId};
+  </select>
+
   <update id="updateTextContent">
     update core.text_added
     set content = #{content}

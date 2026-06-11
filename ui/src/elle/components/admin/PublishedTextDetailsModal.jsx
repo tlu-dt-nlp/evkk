@@ -1,7 +1,6 @@
 import { Box, Button, Stack, TextField } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { successEmitter } from '../../../App';
 import { DangerButtonStyle, DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import {
@@ -95,7 +94,7 @@ const createPublishedTextFormData = (details) => {
       akadOppematerjal: getPropertyValues(properties, 'akad_oppematerjal'),
       oppeaste: getFirstPropertyValue(properties, 'oppeaste'),
       teaduskraad: getFirstPropertyValue(properties, 'teaduskraad'),
-      muudkeeled: getFirstPropertyValue(properties, 'muudkeeled')
+      muudkeeled: getPropertyValues(properties, 'muudkeeled').join(', ')
     } : {
       abivahendid: getFirstPropertyValue(properties, 'abivahendid'),
       haridus: getFirstPropertyValue(properties, 'haridus')
@@ -136,7 +135,7 @@ const createPublishedTextPayload = (text, formData, additionalProperties) => {
     pushMultiProperties(properties, 'akad_oppematerjal', formData.akadOppematerjal);
     pushProperty(properties, 'oppeaste', formData.oppeaste);
     pushProperty(properties, 'teaduskraad', formData.teaduskraad);
-    pushProperty(properties, 'muudkeeled', formData.muudkeeled);
+    pushMultiProperties(properties, 'muudkeeled', formData.muudkeeled.split(',').map(s => s.trim()).filter(Boolean));
   } else {
     pushProperty(properties, 'abivahendid', formData.abivahendid);
     pushProperty(properties, 'haridus', formData.haridus);

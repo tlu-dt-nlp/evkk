@@ -15,7 +15,7 @@ export default function DonatedTextEditForm({ formData, setFormData, setText, te
   };
 
   const handleTextChange = (event) => {
-    setText(event.target.value.replaceAll('\n', '\\n'));
+    setText(event.target.value.replaceAll('\n', String.raw`\n`));
   };
 
   const handleMultiValueChange = (fieldName, value) => {
@@ -58,7 +58,7 @@ export default function DonatedTextEditForm({ formData, setFormData, setText, te
           onChange={handleTextChange}
           required
           rows={8}
-          value={text.replaceAll('\\n', '\n')}
+          value={text.replaceAll(String.raw`\n`, '\n')}
         />
       </Grid>
 

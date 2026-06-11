@@ -2,13 +2,16 @@ package ee.tlu.evkk.api.converter;
 
 import ee.evkk.dto.TextMetadataDto;
 import ee.tlu.evkk.dal.dto.TextMetadata;
-import org.springframework.stereotype.Component;
+import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_19_TO_26;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_27_TO_40;
@@ -47,6 +50,7 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TEXT_LANGUAGE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TITLE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TYPE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_USED_MATERIALS;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_YEAR;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_YEAR_RANGE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_OLYMPIADE;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_PROFICIENCY_EXAM;
@@ -61,9 +65,14 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2011_201
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2016_2020;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2021_2025;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2026_2030;
+import static ee.tlu.evkk.api.util.DateUtils.PG_TIMESTAMP_FORMAT;
 import static java.lang.Integer.parseInt;
+import static java.time.ZoneOffset.UTC;
+import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+import static java.util.stream.Collectors.toList;
+import static lombok.AccessLevel.PRIVATE;
 
-@Component
+@NoArgsConstructor(access = PRIVATE)
 public class DonatedTextPropertyMapper {
 
   private static final Set<String> PASS_THROUGH = Set.of(
@@ -78,14 +87,14 @@ public class DonatedTextPropertyMapper {
     PROP_STUDY_LEVEL,
     PROP_DEGREE,
     PROP_NATIVE_LANGUAGE,
-    PROP_OTHER_LANGUAGES,
     PROP_COUNTRY,
     PROP_ARTICLE_PUBLICATION,
     PROP_ARTICLE_NUMBER,
-    PROP_ARTICLE_PAGES
+    PROP_ARTICLE_PAGES,
+    PROP_ARTICLE_YEAR
   );
 
-  public List<TextMetadataDto> map(List<TextMetadata> donatedProperties) {
+  public static List<TextMetadataDto> map(List<TextMetadata> donatedProperties, String createdAt) {
     Map<String, List<String>> byName = groupByName(donatedProperties);
     List<TextMetadataDto> result = new ArrayList<>();
 
@@ -93,6 +102,10 @@ public class DonatedTextPropertyMapper {
       byName.getOrDefault(name, List.of())
         .forEach(value -> result.add(property(name, value)));
     }
+
+    byName.getOrDefault(PROP_OTHER_LANGUAGES, List.of()).forEach(raw ->
+      splitCommaSeparated(raw).forEach(lang -> result.add(property(PROP_OTHER_LANGUAGES, lang)))
+    );
 
     String mainType = first(byName, PROP_TYPE);
     String subtype = TEXT_TYPE_ACADEMIC.equals(mainType)
@@ -103,16 +116,18 @@ public class DonatedTextPropertyMapper {
     addIfNotBlank(result, PROP_CORPUS, inferCorpus(mainType, subtype));
     addIfNotBlank(result, PROP_TEXT_LANGUAGE, inferTextLanguage(mainType, subtype));
 
-    addIfNotBlank(result, PROP_AGE_RANGE, mapAgeToRange(first(byName, PROP_AGE_RAW)));
+    String age = first(byName, PROP_AGE_RAW);
+    addIfNotBlank(result, PROP_AGE_RAW, age);
+    addIfNotBlank(result, PROP_AGE_RANGE, mapAgeToRange(age));
 
-    String articleYear = first(byName, PROP_ARTICLE_YEAR);
-    addIfNotBlank(result, PROP_ARTICLE_YEAR, articleYear);
-    addIfNotBlank(result, PROP_YEAR_RANGE, mapYearToRange(articleYear));
+    String submissionYear = extractYear(createdAt);
+    addIfNotBlank(result, PROP_YEAR, submissionYear);
+    addIfNotBlank(result, PROP_YEAR_RANGE, mapYearToRange(submissionYear));
 
     return result;
   }
 
-  private Map<String, List<String>> groupByName(List<TextMetadata> properties) {
+  private static Map<String, List<String>> groupByName(List<TextMetadata> properties) {
     Map<String, List<String>> byName = new LinkedHashMap<>();
     for (TextMetadata metadata : properties) {
       byName.computeIfAbsent(metadata.getPropertyName(), k -> new ArrayList<>())
@@ -121,25 +136,25 @@ public class DonatedTextPropertyMapper {
     return byName;
   }
 
-  private TextMetadataDto property(String name, String value) {
+  private static TextMetadataDto property(String name, String value) {
     return TextMetadataDto.builder()
       .propertyName(name)
       .propertyValue(value)
       .build();
   }
 
-  private String first(Map<String, List<String>> byName, String key) {
+  private static String first(Map<String, List<String>> byName, String key) {
     List<String> values = byName.get(key);
     return (values != null && !values.isEmpty()) ? values.get(0) : null;
   }
 
-  private void addIfNotBlank(List<TextMetadataDto> result, String name, String value) {
+  private static void addIfNotBlank(List<TextMetadataDto> result, String name, String value) {
     if (value != null && !value.isBlank()) {
       result.add(property(name, value));
     }
   }
 
-  private String inferCorpus(String mainType, String subtype) {
+  private static String inferCorpus(String mainType, String subtype) {
     if (TEXT_TYPE_ACADEMIC.equals(mainType)) {
       return CORPUS_ACADEMIC_ESTONIAN;
     }
@@ -167,7 +182,7 @@ public class DonatedTextPropertyMapper {
     return null;
   }
 
-  private String inferTextLanguage(String mainType, String subtype) {
+  private static String inferTextLanguage(String mainType, String subtype) {
     if (TEXT_TYPE_ACADEMIC.equals(mainType)) {
       return LANGUAGE_ESTONIAN;
     }
@@ -180,7 +195,32 @@ public class DonatedTextPropertyMapper {
     return LANGUAGE_ESTONIAN;
   }
 
-  private String mapAgeToRange(String rawAge) {
+  private static String extractYear(String createdAt) {
+    if (createdAt == null || createdAt.isBlank()) {
+      return null;
+    }
+    for (DateTimeFormatter fmt : List.of(ISO_OFFSET_DATE_TIME, PG_TIMESTAMP_FORMAT)) {
+      try {
+        return String.valueOf(OffsetDateTime.parse(createdAt, fmt).atZoneSameInstant(UTC).getYear());
+      } catch (Exception ignored) {
+        // try to parse with next formatter
+      }
+    }
+    return null;
+  }
+
+  private static List<String> splitCommaSeparated(String value) {
+    if (value == null || value.isBlank()) {
+      return List.of();
+    }
+
+    return Stream.of(value.split(","))
+      .map(String::trim)
+      .filter(s -> !s.isEmpty())
+      .collect(toList());
+  }
+
+  private static String mapAgeToRange(String rawAge) {
     if (rawAge == null) {
       return null;
     }
@@ -201,7 +241,7 @@ public class DonatedTextPropertyMapper {
     }
   }
 
-  private String mapYearToRange(String articleYear) {
+  private static String mapYearToRange(String articleYear) {
     if (articleYear == null) {
       return null;
     }

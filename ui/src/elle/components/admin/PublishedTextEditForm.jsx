@@ -7,7 +7,8 @@ import {
   Radio,
   RadioGroup,
   Select,
-  Stack
+  Stack,
+  TextField
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +22,6 @@ import {
   educationOptions,
   genderOptions,
   languageOptionsForNativeLangs,
-  languageOptionsForOtherLangs,
   nationalityOptions,
   scoreOptions,
   studyLevelOptions,
@@ -336,18 +336,13 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
             )}
 
             {isAcademic && (
-              <FormControl size="small">
-                <InputLabel>{t('query_author_data_other_languages')}</InputLabel>
-                <Select
-                  name="muudkeeled"
-                  onChange={handleChange}
-                  value={formData.muudkeeled}
-                >
-                  {Object.keys(languageOptionsForOtherLangs).map(lang => (
-                    <MenuItem key={lang} value={lang}>{t(languageOptionsForOtherLangs[lang])}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <TextField
+                size="small"
+                label={t('query_author_data_other_languages')}
+                name="muudkeeled"
+                onChange={handleChange}
+                value={formData.muudkeeled}
+              />
             )}
 
             {isL2Exams && (

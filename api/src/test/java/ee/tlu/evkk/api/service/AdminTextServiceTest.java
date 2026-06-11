@@ -1,8 +1,12 @@
 package ee.tlu.evkk.api.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ee.evkk.dto.*;
-import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
+import ee.evkk.dto.CorpusRequestDto;
+import ee.evkk.dto.DonatedTextRequestDto;
+import ee.evkk.dto.TextDetailsResponseDto;
+import ee.evkk.dto.TextMetadataDto;
+import ee.evkk.dto.TextUpdateRequestDto;
+import ee.evkk.dto.TextsToReviewResponseDto;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
@@ -23,10 +27,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AdminTextServiceTest {
@@ -35,9 +44,6 @@ class AdminTextServiceTest {
 
   @Mock
   private TextService textService;
-
-  @Mock
-  private DonatedTextPropertyMapper donatedTextPropertyMapper;
 
   @Mock
   private TextAddedDao textAddedDao;
@@ -89,7 +95,7 @@ class AdminTextServiceTest {
   @DisplayName("Get donated text details returns text when donated text exists")
   void getDonatedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     TextAndMetadata textAndMetadata = createTextAndMetadata("Text", List.of());
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(textAndMetadata);
 
@@ -107,7 +113,7 @@ class AdminTextServiceTest {
   @DisplayName("Get donated text details returns empty when donated text is not found")
   void getDonatedTextDetails_whenTextNotFound_shouldReturnEmpty() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When
@@ -122,9 +128,9 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text updates text and properties")
   void updateDonatedText_shouldUpdateTextAndProperties() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID titlePropertyId = UUID.randomUUID();
-    UUID authorPropertyId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID titlePropertyId = randomUUID();
+    UUID authorPropertyId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Existing content", List.of(
       createTextMetadata("title", "Existing Title"),
@@ -176,8 +182,8 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text does not update properties when property value is unchanged")
   void updateDonatedText_whenPropertyValueUnchanged_shouldNotUpdate() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID titlePropertyId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID titlePropertyId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Content", List.of(
       createTextMetadata("title", "Same Title")
@@ -218,10 +224,10 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text handles multi-value properties correctly")
   void updateDonatedText_withMultiValueProperties_shouldHandleCorrectly() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID enId = UUID.randomUUID();
-    UUID esId = UUID.randomUUID();
-    UUID deId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID enId = randomUUID();
+    UUID esId = randomUUID();
+    UUID deId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Content", List.of(
       createTextMetadata("muudkeeled", "en"),
@@ -280,10 +286,10 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text handles mixed single-value and multi-value properties correctly")
   void updateDonatedText_withMixedSingleAndMultiValueProperties_shouldHandleCorrectly() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID titleId = UUID.randomUUID();
-    UUID enId = UUID.randomUUID();
-    UUID esId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID titleId = randomUUID();
+    UUID enId = randomUUID();
+    UUID esId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Content", List.of(
       createTextMetadata("title", "Existing Title"),
@@ -342,10 +348,10 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text deletes removed properties")
   void updateDonatedText_whenPropertyRemoved_shouldDelete() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID titleId = UUID.randomUUID();
-    UUID authorId = UUID.randomUUID();
-    UUID typeId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID titleId = randomUUID();
+    UUID authorId = randomUUID();
+    UUID typeId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Content", List.of(
       createTextMetadata("title", "Title"),
@@ -397,9 +403,9 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text deletes all properties when all properties are removed")
   void updateDonatedText_whenAllPropertiesRemoved_shouldDeleteAll() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID titleId = UUID.randomUUID();
-    UUID authorId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID titleId = randomUUID();
+    UUID authorId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Content", List.of(
       createTextMetadata("title", "Title"),
@@ -437,7 +443,7 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text does not update content when text is unchanged")
   void updateDonatedText_whenTextUnchanged_shouldNotUpdateContent() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     TextAndMetadata existing = createTextAndMetadata("Content", List.of());
 
     TextUpdateRequestDto request = new TextUpdateRequestDto();
@@ -462,7 +468,7 @@ class AdminTextServiceTest {
   @DisplayName("Update donated text throws exception when donated text is not found")
   void updateDonatedText_whenTextNotFound_shouldThrowException() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
 
     TextUpdateRequestDto request = new TextUpdateRequestDto();
     request.setText("Updated content");
@@ -480,7 +486,7 @@ class AdminTextServiceTest {
   @DisplayName("Delete donated text deletes properties and text")
   void deleteDonatedText_shouldDeletePropertiesAndText() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     TextAndMetadata existing = createTextAndMetadata("Text", List.of(
       createTextMetadata("title", "Title")
     ));
@@ -498,7 +504,7 @@ class AdminTextServiceTest {
   @DisplayName("Delete donated text throws exception when donated text is not found")
   void deleteDonatedText_whenNotFound_shouldThrowException() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When & Then
@@ -512,8 +518,8 @@ class AdminTextServiceTest {
   @DisplayName("Publish donated text moves text and properties to published tables")
   void publishDonatedText_shouldMoveTextAndPropertiesToPublishedTables() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID publishedId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID publishedId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Donated content", List.of(
       createTextMetadata("title", "Title")
@@ -523,16 +529,9 @@ class AdminTextServiceTest {
       createTextMetadata("title", "Title")
     ));
 
-    List<TextMetadataDto> mappedProperties = List.of(
-      TextMetadataDto.builder()
-        .propertyName("title")
-        .propertyValue("Title")
-        .build()
-    );
-
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(existing);
+    when(textAddedDao.findCreatedAtById(testId)).thenReturn(null);
     when(textDao.insertDonatedText("Donated content")).thenReturn(publishedId);
-    when(donatedTextPropertyMapper.map(any())).thenReturn(mappedProperties);
     when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
 
     // When
@@ -553,19 +552,19 @@ class AdminTextServiceTest {
   @DisplayName("Publish donated text updates donated text before publishing when request is provided")
   void publishDonatedText_withRequest_shouldUpdateDonatedTextBeforePublish() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID publishedId = UUID.randomUUID();
-    UUID titlePropertyId = UUID.randomUUID();
-    UUID typePropertyId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID publishedId = randomUUID();
+    UUID titlePropertyId = randomUUID();
+    UUID descriptionPropertyId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Existing content", List.of(
       createTextMetadata("title", "Existing Title"),
-      createTextMetadata("type", "Essay")
+      createTextMetadata("kirjeldus", "Old Description")
     ));
 
     List<TextProperty> existingProperties = List.of(
       createTextProperty(titlePropertyId, "title", "Existing Title"),
-      createTextProperty(typePropertyId, "type", "Essay")
+      createTextProperty(descriptionPropertyId, "kirjeldus", "Old Description")
     );
 
     List<TextMetadataDto> newProperties = List.of(
@@ -574,8 +573,8 @@ class AdminTextServiceTest {
         .propertyValue("Updated Title")
         .build(),
       TextMetadataDto.builder()
-        .propertyName("type")
-        .propertyValue("Article")
+        .propertyName("kirjeldus")
+        .propertyValue("New Description")
         .build()
     );
 
@@ -585,31 +584,20 @@ class AdminTextServiceTest {
 
     TextAndMetadata updatedDonated = createTextAndMetadata("Updated content", List.of(
       createTextMetadata("title", "Updated Title"),
-      createTextMetadata("type", "Article")
+      createTextMetadata("kirjeldus", "New Description")
     ));
 
     TextAndMetadata published = createTextAndMetadata("Updated content", List.of(
       createTextMetadata("title", "Updated Title"),
-      createTextMetadata("type", "Article")
+      createTextMetadata("kirjeldus", "New Description")
     ));
-
-    List<TextMetadataDto> mappedProperties = List.of(
-      TextMetadataDto.builder()
-        .propertyName("title")
-        .propertyValue("Updated Title")
-        .build(),
-      TextMetadataDto.builder()
-        .propertyName("type")
-        .propertyValue("Article")
-        .build()
-    );
 
     when(textAddedDao.findTextAndMetadataById(testId))
       .thenReturn(existing)
       .thenReturn(updatedDonated);
     when(textPropertyAddedDao.findByTextId(testId)).thenReturn(existingProperties);
     when(textDao.insertDonatedText("Updated content")).thenReturn(publishedId);
-    when(donatedTextPropertyMapper.map(any())).thenReturn(mappedProperties);
+    when(textAddedDao.findCreatedAtById(testId)).thenReturn(null);
     when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
 
     // When
@@ -619,10 +607,10 @@ class AdminTextServiceTest {
     assertThat(response.getText()).isEqualTo("Updated content");
     verify(textAddedDao).updateTextContent(testId, "Updated content");
     verify(textPropertyAddedDao).updateProperty(titlePropertyId, "Updated Title");
-    verify(textPropertyAddedDao).updateProperty(typePropertyId, "Article");
+    verify(textPropertyAddedDao).updateProperty(descriptionPropertyId, "New Description");
     verify(textDao).insertDonatedText("Updated content");
     verify(textPropertyDao).insertProperty(publishedId, "title", "Updated Title");
-    verify(textPropertyDao).insertProperty(publishedId, "type", "Article");
+    verify(textPropertyDao).insertProperty(publishedId, "kirjeldus", "New Description");
     verify(textPropertyAddedDao).deleteByTextId(testId);
     verify(textAddedDao).deleteById(testId);
   }
@@ -631,7 +619,7 @@ class AdminTextServiceTest {
   @DisplayName("Publish donated text throws exception when donated text is not found")
   void publishDonatedText_whenNotFound_shouldThrowException() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When & Then
@@ -663,7 +651,7 @@ class AdminTextServiceTest {
   @DisplayName("Get published text details returns text when published text exists")
   void getPublishedTextDetails_whenTextExists_shouldReturnText() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     TextAndMetadata textAndMetadata = createTextAndMetadata("Text", List.of());
     when(textDao.findTextAndMetadataById(testId)).thenReturn(textAndMetadata);
 
@@ -681,7 +669,7 @@ class AdminTextServiceTest {
   @DisplayName("Get published text details returns empty when published text is not found")
   void getPublishedTextDetails_whenTextNotFound_shouldReturnEmpty() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     when(textDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When
@@ -696,9 +684,9 @@ class AdminTextServiceTest {
   @DisplayName("Update published text updates text and properties")
   void updatePublishedText_shouldUpdateTextAndProperties() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
-    UUID titlePropertyId = UUID.randomUUID();
-    UUID authorPropertyId = UUID.randomUUID();
+    UUID testId = randomUUID();
+    UUID titlePropertyId = randomUUID();
+    UUID authorPropertyId = randomUUID();
 
     TextAndMetadata existing = createTextAndMetadata("Existing content", List.of(
       createTextMetadata("title", "Existing Title"),
@@ -750,7 +738,7 @@ class AdminTextServiceTest {
   @DisplayName("Update published text does not update content when text is unchanged")
   void updatePublishedText_whenTextUnchanged_shouldNotUpdateContent() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     TextAndMetadata existing = createTextAndMetadata("Content", List.of());
 
     TextUpdateRequestDto request = new TextUpdateRequestDto();
@@ -775,7 +763,7 @@ class AdminTextServiceTest {
   @DisplayName("Update published text throws exception when published text is not found")
   void updatePublishedText_whenTextNotFound_shouldThrowException() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
 
     TextUpdateRequestDto request = new TextUpdateRequestDto();
     request.setText("Updated content");
@@ -793,7 +781,7 @@ class AdminTextServiceTest {
   @DisplayName("Delete published text deletes properties and text")
   void deletePublishedText_shouldDeletePropertiesAndText() throws Exception {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     TextAndMetadata existing = createTextAndMetadata("Text", List.of(
       createTextMetadata("title", "Title")
     ));
@@ -811,7 +799,7 @@ class AdminTextServiceTest {
   @DisplayName("Delete published text throws exception when published text is not found")
   void deletePublishedText_whenNotFound_shouldThrowException() {
     // Given
-    UUID testId = UUID.randomUUID();
+    UUID testId = randomUUID();
     when(textDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When & Then

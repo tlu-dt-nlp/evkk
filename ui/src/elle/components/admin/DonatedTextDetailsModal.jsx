@@ -130,7 +130,7 @@ const createDonatedTextFormData = (details) => {
     autoriHaridus: getFirstPropertyValue(properties, 'haridus'),
     autoriValdkond: getFirstPropertyValue(properties, 'valdkond'),
     autoriEmakeel: getFirstPropertyValue(properties, 'emakeel'),
-    autoriMuudKeeled: getFirstPropertyValue(properties, 'muudkeeled'),
+    autoriMuudKeeled: getPropertyValues(properties, 'muudkeeled').join(', '),
     autoriElukohariik: getFirstPropertyValue(properties, 'riik')
   };
 };
@@ -170,7 +170,7 @@ const createDonatedTextPayload = (text, formData, additionalProperties) => {
   pushProperty(properties, 'vanus', formData.autoriVanus);
   pushProperty(properties, 'sugu', formData.autoriSugu);
   pushProperty(properties, 'emakeel', formData.autoriEmakeel?.toLowerCase());
-  pushProperty(properties, 'muudkeeled', formData.autoriMuudKeeled);
+  pushMultiProperties(properties, 'muudkeeled', formData.autoriMuudKeeled.split(',').map(s => s.trim()).filter(Boolean));
   pushProperty(properties, 'riik', formData.autoriElukohariik);
 
   appendAdditionalProperties(properties, additionalProperties);

@@ -6,7 +6,7 @@ import {
   addedYearOptions,
   ageOptions,
   charactersOptions,
-  countryOptionsForQuery,
+  countryOptions,
   degreeOptions,
   domainDisplayOptions,
   educationOptions,
@@ -736,12 +736,12 @@ export default function PublishedTextSearchForm({
               value={singlePropertyData.country}
               onClick={e => alterSinglePropertyData(e, 'country')}
             >
-              {Object.keys(countryOptionsForQuery).map(country => (
+              {Object.keys(countryOptions).map(country => (
                 <MenuItem
                   key={country}
                   value={country}
                 >
-                  {t(countryOptionsForQuery[country])}
+                  {t(countryOptions[country])}
                 </MenuItem>
               ))}
             </Select>

@@ -23,6 +23,8 @@ public interface TextAddedDao {
     @Param("includeMeta") boolean includeMeta
   );
 
+  String findCreatedAtById(@Param("textId") UUID textId);
+
   void updateTextContent(@Param("textId") UUID textId, @Param("content") String content);
 
   void deleteById(@Param("textId") UUID textId);

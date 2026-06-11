@@ -99,8 +99,9 @@ public class AdminTextService {
       donatedTextToPublish = textAddedDao.findTextAndMetadataById(id);
     }
 
+    String createdAt = textAddedDao.findCreatedAtById(id);
     UUID publishedTextId = textDao.insertDonatedText(donatedTextToPublish.getText());
-    donatedTextPropertyMapper.map(donatedTextToPublish.getProperties())
+    DonatedTextPropertyMapper.map(donatedTextToPublish.getProperties(), createdAt)
       .forEach(p -> textPropertyDao.insertProperty(publishedTextId, p.getPropertyName(), p.getPropertyValue()));
     textPropertyAddedDao.deleteByTextId(id);
     textAddedDao.deleteById(id);

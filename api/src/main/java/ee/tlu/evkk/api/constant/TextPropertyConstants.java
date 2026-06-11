@@ -25,6 +25,7 @@ public class TextPropertyConstants {
   public static final String PROP_ARTICLE_PAGES = "artikkel_lehekyljed";
   public static final String PROP_AGE_RAW = "vanus";
   public static final String PROP_AGE_RANGE = "vanusevahemik";
+  public static final String PROP_YEAR = "aasta";
   public static final String PROP_YEAR_RANGE = "ajavahemik";
   public static final String PROP_GENDER = "sugu";
   public static final String PROP_EDUCATION = "haridus";

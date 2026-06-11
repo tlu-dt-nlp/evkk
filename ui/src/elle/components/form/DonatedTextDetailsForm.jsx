@@ -2,7 +2,7 @@ import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui
 import { useTranslation } from 'react-i18next';
 
 import {
-  countryOptionsForAddingText,
+  countryOptions,
   degreeOptions,
   domainSaveOptions,
   DonatedTextDetailsFormMode,
@@ -329,12 +329,12 @@ export default function DonatedTextDetailsForm({
             onClick={isSearchMode && ((event) => onChange(event, 'autoriElukohariik'))}
             name="autoriElukohariik"
           >
-            {Object.keys(countryOptionsForAddingText).map(country => (
+            {Object.keys(countryOptions).map(country => (
               <MenuItem
                 key={country}
                 value={country}
               >
-                {t(countryOptionsForAddingText[country])}
+                {t(countryOptions[country])}
               </MenuItem>
             ))}
           </Select>

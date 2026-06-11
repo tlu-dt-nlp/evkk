@@ -2,7 +2,7 @@ import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import {
-  countryOptionsForAddingText,
+  countryOptions,
   degreeOptions,
   domainSaveOptions,
   educationOptions,
@@ -110,7 +110,7 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
           />
           <ReadOnlyField
             label={t('query_author_data_country')}
-            value={translateOption(t, countryOptionsForAddingText, formData.autoriElukohariik)}
+            value={translateOption(t, countryOptions, formData.autoriElukohariik)}
           />
           <ReadOnlyField
             label={t('query_author_data_education')}
