@@ -1,42 +1,152 @@
+import { useCallback } from 'react';
+
 import { useFetch } from '../useFetch';
-import { useEffect } from 'react';
-
-export const useGetTextsToReviewCount = () => {
-  const { fetchData, response } = useFetch();
-
-  useEffect(() => {
-    fetchData('/api/admin/texts-to-review');
-  }, [fetchData]);
-
-  return response;
-};
 
 export const useGetDatabaseHealth = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/health');
+  const getDatabaseHealth = useCallback(() => {
+    return fetchData('/api/actuator/health');
   }, [fetchData]);
 
-  return response;
+  return { getDatabaseHealth };
 };
 
 export const useGetWordAnalyserMetrics = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/metrics/tools.wordanalyser', {}, { ignoreNotFoundError: true });
+  const getWordAnalyserMetrics = useCallback(() => {
+    return fetchData('/api/actuator/metrics/tools.wordanalyser', {}, { ignoreNotFoundError: true });
   }, [fetchData]);
 
-  return response;
+  return { getWordAnalyserMetrics };
 };
 
 export const useGetInternalServerErrorMetrics = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/metrics/http.errors.500.total');
+  const getInternalServerErrorMetrics = useCallback(() => {
+    return fetchData('/api/actuator/metrics/http.errors.500.total');
   }, [fetchData]);
 
-  return response;
+  return { getInternalServerErrorMetrics };
+};
+
+export const useGetTextsToReview = () => {
+  const { fetchData } = useFetch();
+
+  const getTextsToReview = useCallback(() => {
+    return fetchData('/api/admin/texts-to-review');
+  }, [fetchData]);
+
+  return { getTextsToReview };
+};
+
+export const useGetDonatedTexts = () => {
+  const { fetchData } = useFetch();
+
+  const getDonatedTexts = useCallback((textsRequest) => {
+    return fetchData(`/api/admin/donated-texts`, {
+      method: 'POST',
+      body: JSON.stringify(textsRequest)
+    });
+  }, [fetchData]);
+
+  return { getDonatedTexts };
+};
+
+export const useGetDonatedTextDetails = () => {
+  const { fetchData } = useFetch();
+
+  const getDonatedTextDetails = useCallback((id) => {
+    return fetchData(`/api/admin/donated-texts/${id}`);
+  }, [fetchData]);
+
+  return { getDonatedTextDetails };
+};
+
+export const useUpdateDonatedText = () => {
+  const { fetchData } = useFetch();
+
+  const updateDonatedText = useCallback((id, textUpdateRequest) => {
+    return fetchData(`/api/admin/donated-texts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(textUpdateRequest)
+    });
+  }, [fetchData]);
+
+  return { updateDonatedText };
+};
+
+export const useDeleteDonatedText = () => {
+  const { fetchData } = useFetch();
+
+  const deleteDonatedText = useCallback((id) => {
+    return fetchData(`/api/admin/donated-texts/${id}`, {
+      method: 'DELETE'
+    });
+  }, [fetchData]);
+
+  return { deleteDonatedText };
+};
+
+export const usePublishDonatedText = () => {
+  const { fetchData } = useFetch();
+
+  const publishDonatedText = useCallback((id, textUpdateRequest) => {
+    return fetchData(`/api/admin/donated-texts/${id}/publish`, {
+      method: 'POST',
+      ...(textUpdateRequest != null && { body: JSON.stringify(textUpdateRequest) })
+    });
+  }, [fetchData]);
+
+  return { publishDonatedText };
+};
+
+export const useGetPublishedTexts = () => {
+  const { fetchData } = useFetch();
+
+  const getPublishedTexts = useCallback((textsRequest) => {
+    return fetchData(`/api/admin/published-texts`, {
+      method: 'POST',
+      body: JSON.stringify(textsRequest)
+    });
+  }, [fetchData]);
+
+  return { getPublishedTexts };
+};
+
+export const useGetPublishedTextDetails = () => {
+  const { fetchData } = useFetch();
+
+  const getPublishedTextDetails = useCallback((id) => {
+    return fetchData(`/api/admin/published-texts/${id}`);
+  }, [fetchData]);
+
+  return { getPublishedTextDetails };
+};
+
+export const useUpdatePublishedText = () => {
+  const { fetchData } = useFetch();
+
+  const updatePublishedText = useCallback((id, textUpdateRequest) => {
+    return fetchData(`/api/admin/published-texts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(textUpdateRequest)
+    });
+  }, [fetchData]);
+
+  return { updatePublishedText };
+};
+
+export const useDeletePublishedText = () => {
+  const { fetchData } = useFetch();
+
+  const deletePublishedText = useCallback((id) => {
+    return fetchData(`/api/admin/published-texts/${id}`, {
+      method: 'DELETE'
+    });
+  }, [fetchData]);
+
+  return { deletePublishedText };
 };

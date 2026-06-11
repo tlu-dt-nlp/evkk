@@ -26,7 +26,8 @@ export const addedYearOptions = [
   { key: '2006–2010', range: '2006-2010' },
   { key: '2011–2015', range: '2011-2015' },
   { key: '2016–2020', range: '2016-2020' },
-  { key: '2021–2025', range: '2021-2025' }
+  { key: '2021–2025', range: '2021-2025' },
+  { key: '2026–2030', range: '2026-2030' }
 ];
 
 export const charactersOptions = [
@@ -164,8 +165,7 @@ export const textTypesOptions = {
   },
   'cYDRkpymb': {
     'k1eesti_arvamuslugu': 'query_text_data_type_L1_opinion_piece',
-    // currently no texts present in the database
-    // 'k1eesti_eksamitoo': 'query_text_data_type_L1_examination',
+    'k1eesti_eksamitoo': 'query_text_data_type_L1_examination',
     'k1eesti_harjutus': 'query_text_data_type_L1_exercise',
     'query_text_data_type_L1_e_essay': {
       'k1eesti_ekirjand_9kl': 'query_text_data_type_L1_e_essay_9th_grade',
@@ -191,15 +191,13 @@ export const textTypesOptions = {
       'ak_eriala_ulevaade': 'query_text_data_type_academic_studies_overview'
     },
     'query_text_data_type_academic_research': {
-      // currently no texts present in the database
-      // 'ak_uurimus_artikkel': 'query_text_data_type_academic_research_research_article',
+      'ak_uurimus_artikkel': 'query_text_data_type_academic_research_research_article',
       'ak_uurimus_ettekanne': 'query_text_data_type_academic_research_presentation',
       'ak_uurimus_kokkuvote': 'query_text_data_type_academic_research_summary',
       'ak_uurimus_batoo': 'query_text_data_type_academic_research_bachelors_thesis',
       'ak_uurimus_diplomitoo': 'query_text_data_type_academic_research_thesis',
-      'ak_uurimus_matoo': 'query_text_data_type_academic_research_masters_thesis'
-      // currently no texts present in the database
-      // 'ak_uurimus_phdtoo': 'query_text_data_type_academic_research_doctoral_thesis'
+      'ak_uurimus_matoo': 'query_text_data_type_academic_research_masters_thesis',
+      'ak_uurimus_phdtoo': 'query_text_data_type_academic_research_doctoral_thesis'
     }
   }
 };
@@ -269,11 +267,9 @@ export const textLanguageOptions = {
 };
 
 export const domainDisplayOptions = {
-  // currently no texts present in the database
-  // 'biojakeskkonnateadused': 'common_text_data_field_of_research_biosciences_and_environment',
+  'biojakeskkonnateadused': 'common_text_data_field_of_research_biosciences_and_environment',
   'yhiskondjakultuur': 'common_text_data_field_of_research_culture_and_society',
-  // currently no texts present in the database
-  // 'terviseuuringud': 'common_text_data_field_of_research_health',
+  'terviseuuringud': 'common_text_data_field_of_research_health',
   'loodustehnika': 'common_text_data_field_of_research_natural_sciences_and_engineering'
 };
 
@@ -336,7 +332,7 @@ export const textPublishAcademicCategoryOptions = {
 };
 
 export const textPublishAcademicStudiesSubtypeOptions = {
-  'ak_analuus': 'query_text_data_type_academic_studies_analysis',
+  'ak_eriala_analuus': 'query_text_data_type_academic_studies_analysis',
   'ak_eriala_essee': 'query_text_data_type_academic_studies_essay',
   'ak_eriala_kursusetoo': 'query_text_data_type_academic_studies_course_paper',
   'ak_eriala_referaat': 'query_text_data_type_academic_studies_report',
@@ -432,26 +428,7 @@ export const languageOptionsForOtherLangs = {
   'saksa': 'query_common_language_de'
 };
 
-export const countryOptionsForQuery = {
-  'Eesti': 'query_common_country_et',
-  'Soome': 'query_common_country_fi',
-  'Leedu': 'query_common_country_lt',
-  'Saksamaa': 'query_common_country_de',
-  'Inglismaa': 'query_common_country_en',
-  'Ungari': 'query_common_country_hu'
-};
-
-export const countryOptionsForQueryResults = {
-  'Eesti': 'query_common_country_et',
-  'Soome': 'query_common_country_fi',
-  'Leedu': 'query_common_country_lt',
-  'Saksamaa': 'query_common_country_de',
-  'Inglismaa': 'query_common_country_en',
-  'Ungari': 'query_common_country_hu',
-  'Muu': 'query_common_country_other'
-};
-
-export const countryOptionsForAddingText = {
+export const countryOptions = {
   'Eesti': 'query_common_country_et',
   'Soome': 'query_common_country_fi',
   'Rootsi': 'query_common_country_se',
@@ -463,8 +440,18 @@ export const countryOptionsForAddingText = {
   'Ungari': 'query_common_country_hu'
 };
 
+export const countryOptionsForQueryResults = {
+  ...countryOptions,
+  'Muu': 'query_common_country_other'
+};
+
 export const textToSpeechVoices = {
   mari: 'Mari',
   albert: 'Albert',
   kalev: 'Kalev'
+};
+
+export const DonatedTextDetailsFormMode = {
+  PUBLISH: 'PUBLISH',
+  SEARCH: 'SEARCH'
 };
