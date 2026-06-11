@@ -18,6 +18,17 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      steps {
+        sh './gradlew test --no-daemon'
+      }
+      post {
+        always {
+          junit '**/build/test-results/**/*.xml'
+        }
+      }
+    }
+
     stage('Build') {
       steps {
         withCredentials([string(credentialsId: 'gemini-api-key', variable: 'GEMINI_API_KEY')]) {
