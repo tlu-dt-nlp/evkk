@@ -46,19 +46,16 @@ public class AdminTextService {
   private final TextPropertyDao textPropertyDao;
 
   public TextsToReviewResponseDto getTextsToReview() {
-    log.info("Fetching texts to review");
     return TextsToReviewResponseDto.builder()
       .count(textAddedDao.count())
       .build();
   }
 
   public String getDonatedTexts(DonatedTextRequestDto request) {
-    log.info("Fetching donated texts");
     return textService.getDonatedTexts(request, true);
   }
 
   public Optional<TextDetailsResponseDto> getDonatedTextDetails(UUID id) {
-    log.info("Fetching donated text details id={}", id);
     return Optional.ofNullable(textAddedDao.findTextAndMetadataById(id))
       .map(this::toTextDetailsResponseDto);
   }
@@ -106,12 +103,10 @@ public class AdminTextService {
   }
 
   public String getPublishedTexts(CorpusRequestDto request) {
-    log.info("Fetching published texts");
     return textService.detailneparing(request, true);
   }
 
   public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
-    log.info("Fetching published text details id={}", id);
     return Optional.ofNullable(textDao.findTextAndMetadataById(id))
       .map(this::toTextDetailsResponseDto);
   }
@@ -206,10 +201,7 @@ public class AdminTextService {
 
     // First pass: Try to find exact value match (for multi-value properties)
     for (TextProperty existing : matchingProperties) {
-      if (
-        !idsToKeep.contains(existing.getId())
-          && Objects.equals(existing.getPropertyValue(), newProperty.getPropertyValue())
-      ) {
+      if (!idsToKeep.contains(existing.getId()) && Objects.equals(existing.getPropertyValue(), newProperty.getPropertyValue())) {
         idsToKeep.add(existing.getId());
         return new PropertyMatch(existing.getId(), false);
       }

@@ -7,7 +7,6 @@ import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
 import ee.tlu.evkk.api.service.AdminTextService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.UUID;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -35,8 +36,7 @@ public class AdminController {
     return ResponseEntity.ok(adminTextService.getTextsToReview());
   }
 
-  // Result is already JSON-formatted by the DAO; DTO mapping is unnecessary
-  @PostMapping(value = "/donated-texts", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/donated-texts", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<String> getDonatedTexts(@RequestBody DonatedTextRequestDto request) {
     return ResponseEntity.ok(adminTextService.getDonatedTexts(request));
   }
@@ -70,8 +70,7 @@ public class AdminController {
     return ResponseEntity.ok(adminTextService.publishDonatedText(id, request));
   }
 
-  // Result is already JSON-formatted by the DAO; DTO mapping is unnecessary
-  @PostMapping(value = "/published-texts", produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(value = "/published-texts", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity<String> getPublishedTexts(@RequestBody CorpusRequestDto request) {
     return ResponseEntity.ok(adminTextService.getPublishedTexts(request));
   }
