@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AdminTextService {
 
   private final TextService textService;
@@ -44,7 +45,6 @@ public class AdminTextService {
   private final TextDao textDao;
   private final TextPropertyDao textPropertyDao;
 
-  @Transactional(readOnly = true)
   public TextsToReviewResponseDto getTextsToReview() {
     log.info("Fetching texts to review");
     return TextsToReviewResponseDto.builder()
@@ -52,13 +52,11 @@ public class AdminTextService {
       .build();
   }
 
-  @Transactional(readOnly = true)
   public String getDonatedTexts(DonatedTextRequestDto request) {
     log.info("Fetching donated texts");
     return textService.getDonatedTexts(request, true);
   }
 
-  @Transactional(readOnly = true)
   public Optional<TextDetailsResponseDto> getDonatedTextDetails(UUID id) {
     log.info("Fetching donated text details id={}", id);
     return Optional.ofNullable(textAddedDao.findTextAndMetadataById(id))
@@ -107,13 +105,11 @@ public class AdminTextService {
     return toTextDetailsResponseDto(textDao.findTextAndMetadataById(publishedTextId));
   }
 
-  @Transactional(readOnly = true)
   public String getPublishedTexts(CorpusRequestDto request) {
     log.info("Fetching published texts");
     return textService.detailneparing(request, true);
   }
 
-  @Transactional(readOnly = true)
   public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
     log.info("Fetching published text details id={}", id);
     return Optional.ofNullable(textDao.findTextAndMetadataById(id))
