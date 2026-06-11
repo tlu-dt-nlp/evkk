@@ -169,7 +169,7 @@ const createDonatedTextPayload = (text, formData, additionalProperties) => {
   pushProperty(properties, 'kasAutor', formData.tekstiAutor);
   pushProperty(properties, 'vanus', formData.autoriVanus);
   pushProperty(properties, 'sugu', formData.autoriSugu);
-  pushProperty(properties, 'emakeel', formData.autoriEmakeel);
+  pushProperty(properties, 'emakeel', formData.autoriEmakeel?.toLowerCase());
   pushProperty(properties, 'muudkeeled', formData.autoriMuudKeeled);
   pushProperty(properties, 'riik', formData.autoriElukohariik);
 
