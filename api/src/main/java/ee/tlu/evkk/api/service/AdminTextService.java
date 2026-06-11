@@ -39,8 +39,6 @@ import java.util.stream.Collectors;
 public class AdminTextService {
 
   private final TextService textService;
-  private final DonatedTextPropertyMapper donatedTextPropertyMapper;
-
   private final TextAddedDao textAddedDao;
   private final TextPropertyAddedDao textPropertyAddedDao;
   private final TextDao textDao;
