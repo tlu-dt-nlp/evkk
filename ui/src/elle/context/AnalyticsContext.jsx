@@ -3,7 +3,7 @@ import ReactGA from 'react-ga4';
 import { AnalyticsBanner } from '../components/AnalyticsBanner';
 import { ANALYTICS_CONSENT_KEY } from '../const/Constants';
 
-const MEASUREMENT_ID = import.meta.env.GA_MEASUREMENT_ID;
+const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
 const AnalyticsContext = createContext(null);
 
