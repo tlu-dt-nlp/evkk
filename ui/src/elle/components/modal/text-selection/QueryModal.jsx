@@ -109,6 +109,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
   const submitted = () => {
     const selectedCorpuses = getSelectedCorpusList();
+    trackEvent('Corpus query', 'submit', 'query-modal');
 
     if (selectedCorpuses.length === 0) {
       setAlert(true);

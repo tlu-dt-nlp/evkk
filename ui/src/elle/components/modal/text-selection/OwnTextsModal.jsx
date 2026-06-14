@@ -5,17 +5,20 @@ import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import { changeOwnTexts, queryStore } from '../../../store/QueryStore';
+import { useAnalytics } from '../../../context/AnalyticsContext';
 
 export default function OwnTextsModal({ isOpen, setIsOpen }) {
 
   const { t } = useTranslation();
   const [textInput, setTextInput] = useState('');
+  const { trackEvent } = useAnalytics();
 
   useEffect(() => {
     setTextInput(queryStore.getState().ownTexts);
   }, []);
 
   const handleSubmit = () => {
+    trackEvent('Own text', 'save', 'own-text-modal');
     queryStore.dispatch(changeOwnTexts(textInput));
     setIsOpen(false);
   };
