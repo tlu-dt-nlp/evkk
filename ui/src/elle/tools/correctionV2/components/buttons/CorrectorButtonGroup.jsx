@@ -6,6 +6,7 @@ import { useGetCorrectorResult } from '../../../../hooks/service/ToolsService';
 import { useEditorContext } from '../../providers/EditorProvider';
 import { GRAMMARCHECKER } from '../../../correction/const/Constants';
 import GenericTabs from '../../../../components/GenericTabs';
+import { useAnalytics } from '../../../../context/AnalyticsContext';
 
 export default function CorrectorButtonGroup({ selectedTab }) {
   const { getCorrectorResult } = useGetCorrectorResult();
@@ -28,6 +29,8 @@ export default function CorrectorButtonGroup({ selectedTab }) {
 
   const toggleButtons = ToggleButtonCategories[selectedTab];
 
+  const { trackEvent } = useAnalytics();
+
   const [value, setValue] = useState(toggleButtons[0].value);
 
   useEffect(() => {
@@ -38,6 +41,7 @@ export default function CorrectorButtonGroup({ selectedTab }) {
 
   const handleChange = async (_, newValue) => {
     setValue(newValue);
+    trackEvent('Correction', 'sub-tab-change', newValue);
     if (initialText !== text && Object.keys(errorResponse).length !== 0) {
       const result = await getCorrectorResult({
         tekst: text,

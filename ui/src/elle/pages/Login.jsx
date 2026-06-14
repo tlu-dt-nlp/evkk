@@ -1,16 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import './styles/Login.css';
-import i18n from 'i18next';
-import CookieAcknowledgementSnackbar from '../components/snackbar/CookieAcknowledgementSnackbar';
 import haridLogo from '../resources/images/misc/harid_logo.png';
+import { useAnalytics } from '../context/AnalyticsContext';
 
 export default function Login() {
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { trackEvent } = useAnalytics();
 
   const handleClick = () => {
+    trackEvent('Auth', 'click', 'harid-login');
     const urlBase = `api/auth/login/harid?language=${i18n.language}`;
-    window.location.href = import.meta.env.MODE === 'production' ? urlBase : `http://localhost:9090/${urlBase}`;
+    globalThis.location.href = import.meta.env.MODE === 'production' ? urlBase : `http://localhost:9090/${urlBase}`;
   };
 
   return (
@@ -22,7 +23,6 @@ export default function Login() {
         onClick={handleClick}
         className="harid-image"
       />
-      <CookieAcknowledgementSnackbar />
     </div>
   );
 }

@@ -74,7 +74,7 @@ const CorrectionDocxDownloadButton = ({ innerHtml, modelValue, errorList, tab, t
           disabled={!grammarLabel && (modelValue === GRAMMARCHECKER || modelValue === SPELLCHECKER)}
           onClick={runDownloader}
         >
-          <DownloadIcon sx={{ height: '30px' }}/>
+          <DownloadIcon sx={{ height: '30px' }} />
         </Button>
       </span>
     </Tooltip>

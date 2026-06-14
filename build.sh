@@ -22,7 +22,11 @@ declare -a services=("evkk-backend" "evkk-ui" "evkk-stanza-server" "evkk-correct
 
 for service in "${services[@]}"
 do
-  docker build . -f ./docker/images/${service}.Dockerfile -t ${service}
+  BUILD_ARGS=""
+  if [ "$service" == "evkk-ui" ] && [ -n "$GA_MEASUREMENT_ID" ]; then
+    BUILD_ARGS="--build-arg GA_MEASUREMENT_ID=${GA_MEASUREMENT_ID}"
+  fi
+  docker build . $BUILD_ARGS -f ./docker/images/${service}.Dockerfile -t ${service}
   docker save -o ./build/images/${service}.tar ${service}
 done
 

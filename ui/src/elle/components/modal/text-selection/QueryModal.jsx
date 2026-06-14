@@ -31,6 +31,7 @@ import { useGetQueryResults } from '../../../hooks/service/TextService';
 import TooltipOnText from '../../tooltip/TooltipOnText';
 import ModalBase from '../ModalBase';
 import SelectMultiple, { SelectMultipleType } from '../../SelectMultiple';
+import { useAnalytics } from '../../../context/AnalyticsContext';
 
 export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
@@ -59,6 +60,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
   const [isQueryResponsePage, setIsQueryResponsePage] = useState(false);
   const [previousSelectedIds, setPreviousSelectedIds] = useState({});
   const { getQueryResults } = useGetQueryResults();
+  const { trackEvent } = useAnalytics();
   const [singlePropertyData, setSinglePropertyData] = useState({
     language: 'eesti',
     level: '',
@@ -109,6 +111,7 @@ export default function QueryModal({ isQueryOpen, setIsQueryOpen }) {
 
   const submitted = () => {
     const selectedCorpuses = getSelectedCorpusList();
+    trackEvent('Corpus query', 'submit', 'query-modal');
 
     if (selectedCorpuses.length === 0) {
       setAlert(true);
