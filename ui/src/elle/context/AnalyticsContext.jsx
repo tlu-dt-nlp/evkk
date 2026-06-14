@@ -11,8 +11,6 @@ const getPagePath = (location) => `${location.pathname}${location.search ?? ''}`
 
 const getAnalyticsConsent = () => {
   const value = localStorage.getItem(ANALYTICS_CONSENT_KEY);
-  if (value === 'granted') return true;
-  if (value === 'denied') return false;
   return JSON.parse(value);
 };
 const resetAnalyticsConsent = () => localStorage.removeItem(ANALYTICS_CONSENT_KEY);
