@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -55,9 +54,8 @@ public class AdminTextService {
     return textService.getDonatedTexts(request, true);
   }
 
-  public Optional<TextDetailsResponseDto> getDonatedTextDetails(UUID id) {
-    return Optional.ofNullable(textAddedDao.findTextAndMetadataById(id))
-      .map(this::toTextDetailsResponseDto);
+  public TextDetailsResponseDto getDonatedTextDetails(UUID id) {
+    return toTextDetailsResponseDto(validateDonatedTextExists(id));
   }
 
   @Transactional
@@ -106,9 +104,8 @@ public class AdminTextService {
     return textService.detailneparing(request, true);
   }
 
-  public Optional<TextDetailsResponseDto> getPublishedTextDetails(UUID id) {
-    return Optional.ofNullable(textDao.findTextAndMetadataById(id))
-      .map(this::toTextDetailsResponseDto);
+  public TextDetailsResponseDto getPublishedTextDetails(UUID id) {
+    return toTextDetailsResponseDto(validatePublishedTextExists(id));
   }
 
   @Transactional

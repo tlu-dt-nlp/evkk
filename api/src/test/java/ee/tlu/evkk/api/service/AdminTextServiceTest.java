@@ -24,12 +24,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
@@ -100,12 +100,11 @@ class AdminTextServiceTest {
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(textAndMetadata);
 
     // When
-    Optional<TextDetailsResponseDto> response = adminTextService.getDonatedTextDetails(testId);
+    TextDetailsResponseDto response = adminTextService.getDonatedTextDetails(testId);
 
     // Then
-    assertThat(response).isPresent();
-    assertThat(response.get().getText()).isEqualTo("Text");
-    assertThat(response.get().getProperties()).isEmpty();
+    assertThat(response.getText()).isEqualTo("Text");
+    assertThat(response.getProperties()).isEmpty();
     verify(textAddedDao).findTextAndMetadataById(testId);
   }
 
@@ -117,10 +116,9 @@ class AdminTextServiceTest {
     when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When
-    Optional<TextDetailsResponseDto> response = adminTextService.getDonatedTextDetails(testId);
+    assertThrows(EntityNotFoundException.class, () -> adminTextService.getDonatedTextDetails(testId));
 
     // Then
-    assertThat(response).isEmpty();
     verify(textAddedDao).findTextAndMetadataById(testId);
   }
 
@@ -656,12 +654,11 @@ class AdminTextServiceTest {
     when(textDao.findTextAndMetadataById(testId)).thenReturn(textAndMetadata);
 
     // When
-    Optional<TextDetailsResponseDto> response = adminTextService.getPublishedTextDetails(testId);
+    TextDetailsResponseDto response = adminTextService.getPublishedTextDetails(testId);
 
     // Then
-    assertThat(response).isPresent();
-    assertThat(response.get().getText()).isEqualTo("Text");
-    assertThat(response.get().getProperties()).isEmpty();
+    assertThat(response.getText()).isEqualTo("Text");
+    assertThat(response.getProperties()).isEmpty();
     verify(textDao).findTextAndMetadataById(testId);
   }
 
@@ -673,10 +670,9 @@ class AdminTextServiceTest {
     when(textDao.findTextAndMetadataById(testId)).thenReturn(null);
 
     // When
-    Optional<TextDetailsResponseDto> response = adminTextService.getPublishedTextDetails(testId);
+    assertThrows(EntityNotFoundException.class, () -> adminTextService.getPublishedTextDetails(testId));
 
     // Then
-    assertThat(response).isEmpty();
     verify(textDao).findTextAndMetadataById(testId);
   }
 
