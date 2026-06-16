@@ -7,6 +7,7 @@ import ee.evkk.dto.TextDetailsResponseDto;
 import ee.evkk.dto.TextMetadataDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.tlu.evkk.api.converter.DtoMapperImpl;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -41,6 +43,10 @@ import static org.mockito.Mockito.when;
 class AdminTextServiceTest {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
+
+  @Spy
+  @SuppressWarnings("unused")
+  private DtoMapperImpl dtoMapper = new DtoMapperImpl();
 
   @Mock
   private TextService textService;

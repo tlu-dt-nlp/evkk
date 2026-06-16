@@ -31,9 +31,11 @@ public class TestUtils {
   }
 
   public static JsonNode stringArrayToJson(@NotNull String content) throws JsonProcessingException {
-    return objectMapper.readTree(content
-      .replace("\n", "")
-      .replace(" ", ""));
+    return objectMapper.readTree(
+      content
+        .replace("\n", "")
+        .replace(" ", "")
+    );
   }
 
   private static String readFromStream(InputStream inputStream) throws IOException {
