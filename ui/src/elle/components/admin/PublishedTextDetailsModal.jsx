@@ -240,7 +240,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
   };
 
   const handleTextChange = (event) => {
-    setText(event.target.value.replaceAll('\n', '\\n'));
+    setText(event.target.value.replaceAll('\n', String.raw`\n`));
   };
 
   const handleCancel = () => {
@@ -330,7 +330,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
                   onChange={handleTextChange}
                   required
                   rows={8}
-                  value={text.replaceAll('\\n', '\n')}
+                  value={text.replaceAll(String.raw`\n`, '\n')}
                 />
               </>
             ) : (
