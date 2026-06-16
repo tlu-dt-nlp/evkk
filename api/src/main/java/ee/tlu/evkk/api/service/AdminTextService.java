@@ -29,7 +29,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -114,7 +116,14 @@ public class AdminTextService {
 
     TextAndMetadata existing = validatePublishedTextExists(id);
     updatePublishedTextContentIfChanged(id, existing.getText(), request.getText());
-    updatePublishedTextProperties(id, request.getProperties());
+    updateProperties(
+      id,
+      request.getProperties(),
+      textPropertyDao::findByTextId,
+      textPropertyDao::updateProperty,
+      textPropertyDao::insertProperty,
+      textPropertyDao::deleteByIds
+    );
 
     return toTextDetailsResponseDto(textDao.findTextAndMetadataById(id));
   }
@@ -163,21 +172,14 @@ public class AdminTextService {
   }
 
   private void updateDonatedTextProperties(UUID id, List<TextMetadataDto> newProperties) {
-    Collection<TextProperty> existingProperties = textPropertyAddedDao.findByTextId(id);
-    Map<String, List<TextProperty>> existingByName = groupPropertiesByName(existingProperties);
-    Set<UUID> idsToKeep = new HashSet<>();
-
-    for (TextMetadataDto newProperty : newProperties) {
-      PropertyMatch match = findMatchingProperty(existingByName, newProperty, idsToKeep);
-
-      if (match.getId() != null && match.isValueChanged()) {
-        textPropertyAddedDao.updateProperty(match.getId(), newProperty.getPropertyValue());
-      } else if (match.getId() == null) {
-        textPropertyAddedDao.insertProperty(id, newProperty.getPropertyName(), newProperty.getPropertyValue());
-      }
-    }
-
-    deleteUnusedProperties(existingProperties, idsToKeep, textPropertyAddedDao::deleteByIds);
+    updateProperties(
+      id,
+      newProperties,
+      textPropertyAddedDao::findByTextId,
+      textPropertyAddedDao::updateProperty,
+      textPropertyAddedDao::insertProperty,
+      textPropertyAddedDao::deleteByIds
+    );
   }
 
   private Map<String, List<TextProperty>> groupPropertiesByName(Collection<TextProperty> properties) {
@@ -244,8 +246,15 @@ public class AdminTextService {
     }
   }
 
-  private void updatePublishedTextProperties(UUID id, List<TextMetadataDto> newProperties) {
-    Collection<TextProperty> existingProperties = textPropertyDao.findByTextId(id);
+  private void updateProperties(
+    UUID id,
+    List<TextMetadataDto> newProperties,
+    Function<UUID, Collection<TextProperty>> findFn,
+    BiConsumer<UUID, String> updateFn,
+    TriConsumer<UUID, String, String> insertFn,
+    Consumer<List<UUID>> deleteFn
+  ) {
+    Collection<TextProperty> existingProperties = findFn.apply(id);
     Map<String, List<TextProperty>> existingByName = groupPropertiesByName(existingProperties);
     Set<UUID> idsToKeep = new HashSet<>();
 
@@ -253,13 +262,19 @@ public class AdminTextService {
       PropertyMatch match = findMatchingProperty(existingByName, newProperty, idsToKeep);
 
       if (match.getId() != null && match.isValueChanged()) {
-        textPropertyDao.updateProperty(match.getId(), newProperty.getPropertyValue());
+        updateFn.accept(match.getId(), newProperty.getPropertyValue());
       } else if (match.getId() == null) {
-        textPropertyDao.insertProperty(id, newProperty.getPropertyName(), newProperty.getPropertyValue());
+        insertFn.accept(id, newProperty.getPropertyName(), newProperty.getPropertyValue());
       }
     }
 
-    deleteUnusedProperties(existingProperties, idsToKeep, textPropertyDao::deleteByIds);
+    deleteUnusedProperties(existingProperties, idsToKeep, deleteFn);
+  }
+
+  @FunctionalInterface
+  private interface TriConsumer<A, B, C> {
+
+    void accept(A a, B b, C c);
   }
 
   @Data
