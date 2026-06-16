@@ -275,7 +275,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   };
 
   const headerActions = (
-    <Box className="d-flex flex-wrap gap-1" sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+    <Box className="d-flex flex-wrap gap-1">
       <Button
         onClick={() => setIsPublishModalOpen(true)}
         size="small"
@@ -315,6 +315,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
       <ModalBase
         disableComfortClosing
         headerActions={headerActions}
+        innerClassName="modal-head-stacked"
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         title={title}

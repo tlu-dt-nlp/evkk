@@ -258,7 +258,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
   };
 
   const headerActions = (
-    <Box className="d-flex flex-wrap gap-1" sx={{ flexDirection: { xs: 'column', sm: 'row' } }}>
+    <Box className="d-flex flex-wrap gap-1">
       {!isEditMode && (
         <Button
           onClick={() => setIsEditMode(true)}
@@ -288,6 +288,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
       <ModalBase
         disableComfortClosing
         headerActions={headerActions}
+        innerClassName="modal-head-stacked"
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         title={title}
