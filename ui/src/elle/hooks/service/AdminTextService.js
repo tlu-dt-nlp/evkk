@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-
 import { useFetch } from '../useFetch';
 
 export const useGetTextsToReview = () => {
