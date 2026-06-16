@@ -21,7 +21,7 @@ export default function DonatedTextsTable({ onOpenDetails, rows }) {
   const columns = useMemo(() => [
     {
       id: 'createdAt',
-      header: t('query_results_added_at'),
+      header: t('query_results_created_at'),
       accessorKey: 'createdAt',
       cell: info => formatDate(info.row.original.createdAt),
       sortingFn: 'datetime',
