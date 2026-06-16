@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AdminControllerTest extends IntegrationTest {
+class AdminTextControllerTest extends IntegrationTest {
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -28,7 +28,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot get amount of texts to review")
   void unauthenticatedUserCannotGetAmountOfTextsToReview() throws Exception {
     mockMvc.perform(
-        get("/admin/texts-to-review"))
+        get("/admin/texts/to-review"))
       .andExpect(status().isUnauthorized());
   }
 
@@ -37,7 +37,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotGetAmountOfTextsToReview() throws Exception {
     mockMvc.perform(
-        get("/admin/texts-to-review"))
+        get("/admin/texts/to-review"))
       .andExpect(status().isForbidden());
   }
 
@@ -46,7 +46,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserCanGetAmountOfTextsToReview() throws Exception {
     mockMvc.perform(
-        get("/admin/texts-to-review"))
+        get("/admin/texts/to-review"))
       .andExpect(status().isOk());
   }
 
@@ -54,7 +54,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot get donated texts")
   void unauthenticatedUserCannotGetDonatedTexts() throws Exception {
     mockMvc.perform(
-        post("/admin/donated-texts")
+        post("/admin/texts/donated")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(new DonatedTextRequestDto())))
       .andExpect(status().isUnauthorized());
@@ -65,7 +65,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotGetDonatedTexts() throws Exception {
     mockMvc.perform(
-        post("/admin/donated-texts")
+        post("/admin/texts/donated")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(new DonatedTextRequestDto())))
       .andExpect(status().isForbidden());
@@ -79,7 +79,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setAutoriEmakeel("nonExistentLanguage");
 
     mockMvc.perform(
-        post("/admin/donated-texts")
+        post("/admin/texts/donated")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isOk());
@@ -89,7 +89,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot get donated text details")
   void unauthenticatedUserCannotGetDonatedTextDetails() throws Exception {
     mockMvc.perform(
-        get("/admin/donated-texts/" + randomUUID()))
+        get("/admin/texts/donated/" + randomUUID()))
       .andExpect(status().isUnauthorized());
   }
 
@@ -98,7 +98,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotGetDonatedTextDetails() throws Exception {
     mockMvc.perform(
-        get("/admin/donated-texts/" + randomUUID()))
+        get("/admin/texts/donated/" + randomUUID()))
       .andExpect(status().isForbidden());
   }
 
@@ -107,7 +107,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserGets404WhenDonatedTextNotFound() throws Exception {
     mockMvc.perform(
-        get("/admin/donated-texts/" + randomUUID()))
+        get("/admin/texts/donated/" + randomUUID()))
       .andExpect(status().isNotFound());
   }
 
@@ -119,7 +119,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(emptyList());
 
     mockMvc.perform(
-        put("/admin/donated-texts/" + randomUUID())
+        put("/admin/texts/donated/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isUnauthorized());
@@ -134,7 +134,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(emptyList());
 
     mockMvc.perform(
-        put("/admin/donated-texts/" + randomUUID())
+        put("/admin/texts/donated/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isForbidden());
@@ -149,7 +149,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(null);
 
     mockMvc.perform(
-        put("/admin/donated-texts/" + randomUUID())
+        put("/admin/texts/donated/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isBadRequest());
@@ -164,7 +164,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(emptyList());
 
     mockMvc.perform(
-        put("/admin/donated-texts/" + randomUUID())
+        put("/admin/texts/donated/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isNotFound());
@@ -174,7 +174,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot delete donated text")
   void unauthenticatedUserCannotDeleteDonatedText() throws Exception {
     mockMvc.perform(
-        delete("/admin/donated-texts/" + randomUUID()))
+        delete("/admin/texts/donated/" + randomUUID()))
       .andExpect(status().isUnauthorized());
   }
 
@@ -183,7 +183,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotDeleteDonatedText() throws Exception {
     mockMvc.perform(
-        delete("/admin/donated-texts/" + randomUUID()))
+        delete("/admin/texts/donated/" + randomUUID()))
       .andExpect(status().isForbidden());
   }
 
@@ -192,7 +192,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserGets404WhenDeletingNonExistentDonatedText() throws Exception {
     mockMvc.perform(
-        delete("/admin/donated-texts/" + randomUUID()))
+        delete("/admin/texts/donated/" + randomUUID()))
       .andExpect(status().isNotFound());
   }
 
@@ -200,7 +200,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot publish donated text")
   void unauthenticatedUserCannotPublishDonatedText() throws Exception {
     mockMvc.perform(
-        post("/admin/donated-texts/" + randomUUID() + "/publish"))
+        post("/admin/texts/donated/" + randomUUID() + "/publish"))
       .andExpect(status().isUnauthorized());
   }
 
@@ -209,7 +209,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotPublishDonatedText() throws Exception {
     mockMvc.perform(
-        post("/admin/donated-texts/" + randomUUID() + "/publish"))
+        post("/admin/texts/donated/" + randomUUID() + "/publish"))
       .andExpect(status().isForbidden());
   }
 
@@ -222,7 +222,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(null);
 
     mockMvc.perform(
-        post("/admin/donated-texts/" + randomUUID() + "/publish")
+        post("/admin/texts/donated/" + randomUUID() + "/publish")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isBadRequest());
@@ -233,7 +233,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserGets404WhenPublishingNonExistentDonatedText() throws Exception {
     mockMvc.perform(
-        post("/admin/donated-texts/" + randomUUID() + "/publish"))
+        post("/admin/texts/donated/" + randomUUID() + "/publish"))
       .andExpect(status().isNotFound());
   }
 
@@ -241,7 +241,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot get published texts")
   void unauthenticatedUserCannotGetPublishedTexts() throws Exception {
     mockMvc.perform(
-        post("/admin/published-texts")
+        post("/admin/texts/published")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(new CorpusRequestDto())))
       .andExpect(status().isUnauthorized());
@@ -252,7 +252,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotGetPublishedTexts() throws Exception {
     mockMvc.perform(
-        post("/admin/published-texts")
+        post("/admin/texts/published")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(new CorpusRequestDto())))
       .andExpect(status().isForbidden());
@@ -266,7 +266,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setLanguage("nonExistentLanguage");
 
     mockMvc.perform(
-        post("/admin/published-texts")
+        post("/admin/texts/published")
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isOk());
@@ -276,7 +276,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot get published text details")
   void unauthenticatedUserCannotGetPublishedTextDetails() throws Exception {
     mockMvc.perform(
-        get("/admin/published-texts/" + randomUUID()))
+        get("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isUnauthorized());
   }
 
@@ -285,7 +285,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotGetPublishedTextDetails() throws Exception {
     mockMvc.perform(
-        get("/admin/published-texts/" + randomUUID()))
+        get("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isForbidden());
   }
 
@@ -294,7 +294,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserGets404WhenPublishedTextNotFound() throws Exception {
     mockMvc.perform(
-        get("/admin/published-texts/" + randomUUID()))
+        get("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isNotFound());
   }
 
@@ -306,7 +306,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(emptyList());
 
     mockMvc.perform(
-        put("/admin/published-texts/" + randomUUID())
+        put("/admin/texts/published/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isUnauthorized());
@@ -321,7 +321,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(emptyList());
 
     mockMvc.perform(
-        put("/admin/published-texts/" + randomUUID())
+        put("/admin/texts/published/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isForbidden());
@@ -336,7 +336,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(null);
 
     mockMvc.perform(
-        put("/admin/published-texts/" + randomUUID())
+        put("/admin/texts/published/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isBadRequest());
@@ -351,7 +351,7 @@ class AdminControllerTest extends IntegrationTest {
     request.setProperties(emptyList());
 
     mockMvc.perform(
-        put("/admin/published-texts/" + randomUUID())
+        put("/admin/texts/published/" + randomUUID())
           .contentType(APPLICATION_JSON)
           .content(objectMapper.writeValueAsString(request)))
       .andExpect(status().isNotFound());
@@ -361,7 +361,7 @@ class AdminControllerTest extends IntegrationTest {
   @DisplayName("Unauthenticated user cannot delete published text")
   void unauthenticatedUserCannotDeletePublishedText() throws Exception {
     mockMvc.perform(
-        delete("/admin/published-texts/" + randomUUID()))
+        delete("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isUnauthorized());
   }
 
@@ -370,7 +370,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "user")
   void authenticatedUserCannotDeletePublishedText() throws Exception {
     mockMvc.perform(
-        delete("/admin/published-texts/" + randomUUID()))
+        delete("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isForbidden());
   }
 
@@ -379,7 +379,7 @@ class AdminControllerTest extends IntegrationTest {
   @WithMockUser(username = "admin", roles = {"ADMIN"})
   void authenticatedUserGets404WhenDeletingNonExistentPublishedText() throws Exception {
     mockMvc.perform(
-        delete("/admin/published-texts/" + randomUUID()))
+        delete("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isNotFound());
   }
 }

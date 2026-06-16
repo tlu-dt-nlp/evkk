@@ -1,13 +1,12 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import RootContext from '../../context/RootContext';
 import {
   useGetDatabaseHealth,
   useGetInternalServerErrorMetrics,
-  useGetTextsToReview,
   useGetWordAnalyserMetrics
 } from '../../hooks/service/AdminService';
+import { useGetTextsToReview } from '../../hooks/service/AdminTextService';
 
 function calculateMetrics(measurements) {
   if (!measurements?.length) {

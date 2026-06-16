@@ -7,7 +7,7 @@ import {
   useDeletePublishedText,
   useGetPublishedTextDetails,
   useUpdatePublishedText
-} from '../../hooks/service/AdminService';
+} from '../../hooks/service/AdminTextService';
 import {
   appendAdditionalProperties,
   getFirstPropertyValue,

@@ -13,7 +13,7 @@ import {
   useGetDonatedTextDetails,
   usePublishDonatedText,
   useUpdateDonatedText
-} from '../../hooks/service/AdminService';
+} from '../../hooks/service/AdminTextService';
 import {
   appendAdditionalProperties,
   getFirstPropertyValue,

@@ -7,7 +7,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccordionStyle } from '../../const/StyleConstants';
-import { useGetPublishedTexts } from '../../hooks/service/AdminService';
+import { useGetPublishedTexts } from '../../hooks/service/AdminTextService';
 import PublishedTextSearchForm from '../modal/text-selection/PublishedTextSearchForm';
 import PublishedTextDetailsModal from './PublishedTextDetailsModal';
 import PublishedTextsTable from './PublishedTextsTable';

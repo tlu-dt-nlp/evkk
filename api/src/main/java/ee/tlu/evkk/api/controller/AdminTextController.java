@@ -26,28 +26,28 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("admin")
+@RequestMapping("admin/texts")
 @Secured("ROLE_ADMIN")
-public class AdminController {
+public class AdminTextController {
 
   private final AdminTextService adminTextService;
 
-  @GetMapping("texts-to-review")
+  @GetMapping("to-review")
   public TextsToReviewResponseDto getTextsToReview() {
     return adminTextService.getTextsToReview();
   }
 
-  @PostMapping(value = "donated-texts", produces = APPLICATION_JSON_VALUE)
+  @PostMapping(value = "donated", produces = APPLICATION_JSON_VALUE)
   public String getDonatedTexts(@RequestBody DonatedTextRequestDto request) {
     return adminTextService.getDonatedTexts(request);
   }
 
-  @GetMapping("donated-texts/{id}")
+  @GetMapping("donated/{id}")
   public TextDetailsResponseDto getDonatedTextDetails(@PathVariable UUID id) {
     return adminTextService.getDonatedTextDetails(id);
   }
 
-  @PutMapping("donated-texts/{id}")
+  @PutMapping("donated/{id}")
   public TextDetailsResponseDto updateDonatedText(
     @PathVariable UUID id,
     @RequestBody @Valid TextUpdateRequestDto request
@@ -55,13 +55,13 @@ public class AdminController {
     return adminTextService.updateDonatedText(id, request);
   }
 
-  @DeleteMapping("donated-texts/{id}")
+  @DeleteMapping("donated/{id}")
   @ResponseStatus(NO_CONTENT)
   public void deleteDonatedText(@PathVariable UUID id) {
     adminTextService.deleteDonatedText(id);
   }
 
-  @PostMapping("donated-texts/{id}/publish")
+  @PostMapping("donated/{id}/publish")
   public TextDetailsResponseDto publishDonatedText(
     @PathVariable UUID id,
     @RequestBody(required = false) @Valid TextUpdateRequestDto request
@@ -69,17 +69,17 @@ public class AdminController {
     return adminTextService.publishDonatedText(id, request);
   }
 
-  @PostMapping(value = "published-texts", produces = APPLICATION_JSON_VALUE)
+  @PostMapping(value = "published", produces = APPLICATION_JSON_VALUE)
   public String getPublishedTexts(@RequestBody CorpusRequestDto request) {
     return adminTextService.getPublishedTexts(request);
   }
 
-  @GetMapping("published-texts/{id}")
+  @GetMapping("published/{id}")
   public TextDetailsResponseDto getPublishedTextDetails(@PathVariable UUID id) {
     return adminTextService.getPublishedTextDetails(id);
   }
 
-  @PutMapping("published-texts/{id}")
+  @PutMapping("published/{id}")
   public TextDetailsResponseDto updatePublishedText(
     @PathVariable UUID id,
     @RequestBody @Valid TextUpdateRequestDto request
@@ -87,7 +87,7 @@ public class AdminController {
     return adminTextService.updatePublishedText(id, request);
   }
 
-  @DeleteMapping("published-texts/{id}")
+  @DeleteMapping("published/{id}")
   @ResponseStatus(NO_CONTENT)
   public void deletePublishedText(@PathVariable UUID id) {
     adminTextService.deletePublishedText(id);

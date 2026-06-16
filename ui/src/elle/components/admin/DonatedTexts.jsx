@@ -7,7 +7,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccordionStyle } from '../../const/StyleConstants';
-import { useGetDonatedTexts } from '../../hooks/service/AdminService';
+import { useGetDonatedTexts } from '../../hooks/service/AdminTextService';
 import DonatedTextDetailsModal from './DonatedTextDetailsModal';
 import DonatedTextSearchForm from './DonatedTextSearchForm';
 import DonatedTextsTable from './DonatedTextsTable';
