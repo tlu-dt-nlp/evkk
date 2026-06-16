@@ -7,6 +7,7 @@ import ee.evkk.dto.TextMetadataDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
 import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
+import ee.tlu.evkk.api.converter.DtoMapper;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
@@ -14,7 +15,6 @@ import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
 import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
-import ee.tlu.evkk.dal.dto.TextMetadata;
 import ee.tlu.evkk.dal.dto.TextProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,9 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -45,6 +47,7 @@ public class AdminTextService {
   private final TextPropertyAddedDao textPropertyAddedDao;
   private final TextDao textDao;
   private final TextPropertyDao textPropertyDao;
+  private final DtoMapper dtoMapper;
 
   public TextsToReviewResponseDto getTextsToReview() {
     return TextsToReviewResponseDto.builder()
@@ -57,7 +60,7 @@ public class AdminTextService {
   }
 
   public TextDetailsResponseDto getDonatedTextDetails(UUID id) {
-    return toTextDetailsResponseDto(validateDonatedTextExists(id));
+    return dtoMapper.toDto(validateDonatedTextExists(id));
   }
 
   @Transactional
@@ -68,7 +71,7 @@ public class AdminTextService {
     updateDonatedTextContentIfChanged(id, existing.getText(), request.getText());
     updateDonatedTextProperties(id, request.getProperties());
 
-    return toTextDetailsResponseDto(textAddedDao.findTextAndMetadataById(id));
+    return dtoMapper.toDto(textAddedDao.findTextAndMetadataById(id));
   }
 
   @Transactional
@@ -99,7 +102,7 @@ public class AdminTextService {
     textPropertyAddedDao.deleteByTextId(id);
     textAddedDao.deleteById(id);
 
-    return toTextDetailsResponseDto(textDao.findTextAndMetadataById(publishedTextId));
+    return dtoMapper.toDto(textDao.findTextAndMetadataById(publishedTextId));
   }
 
   public String getPublishedTexts(CorpusRequestDto request) {
@@ -107,7 +110,7 @@ public class AdminTextService {
   }
 
   public TextDetailsResponseDto getPublishedTextDetails(UUID id) {
-    return toTextDetailsResponseDto(validatePublishedTextExists(id));
+    return dtoMapper.toDto(validatePublishedTextExists(id));
   }
 
   @Transactional
@@ -125,7 +128,7 @@ public class AdminTextService {
       textPropertyDao::deleteByIds
     );
 
-    return toTextDetailsResponseDto(textDao.findTextAndMetadataById(id));
+    return dtoMapper.toDto(textDao.findTextAndMetadataById(id));
   }
 
   @Transactional
@@ -135,26 +138,6 @@ public class AdminTextService {
     validatePublishedTextExists(id);
     textPropertyDao.deleteByTextId(id);
     textDao.deleteById(id);
-  }
-
-  private TextDetailsResponseDto toTextDetailsResponseDto(TextAndMetadata textAndMetadata) {
-    return TextDetailsResponseDto.builder()
-      .text(textAndMetadata.getText())
-      .properties(toTextMetadataDtos(textAndMetadata.getProperties()))
-      .build();
-  }
-
-  private List<TextMetadataDto> toTextMetadataDtos(List<TextMetadata> textMetadataList) {
-    return textMetadataList.stream()
-      .map(this::toTextMetadataDto)
-      .collect(Collectors.toList());
-  }
-
-  private TextMetadataDto toTextMetadataDto(TextMetadata textMetadata) {
-    return TextMetadataDto.builder()
-      .propertyName(textMetadata.getPropertyName())
-      .propertyValue(textMetadata.getPropertyValue())
-      .build();
   }
 
   private TextAndMetadata validateDonatedTextExists(UUID id) {
@@ -184,7 +167,7 @@ public class AdminTextService {
 
   private Map<String, List<TextProperty>> groupPropertiesByName(Collection<TextProperty> properties) {
     return properties.stream()
-      .collect(Collectors.groupingBy(TextProperty::getPropertyName));
+      .collect(groupingBy(TextProperty::getPropertyName));
   }
 
   private PropertyMatch findMatchingProperty(
@@ -225,7 +208,7 @@ public class AdminTextService {
     List<UUID> idsToDelete = existingProperties.stream()
       .map(TextProperty::getId)
       .filter(id -> !idsToKeep.contains(id))
-      .collect(Collectors.toList());
+      .collect(toList());
 
     if (!idsToDelete.isEmpty()) {
       deleteFunction.accept(idsToDelete);
