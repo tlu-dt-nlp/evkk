@@ -140,14 +140,6 @@ public class AdminTextService {
     textDao.deleteById(id);
   }
 
-  private TextAndMetadata validateTextExists(UUID id, Function<UUID, TextAndMetadata> findFn) {
-    TextAndMetadata existing = findFn.apply(id);
-    if (existing == null) {
-      throw new EntityNotFoundException();
-    }
-    return existing;
-  }
-
   private void updateDonatedTextContentIfChanged(UUID id, String currentText, String newText) {
     if (newText != null && !newText.equals(currentText)) {
       textAddedDao.updateTextContent(id, newText);
@@ -165,12 +157,26 @@ public class AdminTextService {
     );
   }
 
-  private Map<String, List<TextProperty>> groupPropertiesByName(Collection<TextProperty> properties) {
+  private void updatePublishedTextContentIfChanged(UUID id, String currentText, String newText) {
+    if (newText != null && !newText.equals(currentText)) {
+      textDao.updateTextContent(id, newText);
+    }
+  }
+
+  private static TextAndMetadata validateTextExists(UUID id, Function<UUID, TextAndMetadata> findFn) {
+    TextAndMetadata existing = findFn.apply(id);
+    if (existing == null) {
+      throw new EntityNotFoundException();
+    }
+    return existing;
+  }
+
+  private static Map<String, List<TextProperty>> groupPropertiesByName(Collection<TextProperty> properties) {
     return properties.stream()
       .collect(groupingBy(TextProperty::getPropertyName));
   }
 
-  private PropertyMatch findMatchingProperty(
+  private static PropertyMatch findMatchingProperty(
     Map<String, List<TextProperty>> existingByName,
     TextMetadataDto newProperty,
     Set<UUID> idsToKeep
@@ -200,7 +206,7 @@ public class AdminTextService {
     return new PropertyMatch(null, false);
   }
 
-  private void deleteUnusedProperties(
+  private static void deleteUnusedProperties(
     Collection<TextProperty> existingProperties,
     Set<UUID> idsToKeep,
     Consumer<List<UUID>> deleteFunction
@@ -215,13 +221,7 @@ public class AdminTextService {
     }
   }
 
-  private void updatePublishedTextContentIfChanged(UUID id, String currentText, String newText) {
-    if (newText != null && !newText.equals(currentText)) {
-      textDao.updateTextContent(id, newText);
-    }
-  }
-
-  private void updateProperties(
+  private static void updateProperties(
     UUID id,
     List<TextMetadataDto> newProperties,
     Function<UUID, Collection<TextProperty>> findFn,
