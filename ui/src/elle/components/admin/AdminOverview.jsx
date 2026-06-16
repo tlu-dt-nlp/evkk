@@ -8,7 +8,7 @@ import {
 } from '../../hooks/service/AdminService';
 import { useGetTextsToReview } from '../../hooks/service/AdminTextService';
 
-function calculateMetrics(measurements) {
+const calculateMetrics = (measurements) => {
   if (!measurements?.length) {
     return null;
   }
