@@ -60,14 +60,14 @@ public class AdminTextService {
   }
 
   public TextDetailsResponseDto getDonatedTextDetails(UUID id) {
-    return dtoMapper.toDto(validateDonatedTextExists(id));
+    return dtoMapper.toDto(validateTextExists(id, textAddedDao::findTextAndMetadataById));
   }
 
   @Transactional
   public TextDetailsResponseDto updateDonatedText(UUID id, TextUpdateRequestDto request) {
     log.info("Updating donated text id={}", id);
 
-    TextAndMetadata existing = validateDonatedTextExists(id);
+    TextAndMetadata existing = validateTextExists(id, textAddedDao::findTextAndMetadataById);
     updateDonatedTextContentIfChanged(id, existing.getText(), request.getText());
     updateDonatedTextProperties(id, request.getProperties());
 
@@ -78,7 +78,7 @@ public class AdminTextService {
   public void deleteDonatedText(UUID id) {
     log.info("Deleting donated text id={}", id);
 
-    validateDonatedTextExists(id);
+    validateTextExists(id, textAddedDao::findTextAndMetadataById);
     textPropertyAddedDao.deleteByTextId(id);
     textAddedDao.deleteById(id);
   }
@@ -87,7 +87,7 @@ public class AdminTextService {
   public TextDetailsResponseDto publishDonatedText(UUID id, TextUpdateRequestDto request) {
     log.info("Publishing donated text id={}", id);
 
-    TextAndMetadata donatedTextToPublish = validateDonatedTextExists(id);
+    TextAndMetadata donatedTextToPublish = validateTextExists(id, textAddedDao::findTextAndMetadataById);
 
     if (request != null) {
       updateDonatedTextContentIfChanged(id, donatedTextToPublish.getText(), request.getText());
@@ -110,14 +110,14 @@ public class AdminTextService {
   }
 
   public TextDetailsResponseDto getPublishedTextDetails(UUID id) {
-    return dtoMapper.toDto(validatePublishedTextExists(id));
+    return dtoMapper.toDto(validateTextExists(id, textDao::findTextAndMetadataById));
   }
 
   @Transactional
   public TextDetailsResponseDto updatePublishedText(UUID id, TextUpdateRequestDto request) {
     log.info("Updating published text id={}", id);
 
-    TextAndMetadata existing = validatePublishedTextExists(id);
+    TextAndMetadata existing = validateTextExists(id, textDao::findTextAndMetadataById);
     updatePublishedTextContentIfChanged(id, existing.getText(), request.getText());
     updateProperties(
       id,
@@ -135,13 +135,13 @@ public class AdminTextService {
   public void deletePublishedText(UUID id) {
     log.info("Deleting published text id={}", id);
 
-    validatePublishedTextExists(id);
+    validateTextExists(id, textDao::findTextAndMetadataById);
     textPropertyDao.deleteByTextId(id);
     textDao.deleteById(id);
   }
 
-  private TextAndMetadata validateDonatedTextExists(UUID id) {
-    TextAndMetadata existing = textAddedDao.findTextAndMetadataById(id);
+  private TextAndMetadata validateTextExists(UUID id, Function<UUID, TextAndMetadata> findFn) {
+    TextAndMetadata existing = findFn.apply(id);
     if (existing == null) {
       throw new EntityNotFoundException();
     }
@@ -213,14 +213,6 @@ public class AdminTextService {
     if (!idsToDelete.isEmpty()) {
       deleteFunction.accept(idsToDelete);
     }
-  }
-
-  private TextAndMetadata validatePublishedTextExists(UUID id) {
-    TextAndMetadata existing = textDao.findTextAndMetadataById(id);
-    if (existing == null) {
-      throw new EntityNotFoundException();
-    }
-    return existing;
   }
 
   private void updatePublishedTextContentIfChanged(UUID id, String currentText, String newText) {
