@@ -70,6 +70,17 @@
   text-decoration: none;
 }
 
+.footer-consent-link {
+  color: #0009 !important;
+  font-weight: bold !important;
+  margin-bottom: 10px !important;
+  text-decoration: underline !important;
+}
+
+.footer-consent-link:hover {
+  color: #9C27B0 !important;
+}
+
 @media (max-width: 1399px) {
   .footer-inner {
     padding-left: 0;

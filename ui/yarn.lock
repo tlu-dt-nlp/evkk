@@ -4804,6 +4804,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-ga4@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "react-ga4@npm:3.0.1"
+  checksum: 10c0/b50437101057faf3ba1dff3e5646f0f5111731f7b752a6031b7ac4088306e6afa2629397fa208370e6c0d108cb42a7925c17a924354f9556e5d278b96f3617dc
+  languageName: node
+  linkType: hard
+
 "react-i18next@npm:^16.5.3":
   version: 16.5.3
   resolution: "react-i18next@npm:16.5.3"
@@ -5516,9 +5523,9 @@ __metadata:
   linkType: hard
 
 "tmp@npm:~0.2.4":
-  version: 0.2.5
-  resolution: "tmp@npm:0.2.5"
-  checksum: 10c0/cee5bb7d674bb4ba3ab3f3841c2ca7e46daeb2109eec395c1ec7329a91d52fcb21032b79ac25161a37b2565c4858fefab927af9735926a113ef7bac9091a6e0e
+  version: 0.2.7
+  resolution: "tmp@npm:0.2.7"
+  checksum: 10c0/59eb55584f2f07210d3231b6a1f6b5c2b9794d8a7b509c8ee867ed2acad6d2245ee2448b7937b676ffbff3155a70077edde8a69f9d7cf0f90c86a62e8910c357
   languageName: node
   linkType: hard
 
@@ -5623,6 +5630,7 @@ __metadata:
     react: "npm:19.2.3"
     react-csv: "npm:^2.2.2"
     react-dom: "npm:19.2.3"
+    react-ga4: "npm:^3.0.1"
     react-i18next: "npm:^16.5.3"
     react-router-dom: "npm:^7.12.0"
     vite: "npm:^7.3.2"
