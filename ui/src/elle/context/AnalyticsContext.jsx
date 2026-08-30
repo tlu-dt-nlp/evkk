@@ -22,7 +22,9 @@ export function AnalyticsProvider({ children, router }) {
 
   useEffect(() => {
     if (isGranted) {
-      ReactGA.initialize(MEASUREMENT_ID);
+      ReactGA.initialize(MEASUREMENT_ID, {
+        gtagOptions: { send_page_view: false }
+      });
     }
   }, [isGranted]);
 
@@ -31,13 +33,32 @@ export function AnalyticsProvider({ children, router }) {
       return undefined;
     }
 
-    const sendPageView = () => {
-      const currentLocation = router.state.location ?? globalThis.location;
-      ReactGA.send({ hitType: 'pageview', page: getPagePath(currentLocation) });
+    let debounceTimer;
+    let previousPath = null;
+
+    const sendPageView = (path) => {
+      if (path === previousPath) return;
+      previousPath = path;
+      ReactGA.send({ hitType: 'pageview', page: path, manual_tracking: 'true' });
     };
 
-    sendPageView();
-    return router.subscribe(sendPageView);
+    // Debounce so redirect chains (e.g. /tools → /tools/wordlist) only fire once
+    const scheduleSend = () => {
+      const location = router.state.location ?? globalThis.location;
+      const path = getPagePath(location);
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => sendPageView(path), 50);
+    };
+
+    scheduleSend();
+    const unsubscribe = router.subscribe(({ navigation }) => {
+      if (navigation.state === 'idle') scheduleSend();
+    });
+
+    return () => {
+      clearTimeout(debounceTimer);
+      unsubscribe();
+    };
   }, [isGranted, router]);
 
   const handleConsent = useCallback((value) => {

@@ -129,6 +129,7 @@ export default function TableDownloadButton({
   }
 
   function exportToExcel(filename, sheetName, data, columns) {
+    trackEvent('Download', 'export', `table-${tableType}-xlsx`);
     const worksheetData = [
       columns.map(col => col.label),
       ...data.map(row => columns.map(col => {
@@ -153,7 +154,8 @@ export default function TableDownloadButton({
         <CSVLink filename={t(filename)}
                  className="csvLink"
                  headers={tableHeaders}
-                 data={csvData}>{t('common_download')}</CSVLink>
+                 data={csvData}
+                 onClick={() => trackEvent('Download', 'export', `table-${tableType}-csv`)}>{t('common_download')}</CSVLink>
       </Button>
     );
   }
@@ -171,7 +173,6 @@ export default function TableDownloadButton({
   }
 
   function showButton() {
-    trackEvent('Download', 'export', `table-${tableType}-${fileType ? 'csv' : 'xlsx'}`);
     switch (tableType) {
       case TableType.GRAMMATICAL_ANALYSIS:
         grammaticalAnalysisButton();
