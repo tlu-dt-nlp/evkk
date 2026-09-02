@@ -33,7 +33,7 @@ export default function PublishedTextReadOnlyForm({ formData }) {
           sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
     >
       <Grid item size={{ xs: 12, md: 4 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <b>{t('query_subcorpus')}</b>
 
           <Grid container spacing={2}>
@@ -43,7 +43,7 @@ export default function PublishedTextReadOnlyForm({ formData }) {
       </Grid>
 
       <Grid item size={{ xs: 12, md: 4 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <b>{t('common_text_data')}</b>
 
           <Grid container spacing={2}>
@@ -94,7 +94,7 @@ export default function PublishedTextReadOnlyForm({ formData }) {
       </Grid>
 
       <Grid item size={{ xs: 12, md: 4 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <b>{t('common_author_data')}</b>
 
           <Grid container spacing={2}>

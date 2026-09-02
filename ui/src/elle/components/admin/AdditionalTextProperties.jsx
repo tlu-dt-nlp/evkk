@@ -35,7 +35,7 @@ export default function AdditionalTextProperties({ isEditMode, properties, setPr
 
   return (
     <div className="pt-4 pb-5">
-      <h5>{t('admin_text_additional_properties')}</h5>
+      <div className="mb-2 font-weight-bold">{t('admin_text_additional_properties')}</div>
 
       {isEditMode ? (
         <>

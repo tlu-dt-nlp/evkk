@@ -66,11 +66,14 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2016_202
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2021_2025;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2026_2030;
 import static ee.tlu.evkk.api.util.DateUtils.PG_TIMESTAMP_FORMAT;
+import static ee.tlu.evkk.api.util.StringUtils.isNullOrBlank;
 import static java.lang.Integer.parseInt;
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 import static java.util.stream.Collectors.toList;
 import static lombok.AccessLevel.PRIVATE;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = PRIVATE)
 public class DonatedTextPropertyMapper {
@@ -108,13 +111,17 @@ public class DonatedTextPropertyMapper {
     );
 
     String mainType = first(byName, PROP_TYPE);
-    String subtype = TEXT_TYPE_ACADEMIC.equals(mainType)
-      ? first(byName, PROP_ACADEMIC_SUBTYPE)
-      : first(byName, PROP_NON_ACADEMIC_SUBTYPE);
+    String subtype = first(byName, TEXT_TYPE_ACADEMIC.equals(mainType)
+      ? PROP_ACADEMIC_SUBTYPE
+      : PROP_NON_ACADEMIC_SUBTYPE);
 
     addIfNotBlank(result, PROP_TYPE, subtype);
-    addIfNotBlank(result, PROP_CORPUS, inferCorpus(mainType, subtype));
-    addIfNotBlank(result, PROP_TEXT_LANGUAGE, inferTextLanguage(mainType, subtype));
+
+    String corpus = first(byName, PROP_CORPUS);
+    addIfNotBlank(result, PROP_CORPUS, corpus != null ? corpus : inferCorpus(mainType, subtype));
+
+    String textLanguage = first(byName, PROP_TEXT_LANGUAGE);
+    addIfNotBlank(result, PROP_TEXT_LANGUAGE, textLanguage != null ? textLanguage : inferTextLanguage(mainType, subtype));
 
     String age = first(byName, PROP_AGE_RAW);
     addIfNotBlank(result, PROP_AGE_RAW, age);
@@ -145,11 +152,11 @@ public class DonatedTextPropertyMapper {
 
   private static String first(Map<String, List<String>> byName, String key) {
     List<String> values = byName.get(key);
-    return (values != null && !values.isEmpty()) ? values.get(0) : null;
+    return isNotEmpty(values) ? values.get(0) : null;
   }
 
   private static void addIfNotBlank(List<TextMetadataDto> result, String name, String value) {
-    if (value != null && !value.isBlank()) {
+    if (isNotBlank(value)) {
       result.add(property(name, value));
     }
   }
@@ -196,7 +203,7 @@ public class DonatedTextPropertyMapper {
   }
 
   private static String extractYear(String createdAt) {
-    if (createdAt == null || createdAt.isBlank()) {
+    if (isNullOrBlank(createdAt)) {
       return null;
     }
     for (DateTimeFormatter fmt : List.of(ISO_OFFSET_DATE_TIME, PG_TIMESTAMP_FORMAT)) {
@@ -210,7 +217,7 @@ public class DonatedTextPropertyMapper {
   }
 
   private static List<String> splitCommaSeparated(String value) {
-    if (value == null || value.isBlank()) {
+    if (isNullOrBlank(value)) {
       return List.of();
     }
 

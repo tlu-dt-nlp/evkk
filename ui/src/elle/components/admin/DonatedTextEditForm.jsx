@@ -1,7 +1,7 @@
-import { Grid, TextField } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { DonatedTextDetailsFormMode } from '../../const/Constants';
+import { corpuses, DonatedTextDetailsFormMode, textLanguageOptions } from '../../const/Constants';
 import DonatedTextDetailsForm from '../form/DonatedTextDetailsForm';
 
 export default function DonatedTextEditForm({ formData, setFormData, setText, text }) {
@@ -68,6 +68,34 @@ export default function DonatedTextEditForm({ formData, setFormData, setText, te
         onChange={handleChange}
         onMultiValueChange={handleMultiValueChange}
       />
+
+      <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+        <div className="mb-2 font-weight-bold">{t('query_inferred_data')}</div>
+        <FormControl size="small">
+          <InputLabel>{t('query_subcorpus')}</InputLabel>
+          <Select
+            name="korpus"
+            value={formData.korpus}
+            onChange={handleChange}
+          >
+            {Object.keys(corpuses).map(corpus => (
+              <MenuItem key={corpus} value={corpus}>{t(corpuses[corpus])}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl size="small">
+          <InputLabel>{t('query_text_data_language')}</InputLabel>
+          <Select
+            name="tekstikeel"
+            value={formData.tekstikeel}
+            onChange={handleChange}
+          >
+            {Object.keys(textLanguageOptions).map(lang => (
+              <MenuItem key={lang} value={lang}>{t(textLanguageOptions[lang])}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
     </Grid>
   );
 }

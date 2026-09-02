@@ -42,7 +42,7 @@ export default function DonatedTextDetailsForm({
         item
         size={itemSize}
       >
-        <h5>{t('common_text_data')}</h5>
+        <div className="mb-2 font-weight-bold">{t('common_text_data')}</div>
         <FormControl size="small">
           <InputLabel required={!isSearchMode}>
             {t('publish_your_text_text_data_main_text_type')}
@@ -265,7 +265,7 @@ export default function DonatedTextDetailsForm({
         item
         size={itemSize}
       >
-        <h5>{t('common_author_data')}</h5>
+        <div className="mb-2 font-weight-bold">{t('common_author_data')}</div>
         <TextField
           size="small"
           type="number"

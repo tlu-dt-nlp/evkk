@@ -52,7 +52,9 @@ const DONATED_TEXT_KNOWN_PROPERTIES = new Set([
   'valdkond',
   'emakeel',
   'muudkeeled',
-  'riik'
+  'riik',
+  'korpus',
+  'tekstikeel'
 ]);
 
 const EMPTY_DONATED_TEXT_FORM = {
@@ -78,7 +80,9 @@ const EMPTY_DONATED_TEXT_FORM = {
   autoriValdkond: '',
   autoriEmakeel: '',
   autoriMuudKeeled: '',
-  autoriElukohariik: ''
+  autoriElukohariik: '',
+  korpus: '',
+  tekstikeel: ''
 };
 
 const inferUsedMaterials = (usedMaterials) => {
@@ -131,7 +135,9 @@ const createDonatedTextFormData = (details) => {
     autoriValdkond: getFirstPropertyValue(properties, 'valdkond'),
     autoriEmakeel: getFirstPropertyValue(properties, 'emakeel'),
     autoriMuudKeeled: getPropertyValues(properties, 'muudkeeled').join(', '),
-    autoriElukohariik: getFirstPropertyValue(properties, 'riik')
+    autoriElukohariik: getFirstPropertyValue(properties, 'riik'),
+    korpus: getFirstPropertyValue(properties, 'korpus'),
+    tekstikeel: getFirstPropertyValue(properties, 'tekstikeel')
   };
 };
 
@@ -172,6 +178,8 @@ const createDonatedTextPayload = (text, formData, additionalProperties) => {
   pushProperty(properties, 'emakeel', formData.autoriEmakeel?.toLowerCase());
   pushMultiProperties(properties, 'muudkeeled', formData.autoriMuudKeeled.split(',').map(s => s.trim()).filter(Boolean));
   pushProperty(properties, 'riik', formData.autoriElukohariik);
+  pushProperty(properties, 'korpus', formData.korpus);
+  pushProperty(properties, 'tekstikeel', formData.tekstikeel);
 
   appendAdditionalProperties(properties, additionalProperties);
 

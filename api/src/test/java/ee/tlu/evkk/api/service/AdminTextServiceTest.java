@@ -28,6 +28,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.UUID;
 
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L1_ESTONIAN;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L2_ESTONIAN;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.LANGUAGE_ESTONIAN;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.LANGUAGE_RUSSIAN;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -112,6 +116,47 @@ class AdminTextServiceTest {
     assertThat(response.getText()).isEqualTo("Text");
     assertThat(response.getProperties()).isEmpty();
     verify(textAddedDao).findTextAndMetadataById(testId);
+  }
+
+  @Test
+  @DisplayName("Get donated text details includes inferred corpus and text language")
+  void getDonatedTextDetails_shouldIncludeInferredCorpusAndTextLanguage() throws Exception {
+    // Given
+    UUID testId = randomUUID();
+    TextAndMetadata textAndMetadata = createTextAndMetadata("Text", List.of(
+      createTextMetadata("tekstityyp", "mitteakadeemiline"),
+      createTextMetadata("mitteakad_alamliik", "k1eesti_arvamuslugu")
+    ));
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(textAndMetadata);
+
+    // When
+    TextDetailsResponseDto response = adminTextService.getDonatedTextDetails(testId);
+
+    // Then
+    assertThat(response.getText()).isEqualTo("Text");
+    assertThat(getPropertyValue(response.getProperties(), "korpus")).isEqualTo(CORPUS_L1_ESTONIAN);
+    assertThat(getPropertyValue(response.getProperties(), "tekstikeel")).isEqualTo(LANGUAGE_ESTONIAN);
+  }
+
+  @Test
+  @DisplayName("Get donated text details does not override admin-set corpus and text language")
+  void getDonatedTextDetails_whenCorpusAndTextLanguageAlreadySet_shouldNotOverride() throws Exception {
+    // Given
+    UUID testId = randomUUID();
+    TextAndMetadata textAndMetadata = createTextAndMetadata("Text", List.of(
+      createTextMetadata("tekstityyp", "mitteakadeemiline"),
+      createTextMetadata("mitteakad_alamliik", "k1eesti_arvamuslugu"),
+      createTextMetadata("korpus", CORPUS_L2_ESTONIAN),
+      createTextMetadata("tekstikeel", LANGUAGE_RUSSIAN)
+    ));
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(textAndMetadata);
+
+    // When
+    TextDetailsResponseDto response = adminTextService.getDonatedTextDetails(testId);
+
+    // Then
+    assertThat(getPropertyValue(response.getProperties(), "korpus")).isEqualTo(CORPUS_L2_ESTONIAN);
+    assertThat(getPropertyValue(response.getProperties(), "tekstikeel")).isEqualTo(LANGUAGE_RUSSIAN);
   }
 
   @Test
@@ -620,6 +665,35 @@ class AdminTextServiceTest {
   }
 
   @Test
+  @DisplayName("Publish donated text uses admin-set korpus and tekstikeel instead of re-inferring")
+  void publishDonatedText_shouldUseAdminSetCorpusAndTextLanguage() throws Exception {
+    // Given
+    UUID testId = randomUUID();
+    UUID publishedId = randomUUID();
+
+    TextAndMetadata existing = createTextAndMetadata("Content", List.of(
+      createTextMetadata("tekstityyp", "mitteakadeemiline"),
+      createTextMetadata("mitteakad_alamliik", "k1eesti_arvamuslugu"),
+      createTextMetadata("korpus", CORPUS_L2_ESTONIAN),
+      createTextMetadata("tekstikeel", LANGUAGE_RUSSIAN)
+    ));
+
+    TextAndMetadata published = createTextAndMetadata("Content", List.of());
+
+    when(textAddedDao.findTextAndMetadataById(testId)).thenReturn(existing);
+    when(textAddedDao.findCreatedAtById(testId)).thenReturn(null);
+    when(textDao.insertDonatedText("Content")).thenReturn(publishedId);
+    when(textDao.findTextAndMetadataById(publishedId)).thenReturn(published);
+
+    // When
+    adminTextService.publishDonatedText(testId, null);
+
+    // Then: admin-overridden values should be published, not the inferred L1 Estonian ones
+    verify(textPropertyDao).insertProperty(publishedId, "korpus", CORPUS_L2_ESTONIAN);
+    verify(textPropertyDao).insertProperty(publishedId, "tekstikeel", LANGUAGE_RUSSIAN);
+  }
+
+  @Test
   @DisplayName("Publish donated text throws exception when donated text is not found")
   void publishDonatedText_whenNotFound_shouldThrowException() {
     // Given
@@ -827,5 +901,13 @@ class AdminTextServiceTest {
     property.setPropertyName(name);
     property.setPropertyValue(value);
     return property;
+  }
+
+  private static String getPropertyValue(List<TextMetadataDto> properties, String name) {
+    return properties.stream()
+      .filter(p -> name.equals(p.getPropertyName()))
+      .map(TextMetadataDto::getPropertyValue)
+      .findFirst()
+      .orElse(null);
   }
 }

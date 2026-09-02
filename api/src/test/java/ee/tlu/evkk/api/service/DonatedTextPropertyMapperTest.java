@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_19_TO_26;
@@ -54,6 +53,7 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.TEXT_TYPE_ACADEMIC;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2000_2005;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2021_2025;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2026_2030;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -104,13 +104,15 @@ class DonatedTextPropertyMapperTest {
 
   static Stream<Arguments> ageCases() {
     return Stream.of(
+      arguments("0", AGE_RANGE_UP_TO_18),
       arguments("18", AGE_RANGE_UP_TO_18),
       arguments("19", AGE_RANGE_19_TO_26),
       arguments("26", AGE_RANGE_19_TO_26),
       arguments("27", AGE_RANGE_27_TO_40),
       arguments("40", AGE_RANGE_27_TO_40),
       arguments("41", AGE_RANGE_41_PLUS),
-      arguments("abc", null)
+      arguments("abc", null),
+      arguments("-1", AGE_RANGE_UP_TO_18)
     );
   }
 
@@ -215,6 +217,42 @@ class DonatedTextPropertyMapperTest {
     assertThat(propertyValue(result, PROP_DOMAIN)).isEqualTo("loodustehnika");
     assertThat(propertyValue(result, PROP_EDUCATION)).isEqualTo("Kõrgharidus");
     assertThat(propertyValue(result, PROP_OTHER_LANGUAGES)).isEqualTo("inglise");
+    assertThat(propertyValue(result, PROP_ARTICLE_YEAR)).isEqualTo("2007");
+  }
+
+  @Test
+  @DisplayName("map should use admin-set korpus and tekstikeel from input instead of inferring")
+  void map_shouldRespectAdminSetCorpusAndTextLanguage() throws Exception {
+    // Given: subtype points to L1 Estonian, but admin has overridden to L2 Estonian + Russian
+    List<TextMetadata> properties = List.of(
+      createTextMetadata(PROP_TYPE, "mitteakadeemiline"),
+      createTextMetadata(PROP_NON_ACADEMIC_SUBTYPE, "k1eesti_arvamuslugu"),
+      createTextMetadata(PROP_CORPUS, CORPUS_L2_ESTONIAN),
+      createTextMetadata(PROP_TEXT_LANGUAGE, LANGUAGE_RUSSIAN)
+    );
+
+    // When
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
+
+    // Then
+    assertThat(propertyValue(result, PROP_CORPUS)).isEqualTo(CORPUS_L2_ESTONIAN);
+    assertThat(propertyValue(result, PROP_TEXT_LANGUAGE)).isEqualTo(LANGUAGE_RUSSIAN);
+  }
+
+  @Test
+  @DisplayName("map should produce no corpus or text language when no subtype is present")
+  void map_shouldProduceNoCorpusOrTextLanguageWhenNoSubtype() throws Exception {
+    // Given
+    List<TextMetadata> properties = List.of(
+      createTextMetadata(PROP_TYPE, "mitteakadeemiline")
+    );
+
+    // When
+    List<TextMetadataDto> result = DonatedTextPropertyMapper.map(properties, null);
+
+    // Then
+    assertThat(propertyValue(result, PROP_CORPUS)).isNull();
+    assertThat(propertyValue(result, PROP_TEXT_LANGUAGE)).isNull();
   }
 
   @Test
@@ -290,6 +328,6 @@ class DonatedTextPropertyMapperTest {
     return properties.stream()
       .filter(p -> name.equals(p.getPropertyName()))
       .map(TextMetadataDto::getPropertyValue)
-      .collect(Collectors.toList());
+      .collect(toList());
   }
 }

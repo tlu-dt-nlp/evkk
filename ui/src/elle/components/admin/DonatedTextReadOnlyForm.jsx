@@ -2,12 +2,14 @@ import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import {
+  corpuses,
   countryOptions,
   degreeOptions,
   domainSaveOptions,
   educationOptions,
   genderOptions,
   studyLevelOptions,
+  textLanguageOptions,
   textPublishMainTextTypesOptions,
   textTypeList,
   usedMaterialsMultiList,
@@ -46,9 +48,8 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
       </Grid>
 
       <Grid item size={{ xs: 12, md: 3 }}>
-        <h5>{t('common_text_data')}</h5>
-
         <Grid container spacing={2}>
+          <b>{t('common_text_data')}</b>
           <ReadOnlyField
             label={t('publish_your_text_text_data_main_text_type')}
             value={translateOption(t, textPublishMainTextTypesOptions, formData.liik)}
@@ -89,9 +90,8 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
       </Grid>
 
       <Grid item size={{ xs: 12, md: 3 }}>
-        <h5>{t('common_author_data')}</h5>
-
         <Grid container spacing={2}>
+          <b>{t('common_author_data')}</b>
           <ReadOnlyField
             label={t('query_author_data_age')}
             value={formData.autoriVanus}
@@ -124,6 +124,27 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
             label={t('query_author_data_degree')}
             value={translateOption(t, degreeOptions, formData.autoriTeaduskraad)}
           />
+        </Grid>
+      </Grid>
+
+      <Grid item size={{ xs: 12, md: 3 }}>
+        <Grid container spacing={2} direction="column">
+          <b>{t('query_inferred_data')}</b>
+          {!formData.korpus && !formData.tekstikeel
+            ? <i>{t('common_no_data')}</i>
+            : (
+              <>
+                <ReadOnlyField
+                  label={t('query_subcorpus')}
+                  value={translateOption(t, corpuses, formData.korpus)}
+                />
+                <ReadOnlyField
+                  label={t('query_text_data_language')}
+                  value={translateOption(t, textLanguageOptions, formData.tekstikeel)}
+                />
+              </>
+            )
+          }
         </Grid>
       </Grid>
     </Grid>

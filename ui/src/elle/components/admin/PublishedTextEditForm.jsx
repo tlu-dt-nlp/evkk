@@ -98,10 +98,10 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
           sx={{ flexDirection: { xs: 'column', sm: 'row' } }}
     >
       <Grid item size={{ xs: 12, md: 4 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <b>{t('query_subcorpus')}</b>
 
-          <Grid container spacing={2}>
+          <Grid container>
             <FormControl required size="small">
               <RadioGroup
                 name="korpus"
@@ -123,10 +123,10 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
       </Grid>
 
       <Grid item size={{ xs: 12, md: 4 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <b>{t('common_text_data')}</b>
 
-          <Grid container spacing={2}>
+          <Grid container>
             <FormControl size="small">
               <InputLabel>{t('query_text_data_type')}</InputLabel>
               <Select
@@ -245,10 +245,10 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
       </Grid>
 
       <Grid item size={{ xs: 12, md: 4 }}>
-        <Stack spacing={3}>
+        <Stack spacing={2}>
           <b>{t('common_author_data')}</b>
 
-          <Grid container spacing={2}>
+          <Grid container>
             <FormControl size="small">
               <InputLabel>{t('query_author_data_age')}</InputLabel>
               <Select

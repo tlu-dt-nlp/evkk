@@ -33,6 +33,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_CORPUS;
+import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TEXT_LANGUAGE;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -60,7 +62,36 @@ public class AdminTextService {
   }
 
   public TextDetailsResponseDto getDonatedTextDetails(UUID id) {
-    return dtoMapper.toDto(validateTextExists(id, textAddedDao::findTextAndMetadataById));
+    TextAndMetadata textAndMetadata = validateTextExists(id, textAddedDao::findTextAndMetadataById);
+    List<TextMetadataDto> rawProperties = textAndMetadata.getProperties().stream()
+      .map(dtoMapper::toDto)
+      .collect(toList());
+
+    boolean hasCorpus = rawProperties.stream()
+      .anyMatch(p -> PROP_CORPUS.equals(p.getPropertyName()));
+    boolean hasTextLanguage = rawProperties.stream().
+      anyMatch(p -> PROP_TEXT_LANGUAGE.equals(p.getPropertyName()));
+
+    if (!hasCorpus || !hasTextLanguage) {
+      List<TextMetadataDto> inferred = DonatedTextPropertyMapper.map(textAndMetadata.getProperties(), null);
+      if (!hasCorpus) {
+        inferred.stream()
+          .filter(p -> PROP_CORPUS.equals(p.getPropertyName()))
+          .findFirst()
+          .ifPresent(rawProperties::add);
+      }
+      if (!hasTextLanguage) {
+        inferred.stream()
+          .filter(p -> PROP_TEXT_LANGUAGE.equals(p.getPropertyName()))
+          .findFirst()
+          .ifPresent(rawProperties::add);
+      }
+    }
+
+    return TextDetailsResponseDto.builder()
+      .text(textAndMetadata.getText())
+      .properties(rawProperties)
+      .build();
   }
 
   @Transactional
