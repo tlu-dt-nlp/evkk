@@ -1,36 +1,25 @@
 /**
- * @typedef {Object} SelectionRequirement
- * @property {string[]} [anyOf] - Node is visible if ANY of these `${payloadKey}:${payloadValue}` pairs (ids) are selected.
- * @property {string[]} [allOf] - Node is visible if ALL of these `${payloadKey}:${payloadValue}` pairs (ids) are selected.
- */
-
-/**
- * @typedef {Object} ClusterFinderTreeNode
- * @property {string} [payloadKey] - Key for the API request.
- * @property {string} [payloadValue] - Value for the API request.
- * @property {string} labelKey - Translation key for the label.
- * @property {string} [tooltipKey] - Translation key for the tooltip. Defaults to `${labelKey}_tooltip`.
- * @property {boolean} [isCategory] - If true, this node is a label/header and cannot be selected. Defaults to `false`.
- * @property {boolean} [isRadio] - If true, this node uses a radio instead of a checkbox. Defaults to `false`.
- * @property {SelectionRequirement} [visibleWhen] - Conditional visibility.
- * @property {ClusterFinderTreeNode[]} [children] - Child nodes.
+ * Filter node format, used by ClusterFinderWordConstants and
+ * ClusterFinderClauseConstants. Read this before editing either of them.
  *
- * @description
- * Inheritance: Nodes use their own `payloadKey` if present. If missing, they inherit the `payloadKey` from the nearest ancestor.
- */
-
-/**
- * @typedef {Object} ClusterEntry
- * @property {number} frequency
- * @property {string[]} markups
- * @property {string[]} descriptions
- * @property {string[]} usages
- */
-
-/**
- * @typedef {Object} ClusterResult
- * @property {ClusterEntry[]} clusters
- * @property {string} separator
+ * A node may have:
+ *
+ *   payloadKey   Key sent to the API. Optional: a node without one inherits the
+ *                payloadKey of its nearest ancestor that has one.
+ *   payloadValue Value sent to the API. A node with a payloadValue is selectable,
+ *                and its id is `payloadKey:payloadValue`.
+ *   labelKey     Translation key for the label. Required.
+ *   tooltipKey   Translation key for the tooltip. Defaults to `labelKey_tooltip`,
+ *                and no tooltip renders if that key does not exist.
+ *   isCategory   Heading only — not selectable, and becomes a group in the UI.
+ *   isRadio      Exclusive choice rather than a checkbox. Radio siblings form a
+ *                mutually exclusive group, and choosing one clears the others.
+ *   visibleWhen  { anyOf: [...ids] } and/or { allOf: [...ids] }. The node renders
+ *                only while those ids are selected.
+ *   children     Nested nodes.
+ *
+ * The analysis response is { clusters, separator }, where each cluster is
+ * { frequency, markups, descriptions, usages }.
  */
 
 export const ClusterFinderConfig = {
@@ -38,42 +27,49 @@ export const ClusterFinderConfig = {
 };
 
 export const ClusterFinderTreeType = {
-  MORPHOLOGICAL: "morfological",
-  SYNTACTIC: "syntactic",
-  WORD_TYPE: "wordtype"
+  MORPHOLOGICAL: 'morfological',
+  SYNTACTIC: 'syntactic',
+  WORD_TYPE: 'wordtype'
 };
 
 export const ClusterFinderSortingType = {
-  BY_FREQUENCY: "freq",
-  BY_FIRST_WORD: "fwrd",
-  BY_SECOND_WORD: "swrd",
-  BY_THIRD_WORD: "twrd",
-  BY_FOURTH_WORD: "fowrd",
-  BY_FIFTH_WORD: "fiwrd"
+  BY_FREQUENCY: 'freq',
+  BY_FIRST_WORD: 'fwrd',
+  BY_SECOND_WORD: 'swrd',
+  BY_THIRD_WORD: 'twrd',
+  BY_FOURTH_WORD: 'fowrd',
+  BY_FIFTH_WORD: 'fiwrd'
 };
 
+// The ordinal sorting values in enum order, minus BY_FREQUENCY. Index i corresponds to
+// sorting by the (i + 1)th word, so the length is also the longest sequence the tool can
+// offer: a sequence can only be as long as the sorting enum can address.
+export const ordinalSortingValues = Object.values(ClusterFinderSortingType).filter(
+  (value) => value !== ClusterFinderSortingType.BY_FREQUENCY
+);
+
 export const ClusterFinderRootNodePayloadKey = {
-  CLAUSE_TYPE: "clauseType",
-  WORD_TYPE: "wordType"
+  CLAUSE_TYPE: 'clauseType',
+  WORD_TYPE: 'wordType'
 };
 
 export const ClusterSearchFormInputType = {
-  FREE_TEXT: "FREE_TEXT",
-  FILE_BASED_TEXT: "FILE_BASED_TEXT"
+  FREE_TEXT: 'FREE_TEXT',
+  FILE_BASED_TEXT: 'FILE_BASED_TEXT'
 };
 
 export const ClusterSearchForm = {
-  INPUT_TYPE: "inputType",
-  USER_TEXT: "userText",
-  FORM_ID: "formId",
-  FILE_NAME: "fileName",
-  ANALYSIS_LENGTH: "analysisLength",
-  MORFO_ANALYSIS: "morfological",
-  SYNTACTIC_ANALYSIS: "syntactic",
-  INCLUDE_PUNCTUATION: "punctuation",
-  WORDTYPE_ANALYSIS: "wordtype",
-  PARTIAL_FILTERS: "partialFilters",
-  SORTING_TYPE: "sorting",
-  WORD_TYPE: "wordType",
-  CLAUSE_TYPE: "clauseType"
+  INPUT_TYPE: 'inputType',
+  USER_TEXT: 'userText',
+  FORM_ID: 'formId',
+  FILE_NAME: 'fileName',
+  ANALYSIS_LENGTH: 'analysisLength',
+  MORFO_ANALYSIS: 'morfological',
+  SYNTACTIC_ANALYSIS: 'syntactic',
+  INCLUDE_PUNCTUATION: 'punctuation',
+  WORDTYPE_ANALYSIS: 'wordtype',
+  PARTIAL_FILTERS: 'partialFilters',
+  SORTING_TYPE: 'sorting',
+  WORD_TYPE: 'wordType',
+  CLAUSE_TYPE: 'clauseType'
 };
