@@ -29,14 +29,17 @@ import {
 import { DefaultButtonStyle } from '../../../const/StyleConstants';
 import SelectMultiple, { SelectMultipleType } from '../../SelectMultiple';
 import TooltipOnText from '../../tooltip/TooltipOnText';
+import { useAnalytics } from '../../../context/AnalyticsContext';
 
 export default function PublishedTextSearchForm({
   fetchTexts,
   onResults,
   refetchTrigger,
-  scrollRef
+                                                  scrollRef,
+                                                  isAdminView = false
 }) {
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics();
   const internalRef = useRef();
   const mainRef = scrollRef || internalRef;
   const [scores, setScores] = useState([]);
@@ -108,6 +111,9 @@ export default function PublishedTextSearchForm({
 
   const submitted = () => {
     const selectedCorpuses = getSelectedCorpusList();
+    if (!isAdminView) {
+      trackEvent('Corpus query', 'submit', 'query-modal');
+    }
 
     if (selectedCorpuses.length === 0) {
       setAlert(true);

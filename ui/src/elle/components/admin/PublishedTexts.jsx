@@ -68,6 +68,7 @@ export default function PublishedTexts() {
             fetchTexts={getPublishedTexts}
             onResults={handleResults}
             refetchTrigger={refetchTrigger}
+            isAdminView={true}
           />
         </AccordionDetails>
       </Accordion>
