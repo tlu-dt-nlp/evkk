@@ -2,6 +2,8 @@ export const WORDANALYSER_MAX_WORD_COUNT_FOR_WORDINFO = 1000;
 export const STATISTICS_CORPUS_TEXT_COUNT = '14 000+';
 export const STATISTICS_CORPUS_WORD_COUNT = '3 000 000+';
 
+export const ANALYTICS_CONSENT_KEY = 'analytics_consent';
+
 export const replaceCombined = /<\/?span[^>]*>|<\/?div[^>]*>/g;
 export const replaceSpaceTags = /&nbsp; ?/g;
 export const replaceQuotes = /&quot;/g;

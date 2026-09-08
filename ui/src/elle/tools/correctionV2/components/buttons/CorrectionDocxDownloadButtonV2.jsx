@@ -7,9 +7,11 @@ import { useEditorContext } from '../../providers/EditorProvider';
 import { ToggleButtonCategories } from '../../constants/tabConfig';
 import { downloadAsDocx } from '../../utils/exportToDocxV2';
 import { DefaultButtonStyle5px } from '../../../../const/StyleConstants';
+import { useAnalytics } from '../../../../context/AnalyticsContext';
 
 export default function CorrectionDocxDownloadButtonV2({ tab }) {
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics();
 
   const { editor, errorResponse, selectedSubTab } = useEditorContext((state) => ({
     editor: state.editor,
@@ -48,6 +50,7 @@ export default function CorrectionDocxDownloadButtonV2({ tab }) {
     selected.forEach((subTab) => {
       downloadAsDocx(editor, tab, subTab, errorResponse, t, includeHeader);
     });
+    trackEvent('Download', 'export', `correction-docx-[${selected.join(',')}]-summary:${includeHeader}`);
     handleClose();
   };
 
