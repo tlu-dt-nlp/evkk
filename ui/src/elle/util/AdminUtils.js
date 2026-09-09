@@ -12,9 +12,9 @@ export const getTextTitle = (details, fallback = '') => (
   getFirstPropertyValue(details?.properties, 'title', fallback)
 );
 
-const isFilled = value => (
-  Array.isArray(value) ? value.length > 0 : value !== undefined && value !== null && String(value).trim() !== ''
-);
+const isFilled = value => Array.isArray(value)
+  ? value.length > 0
+  : value !== undefined && value !== null && String(value).trim() !== '';
 
 const createProperty = (propertyName, propertyValue) => ({
   propertyName,
