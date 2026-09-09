@@ -103,7 +103,7 @@ export const DangerButtonStyle = {
   fontWeight: 'bold',
   lineHeight: '30px',
   borderRadius: '15px'
-}
+};
 
 export const ToggleButtonGroupStyle = {
   borderRadius: '5px',
