@@ -35,8 +35,8 @@ export default function PublishedTextSearchForm({
   fetchTexts,
   onResults,
   refetchTrigger,
-                                                  scrollRef,
-                                                  isAdminView = false
+  scrollRef,
+  isAdminView = false
 }) {
   const { t } = useTranslation();
   const { trackEvent } = useAnalytics();
