@@ -28,7 +28,6 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
     >
       <Grid item
             size={{ xs: 12, md: 6 }}
-            sx={{ paddingTop: '2em' }}
       >
         <Grid container spacing={2}>
           <ReadOnlyField
