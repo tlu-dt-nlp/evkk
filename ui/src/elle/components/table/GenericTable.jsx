@@ -30,6 +30,8 @@ export default function GenericTable({
                                        sortByDesc = true,
                                        columnFilters,
                                        onColumnFiltersChange,
+                                       globalFilter,
+                                       onGlobalFilterChange,
                                        showRowNumbers = false,
                                        enableRowSelection = false,
                                        rowSelection,
@@ -91,6 +93,7 @@ export default function GenericTable({
       sorting,
       columnVisibility,
       columnFilters,
+      globalFilter,
       ...(enableRowSelection && { rowSelection })
     },
     defaultColumn: {
@@ -102,6 +105,7 @@ export default function GenericTable({
     onRowSelectionChange,
     getRowId,
     onColumnFiltersChange,
+    onGlobalFilterChange,
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
