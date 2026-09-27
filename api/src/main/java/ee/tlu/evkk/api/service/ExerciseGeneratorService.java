@@ -13,6 +13,7 @@ import ee.evkk.dto.enums.TargetWordCriteria;
 import ee.tlu.evkk.api.exception.ExerciseCouldNotBeGeneratedException;
 import ee.tlu.evkk.api.exception.ExerciseDidNotPassQualityGateException;
 import ee.tlu.evkk.core.service.GeminiService;
+import java.util.Optional;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao;
 import ee.tlu.evkk.dal.dto.ExerciseGeneratorSource;
@@ -52,7 +53,7 @@ public class ExerciseGeneratorService {
   private static final int BLANK_LENGTH = 3;
   private static final String BLANK_REPLACEMENT = "_".repeat(BLANK_LENGTH);
 
-  private final GeminiService geminiService;
+  private final Optional<GeminiService> geminiService;
   private final ExerciseGeneratorSourceDao exerciseGeneratorSourceDao;
   private final ExerciseAnswerDao exerciseAnswerDao;
   private final ObjectMapper objectMapper;
@@ -75,7 +76,7 @@ public class ExerciseGeneratorService {
       shuffle(exercise.getBlanks());
     }
 
-    if (request.isPerformQualityCheck() && !geminiService.checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)) {
+    if (request.isPerformQualityCheck() && geminiService.isPresent() && !geminiService.get().checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)) {
       throw new ExerciseDidNotPassQualityGateException();
     }
 

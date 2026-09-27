@@ -7,6 +7,7 @@ import ee.evkk.dto.ExerciseIncorrectAnswerDto;
 import ee.tlu.evkk.api.exception.ExerciseInvalidAmountOfAnswersException;
 import ee.tlu.evkk.api.exception.ExerciseNotFoundOrExpiredException;
 import ee.tlu.evkk.core.service.GeminiService;
+import java.util.Optional;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class ExerciseSubmissionService {
 
-  private final GeminiService geminiService;
+  private final Optional<GeminiService> geminiService;
   private final ExerciseAnswerDao exerciseAnswerDao;
   private final ObjectMapper objectMapper;
 
@@ -60,7 +61,7 @@ public class ExerciseSubmissionService {
       return;
     }
 
-    List<String> explanations = geminiService.generateIncorrectAnswerExplanations(userAnswers, exerciseAnswer, mistakes);
+    List<String> explanations = geminiService.map(s -> s.generateIncorrectAnswerExplanations(userAnswers, exerciseAnswer, mistakes)).orElse(null);
     if (explanations == null) {
       log.warn("LLM did not return explanations!");
       return;

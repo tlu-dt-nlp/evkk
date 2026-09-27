@@ -1,0 +1,130 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.StatisticsDao">
+
+  <!--
+    Single query that returns a JSON object containing:
+      - totalCount / avgWordCount / avgSentenceCount  (based on active filters)
+      - wordCountRange / sentenceCountRange           (global min/max, unfiltered – for sliders)
+      - filterOptions                                 (all distinct values per field, unfiltered)
+      - distributions                                 (count-per-value per field, based on filters)
+  -->
+  <select id="getStatistics" resultType="java.lang.String">
+    WITH text_stats AS (
+      SELECT t.id,
+             (tpr.result ->> 'wordCount')::integer     AS word_count,
+             (tpr.result ->> 'sentenceCount')::integer AS sentence_count
+      FROM core.text_processor_result tpr
+             JOIN core.text t ON tpr.text_hash = t.hash
+      WHERE tpr.type = 'CHARS_WORDS_SENTENCES'
+    ),
+    text_props AS (
+      SELECT text_id,
+             max(CASE WHEN property_name = 'keeletase' THEN property_value END)  AS keeletase,
+             max(CASE WHEN property_name = 'sugu' THEN property_value END)        AS sugu,
+             max(CASE WHEN property_name = 'kodakondsus' THEN property_value END) AS kodakondsus,
+             max(CASE WHEN property_name = 'haridus' THEN property_value END)     AS haridus,
+             max(CASE WHEN property_name = 'tekstityyp' THEN property_value END)  AS tekstityyp,
+             max(CASE WHEN property_name = 'abivahendid' THEN property_value END) AS abivahendid,
+             max(CASE WHEN property_name = 'aasta' THEN property_value END)       AS aasta,
+             max(CASE WHEN property_name = 'tekstikeel' THEN property_value END)  AS tekstikeel
+      FROM core.text_property
+      GROUP BY text_id
+    ),
+    filtered AS (
+      SELECT ts.word_count,
+             ts.sentence_count,
+             tp.keeletase,
+             tp.sugu,
+             tp.kodakondsus,
+             tp.haridus,
+             tp.tekstityyp,
+             tp.abivahendid,
+             tp.aasta,
+             tp.tekstikeel
+      FROM text_stats ts
+             JOIN text_props tp ON ts.id = tp.text_id
+      WHERE 1 = 1
+      <if test="filter.keeletase != null and !filter.keeletase.isEmpty()">
+        AND tp.keeletase IN
+        <foreach item="v" collection="filter.keeletase" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.sugu != null and !filter.sugu.isEmpty()">
+        AND tp.sugu IN
+        <foreach item="v" collection="filter.sugu" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.kodakondsus != null and !filter.kodakondsus.isEmpty()">
+        AND tp.kodakondsus IN
+        <foreach item="v" collection="filter.kodakondsus" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.haridus != null and !filter.haridus.isEmpty()">
+        AND tp.haridus IN
+        <foreach item="v" collection="filter.haridus" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.tekstityyp != null and !filter.tekstityyp.isEmpty()">
+        AND tp.tekstityyp IN
+        <foreach item="v" collection="filter.tekstityyp" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.abivahendid != null and !filter.abivahendid.isEmpty()">
+        AND tp.abivahendid IN
+        <foreach item="v" collection="filter.abivahendid" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.aasta != null and !filter.aasta.isEmpty()">
+        AND tp.aasta IN
+        <foreach item="v" collection="filter.aasta" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.tekstikeel != null and !filter.tekstikeel.isEmpty()">
+        AND tp.tekstikeel IN
+        <foreach item="v" collection="filter.tekstikeel" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.wordCountMin != null">
+        AND ts.word_count &gt;= #{filter.wordCountMin}
+      </if>
+      <if test="filter.wordCountMax != null">
+        AND ts.word_count &lt;= #{filter.wordCountMax}
+      </if>
+      <if test="filter.sentenceCountMin != null">
+        AND ts.sentence_count &gt;= #{filter.sentenceCountMin}
+      </if>
+      <if test="filter.sentenceCountMax != null">
+        AND ts.sentence_count &lt;= #{filter.sentenceCountMax}
+      </if>
+    )
+    SELECT json_build_object(
+      'totalCount', (SELECT count(*)::integer FROM filtered),
+      'avgWordCount', COALESCE((SELECT round(avg(word_count))::integer FROM filtered), 0),
+      'avgSentenceCount', COALESCE((SELECT round(avg(sentence_count))::integer FROM filtered), 0),
+      'wordCountRange', json_build_array(
+        (SELECT COALESCE(min(word_count), 0) FROM text_stats),
+        (SELECT COALESCE(max(word_count), 0) FROM text_stats)
+      ),
+      'sentenceCountRange', json_build_array(
+        (SELECT COALESCE(min(sentence_count), 0) FROM text_stats),
+        (SELECT COALESCE(max(sentence_count), 0) FROM text_stats)
+      ),
+      'filterOptions', json_build_object(
+        'keeletase',   (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT keeletase  AS v FROM text_props WHERE keeletase  IS NOT NULL) x),
+        'sugu',        (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT sugu       AS v FROM text_props WHERE sugu       IS NOT NULL) x),
+        'kodakondsus', (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT kodakondsus AS v FROM text_props WHERE kodakondsus IS NOT NULL) x),
+        'haridus',     (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT haridus    AS v FROM text_props WHERE haridus    IS NOT NULL) x),
+        'tekstityyp',  (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT tekstityyp AS v FROM text_props WHERE tekstityyp IS NOT NULL) x),
+        'abivahendid', (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT abivahendid AS v FROM text_props WHERE abivahendid IS NOT NULL) x),
+        'aasta',       (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT aasta      AS v FROM text_props WHERE aasta      IS NOT NULL) x),
+        'tekstikeel',  (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT tekstikeel AS v FROM text_props WHERE tekstikeel IS NOT NULL) x)
+      ),
+      'distributions', json_build_object(
+        'keeletase',   COALESCE((SELECT json_object_agg(keeletase,   cnt) FROM (SELECT keeletase,   count(*)::integer AS cnt FROM filtered WHERE keeletase   IS NOT NULL GROUP BY keeletase)   x), '{}'::json),
+        'sugu',        COALESCE((SELECT json_object_agg(sugu,        cnt) FROM (SELECT sugu,        count(*)::integer AS cnt FROM filtered WHERE sugu        IS NOT NULL GROUP BY sugu)        x), '{}'::json),
+        'kodakondsus', COALESCE((SELECT json_object_agg(kodakondsus, cnt) FROM (SELECT kodakondsus, count(*)::integer AS cnt FROM filtered WHERE kodakondsus IS NOT NULL GROUP BY kodakondsus) x), '{}'::json),
+        'haridus',     COALESCE((SELECT json_object_agg(haridus,     cnt) FROM (SELECT haridus,     count(*)::integer AS cnt FROM filtered WHERE haridus     IS NOT NULL GROUP BY haridus)     x), '{}'::json),
+        'tekstityyp',  COALESCE((SELECT json_object_agg(tekstityyp,  cnt) FROM (SELECT tekstityyp,  count(*)::integer AS cnt FROM filtered WHERE tekstityyp  IS NOT NULL GROUP BY tekstityyp)  x), '{}'::json),
+        'abivahendid', COALESCE((SELECT json_object_agg(abivahendid, cnt) FROM (SELECT abivahendid, count(*)::integer AS cnt FROM filtered WHERE abivahendid IS NOT NULL GROUP BY abivahendid) x), '{}'::json),
+        'aasta',       COALESCE((SELECT json_object_agg(aasta,       cnt) FROM (SELECT aasta,       count(*)::integer AS cnt FROM filtered WHERE aasta       IS NOT NULL GROUP BY aasta)       x), '{}'::json),
+        'tekstikeel',  COALESCE((SELECT json_object_agg(tekstikeel,  cnt) FROM (SELECT tekstikeel,  count(*)::integer AS cnt FROM filtered WHERE tekstikeel  IS NOT NULL GROUP BY tekstikeel)  x), '{}'::json)
+      )
+    )::text
+  </select>
+
+</mapper>
+

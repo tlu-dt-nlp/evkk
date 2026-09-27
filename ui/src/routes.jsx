@@ -32,8 +32,9 @@ import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
 import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
 import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
-import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
 import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
+import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
+import StatisticsV2 from './elle/pages/StatisticsV2';
 
 export const routes = [
   {
@@ -88,6 +89,11 @@ export const routes = [
             path: RouteConstants.ADDING,
             element: <Adding />,
             handle: { crumb: () => ({ to: RouteConstants.ADDING, translateKey: 'common_publish_your_text' }) }
+          },
+          {
+            path: RouteConstants.STATISTICS,
+            element: <StatisticsV2 />,
+            handle: { crumb: () => ({ to: RouteConstants.STATISTICS, translateKey: 'common_statistics' }) }
           },
           {
             path: RouteConstants.CORRECTOR,

@@ -1,0 +1,252 @@
+.statistics-page {
+  padding: 2rem 3rem;
+}
+
+.statistics-summary {
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.statistics-summary-card {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 0.75rem !important;
+  padding: 1.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140px;
+}
+
+.statistics-summary-card-value {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: #9c27b0;
+}
+
+.statistics-summary-card-label {
+  color: #666;
+  margin-top: 0.25rem;
+  text-align: center;
+  font-size: 0.8rem !important;
+}
+
+.statistics-filter-bar {
+  display: flex !important;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 0.75rem !important;
+}
+
+.statistics-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statistics-filter-bar-label {
+  margin-right: 0.25rem;
+  white-space: nowrap;
+  min-width: 60px;
+}
+
+.statistics-group-by {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statistics-group-by-select {
+  min-width: 180px;
+}
+
+.statistics-section-header {
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e1bee7;
+  color: #4a148c;
+  font-weight: 600 !important;
+}
+
+.statistics-chart-card {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 0.75rem !important;
+  padding: 1.25rem;
+  overflow: hidden;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.statistics-chart-card-title {
+  font-weight: 600 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.statistics-no-results {
+  text-align: center;
+  padding: 4rem;
+  color: #999;
+}
+
+@media (max-width: 900px) {
+  .statistics-page {
+    padding: 1.5rem;
+  }
+}
+
+/* ── StatisticsV2 drawer header ──────────────────────────────── */
+
+.sv2-drawer-header {
+  padding: 1rem 1rem 0.75rem;
+  text-align: center;
+}
+
+.sv2-drawer-footer {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+/* Active-filter badge on section headers */
+
+.sv2-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #9c27b0;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+/* Main area */
+
+.sv2-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.sv2-metric-card {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 0.75rem !important;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.sv2-metric-value {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: #9c27b0;
+}
+
+.sv2-metric-label {
+  color: #666;
+  margin-top: 0.25rem;
+  font-size: 0.8rem !important;
+}
+
+.sv2-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Let columns shrink below the chart SVG's drawn width; Google Charts redraws to fit on window resize */
+.sv2-charts-grid > * {
+  min-width: 0;
+}
+
+.sv2-chart-panel {
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 0.75rem !important;
+  padding: 1rem;
+}
+
+.sv2-chart-title {
+  font-weight: 600 !important;
+  margin-bottom: 0.25rem !important;
+  color: #333;
+}
+
+/* Add chart slot — sits inside the 2-column grid like a regular panel */
+.sv2-add-chart-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: 100%;
+  min-height: 290px;
+  background-color: #fdf4ff;
+  border: 2px dashed #ce93d8;
+  border-radius: 0.75rem;
+  color: #9c27b0;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.15s, border-color 0.15s;
+  padding: 1rem;
+}
+
+.sv2-add-chart-slot:hover {
+  background-color: #f3e5f5;
+  border-color: #9c27b0;
+}
+
+@media (max-width: 899px) {
+  .sv2-metrics-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sv2-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Print sheet — appended to <body> by printChart.js only while printing a single chart */
+.sv2-print-sheet {
+  display: none;
+}
+
+@media print {
+  body.sv2-printing > :not(.sv2-print-sheet) {
+    display: none !important;
+  }
+
+  body.sv2-printing .sv2-print-sheet {
+    display: block;
+    padding: 18mm 20mm;
+    box-sizing: border-box;
+    font-family: Mulish, sans-serif;
+
+    h2 {
+      color: #4a148c;
+      font-size: 16pt;
+      font-weight: 700;
+      margin: 0 0 6pt;
+    }
+
+    .sv2-print-filters {
+      font-size: 9pt;
+      color: #666;
+      margin: 0 0 14pt;
+      line-height: 1.4;
+    }
+
+    .sv2-print-filters strong {
+      color: #333;
+    }
+
+    .sv2-print-filters--empty {
+      color: #aaa;
+    }
+  }
+}

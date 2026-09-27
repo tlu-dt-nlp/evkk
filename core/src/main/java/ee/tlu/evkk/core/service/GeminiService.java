@@ -16,6 +16,8 @@ import ee.evkk.dto.enums.ExerciseType;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,17 +46,23 @@ import static java.util.Arrays.asList;
 
 @Slf4j
 @Service
+@ConditionalOnProperty(name = "evkk.gemini.api-key")
 public class GeminiService {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
-  private final Client client = Client.builder()
-    .httpOptions(HttpOptions.builder()
-      .retryOptions(HttpRetryOptions.builder()
-        .attempts(RETRY_ATTEMPTS)
-        .httpStatusCodes(RETRY_HTTP_STATUS_CODES)
+  private final Client client;
+
+  public GeminiService(@Value("${evkk.gemini.api-key}") String apiKey) {
+    this.client = Client.builder()
+      .apiKey(apiKey)
+      .httpOptions(HttpOptions.builder()
+        .retryOptions(HttpRetryOptions.builder()
+          .attempts(RETRY_ATTEMPTS)
+          .httpStatusCodes(RETRY_HTTP_STATUS_CODES)
+          .build())
         .build())
-      .build())
-    .build();
+      .build();
+  }
 
   private final GenerateContentConfig config = GenerateContentConfig.builder()
     .systemInstruction(Content.fromParts(Part.fromText(SYSTEM_INSTRUCTION)))
