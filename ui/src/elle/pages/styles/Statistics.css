@@ -1,0 +1,414 @@
+.statistics-app {
+  --sv2-accent: #9c27b0;
+  --sv2-accent-dark: #6a1b9a;
+  --sv2-accent-deep: #4a148c;
+  --sv2-accent-light: #ce93d8;
+  --sv2-accent-pale: #f3e5f5;
+  --sv2-accent-bg: #fdf4ff;
+  --sv2-border: #e0e0e0;
+  --sv2-text: #333;
+  --sv2-text-muted: #666;
+  --sv2-text-faint: #888;
+  --sv2-text-subtle: #aaa;
+  --sv2-scroll-thumb: #d6b3e0;
+  --sv2-drawer-width: 270px;
+  --sv2-radius: 0.75rem;
+  --sv2-chart-height: 240px;
+
+  .statistics-no-results {
+    text-align: center;
+    padding: 4rem;
+    color: #999;
+  }
+
+  /* ── Shared buttons ──────────────────────────────────────────── */
+
+  .sv2-accent-button {
+    text-transform: none;
+    font-weight: 600;
+    outline-offset: 2px;
+  }
+
+  .sv2-accent-button:not(.Mui-disabled) {
+    background-color: var(--sv2-accent);
+  }
+
+  .sv2-accent-button:not(.Mui-disabled):hover {
+    background-color: var(--sv2-accent-dark);
+  }
+
+  .sv2-accent-button.sv2-accent-button--pending {
+    outline: 2px solid var(--sv2-accent-light);
+  }
+
+  .sv2-text-button {
+    text-transform: none;
+    font-size: 0.75rem;
+  }
+
+  .sv2-text-button:not(.Mui-disabled) {
+    color: var(--sv2-accent);
+  }
+
+  .sv2-quiet-button {
+    text-transform: none;
+    font-size: 0.75rem;
+    color: var(--sv2-text-subtle);
+  }
+
+  /* ── Sidebar ─────────────────────────────────────────────────── */
+
+  .sv2-sidebar {
+    position: static;
+    max-height: none;
+  }
+
+  .sv2-drawer-header {
+    padding: 1rem 1rem 0.75rem;
+    text-align: center;
+  }
+
+  .sv2-drawer-title {
+    display: block;
+    line-height: 1.5;
+    color: var(--sv2-accent-deep);
+  }
+
+  .sv2-drawer-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  .sv2-filter-section-label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .sv2-filter-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--sv2-accent);
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    line-height: 1;
+  }
+
+  .sv2-filter-options {
+    max-height: 15rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .sv2-filter-options::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sv2-filter-options::-webkit-scrollbar-thumb {
+    background: var(--sv2-scroll-thumb);
+    border-radius: 3px;
+  }
+
+  .sv2-filter-option {
+    padding-left: 0.5rem;
+  }
+
+  .sv2-filter-checkbox,
+  .sv2-filter-checkbox.Mui-checked {
+    color: var(--sv2-accent);
+    padding: 0.25rem;
+  }
+
+  .sv2-filter-option .sv2-filter-option-icon {
+    min-width: 32px;
+  }
+
+  /* ── Range slider filter ─────────────────────────────────────── */
+
+  .sv2-range-body {
+    padding: 1.5rem 1.25rem 1rem;
+  }
+
+  .sv2-range-slider {
+    color: var(--sv2-accent);
+    width: calc(100% - 12px);
+    margin: 0 4px;
+  }
+
+  .sv2-range-slider .MuiSlider-valueLabel {
+    z-index: 2;
+  }
+
+  .sv2-range-inputs {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .sv2-range-input {
+    width: 72px;
+  }
+
+  .sv2-range-input input {
+    font-size: 0.72rem;
+    padding: 3px 6px;
+    text-align: center;
+  }
+
+  .sv2-range-input .MuiOutlinedInput-root {
+    border-radius: 4px;
+  }
+
+  .sv2-range-reset {
+    margin-top: 0.25rem;
+    padding: 0;
+    min-width: 0;
+    font-size: 0.7rem;
+    text-transform: none;
+    color: var(--sv2-accent);
+  }
+
+  /* ── Main area ───────────────────────────────────────────────── */
+
+  .sv2-main {
+    flex-grow: 1;
+    padding: 1.5rem;
+    transition: opacity 0.2s;
+  }
+
+  .sv2-main--loading {
+    opacity: 0.6;
+  }
+
+  .sv2-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .sv2-metric-card {
+    border: 1px solid var(--sv2-border);
+    border-radius: var(--sv2-radius);
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .sv2-metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--sv2-accent);
+  }
+
+  .sv2-metric-label {
+    color: var(--sv2-text-muted);
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  /* ── Charts grid ─────────────────────────────────────────────── */
+
+  .sv2-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .sv2-chart-cell {
+    min-width: 0;
+  }
+
+  .sv2-chart-cell--wide {
+    grid-column: 1 / -1;
+  }
+
+  .sv2-chart-panel {
+    border: 1px solid var(--sv2-border);
+    border-radius: var(--sv2-radius);
+    padding: 1rem;
+  }
+
+  .sv2-chart-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .sv2-chart-title {
+    flex-grow: 1;
+    font-weight: 600;
+    color: var(--sv2-text);
+  }
+
+  .sv2-chart-box {
+    height: var(--sv2-chart-height);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .sv2-chart-box--fill {
+    height: 100%;
+  }
+
+  .sv2-chart-empty {
+    padding: 1rem;
+  }
+
+  .sv2-layout-reset-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+
+  .sv2-add-chart-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    width: 100%;
+    min-height: 290px;
+    background-color: var(--sv2-accent-bg);
+    border: 2px dashed var(--sv2-accent-light);
+    border-radius: var(--sv2-radius);
+    color: var(--sv2-accent);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.15s, border-color 0.15s;
+    padding: 1rem;
+  }
+
+  .sv2-add-chart-slot:hover {
+    background-color: var(--sv2-accent-pale);
+    border-color: var(--sv2-accent);
+  }
+
+  .sv2-add-chart-icon {
+    font-size: 32px;
+    margin-bottom: 0.25rem;
+  }
+
+  .sv2-add-chart-label {
+    font-weight: 500;
+  }
+
+  /* ── Chart options menu ──────────────────────────────────────── */
+
+  .sv2-menu-section-label {
+    padding: 0 1rem;
+    color: var(--sv2-text-faint);
+    font-size: 0.65rem;
+  }
+
+  .sv2-menu-check {
+    margin-left: 0.5rem;
+    color: var(--sv2-accent);
+  }
+
+  /* ── Dialogs ─────────────────────────────────────────────────── */
+
+  .sv2-dialog-title {
+    padding-bottom: 0;
+  }
+
+  .sv2-dialog-content {
+    padding-top: 0;
+  }
+
+  .sv2-dialog-actions {
+    justify-content: space-between;
+    padding: 0 1.5rem 1rem;
+  }
+
+  .sv2-expand-previous-button {
+    text-transform: none;
+    font-style: italic;
+    color: var(--sv2-accent);
+  }
+
+  .sv2-fullscreen-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  .sv2-fullscreen-chart {
+    flex-grow: 1;
+    min-height: 0;
+  }
+
+  /* ── Responsive ──────────────────────────────────────────────── */
+
+  &.sv2-drawer-temporary {
+    display: block;
+  }
+
+  &.sv2-drawer-permanent {
+    display: none;
+  }
+
+  &.sv2-drawer-temporary .MuiDrawer-paper,
+  &.sv2-drawer-permanent .MuiDrawer-paper {
+    box-sizing: border-box;
+    width: var(--sv2-drawer-width);
+    overflow-x: hidden;
+  }
+
+  &.sv2-drawer-permanent .MuiDrawer-paper {
+    position: relative;
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 899px) {
+  .statistics-app {
+    .sv2-metrics-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sv2-charts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (min-width: 900px) {
+  .statistics-app {
+    .sv2-sidebar {
+      width: var(--sv2-drawer-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: 100px;
+      align-self: flex-start;
+      max-height: 100vh;
+    }
+
+    .sv2-main {
+      width: calc(100% - var(--sv2-drawer-width));
+    }
+
+    .sv2-drawer-toggle {
+      display: none;
+    }
+
+    &.sv2-drawer-temporary {
+      display: none;
+    }
+
+    &.sv2-drawer-permanent {
+      display: block;
+    }
+  }
+}

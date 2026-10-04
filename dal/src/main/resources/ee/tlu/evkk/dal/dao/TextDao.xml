@@ -44,6 +44,37 @@
     group by t.content;
   </select>
 
+  <select id="getAllData" resultType="java.lang.String">
+    SELECT
+      jsonb_build_object(
+        tpr.text_processor_result_id::text,
+        jsonb_build_object(
+          'charCount', tpr.result->>'charCount',
+          'wordCount', tpr.result->>'wordCount',
+          'sentenceCount', tpr.result->>'sentenceCount'
+          ) || jsonb_object_agg(tp.property_name, tp.property_value)
+          || jsonb_object_agg('textid', tp.text_id)
+        ) AS result
+    FROM
+      core.text_processor_result tpr
+        JOIN
+      core.text t
+      ON tpr.text_hash = t.hash
+        LEFT JOIN (
+        SELECT
+          tp.text_id,
+          tp.property_name,
+          tp.property_value
+        FROM
+          core.text_property tp
+      ) tp ON t.id = tp.text_id
+    WHERE
+      tpr.type = 'CHARS_WORDS_SENTENCES'
+    GROUP BY
+      tpr.text_processor_result_id, tpr.result;
+
+  </select>
+
   <select id="detailedTextQueryByParameters" resultType="java.lang.String">
     select array_to_json(array_agg(row_to_json(t)))
     from (
@@ -91,7 +122,7 @@
       </when>
     </choose>
     <if test="otherLangHelper.table != null">
-      <bind name="likeValue" value="'%' + otherLangHelper.value + '%'"/>
+      <bind name="likeValue" value="'%' + otherLangHelper.value + '%'" />
       and ${otherLangHelper.table}.property_name = #{otherLangHelper.parameter}
       and ${otherLangHelper.table}.property_value ilike #{likeValue}
     </if>
