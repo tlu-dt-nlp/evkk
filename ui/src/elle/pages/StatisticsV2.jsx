@@ -23,18 +23,19 @@ function StatisticsV2() {
 
   const filters = useStatisticsFilters();
   const { response, isLoading } = useStatisticsQuery(filters.applied);
-  const [layout, layoutActions] = useChartLayout();
+  // The applied subcorpus selection decides the default origin chart (kodakondsus vs emakeel).
+  const [layout, layoutActions, isCustomLayout] = useChartLayout(filters.applied.filters.korpus);
 
   // Memoised so chart panels only re-render on new data, not on every filter click.
-  const chartData = useMemo(() => toChartData(response?.distributions), [response]);
+  const chartData = useMemo(() => toChartData(t, response?.distributions), [t, response]);
   const dataRanges = toDataRanges(response);
-  const filtersText = describeFilters(filters.applied, dataRanges);
+  const filtersText = describeFilters(t, filters.applied, dataRanges);
 
   if (!response && isLoading) {
     return (
       <Box className="global-page-content-container">
         <Box className="global-page-content-container-inner">
-          <Typography variant="body1" className="statistics-no-results">Laadin statistikat...</Typography>
+          <Typography variant="body1" className="statistics-no-results">{t('statistics_loading')}</Typography>
         </Box>
       </Box>
     );
@@ -79,9 +80,9 @@ function StatisticsV2() {
             <h2 className="tool-title">{t('common_statistics')}</h2>
 
             <div className="sv2-metrics-row">
-              <MetricCard value={formatCount(response?.totalCount)} label="Tekstide arv" />
-              <MetricCard value={formatCount(response?.avgWordCount)} label="Keskim. sõnade arv" />
-              <MetricCard value={formatCount(response?.avgSentenceCount)} label="Keskim. lausete arv" />
+              <MetricCard value={formatCount(response?.totalCount)} label={t('statistics_text_count')} />
+              <MetricCard value={formatCount(response?.avgWordCount)} label={t('statistics_avg_word_count')} />
+              <MetricCard value={formatCount(response?.avgSentenceCount)} label={t('statistics_avg_sentence_count')} />
             </div>
 
             <ChartsGrid
@@ -91,14 +92,16 @@ function StatisticsV2() {
               filtersText={filtersText}
             />
 
-            <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                size="small" variant="text" onClick={layoutActions.reset}
-                sx={{ textTransform: 'none', color: '#aaa', fontSize: '0.75rem' }}
-              >
-                Taasta vaikimisi paigutus
-              </Button>
-            </Box>
+            {isCustomLayout && (
+              <Box sx={{ mt: 1, display: 'flex', justifyContent: 'flex-end' }}>
+                <Button
+                  size="small" variant="text" onClick={layoutActions.reset}
+                  sx={{ textTransform: 'none', color: '#aaa', fontSize: '0.75rem' }}
+                >
+                  {t('statistics_reset_layout')}
+                </Button>
+              </Box>
+            )}
           </Box>
 
         </Box>

@@ -4,28 +4,36 @@ export const DRAWER_WIDTH = 270;
 export const LEVEL_ORDER = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 export const FONT = 'Mulish';
 
-export const FILTER_SECTIONS = [
-  { key: 'keeletase', label: 'Keeletase', order: LEVEL_ORDER },
-  { key: 'sugu', label: 'Sugu' },
-  { key: 'kodakondsus', label: 'Rahvus' },
-  { key: 'haridus', label: 'Haridus' },
-  { key: 'tekstityyp', label: 'Teksti liik' },
-  { key: 'abivahendid', label: 'Abivahendid' },
-  { key: 'aasta', label: 'Aasta' }
+// Subcorpus id of "K2 riiklikud eksamitööd" (query_subcorpus_L2_proficiency_examinations).
+export const EXAM_CORPUS_ID = 'clWmOIrLa';
+
+// Every metadata field the page can filter and chart by, in sidebar order.
+// `order` fixes the value order in charts; without it values are sorted by count.
+export const FIELDS = [
+  { key: 'korpus', labelKey: 'query_subcorpus' },
+  { key: 'keeletase', labelKey: 'statistics_field_keeletase', order: LEVEL_ORDER },
+  { key: 'sugu', labelKey: 'query_author_data_gender' },
+  { key: 'kodakondsus', labelKey: 'query_author_data_nationality' },
+  { key: 'emakeel', labelKey: 'query_author_data_native_language' },
+  { key: 'haridus', labelKey: 'query_author_data_education' },
+  { key: 'tekstityyp', labelKey: 'statistics_field_tekstityyp' },
+  { key: 'abivahendid', labelKey: 'statistics_field_abivahendid' },
+  { key: 'aasta', labelKey: 'statistics_field_aasta' },
+  { key: 'tekstikeel', labelKey: 'statistics_field_tekstikeel' }
 ];
 
-export const CHART_PANELS = [
-  { key: 'keeletase', title: 'Keeletase', order: LEVEL_ORDER },
-  { key: 'sugu', title: 'Sugu' },
-  { key: 'kodakondsus', title: 'Rahvus' },
-  { key: 'tekstityyp', title: 'Teksti liik' },
-  { key: 'haridus', title: 'Haridus' },
-  { key: 'abivahendid', title: 'Abivahendid' },
-  { key: 'aasta', title: 'Aasta' },
-  { key: 'tekstikeel', title: 'Tekstikeel' }
-];
+export const FIELD_KEYS = FIELDS.map(f => f.key);
 
-export const DEFAULT_CHART_KEYS = ['keeletase', 'sugu', 'kodakondsus', 'tekstityyp'];
+export const getField = (key) => FIELDS.find(f => f.key === key);
+
+// Citizenship is only recorded for the state exam corpus, so it is the meaningful
+// origin field only when that corpus is selected on its own. Any other or mixed
+// selection gets the native language chart instead.
+export const originChartKey = (korpusFilter) =>
+  korpusFilter?.size === 1 && korpusFilter.has(EXAM_CORPUS_ID) ? 'kodakondsus' : 'emakeel';
+
+export const defaultChartKeys = (korpusFilter) =>
+  ['keeletase', 'sugu', originChartKey(korpusFilter), 'tekstityyp'];
 
 export const EMPTY_FILTERS = { filters: {}, wordCountRange: null, sentenceCountRange: null };
 
@@ -61,14 +69,15 @@ export const PIE_OPTS = {
 };
 
 export const CHART_TYPE_OPTIONS = [
-  { type: 'BarChart', icon: <StackedBarChart fontSize="small" />, title: 'Horisontaalne tulpdiagramm' },
-  { type: 'ColumnChart', icon: <BarChart fontSize="small" />, title: 'Vertikaalne tulpdiagramm' },
-  { type: 'PieChart', icon: <PieChart fontSize="small" />, title: 'Sektordiagramm' }
+  { type: 'BarChart', icon: <StackedBarChart fontSize="small" />, titleKey: 'statistics_chart_type_bar' },
+  { type: 'ColumnChart', icon: <BarChart fontSize="small" />, titleKey: 'statistics_chart_type_column' },
+  { type: 'PieChart', icon: <PieChart fontSize="small" />, titleKey: 'statistics_chart_type_pie' }
 ];
+
+export const CHART_TYPES = CHART_TYPE_OPTIONS.map(o => o.type);
 
 export const CHART_OPTS_MAP = {
   BarChart: BAR_OPTS,
   ColumnChart: COL_OPTS,
   PieChart: PIE_OPTS
 };
-

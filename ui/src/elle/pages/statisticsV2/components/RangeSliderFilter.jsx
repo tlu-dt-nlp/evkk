@@ -5,8 +5,10 @@ import {
   Slider, TextField, Typography
 } from '@mui/material';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, isOpen, onToggle }) => {
+  const { t } = useTranslation();
   const [inputMin, setInputMin] = useState(String(value[0]));
   const [inputMax, setInputMax] = useState(String(value[1]));
 
@@ -48,7 +50,10 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
       </ListItem>
 
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <Box sx={{ px: 2.5, pt: 1, pb: 2, overflowX: 'hidden' }}>
+        {/* No overflow clipping here: overflow-x:hidden would force overflow-y to auto
+            and cut off the slider's value label, which floats above the thumb.
+            The slider's own width keeps it from overflowing horizontally instead. */}
+        <Box sx={{ px: 2.5, pt: 3, pb: 2 }}>
           <Slider
             value={value}
             min={range[0]}
@@ -56,7 +61,10 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
             onChange={(_, newVal) => onChange(newVal)}
             valueLabelDisplay="auto"
             size="small"
-            sx={{ color: '#9c27b0', mx: 0.5, width: 'calc(100% - 12px)' }}
+            sx={{
+              color: '#9c27b0', mx: 0.5, width: 'calc(100% - 12px)',
+              '& .MuiSlider-valueLabel': { zIndex: 2 }
+            }}
           />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5, gap: 1 }}>
             <TextField
@@ -84,7 +92,7 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
               size="small" variant="text" onClick={onReset}
               sx={{ mt: 0.5, fontSize: '0.7rem', textTransform: 'none', color: '#9c27b0', p: 0, minWidth: 0 }}
             >
-              Lahtesta
+              {t('statistics_reset_range')}
             </Button>
           )}
         </Box>

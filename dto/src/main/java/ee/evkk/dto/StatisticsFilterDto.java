@@ -9,9 +9,11 @@ import java.util.Set;
 @Setter
 public class StatisticsFilterDto {
 
+  private Set<String> korpus;
   private Set<String> keeletase;
   private Set<String> sugu;
   private Set<String> kodakondsus;
+  private Set<String> emakeel;
   private Set<String> haridus;
   private Set<String> tekstityyp;
   private Set<String> abivahendid;

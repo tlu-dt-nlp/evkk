@@ -126,6 +126,23 @@
   line-height: 1;
 }
 
+/* An expanded filter section scrolls instead of pushing the rest of the sidebar
+   off-screen — "Teksti liik" alone has dozens of options. */
+.sv2-filter-options {
+  max-height: 15rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sv2-filter-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sv2-filter-options::-webkit-scrollbar-thumb {
+  background: #d6b3e0;
+  border-radius: 3px;
+}
+
 /* Main area */
 
 .sv2-metrics-row {
@@ -160,7 +177,8 @@
   gap: 1rem;
 }
 
-/* Let columns shrink below the chart SVG's drawn width; Google Charts redraws to fit on window resize */
+/* Let columns shrink below the chart SVG's drawn width; the chart is redrawn to fit by
+   the ResizeObserver in useElementSize */
 .sv2-charts-grid > * {
   min-width: 0;
 }
@@ -208,45 +226,5 @@
 
   .sv2-charts-grid {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Print sheet — appended to <body> by printChart.js only while printing a single chart */
-.sv2-print-sheet {
-  display: none;
-}
-
-@media print {
-  body.sv2-printing > :not(.sv2-print-sheet) {
-    display: none !important;
-  }
-
-  body.sv2-printing .sv2-print-sheet {
-    display: block;
-    padding: 18mm 20mm;
-    box-sizing: border-box;
-    font-family: Mulish, sans-serif;
-
-    h2 {
-      color: #4a148c;
-      font-size: 16pt;
-      font-weight: 700;
-      margin: 0 0 6pt;
-    }
-
-    .sv2-print-filters {
-      font-size: 9pt;
-      color: #666;
-      margin: 0 0 14pt;
-      line-height: 1.4;
-    }
-
-    .sv2-print-filters strong {
-      color: #333;
-    }
-
-    .sv2-print-filters--empty {
-      color: #aaa;
-    }
   }
 }

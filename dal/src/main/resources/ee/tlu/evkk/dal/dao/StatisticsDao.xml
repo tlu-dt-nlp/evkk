@@ -21,9 +21,11 @@
     ),
     text_props AS (
       SELECT text_id,
-             max(CASE WHEN property_name = 'keeletase' THEN property_value END)  AS keeletase,
+             max(CASE WHEN property_name = 'korpus' THEN property_value END)      AS korpus,
+             max(CASE WHEN property_name = 'keeletase' THEN property_value END)   AS keeletase,
              max(CASE WHEN property_name = 'sugu' THEN property_value END)        AS sugu,
              max(CASE WHEN property_name = 'kodakondsus' THEN property_value END) AS kodakondsus,
+             max(CASE WHEN property_name = 'emakeel' THEN property_value END)     AS emakeel,
              max(CASE WHEN property_name = 'haridus' THEN property_value END)     AS haridus,
              max(CASE WHEN property_name = 'tekstityyp' THEN property_value END)  AS tekstityyp,
              max(CASE WHEN property_name = 'abivahendid' THEN property_value END) AS abivahendid,
@@ -35,9 +37,11 @@
     filtered AS (
       SELECT ts.word_count,
              ts.sentence_count,
+             tp.korpus,
              tp.keeletase,
              tp.sugu,
              tp.kodakondsus,
+             tp.emakeel,
              tp.haridus,
              tp.tekstityyp,
              tp.abivahendid,
@@ -46,6 +50,10 @@
       FROM text_stats ts
              JOIN text_props tp ON ts.id = tp.text_id
       WHERE 1 = 1
+      <if test="filter.korpus != null and !filter.korpus.isEmpty()">
+        AND tp.korpus IN
+        <foreach item="v" collection="filter.korpus" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
       <if test="filter.keeletase != null and !filter.keeletase.isEmpty()">
         AND tp.keeletase IN
         <foreach item="v" collection="filter.keeletase" open="(" close=")" separator=",">#{v}</foreach>
@@ -57,6 +65,10 @@
       <if test="filter.kodakondsus != null and !filter.kodakondsus.isEmpty()">
         AND tp.kodakondsus IN
         <foreach item="v" collection="filter.kodakondsus" open="(" close=")" separator=",">#{v}</foreach>
+      </if>
+      <if test="filter.emakeel != null and !filter.emakeel.isEmpty()">
+        AND tp.emakeel IN
+        <foreach item="v" collection="filter.emakeel" open="(" close=")" separator=",">#{v}</foreach>
       </if>
       <if test="filter.haridus != null and !filter.haridus.isEmpty()">
         AND tp.haridus IN
@@ -104,19 +116,23 @@
         (SELECT COALESCE(max(sentence_count), 0) FROM text_stats)
       ),
       'filterOptions', json_build_object(
-        'keeletase',   (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT keeletase  AS v FROM text_props WHERE keeletase  IS NOT NULL) x),
-        'sugu',        (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT sugu       AS v FROM text_props WHERE sugu       IS NOT NULL) x),
+        'korpus',      (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT korpus      AS v FROM text_props WHERE korpus      IS NOT NULL) x),
+        'keeletase',   (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT keeletase   AS v FROM text_props WHERE keeletase   IS NOT NULL) x),
+        'sugu',        (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT sugu        AS v FROM text_props WHERE sugu        IS NOT NULL) x),
         'kodakondsus', (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT kodakondsus AS v FROM text_props WHERE kodakondsus IS NOT NULL) x),
-        'haridus',     (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT haridus    AS v FROM text_props WHERE haridus    IS NOT NULL) x),
-        'tekstityyp',  (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT tekstityyp AS v FROM text_props WHERE tekstityyp IS NOT NULL) x),
+        'emakeel',     (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT emakeel     AS v FROM text_props WHERE emakeel     IS NOT NULL) x),
+        'haridus',     (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT haridus     AS v FROM text_props WHERE haridus     IS NOT NULL) x),
+        'tekstityyp',  (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT tekstityyp  AS v FROM text_props WHERE tekstityyp  IS NOT NULL) x),
         'abivahendid', (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT abivahendid AS v FROM text_props WHERE abivahendid IS NOT NULL) x),
-        'aasta',       (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT aasta      AS v FROM text_props WHERE aasta      IS NOT NULL) x),
-        'tekstikeel',  (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT tekstikeel AS v FROM text_props WHERE tekstikeel IS NOT NULL) x)
+        'aasta',       (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT aasta       AS v FROM text_props WHERE aasta       IS NOT NULL) x),
+        'tekstikeel',  (SELECT COALESCE(json_agg(v ORDER BY v), '[]'::json) FROM (SELECT DISTINCT tekstikeel  AS v FROM text_props WHERE tekstikeel  IS NOT NULL) x)
       ),
       'distributions', json_build_object(
+        'korpus',      COALESCE((SELECT json_object_agg(korpus,      cnt) FROM (SELECT korpus,      count(*)::integer AS cnt FROM filtered WHERE korpus      IS NOT NULL GROUP BY korpus)      x), '{}'::json),
         'keeletase',   COALESCE((SELECT json_object_agg(keeletase,   cnt) FROM (SELECT keeletase,   count(*)::integer AS cnt FROM filtered WHERE keeletase   IS NOT NULL GROUP BY keeletase)   x), '{}'::json),
         'sugu',        COALESCE((SELECT json_object_agg(sugu,        cnt) FROM (SELECT sugu,        count(*)::integer AS cnt FROM filtered WHERE sugu        IS NOT NULL GROUP BY sugu)        x), '{}'::json),
         'kodakondsus', COALESCE((SELECT json_object_agg(kodakondsus, cnt) FROM (SELECT kodakondsus, count(*)::integer AS cnt FROM filtered WHERE kodakondsus IS NOT NULL GROUP BY kodakondsus) x), '{}'::json),
+        'emakeel',     COALESCE((SELECT json_object_agg(emakeel,     cnt) FROM (SELECT emakeel,     count(*)::integer AS cnt FROM filtered WHERE emakeel     IS NOT NULL GROUP BY emakeel)     x), '{}'::json),
         'haridus',     COALESCE((SELECT json_object_agg(haridus,     cnt) FROM (SELECT haridus,     count(*)::integer AS cnt FROM filtered WHERE haridus     IS NOT NULL GROUP BY haridus)     x), '{}'::json),
         'tekstityyp',  COALESCE((SELECT json_object_agg(tekstityyp,  cnt) FROM (SELECT tekstityyp,  count(*)::integer AS cnt FROM filtered WHERE tekstityyp  IS NOT NULL GROUP BY tekstityyp)  x), '{}'::json),
         'abivahendid', COALESCE((SELECT json_object_agg(abivahendid, cnt) FROM (SELECT abivahendid, count(*)::integer AS cnt FROM filtered WHERE abivahendid IS NOT NULL GROUP BY abivahendid) x), '{}'::json),
@@ -127,4 +143,3 @@
   </select>
 
 </mapper>
-
