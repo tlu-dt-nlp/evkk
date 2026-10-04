@@ -17,7 +17,7 @@ import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +46,10 @@ import static java.util.Arrays.asList;
 
 @Slf4j
 @Service
-@ConditionalOnProperty(name = "evkk.gemini.api-key")
+// The property is always declared (with an empty default), so @ConditionalOnProperty would
+// always match. Only a non-blank key means the Gemini features are actually configured —
+// without this the bean would exist and every call would fail at runtime instead.
+@ConditionalOnExpression("!'${evkk.gemini.api-key:}'.isBlank()")
 public class GeminiService {
 
   private final ObjectMapper objectMapper = new ObjectMapper();

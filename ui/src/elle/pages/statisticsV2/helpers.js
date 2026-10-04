@@ -1,7 +1,7 @@
 import { FIELDS } from './constants';
 import { translateValue } from './labels';
 
-export const sortByOrder = (items, order) =>
+const sortByOrder = (items, order) =>
   [...items].sort((a, b) => {
     const ia = order.indexOf(a), ib = order.indexOf(b);
     if (ia === -1 && ib === -1) return a.localeCompare(b);

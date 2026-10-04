@@ -13,7 +13,6 @@ import ee.evkk.dto.enums.TargetWordCriteria;
 import ee.tlu.evkk.api.exception.ExerciseCouldNotBeGeneratedException;
 import ee.tlu.evkk.api.exception.ExerciseDidNotPassQualityGateException;
 import ee.tlu.evkk.core.service.GeminiService;
-import java.util.Optional;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dao.ExerciseGeneratorSourceDao;
 import ee.tlu.evkk.dal.dto.ExerciseGeneratorSource;
@@ -25,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
@@ -76,7 +76,7 @@ public class ExerciseGeneratorService {
       shuffle(exercise.getBlanks());
     }
 
-    if (request.isPerformQualityCheck() && geminiService.isPresent() && !geminiService.get().checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)) {
+    if (request.isPerformQualityCheck() && !passesQualityCheck(generationContext, request, exercise)) {
       throw new ExerciseDidNotPassQualityGateException();
     }
 
@@ -87,6 +87,10 @@ public class ExerciseGeneratorService {
 
   private static boolean isFillInTheBlanksOutput(ExerciseRequestDto request) {
     return FILL_IN_THE_BLANKS.equals(request.getFormat()) && !ADJECTIVE.equals(request.getType());
+  }
+
+  private boolean passesQualityCheck(GenerationContext generationContext, ExerciseRequestDto request, ExerciseDto exercise) {
+    return geminiService.map(service -> service.checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)).orElse(true);
   }
 
   private ExerciseDto generateFromTexts(ExerciseRequestDto request, GenerationContext generationContext) {

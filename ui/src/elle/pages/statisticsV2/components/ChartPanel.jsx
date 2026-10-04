@@ -8,8 +8,6 @@ import { downloadSvgAsImage } from '../../../util/ImageDownloadUtils';
 import { useElementSize } from '../hooks/useElementSize';
 import ChartToolbar from './ChartToolbar';
 
-const PANEL_CHART_HEIGHT = 240;
-
 const sortRowsAlphabetically = (data) => {
   const [header, ...rows] = data;
   return [header, ...[...rows].sort((a, b) => String(a[0]).localeCompare(String(b[0]), 'et'))];
@@ -29,29 +27,26 @@ const toStandaloneSvg = (svg) => {
 // chart fills the panel and the fullscreen dialog in both dimensions and redraws
 // whenever that box changes.
 const ChartView = ({ containerRef, size, data, chartType, fill, emptyLabel }) => (
-  <div
-    ref={containerRef}
-    style={{ height: fill ? '100%' : PANEL_CHART_HEIGHT, minHeight: 0, overflow: 'hidden' }}
-  >
+  <div ref={containerRef} className={`sv2-chart-box${fill ? ' sv2-chart-box--fill' : ''}`}>
     {data.length > 1
       ? size.width > 0 && size.height > 0 && (
-          <Chart
-            chartType={chartType}
-            width={`${Math.round(size.width)}px`}
-            height={`${Math.round(size.height)}px`}
-            data={data}
-            options={CHART_OPTS_MAP[chartType]}
-            loader={<Typography variant="body2" color="text.secondary">...</Typography>}
-          />
-        )
-      : <Typography variant="body2" color="text.secondary" sx={{ p: 2 }}>{emptyLabel}</Typography>}
+      <Chart
+        chartType={chartType}
+        width={`${Math.round(size.width)}px`}
+        height={`${Math.round(size.height)}px`}
+        data={data}
+        options={CHART_OPTS_MAP[chartType]}
+        loader={<Typography variant="body2" color="text.secondary">...</Typography>}
+      />
+    )
+      : <Typography variant="body2" color="text.secondary" className="sv2-chart-empty">{emptyLabel}</Typography>}
   </div>
 );
 
 const ChartPanel = ({
-  title, data, filtersText, isWide, onToggleWide, onRemove,
-  chartType, onChartTypeChange, sortAlpha, onSortAlphaChange
-}) => {
+                      title, data, filtersText, isWide, onToggleWide, onRemove,
+                      chartType, onChartTypeChange, sortAlpha, onSortAlphaChange
+                    }) => {
   const { t } = useTranslation();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [panelRef, panelSize, panelNode] = useElementSize();
@@ -95,8 +90,13 @@ const ChartPanel = ({
         />
       </Paper>
 
-      <Dialog fullScreen open={isFullscreen} onClose={() => setIsFullscreen(false)}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', p: 2 }}>
+      <Dialog
+        className="statistics-app"
+        fullScreen
+        open={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+      >
+        <Box className="sv2-fullscreen-body">
           <ChartToolbar
             {...toolbarProps}
             onPrint={print(fullscreenNode)}
@@ -105,8 +105,7 @@ const ChartPanel = ({
             closeTitleKey="statistics_close"
             inlineClose
           />
-          {/* minHeight:0 lets this flex item shrink, giving the chart a definite height to fill */}
-          <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+          <Box className="sv2-fullscreen-chart">
             <ChartView
               containerRef={fullscreenRef} size={fullscreenSize} data={displayData}
               chartType={chartType} fill emptyLabel={emptyLabel}

@@ -7,7 +7,6 @@ import ee.evkk.dto.ExerciseIncorrectAnswerDto;
 import ee.tlu.evkk.api.exception.ExerciseInvalidAmountOfAnswersException;
 import ee.tlu.evkk.api.exception.ExerciseNotFoundOrExpiredException;
 import ee.tlu.evkk.core.service.GeminiService;
-import java.util.Optional;
 import ee.tlu.evkk.dal.dao.ExerciseAnswerDao;
 import ee.tlu.evkk.dal.dto.ExerciseAnswer;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;

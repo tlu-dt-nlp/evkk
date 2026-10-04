@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Box, Button, Collapse, Divider,
   ListItem, ListItemButton, ListItemText,
@@ -9,28 +9,23 @@ import { useTranslation } from 'react-i18next';
 
 const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, isOpen, onToggle }) => {
   const { t } = useTranslation();
-  const [inputMin, setInputMin] = useState(String(value[0]));
-  const [inputMax, setInputMax] = useState(String(value[1]));
 
-  useEffect(() => { setInputMin(String(value[0])); }, [value[0]]);
-  useEffect(() => { setInputMax(String(value[1])); }, [value[1]]);
+  const [draft, setDraft] = useState({ min: String(value[0]), max: String(value[1]), from: value });
+
+  if (draft.from !== value) {
+    setDraft({ min: String(value[0]), max: String(value[1]), from: value });
+  }
 
   const commitMin = () => {
-    const num = parseInt(inputMin, 10);
+    const num = parseInt(draft.min, 10);
     if (!isNaN(num)) onChange([Math.max(range[0], Math.min(num, value[1])), value[1]]);
-    else setInputMin(String(value[0]));
+    else setDraft(prev => ({ ...prev, min: String(value[0]) }));
   };
 
   const commitMax = () => {
-    const num = parseInt(inputMax, 10);
+    const num = parseInt(draft.max, 10);
     if (!isNaN(num)) onChange([value[0], Math.min(range[1], Math.max(num, value[0]))]);
-    else setInputMax(String(value[1]));
-  };
-
-  const inputSx = {
-    width: 72,
-    '& input': { fontSize: '0.72rem', p: '3px 6px', textAlign: 'center' },
-    '& .MuiOutlinedInput-root': { borderRadius: 1 }
+    else setDraft(prev => ({ ...prev, max: String(value[1]) }));
   };
 
   return (
@@ -39,7 +34,7 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
         <ListItemButton onClick={onToggle}>
           <ListItemText
             primary={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+              <Box className="sv2-filter-section-label">
                 <span>{label}</span>
                 {isActive && <span className="sv2-filter-badge">1</span>}
               </Box>
@@ -50,48 +45,39 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
       </ListItem>
 
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        {/* No overflow clipping here: overflow-x:hidden would force overflow-y to auto
-            and cut off the slider's value label, which floats above the thumb.
-            The slider's own width keeps it from overflowing horizontally instead. */}
-        <Box sx={{ px: 2.5, pt: 3, pb: 2 }}>
+        <Box className="sv2-range-body">
           <Slider
+            className="sv2-range-slider"
             value={value}
             min={range[0]}
             max={range[1]}
             onChange={(_, newVal) => onChange(newVal)}
             valueLabelDisplay="auto"
             size="small"
-            sx={{
-              color: '#9c27b0', mx: 0.5, width: 'calc(100% - 12px)',
-              '& .MuiSlider-valueLabel': { zIndex: 2 }
-            }}
           />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5, gap: 1 }}>
+          <Box className="sv2-range-inputs">
             <TextField
-              value={inputMin}
-              onChange={e => setInputMin(e.target.value)}
+              className="sv2-range-input"
+              value={draft.min}
+              onChange={e => setDraft(prev => ({ ...prev, min: e.target.value }))}
               onBlur={commitMin}
               onKeyDown={e => e.key === 'Enter' && commitMin()}
               size="small" type="number"
               inputProps={{ min: range[0], max: range[1] }}
-              sx={inputSx}
             />
             <Typography variant="caption" color="text.secondary">–</Typography>
             <TextField
-              value={inputMax}
-              onChange={e => setInputMax(e.target.value)}
+              className="sv2-range-input"
+              value={draft.max}
+              onChange={e => setDraft(prev => ({ ...prev, max: e.target.value }))}
               onBlur={commitMax}
               onKeyDown={e => e.key === 'Enter' && commitMax()}
               size="small" type="number"
               inputProps={{ min: range[0], max: range[1] }}
-              sx={inputSx}
             />
           </Box>
           {isActive && (
-            <Button
-              size="small" variant="text" onClick={onReset}
-              sx={{ mt: 0.5, fontSize: '0.7rem', textTransform: 'none', color: '#9c27b0', p: 0, minWidth: 0 }}
-            >
+            <Button size="small" variant="text" className="sv2-range-reset" onClick={onReset}>
               {t('statistics_reset_range')}
             </Button>
           )}
@@ -103,4 +89,3 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
 };
 
 export default RangeSliderFilter;
-

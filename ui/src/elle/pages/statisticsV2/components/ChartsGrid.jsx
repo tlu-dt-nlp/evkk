@@ -22,29 +22,25 @@ const computeColumns = (activeChartKeys, wideKeys) => {
 const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
   const { t } = useTranslation();
   const { activeChartKeys, wideKeys, chartTypes, chartSortAlpha } = layout;
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [checkedKeys, setCheckedKeys] = useState([]);
+  const [checkedKeys, setCheckedKeys] = useState(null);
 
   const { columns, nextIsSecondInRow } = computeColumns(activeChartKeys, wideKeys);
   const lastExpandableKey = [...activeChartKeys].reverse().find(k => !wideKeys.includes(k) && columns[k] === 0);
   const inactiveFields = FIELDS.filter(f => !activeChartKeys.includes(f.key));
 
-  const openAddDialog = () => {
-    setCheckedKeys([]);
-    setIsAddOpen(true);
-  };
+  const closeAddDialog = () => setCheckedKeys(null);
 
   const toggleChecked = (key) => setCheckedKeys(prev =>
     prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]);
 
   const confirmAdd = () => {
     actions.addCharts(checkedKeys);
-    setIsAddOpen(false);
+    closeAddDialog();
   };
 
   const expandPrevious = () => {
     actions.expandChart(lastExpandableKey);
-    setIsAddOpen(false);
+    closeAddDialog();
   };
 
   return (
@@ -56,7 +52,7 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
         const isLeftCol = columns[key] === 0;
 
         return (
-          <div key={key} style={isWide ? { gridColumn: '1 / -1' } : undefined}>
+          <div key={key} className={`sv2-chart-cell${isWide ? ' sv2-chart-cell--wide' : ''}`}>
             <ChartPanel
               title={t(field.labelKey)}
               data={chartData[key]}
@@ -75,22 +71,29 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
 
       {inactiveFields.length > 0 && (
         <>
-          <button className="sv2-add-chart-slot" onClick={openAddDialog}>
-            <Add sx={{ fontSize: 32, mb: 0.5 }} />
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>{t('statistics_add_chart')}</Typography>
+          <button className="sv2-add-chart-slot" onClick={() => setCheckedKeys([])}>
+            <Add className="sv2-add-chart-icon" />
+            <Typography variant="body2" className="sv2-add-chart-label">{t('statistics_add_chart')}</Typography>
           </button>
 
-          <Dialog open={isAddOpen} onClose={() => setIsAddOpen(false)} fullWidth maxWidth="xs">
-            <DialogTitle sx={{ pb: 0 }}>{t('statistics_add_charts_title')}</DialogTitle>
-            <DialogContent sx={{ pt: 0 }}>
+          {/* Portalled out of the page, so it carries the page scope class itself */}
+          <Dialog
+            className="statistics-app"
+            open={checkedKeys !== null}
+            onClose={closeAddDialog}
+            fullWidth
+            maxWidth="xs"
+          >
+            <DialogTitle className="sv2-dialog-title">{t('statistics_add_charts_title')}</DialogTitle>
+            <DialogContent className="sv2-dialog-content">
               <List dense disablePadding>
                 {inactiveFields.map(({ key, labelKey }) => (
-                  <ListItemButton key={key} onClick={() => toggleChecked(key)} sx={{ pl: 0 }}>
-                    <ListItemIcon sx={{ minWidth: 40 }}>
+                  <ListItemButton key={key} onClick={() => toggleChecked(key)} className="sv2-filter-option">
+                    <ListItemIcon className="sv2-filter-option-icon">
                       <Checkbox
-                        edge="start" disableRipple tabIndex={-1}
-                        checked={checkedKeys.includes(key)}
-                        sx={{ color: '#9c27b0', '&.Mui-checked': { color: '#9c27b0' } }}
+                        edge="start" disableRipple tabIndex={-1} size="small"
+                        className="sv2-filter-checkbox"
+                        checked={checkedKeys?.includes(key) || false}
                       />
                     </ListItemIcon>
                     <ListItemText primary={t(labelKey)} />
@@ -98,20 +101,21 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
                 ))}
               </List>
             </DialogContent>
-            <DialogActions sx={{ px: 3, pb: 2, justifyContent: 'space-between' }}>
+            <DialogActions className="sv2-dialog-actions">
               {nextIsSecondInRow && lastExpandableKey ? (
                 <Button
-                  size="small" variant="text" onClick={expandPrevious}
-                  sx={{ textTransform: 'none', color: '#9c27b0', fontStyle: 'italic' }}
+                  size="small" variant="text"
+                  className="sv2-expand-previous-button"
+                  onClick={expandPrevious}
                 >
                   {t('statistics_expand_previous')}
                 </Button>
               ) : <span />}
               <Button
                 variant="contained" size="small"
-                disabled={checkedKeys.length === 0}
+                className="sv2-accent-button"
+                disabled={!checkedKeys?.length}
                 onClick={confirmAdd}
-                sx={{ textTransform: 'none', fontWeight: 600, bgcolor: '#9c27b0', '&:hover': { bgcolor: '#6a1b9a' } }}
               >
                 {t('statistics_add_charts_button')}
               </Button>
