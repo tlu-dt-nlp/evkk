@@ -10,6 +10,7 @@ import '../../translations/i18n';
 import './styles/TableDownloadButton.css';
 import { sortTableDataByColumn } from '../../util/TableUtils';
 import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { useAnalytics } from '../../context/AnalyticsContext';
 
 export const TableType = {
   GRAMMATICAL_ANALYSIS: 'GRAMMATICAL_ANALYSIS',
@@ -34,6 +35,7 @@ export default function TableDownloadButton({
                                             }) {
 
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics();
   const [fileType, setFileType] = useState(false);
   const fileDownloadElement = createRef();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -127,6 +129,7 @@ export default function TableDownloadButton({
   }
 
   function exportToExcel(filename, sheetName, data, columns) {
+    trackEvent('Download', 'export', `table-${tableType}-xlsx`);
     const worksheetData = [
       columns.map(col => col.label),
       ...data.map(row => columns.map(col => {
@@ -151,7 +154,8 @@ export default function TableDownloadButton({
         <CSVLink filename={t(filename)}
                  className="csvLink"
                  headers={tableHeaders}
-                 data={csvData}>{t('common_download')}</CSVLink>
+                 data={csvData}
+                 onClick={() => trackEvent('Download', 'export', `table-${tableType}-csv`)}>{t('common_download')}</CSVLink>
       </Button>
     );
   }

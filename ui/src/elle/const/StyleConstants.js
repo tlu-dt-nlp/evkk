@@ -299,5 +299,5 @@ export const correctorDocxColors = {
   'both-sentence-color': 'ea9999',
   'uncommon-word-color': 'b6d7a8',
   'abstract-word-color': 'c9daf8',
-  'content-word-color': 'ada1d4'
+  'content-word-color': 'ea98ea'
 };

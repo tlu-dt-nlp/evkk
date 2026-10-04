@@ -4,8 +4,10 @@ import { Button } from '@mui/material';
 import { DefaultButtonStyle } from '../../../../const/StyleConstants';
 import { GRAMMARCHECKER } from '../../../correction/const/Constants';
 import { useEditorContext } from '../../providers/EditorProvider';
+import { useAnalytics } from '../../../../context/AnalyticsContext';
 
 export default function CorrectorButton() {
+  const { trackToolAnalyze } = useAnalytics();
   const { t } = useTranslation();
   const { setErrorResponse, text, setInitialText } = useEditorContext((state) => ({
     setErrorResponse: state.setErrorResponse,
@@ -17,6 +19,7 @@ export default function CorrectorButton() {
 
   const handleClick = async () => {
     const result = await getCorrectorResult({ tekst: text, model: GRAMMARCHECKER });
+    trackToolAnalyze('corrector');
     setInitialText(text);
     setErrorResponse(result);
   };

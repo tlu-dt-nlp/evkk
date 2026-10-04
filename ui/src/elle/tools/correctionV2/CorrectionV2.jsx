@@ -20,6 +20,7 @@ import TextLevelInfo from './components/info/TextLevelInfo';
 import ComplexityInfo from './components/info/ComplexityInfo';
 import VocabularyInfo from './components/info/VocabularyInfo';
 import ErrorAccordionV2 from './components/errors/ErrorAccordionV2';
+import { useAnalytics } from '../../context/AnalyticsContext';
 
 const infoContentMap = {
   [tabValueMap.CORRECTOR]: <CorrectorInfo />,
@@ -46,26 +47,28 @@ export default function CorrectionV2() {
   }));
   const { getCorrectorResult } = useGetCorrectorResult();
   const { t } = useTranslation();
+  const { trackEvent } = useAnalytics();
   const [value, setValue] = useState(tabValueMap.CORRECTOR);
 
   const tabValues = [
-    <Tab label={t('corrector_proofreading')} value={tabValueMap.CORRECTOR} />,
-    <Tab label={t('corrector_proficiency_level')} value={tabValueMap.PROFICIENCY_LEVEL} />,
-    <Tab label={t('corrector_complexity')} value={tabValueMap.COMPLEXITY} />,
-    <Tab label={t('corrector_vocabulary')} value={tabValueMap.VOCABULARY} />
+    <Tab key={tabValueMap.CORRECTOR} label={t('corrector_proofreading')} value={tabValueMap.CORRECTOR} />,
+    <Tab key={tabValueMap.PROFICIENCY_LEVEL} label={t('corrector_proficiency_level')}
+         value={tabValueMap.PROFICIENCY_LEVEL} />,
+    <Tab key={tabValueMap.COMPLEXITY} label={t('corrector_complexity')} value={tabValueMap.COMPLEXITY} />,
+    <Tab key={tabValueMap.VOCABULARY} label={t('corrector_vocabulary')} value={tabValueMap.VOCABULARY} />
   ];
 
   const errorBoxTabPanels = [
-    <TabPanel sx={{ padding: 0 }} value={tabValueMap.CORRECTOR}>
+    <TabPanel key={tabValueMap.CORRECTOR} sx={{ padding: 0 }} value={tabValueMap.CORRECTOR}>
       <ErrorAccordionV2 />
     </TabPanel>,
-    <TabPanel sx={{ padding: 0 }} value={tabValueMap.PROFICIENCY_LEVEL}>
+    <TabPanel key={tabValueMap.PROFICIENCY_LEVEL} sx={{ padding: 0 }} value={tabValueMap.PROFICIENCY_LEVEL}>
       <TextLevelView />
     </TabPanel>,
-    <TabPanel sx={{ padding: 0 }} value={tabValueMap.COMPLEXITY}>
+    <TabPanel key={tabValueMap.COMPLEXITY} sx={{ padding: 0 }} value={tabValueMap.COMPLEXITY}>
       <ComplexityView />
     </TabPanel>,
-    <TabPanel sx={{ padding: 0 }} value={tabValueMap.VOCABULARY}>
+    <TabPanel key={tabValueMap.VOCABULARY} sx={{ padding: 0 }} value={tabValueMap.VOCABULARY}>
       <VocabularyView />
     </TabPanel>
   ];
@@ -73,6 +76,7 @@ export default function CorrectionV2() {
   const handleChange = async (_, newValue) => {
     setValue(newValue);
     setSelectedSubTab(ToggleButtonCategories[newValue][0].value);
+    trackEvent('Correction', 'main-tab-change', newValue);
     if (initialText !== text && Object.keys(errorResponse).length !== 0) {
       setInitialText(text);
       const result = await getCorrectorResult({
