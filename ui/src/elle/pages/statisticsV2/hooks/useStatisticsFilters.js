@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { EMPTY_FILTERS } from '../constants';
 import { isSameFilterState } from '../helpers';
 
-// Pending filters are edited in the sidebar; applied filters drive the API call.
 export const useStatisticsFilters = () => {
   const [pending, setPending] = useState(EMPTY_FILTERS);
   const [applied, setApplied] = useState(EMPTY_FILTERS);

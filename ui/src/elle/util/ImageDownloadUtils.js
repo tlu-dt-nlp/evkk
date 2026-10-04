@@ -1,10 +1,3 @@
-// Renders an SVG or canvas element to a PNG and hands it to the browser as a download.
-// Shared by ImageDownloadButton (word cloud, word context graph) and the statistics charts.
-//
-// Note: the SVG path used to pad twice — once here and again by passing the result back
-// through the canvas path — so SVG downloads carried 40px of padding. It is now one
-// IMAGE_PADDING border, like the canvas path always had.
-
 const IMAGE_PADDING = 20;
 
 const createNewCanvas = (element) => {

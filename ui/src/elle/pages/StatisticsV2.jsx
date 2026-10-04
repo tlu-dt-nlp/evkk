@@ -21,7 +21,6 @@ function StatisticsV2() {
 
   const filters = useStatisticsFilters();
   const { response, isLoading } = useStatisticsQuery(filters.applied);
-  // The applied subcorpus selection decides the default origin chart (kodakondsus vs emakeel).
   const [layout, layoutActions, isCustomLayout] = useChartLayout(filters.applied.filters.korpus);
 
   const toggleSection = useCallback((key) => setOpenSections(prev => {

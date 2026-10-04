@@ -10,8 +10,6 @@ const sortByOrder = (items, order) =>
     return ia - ib;
   });
 
-// Ordering happens on the raw values (so LEVEL_ORDER still applies), labels are
-// translated afterwards.
 export const toBarData = (t, { key, labelKey, order }, counts) => {
   const entries = Object.entries(counts);
   const sorted = order
@@ -31,7 +29,6 @@ export const toDataRanges = (response) => response
   : null;
 
 // ── Filter state helpers ─────────────────────────────────────────
-// Filter state shape: { filters: { [fieldKey]: Set<string> }, wordCountRange, sentenceCountRange }
 
 export const isRangeNarrowed = (range, dataRange) =>
   !!(range && dataRange && (range[0] > dataRange[0] || range[1] < dataRange[1]));
@@ -64,7 +61,6 @@ export const toRequestPayload = ({ filters, wordCountRange, sentenceCountRange }
   return payload;
 };
 
-// One line summarising the active filters, printed above a chart.
 export const describeFilters = (t, { filters, wordCountRange, sentenceCountRange }, dataRanges) => {
   const parts = FIELDS
     .filter(({ key }) => filters[key]?.size > 0)

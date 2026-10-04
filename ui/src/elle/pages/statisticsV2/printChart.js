@@ -1,13 +1,5 @@
 import { ACCENT_DEEP, FONT } from './constants';
 
-// Prints a single chart from its own off-screen iframe.
-//
-// An earlier version printed from a div appended to the page and hid everything else
-// with print CSS. That can't work reliably here: Bootstrap is loaded globally from a
-// CDN and its print stylesheet sets `@page { size: a3 }` and
-// `body { min-width: 992px !important }`, which override the sheet's own page setup.
-// A separate document inherits none of that.
-
 const FRAME_ID = 'sv2-print-frame';
 const FONT_URL = 'https://fonts.googleapis.com/css?family=Mulish';
 
@@ -30,8 +22,6 @@ const STYLES = `
 const escapeHtml = (value) => String(value).replace(/[&<>"]/g,
   c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-// The chart SVG scaled to the printable width. aspect-ratio pins the height, which
-// height:auto alone does not do reliably for a viewBox'd SVG.
 const svgMarkup = (svg) => {
   const clone = svg.cloneNode(true);
   const width = Number(svg.getAttribute('width')) || svg.clientWidth;
@@ -55,7 +45,6 @@ export const printChart = ({ t, svg, title, filtersText }) => {
   const frame = document.createElement('iframe');
   frame.id = FRAME_ID;
   frame.setAttribute('aria-hidden', 'true');
-  // Off-screen but at a real size — a zero-sized frame may not lay out its content.
   frame.style.cssText = 'position:fixed;left:-20000px;top:0;width:297mm;height:210mm;border:0;';
   document.body.append(frame);
 
@@ -75,9 +64,7 @@ export const printChart = ({ t, svg, title, filtersText }) => {
   doc.close();
 
   frame.contentWindow.addEventListener('afterprint', () => frame.remove(), { once: true });
-
-  // Two frames so the iframe document has laid out — and the SVG resolved its scaled
-  // height — before the print dialog snapshots it.
+  
   requestAnimationFrame(() => requestAnimationFrame(() => {
     frame.contentWindow.focus();
     frame.contentWindow.print();

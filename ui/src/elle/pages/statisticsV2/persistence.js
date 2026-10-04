@@ -2,14 +2,11 @@ import { CHART_TYPES, FIELD_KEYS } from './constants';
 
 const STORAGE_KEY = 'elle-statistics-v2-config';
 
-// Everything except activeChartKeys, which depends on the subcorpus selection until
-// the user customises the layout (see useChartLayout).
 export const BASE_LAYOUT = { wideKeys: [], chartTypes: {}, chartSortAlpha: {} };
 
 const pickValid = (obj, isValidValue) =>
   Object.fromEntries(Object.entries(obj || {}).filter(([k, v]) => FIELD_KEYS.includes(k) && isValidValue(v)));
 
-// Returns null when the user has never customised the layout.
 export const loadLayout = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

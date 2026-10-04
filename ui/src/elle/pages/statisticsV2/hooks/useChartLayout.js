@@ -5,12 +5,6 @@ import { BASE_LAYOUT, clearLayout, loadLayout, saveLayout } from '../persistence
 const without = (keys, key) => keys.filter(k => k !== key);
 const withKey = (keys, key) => (keys.includes(key) ? keys : [...keys, key]);
 
-// Which charts are shown, which span both columns, and per-chart type/sort.
-//
-// Until the user changes something there is no stored layout, and the visible charts
-// follow the subcorpus selection — kodakondsus for the state exam corpus alone,
-// emakeel otherwise. The first change freezes the layout into localStorage and the
-// subcorpus selection stops moving it; "restore default layout" hands control back.
 export const useChartLayout = (korpusFilter) => {
   const [stored, setStored] = useState(loadLayout);
 

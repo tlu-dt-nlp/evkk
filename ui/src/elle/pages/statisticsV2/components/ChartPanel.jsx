@@ -13,8 +13,6 @@ const sortRowsAlphabetically = (data) => {
   return [header, ...[...rows].sort((a, b) => String(a[0]).localeCompare(String(b[0]), 'et'))];
 };
 
-// Google Charts' <text> inherits the page font; a serialised copy has no page to
-// inherit from, so the font is pinned on the clone before it is rasterised.
 const toStandaloneSvg = (svg) => {
   const clone = svg.cloneNode(true);
   clone.style.fontFamily = `${FONT}, sans-serif`;
@@ -23,13 +21,19 @@ const toStandaloneSvg = (svg) => {
   return clone;
 };
 
-// Drawn at the measured pixel size of its container rather than at "100%", so the
-// chart fills the panel and the fullscreen dialog in both dimensions and redraws
-// whenever that box changes.
-const ChartView = ({ containerRef, size, data, chartType, fill, emptyLabel }) => (
-  <div ref={containerRef} className={`sv2-chart-box${fill ? ' sv2-chart-box--fill' : ''}`}>
-    {data.length > 1
-      ? size.width > 0 && size.height > 0 && (
+const ChartView = ({ containerRef, size, data, chartType, fill, emptyLabel }) => {
+  // The wrapper below always renders, whatever the content turns out to be: it carries
+  // the ref the ResizeObserver measures, and nothing can be drawn until it has a size.
+  const content = () => {
+    if (data.length <= 1) {
+      return <Typography variant="body2" color="text.secondary" className="sv2-chart-empty">{emptyLabel}</Typography>;
+    }
+
+    if (size.width <= 0 || size.height <= 0) {
+      return null;
+    }
+
+    return (
       <Chart
         chartType={chartType}
         width={`${Math.round(size.width)}px`}
@@ -38,10 +42,15 @@ const ChartView = ({ containerRef, size, data, chartType, fill, emptyLabel }) =>
         options={CHART_OPTS_MAP[chartType]}
         loader={<Typography variant="body2" color="text.secondary">...</Typography>}
       />
-    )
-      : <Typography variant="body2" color="text.secondary" className="sv2-chart-empty">{emptyLabel}</Typography>}
-  </div>
-);
+    );
+  };
+
+  return (
+    <div ref={containerRef} className={`sv2-chart-box${fill ? ' sv2-chart-box--fill' : ''}`}>
+      {content()}
+    </div>
+  );
+};
 
 const ChartPanel = ({
                       title, data, filtersText, isWide, onToggleWide, onRemove,
@@ -52,7 +61,6 @@ const ChartPanel = ({
   const [panelRef, panelSize, panelNode] = useElementSize();
   const [fullscreenRef, fullscreenSize, fullscreenNode] = useElementSize();
 
-  // Memoised: react-google-charts redraws whenever it receives a new data reference.
   const displayData = useMemo(
     () => (sortAlpha && data.length > 1 ? sortRowsAlphabetically(data) : data),
     [data, sortAlpha]

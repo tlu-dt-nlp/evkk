@@ -9,13 +9,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { CHART_TYPE_OPTIONS } from '../constants';
 
-// Every chart action lives in one overflow menu: eight icons did not fit a narrow
-// screen, and a chart card reads better without a row of controls competing with its title.
 const ChartToolbar = ({
-  title, chartType, onChartTypeChange, sortAlpha, onSortAlphaChange,
-  isWide, onToggleWide, onFullscreen, onPrint, onDownload, onClose, closeTitleKey,
-  inlineClose
-}) => {
+                        title, chartType, onChartTypeChange, sortAlpha, onSortAlphaChange,
+                        isWide, onToggleWide, onFullscreen, onPrint, onDownload, onClose, closeTitleKey,
+                        inlineClose
+                      }) => {
   const { t } = useTranslation();
   const [anchor, setAnchor] = useState(null);
 
@@ -53,7 +51,6 @@ const ChartToolbar = ({
         </IconButton>
       )}
 
-      {/* Portalled out of the page, so it carries the page scope class itself */}
       <Menu className="statistics-app" anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu}>
         <Typography variant="overline" className="sv2-menu-section-label">
           {t('statistics_chart_type')}

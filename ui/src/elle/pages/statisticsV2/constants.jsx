@@ -23,9 +23,6 @@ export const FIELD_KEYS = FIELDS.map(f => f.key);
 
 export const getField = (key) => FIELDS.find(f => f.key === key);
 
-// Citizenship is only recorded for the state exam corpus, so it is the meaningful
-// origin field only when that corpus is selected on its own. Any other or mixed
-// selection gets the native language chart instead.
 const originChartKey = (korpusFilter) =>
   korpusFilter?.size === 1 && korpusFilter.has(EXAM_CORPUS_ID) ? 'kodakondsus' : 'emakeel';
 
