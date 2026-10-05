@@ -298,6 +298,7 @@ export const TRANSLATIONS_EN = {
   corrector_vocabulary_word_repetitions_tooltip: 'Show words that repeat in the same sentence or two consecutive sentences. To avoid unnecessary word repetitions, look for synonyms in dictionaries, and use pronouns for references.',
   end: 'end',
   error_404_page_not_found: '404: page not found',
+  error_duplicate_text: 'A text with identical content already exists in the corpus!',
   error_exercise_could_not_be_generated: 'No suitable text material was found to generate the exercise. Change the exercise options and try again.',
   error_exercise_did_not_pass_quality_gate: 'The generated exercise did not pass the quality check. Try again or disable the quality check.',
   error_exercise_invalid_amount_of_answers: 'The exercise is not fully answered. Complete the exercise and try again.',

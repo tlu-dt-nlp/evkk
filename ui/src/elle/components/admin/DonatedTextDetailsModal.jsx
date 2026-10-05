@@ -272,9 +272,9 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
 
       refetch();
       successEmitter.emit(SuccessSnackbarEventType.GENERIC_SUCCESS);
-      setIsPublishModalOpen(false);
       setIsOpen(false);
-    });
+    })
+      .finally(() => setIsPublishModalOpen(false));
   };
 
   const handleDelete = () => {

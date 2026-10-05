@@ -5,6 +5,7 @@ import ee.evkk.dto.DonatedTextRequestDto;
 import ee.evkk.dto.TextDetailsResponseDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.tlu.evkk.api.exception.DuplicateTextException;
 import ee.tlu.evkk.api.service.AdminTextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -65,7 +66,7 @@ public class AdminTextController {
   public TextDetailsResponseDto publishDonatedText(
     @PathVariable UUID id,
     @RequestBody(required = false) @Valid TextUpdateRequestDto request
-  ) {
+  ) throws DuplicateTextException {
     return adminTextService.publishDonatedText(id, request);
   }
 

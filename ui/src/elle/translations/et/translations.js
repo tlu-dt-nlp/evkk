@@ -298,6 +298,7 @@ export const TRANSLATIONS_ET = {
   corrector_vocabulary_word_repetitions_tooltip: 'Kuva samas lauses või kahes järjestikuses lauses korduvad sõnad. Liigsete sõnakorduste vältimiseks otsi sõnastikest sünonüüme, tagasi viitamiseks kasuta ka asesõnu.',
   end: 'lõpp',
   error_404_page_not_found: '404: lehte ei leitud',
+  error_duplicate_text: 'Identse sisuga tekst on juba korpuses olemas!',
   error_exercise_could_not_be_generated: 'Harjutuse loomiseks ei leitud sobivat tekstimaterjali. Muuda harjutuse valikuid ja proovi uuesti.',
   error_exercise_did_not_pass_quality_gate: 'Loodud harjutus ei läbinud kvaliteedikontrolli. Proovi uuesti või loobu kvaliteedikontrolli rakendamisest.',
   error_exercise_invalid_amount_of_answers: 'Harjutus ei ole täielikult vastatud. Lõpeta harjutus ja proovi uuesti.',

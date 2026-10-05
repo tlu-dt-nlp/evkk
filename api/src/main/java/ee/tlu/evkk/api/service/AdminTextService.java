@@ -8,6 +8,7 @@ import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
 import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
 import ee.tlu.evkk.api.converter.DtoMapper;
+import ee.tlu.evkk.api.exception.DuplicateTextException;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
@@ -19,6 +20,7 @@ import ee.tlu.evkk.dal.dto.TextProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,8 +116,8 @@ public class AdminTextService {
     textAddedDao.deleteById(id);
   }
 
-  @Transactional
-  public TextDetailsResponseDto publishDonatedText(UUID id, TextUpdateRequestDto request) {
+  @Transactional(rollbackFor = DuplicateTextException.class)
+  public TextDetailsResponseDto publishDonatedText(UUID id, TextUpdateRequestDto request) throws DuplicateTextException {
     log.info("Publishing donated text id={}", id);
 
     TextAndMetadata donatedTextToPublish = validateTextExists(id, textAddedDao::findTextAndMetadataById);
@@ -127,7 +129,14 @@ public class AdminTextService {
     }
 
     String createdAt = textAddedDao.findCreatedAtById(id);
-    UUID publishedTextId = textDao.insertDonatedText(donatedTextToPublish.getText());
+    UUID publishedTextId;
+
+    try {
+      publishedTextId = textDao.insertDonatedText(donatedTextToPublish.getText());
+    } catch (DataIntegrityViolationException e) {
+      throw new DuplicateTextException();
+    }
+
     DonatedTextPropertyMapper.map(donatedTextToPublish.getProperties(), createdAt)
       .forEach(p -> textPropertyDao.insertProperty(publishedTextId, p.getPropertyName(), p.getPropertyValue()));
     textPropertyAddedDao.deleteByTextId(id);
