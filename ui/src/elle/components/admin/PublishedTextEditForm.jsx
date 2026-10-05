@@ -24,7 +24,6 @@ import {
   isAcademicCorpus,
   isL1EstonianCorpus,
   isL2ExamsCorpus,
-  languageOptionsForNativeLangs,
   nationalityOptions,
   scoreOptions,
   studyLevelOptions,
@@ -324,18 +323,13 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
             )}
 
             {!isL2Exams && (
-              <FormControl size="small">
-                <InputLabel>{t('query_author_data_native_language')}</InputLabel>
-                <Select
-                  name="emakeel"
-                  onChange={handleChange}
-                  value={formData.emakeel}
-                >
-                  {Object.keys(languageOptionsForNativeLangs).map(language => (
-                    <MenuItem key={language} value={language}>{t(languageOptionsForNativeLangs[language])}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <TextField
+                size="small"
+                label={t('query_author_data_native_language')}
+                name="emakeel"
+                onChange={handleChange}
+                value={formData.emakeel}
+              />
             )}
 
             {isAcademic && (
