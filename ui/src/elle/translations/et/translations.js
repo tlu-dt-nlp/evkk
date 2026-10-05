@@ -50,6 +50,7 @@ export const TRANSLATIONS_ET = {
   common_delete: 'Kustuta',
   common_download: 'Laadi alla',
   common_edit: 'Muuda',
+  common_edit_and_publish: 'Muuda ja avalda',
   common_enter_search_word: 'Sisesta otsisõna',
   common_estonian_language_corpora: 'Eesti keele korpused',
   common_estonian_texts: 'Eestikeelsed tekstid',

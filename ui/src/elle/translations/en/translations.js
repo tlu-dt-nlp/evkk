@@ -50,6 +50,7 @@ export const TRANSLATIONS_EN = {
   common_delete: 'Delete',
   common_download: 'Download',
   common_edit: 'Edit',
+  common_edit_and_publish: 'Edit & Publish',
   common_enter_search_word: 'Enter search word',
   common_estonian_language_corpora: 'Estonian language corpora',
   common_estonian_texts: 'Estonian texts',

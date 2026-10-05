@@ -287,7 +287,11 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   };
 
   const handleOpenPublishModal = () => {
-    if (isEditMode && formRef.current && !formRef.current.reportValidity()) {
+    if (!isEditMode) {
+      setIsEditMode(true);
+      return;
+    }
+    if (formRef.current && !formRef.current.reportValidity()) {
       return;
     }
     setIsPublishModalOpen(true);
@@ -298,24 +302,12 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
       <Button
         onClick={handleOpenPublishModal}
         size="small"
-        sx={DefaultButtonStyle}
+        sx={isEditMode ? DefaultButtonStyle : SecondaryButtonStyle}
         type="button"
-        variant="contained"
+        variant={isEditMode ? 'contained' : 'outlined'}
       >
-        {t('common_publish')}
+        {t(isEditMode ? 'common_publish' : 'common_edit_and_publish')}
       </Button>
-
-      {!isEditMode && (
-        <Button
-          onClick={() => setIsEditMode(true)}
-          size="small"
-          sx={SecondaryButtonStyle}
-          type="button"
-          variant="outlined"
-        >
-          {t('common_edit')}
-        </Button>
-      )}
 
       <Button
         onClick={() => setIsDeleteModalOpen(true)}
