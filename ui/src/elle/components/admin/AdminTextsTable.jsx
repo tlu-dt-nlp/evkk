@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../util/DateUtils';
 import GenericTable from '../table/GenericTable';
 
-export default function PublishedTextsTable({ onOpenDetails, rows }) {
+export default function AdminTextsTable({ onOpenDetails, rows }) {
   const { t } = useTranslation();
 
   const renderTitleButton = (textId, title) => (
@@ -31,7 +31,7 @@ export default function PublishedTextsTable({ onOpenDetails, rows }) {
     },
     {
       id: 'title',
-      header: t('query_results_text_title'),
+      header: t('common_text_title'),
       accessorKey: 'title',
       cell: info => renderTitleButton(info.row.original.textId, info.getValue()),
       enableSorting: false,

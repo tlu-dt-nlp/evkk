@@ -3,48 +3,30 @@ import { Typography } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccordionStyle } from '../../const/StyleConstants';
 import { useGetDonatedTexts } from '../../hooks/service/AdminTextService';
+import useAdminTextsPage from '../../hooks/useAdminTextsPage';
 import DonatedTextDetailsModal from './DonatedTextDetailsModal';
 import DonatedTextSearchForm from './DonatedTextSearchForm';
-import DonatedTextsTable from './DonatedTextsTable';
+import AdminTextsTable from './AdminTextsTable';
 
 export default function DonatedTexts() {
   const { t } = useTranslation();
   const { getDonatedTexts } = useGetDonatedTexts();
 
-  const [isAccordionExpanded, setIsAccordionExpanded] = useState(true);
-  const [results, setResults] = useState([]);
-  const [selectedTextId, setSelectedTextId] = useState(null);
-  const [refetchTrigger, setRefetchTrigger] = useState(0);
-
-  const rows = useMemo(() => (
-    results.map(row => ({
-      textId: row.text_id,
-      createdAt: row._meta?.created_at,
-      title: row.property_value
-    }))
-  ), [results]);
-
-  const handleResults = useCallback((response) => {
-    setResults(response);
-    setIsAccordionExpanded(response.length <= 0);
-  }, []);
-
-  const handleOpenDetails = useCallback((textId) => {
-    setSelectedTextId(textId);
-  }, []);
-
-  const handleTriggerRefetch = useCallback(() => {
-    setRefetchTrigger(prev => prev + 1);
-  }, []);
-
-  const handleSetIsOpen = useCallback((isOpen) => {
-    !isOpen && setSelectedTextId(null);
-  }, []);
+  const {
+    isAccordionExpanded,
+    setIsAccordionExpanded,
+    rows,
+    selectedTextId,
+    refetchTrigger,
+    handleResults,
+    handleOpenDetails,
+    handleTriggerRefetch,
+    handleSetIsOpen
+  } = useAdminTextsPage();
 
   return (
     <>
@@ -74,7 +56,7 @@ export default function DonatedTexts() {
 
       {rows.length > 0 && (
         <div className="mt-4">
-          <DonatedTextsTable
+          <AdminTextsTable
             onOpenDetails={handleOpenDetails}
             rows={rows}
           />

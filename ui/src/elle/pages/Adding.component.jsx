@@ -1,12 +1,5 @@
 import { Component, createRef } from 'react';
-import {
-  Alert,
-  Box,
-  Button,
-  Checkbox,
-  Grid,
-  TextField
-} from '@mui/material';
+import { Alert, Box, Button, Checkbox, Grid, TextField } from '@mui/material';
 import TextUpload from '../components/TextUpload';
 import './styles/Adding.css';
 import { withTranslation } from 'react-i18next';
@@ -126,7 +119,7 @@ class Adding extends Component {
                   required
                   multiline
                   size="small"
-                  label={t('publish_your_text_title')}
+                  label={t('common_text_title')}
                   name="pealkiri"
                   value={this.state.pealkiri}
                   onChange={this.handleChange}

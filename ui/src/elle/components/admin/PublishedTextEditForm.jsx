@@ -21,6 +21,9 @@ import {
   domainDisplayOptions,
   educationOptions,
   genderOptions,
+  isAcademicCorpus,
+  isL1EstonianCorpus,
+  isL2ExamsCorpus,
   languageOptionsForNativeLangs,
   nationalityOptions,
   scoreOptions,
@@ -38,9 +41,9 @@ import SelectMultiple, { SelectMultipleType } from '../SelectMultiple';
 export default function PublishedTextEditForm({ formData, setFormData }) {
   const { t } = useTranslation();
 
-  const isAcademic = formData.korpus === 'cwUSEqQLt';
-  const isL1Estonian = formData.korpus === 'cYDRkpymb';
-  const isL2Exams = formData.korpus === 'clWmOIrLa';
+  const isAcademic = isAcademicCorpus(formData.korpus);
+  const isL1Estonian = isL1EstonianCorpus(formData.korpus);
+  const isL2Exams = isL2ExamsCorpus(formData.korpus);
 
   const getCorpusTypeOptions = () => {
     const corpusTypes = textTypesOptions[formData.korpus];

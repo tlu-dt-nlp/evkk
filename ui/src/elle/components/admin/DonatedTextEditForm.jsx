@@ -35,7 +35,7 @@ export default function DonatedTextEditForm({ formData, setFormData, setText, te
             sx={{ paddingTop: '2em' }}
       >
         <TextField
-          label={t('publish_your_text_title')}
+          label={t('common_text_title')}
           multiline
           name="title"
           onChange={handleChange}
@@ -71,10 +71,11 @@ export default function DonatedTextEditForm({ formData, setFormData, setText, te
 
       <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
         <div className="mb-2 font-weight-bold">{t('query_inferred_data')}</div>
-        <FormControl size="small">
+        <FormControl required size="small">
           <InputLabel>{t('query_subcorpus')}</InputLabel>
           <Select
             name="korpus"
+            required
             value={formData.korpus}
             onChange={handleChange}
           >
@@ -83,10 +84,11 @@ export default function DonatedTextEditForm({ formData, setFormData, setText, te
             ))}
           </Select>
         </FormControl>
-        <FormControl size="small">
+        <FormControl required size="small">
           <InputLabel>{t('query_text_data_language')}</InputLabel>
           <Select
             name="tekstikeel"
+            required
             value={formData.tekstikeel}
             onChange={handleChange}
           >

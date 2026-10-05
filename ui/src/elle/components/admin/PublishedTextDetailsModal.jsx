@@ -2,6 +2,7 @@ import { Box, Button, Stack, TextField } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { successEmitter } from '../../../App';
+import { isAcademicCorpus, isL1EstonianCorpus, isL2ExamsCorpus } from '../../const/Constants';
 import { DangerButtonStyle, DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import {
   useDeletePublishedText,
@@ -73,9 +74,9 @@ const createPublishedTextFormData = (details) => {
   const properties = details?.properties ?? [];
 
   const korpus = getFirstPropertyValue(properties, 'korpus');
-  const isAcademic = korpus === 'cwUSEqQLt';
-  const isL1Estonian = korpus === 'cYDRkpymb';
-  const isL2Exams = korpus === 'clWmOIrLa';
+  const isAcademic = isAcademicCorpus(korpus);
+  const isL1Estonian = isL1EstonianCorpus(korpus);
+  const isL2Exams = isL2ExamsCorpus(korpus);
 
   return {
     ...EMPTY_PUBLISHED_TEXT_FORM,
@@ -117,9 +118,9 @@ const createPublishedTextFormData = (details) => {
 const createPublishedTextPayload = (text, formData, additionalProperties) => {
   const properties = [];
 
-  const isAcademic = formData.korpus === 'cwUSEqQLt';
-  const isL1Estonian = formData.korpus === 'cYDRkpymb';
-  const isL2Exams = formData.korpus === 'clWmOIrLa';
+  const isAcademic = isAcademicCorpus(formData.korpus);
+  const isL1Estonian = isL1EstonianCorpus(formData.korpus);
+  const isL2Exams = isL2ExamsCorpus(formData.korpus);
 
   pushProperty(properties, 'title', formData.title);
   pushProperty(properties, 'korpus', formData.korpus);
@@ -315,7 +316,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
             {isEditMode ? (
               <>
                 <TextField
-                  label={t('publish_your_text_title')}
+                  label={t('common_text_title')}
                   multiline
                   name="title"
                   onChange={handleChange}
@@ -337,7 +338,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
             ) : (
               <>
                 <ReadOnlyField
-                  label={t('query_results_text_title')}
+                  label={t('common_text_title')}
                   value={formData.title}
                 />
 

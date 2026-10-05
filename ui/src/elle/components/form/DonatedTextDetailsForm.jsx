@@ -2,12 +2,15 @@ import { FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui
 import { useTranslation } from 'react-i18next';
 
 import {
+  AcademicCategoryIds,
   countryOptions,
   degreeOptions,
   domainSaveOptions,
   DonatedTextDetailsFormMode,
   educationOptions,
   genderOptions,
+  isDonatedTextAcademic,
+  isDonatedTextNonAcademic,
   studyLevelOptions,
   textPublishAcademicCategoryOptions,
   textPublishAcademicResearchSubtypeOptions,
@@ -30,10 +33,10 @@ export default function DonatedTextDetailsForm({
   const { t } = useTranslation();
 
   const isSearchMode = mode === DonatedTextDetailsFormMode.SEARCH;
-  const isAcademic = formData.liik === 'akadeemiline';
-  const isNonAcademic = formData.liik === 'mitteakadeemiline';
+  const isAcademic = isDonatedTextAcademic(formData.liik);
+  const isNonAcademic = isDonatedTextNonAcademic(formData.liik);
   const isResearchArticle = isAcademic
-    && formData.akadKategooria === 'ak_uurimused'
+    && formData.akadKategooria === AcademicCategoryIds.RESEARCH
     && formData.akadAlamliik === 'ak_uurimus_artikkel';
 
   return (
@@ -153,7 +156,7 @@ export default function DonatedTextDetailsForm({
               onChange={onChange}
               onClick={isSearchMode && ((event) => onChange(event, 'akadAlamliik'))}
             >
-              {formData.akadKategooria === 'ak_erialaopingud' &&
+              {formData.akadKategooria === AcademicCategoryIds.STUDIES &&
                 Object.keys(textPublishAcademicStudiesSubtypeOptions).map(type => (
                   <MenuItem
                     key={type}
@@ -162,7 +165,7 @@ export default function DonatedTextDetailsForm({
                     {t(textPublishAcademicStudiesSubtypeOptions[type])}
                   </MenuItem>
                 ))}
-              {formData.akadKategooria === 'ak_uurimused' &&
+              {formData.akadKategooria === AcademicCategoryIds.RESEARCH &&
                 Object.keys(textPublishAcademicResearchSubtypeOptions).map(type => (
                   <MenuItem
                     key={type}

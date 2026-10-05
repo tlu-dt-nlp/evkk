@@ -1,9 +1,12 @@
 import { Box, Button, Stack } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { successEmitter } from '../../../App';
 import {
+  AcademicCategoryIds,
+  isDonatedTextAcademic,
+  isDonatedTextNonAcademic,
   textPublishAcademicResearchSubtypeOptions,
   textPublishAcademicStudiesSubtypeOptions
 } from '../../const/Constants';
@@ -97,10 +100,10 @@ const inferUsedMaterials = (usedMaterials) => {
 
 const inferAcademicCategory = (subtype) => {
   if (Object.keys(textPublishAcademicStudiesSubtypeOptions).includes(subtype)) {
-    return 'ak_erialaopingud';
+    return AcademicCategoryIds.STUDIES;
   }
   if (Object.keys(textPublishAcademicResearchSubtypeOptions).includes(subtype)) {
-    return 'ak_uurimused';
+    return AcademicCategoryIds.RESEARCH;
   }
   return '';
 };
@@ -156,7 +159,7 @@ const createDonatedTextPayload = (text, formData, additionalProperties) => {
     pushProperty(properties, 'abivahendid', 'ei');
   }
 
-  if (formData.liik === 'akadeemiline') {
+  if (isDonatedTextAcademic(formData.liik)) {
     pushProperty(properties, 'valdkond', formData.autoriValdkond);
     pushProperty(properties, 'akad_alamliik', formData.akadAlamliik);
     pushProperty(properties, 'artikkel_valjaanne', formData.artikkelValjaanne);
@@ -167,7 +170,7 @@ const createDonatedTextPayload = (text, formData, additionalProperties) => {
     pushProperty(properties, 'teaduskraad', formData.autoriTeaduskraad);
   }
 
-  if (formData.liik === 'mitteakadeemiline') {
+  if (isDonatedTextNonAcademic(formData.liik)) {
     pushProperty(properties, 'mitteakad_alamliik', formData.mitteakadAlamliik);
     pushProperty(properties, 'haridus', formData.autoriHaridus);
   }
@@ -200,6 +203,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   const [isEditMode, setIsEditMode] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const formRef = useRef(null);
 
   const title = getTextTitle(details);
 
@@ -282,10 +286,17 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
     });
   };
 
+  const handleOpenPublishModal = () => {
+    if (isEditMode && formRef.current && !formRef.current.reportValidity()) {
+      return;
+    }
+    setIsPublishModalOpen(true);
+  };
+
   const headerActions = (
     <Box className="d-flex flex-wrap gap-1">
       <Button
-        onClick={() => setIsPublishModalOpen(true)}
+        onClick={handleOpenPublishModal}
         size="small"
         sx={DefaultButtonStyle}
         type="button"
@@ -328,7 +339,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
         setIsOpen={setIsOpen}
         title={title}
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} ref={formRef}>
           {isEditMode ? (
             <DonatedTextEditForm
               formData={formData}

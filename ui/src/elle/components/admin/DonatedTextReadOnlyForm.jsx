@@ -31,7 +31,7 @@ export default function DonatedTextReadOnlyForm({ formData, text }) {
       >
         <Grid container spacing={2}>
           <ReadOnlyField
-            label={t('publish_your_text_title')}
+            label={t('common_text_title')}
             value={formData.title}
           />
           <ReadOnlyField

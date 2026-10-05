@@ -15,6 +15,33 @@ export const UserRoles = {
   ADMIN: 'ADMIN'
 };
 
+export const CorpusIds = {
+  L2_OLYMPIADE: 'cFqPphvYi',
+  L2_PROFICIENCY_EXAMS: 'clWmOIrLa',
+  L2_ESTONIAN: 'cFOoRQekA',
+  L1_ESTONIAN: 'cYDRkpymb',
+  L1_RUSSIAN: 'cgSRJPKTr',
+  L3_RUSSIAN: 'cZjHWUPtD',
+  ACADEMIC: 'cwUSEqQLt'
+};
+
+export const isAcademicCorpus = (korpus) => korpus === CorpusIds.ACADEMIC;
+export const isL1EstonianCorpus = (korpus) => korpus === CorpusIds.L1_ESTONIAN;
+export const isL2ExamsCorpus = (korpus) => korpus === CorpusIds.L2_PROFICIENCY_EXAMS;
+
+export const AcademicCategoryIds = {
+  STUDIES: 'ak_erialaopingud',
+  RESEARCH: 'ak_uurimused'
+};
+
+export const DonatedTextTypes = {
+  ACADEMIC: 'akadeemiline',
+  NON_ACADEMIC: 'mitteakadeemiline'
+};
+
+export const isDonatedTextAcademic = (liik) => liik === DonatedTextTypes.ACADEMIC;
+export const isDonatedTextNonAcademic = (liik) => liik === DonatedTextTypes.NON_ACADEMIC;
+
 export const scoreOptions = [
   { key: 'query_text_data_score_under_50', range: 'alla 50%' },
   { key: '51–60%', range: '51-60%' },
@@ -73,13 +100,13 @@ export const textLevelOptions = [
 ];
 
 export const corpuses = {
-  'cFqPphvYi': 'query_subcoprus_L2_olympiade',
-  'clWmOIrLa': 'query_subcorpus_L2_proficiency_examinations',
-  'cFOoRQekA': 'query_subcorpus_L2_estonian',
-  'cYDRkpymb': 'query_subcorpus_L1_estonian',
-  'cgSRJPKTr': 'query_subcorpus_L1_russian',
-  'cZjHWUPtD': 'query_subcorpus_L3_russian',
-  'cwUSEqQLt': 'query_subcorpus_academic_estonian'
+  [CorpusIds.L2_OLYMPIADE]: 'query_subcoprus_L2_olympiade',
+  [CorpusIds.L2_PROFICIENCY_EXAMS]: 'query_subcorpus_L2_proficiency_examinations',
+  [CorpusIds.L2_ESTONIAN]: 'query_subcorpus_L2_estonian',
+  [CorpusIds.L1_ESTONIAN]: 'query_subcorpus_L1_estonian',
+  [CorpusIds.L1_RUSSIAN]: 'query_subcorpus_L1_russian',
+  [CorpusIds.L3_RUSSIAN]: 'query_subcorpus_L3_russian',
+  [CorpusIds.ACADEMIC]: 'query_subcorpus_academic_estonian'
 };
 
 export const textTypeList = {
@@ -132,13 +159,13 @@ export const textTypeList = {
 };
 
 export const textTypesOptions = {
-  'clWmOIrLa': {
+  [CorpusIds.L2_PROFICIENCY_EXAMS]: {
     'k2eesti_riiklik_eksamitoo': 'common_text_data_type_L2_proficiency_examination'
   },
-  'cFqPphvYi': {
+  [CorpusIds.L2_OLYMPIADE]: {
     'k2eesti_ol_loovkirjutis': 'common_text_data_type_L2_olympiade_creative_writing'
   },
-  'cFOoRQekA': {
+  [CorpusIds.L2_ESTONIAN]: {
     'query_text_data_type_L2_letter': {
       'k2eesti_kiri_isiklik': 'query_text_data_type_L2_letter_informal',
       'k2eesti_kiri_poolametlik': 'query_text_data_type_L2_letter_semi_formal'
@@ -165,7 +192,7 @@ export const textTypesOptions = {
     'k2eesti_kontrolltoo_test': 'query_text_data_type_L2_test',
     'k2eesti_tolge': 'query_text_data_type_L2_translation'
   },
-  'cYDRkpymb': {
+  [CorpusIds.L1_ESTONIAN]: {
     'k1eesti_arvamuslugu': 'query_text_data_type_L1_opinion_piece',
     'k1eesti_eksamitoo': 'query_text_data_type_L1_examination',
     'k1eesti_harjutus': 'query_text_data_type_L1_exercise',
@@ -174,15 +201,15 @@ export const textTypesOptions = {
       'k1eesti_ekirjand_12kl': 'query_text_data_type_L1_e_essay_12th_grade'
     }
   },
-  'cgSRJPKTr': {
+  [CorpusIds.L1_RUSSIAN]: {
     'k1vene_loovkirjutis': 'query_text_data_type_L1_russian_creative_writing',
     'k1vene_eksamitoo': 'query_text_data_type_L1_russian_examination'
   },
-  'cZjHWUPtD': {
+  [CorpusIds.L3_RUSSIAN]: {
     'k3vene_loovkirjutis': 'query_text_data_type_L3_russian_creative_writing',
     'k3vene_eksamitoo': 'query_text_data_type_L3_russian_examination'
   },
-  'cwUSEqQLt': {
+  [CorpusIds.ACADEMIC]: {
     'query_text_data_type_academic_studies': {
       'ak_eriala_analuus': 'query_text_data_type_academic_studies_analysis',
       'ak_eriala_essee': 'query_text_data_type_academic_studies_essay',
@@ -324,13 +351,13 @@ export const educationOptions = {
 };
 
 export const textPublishMainTextTypesOptions = {
-  'mitteakadeemiline': 'publish_your_text_text_data_main_text_type_non_academic',
-  'akadeemiline': 'publish_your_text_text_data_main_text_type_academic'
+  [DonatedTextTypes.NON_ACADEMIC]: 'publish_your_text_text_data_main_text_type_non_academic',
+  [DonatedTextTypes.ACADEMIC]: 'publish_your_text_text_data_main_text_type_academic'
 };
 
 export const textPublishAcademicCategoryOptions = {
-  'ak_erialaopingud': 'publish_your_text_text_data_academic_category_academic_studies',
-  'ak_uurimused': 'publish_your_text_text_data_academic_category_research'
+  [AcademicCategoryIds.STUDIES]: 'publish_your_text_text_data_academic_category_academic_studies',
+  [AcademicCategoryIds.RESEARCH]: 'publish_your_text_text_data_academic_category_research'
 };
 
 export const textPublishAcademicStudiesSubtypeOptions = {

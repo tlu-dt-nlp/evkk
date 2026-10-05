@@ -70,7 +70,7 @@ export default function QueryResultsModal({
   const columns = useMemo(() => [
       {
         id: 'value',
-        header: t('query_results_text_title'),
+        header: t('common_text_title'),
         accessorKey: 'property_value',
         enableSorting: false,
         cell: info => {

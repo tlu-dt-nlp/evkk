@@ -9,6 +9,9 @@ import {
   domainSaveOptions,
   educationOptions,
   genderOptions,
+  isAcademicCorpus,
+  isL1EstonianCorpus,
+  isL2ExamsCorpus,
   languageOptionsForNativeLangs,
   nationalityOptions,
   studyLevelOptions,
@@ -23,9 +26,9 @@ import ReadOnlyField from './ReadOnlyField';
 export default function PublishedTextReadOnlyForm({ formData }) {
   const { t } = useTranslation();
 
-  const isAcademic = formData.korpus === 'cwUSEqQLt';
-  const isL1Estonian = formData.korpus === 'cYDRkpymb';
-  const isL2Exams = formData.korpus === 'clWmOIrLa';
+  const isAcademic = isAcademicCorpus(formData.korpus);
+  const isL1Estonian = isL1EstonianCorpus(formData.korpus);
+  const isL2Exams = isL2ExamsCorpus(formData.korpus);
 
   return (
     <Grid container

@@ -6,6 +6,7 @@ import {
   addedYearOptions,
   ageOptions,
   charactersOptions,
+  CorpusIds,
   countryOptions,
   degreeOptions,
   domainDisplayOptions,
@@ -53,13 +54,13 @@ export default function PublishedTextSearchForm({
   const [noResultsError, setNoResultsError] = useState(false);
   const [corpusCheckboxStatus, setCorpusCheckboxStatus] = useState({
     all: false,
-    cFqPphvYi: false,
-    clWmOIrLa: false,
-    cFOoRQekA: false,
-    cYDRkpymb: false,
-    cgSRJPKTr: false,
-    cZjHWUPtD: false,
-    cwUSEqQLt: false
+    [CorpusIds.L2_OLYMPIADE]: false,
+    [CorpusIds.L2_PROFICIENCY_EXAMS]: false,
+    [CorpusIds.L2_ESTONIAN]: false,
+    [CorpusIds.L1_ESTONIAN]: false,
+    [CorpusIds.L1_RUSSIAN]: false,
+    [CorpusIds.L3_RUSSIAN]: false,
+    [CorpusIds.ACADEMIC]: false
   });
   const [singlePropertyData, setSinglePropertyData] = useState({
     language: 'eesti',
@@ -81,13 +82,13 @@ export default function PublishedTextSearchForm({
   useEffect(() => {
     let newSinglePropertyData = { ...singlePropertyData };
 
-    if (isOnlySpecificCorpusChecked('clWmOIrLa')) {
+    if (isOnlySpecificCorpusChecked(CorpusIds.L2_PROFICIENCY_EXAMS)) {
       newSinglePropertyData.nativeLang = '';
     } else {
       newSinglePropertyData.nationality = '';
     }
 
-    if (isOnlySpecificCorpusChecked('cwUSEqQLt')) {
+    if (isOnlySpecificCorpusChecked(CorpusIds.ACADEMIC)) {
       newSinglePropertyData.level = '';
       newSinglePropertyData.education = '';
       newSinglePropertyData.usedMaterials = '';
@@ -99,7 +100,7 @@ export default function PublishedTextSearchForm({
       setUsedMultiMaterials([]);
     }
 
-    if (isOnlySpecificCorpusChecked('cYDRkpymb')) {
+    if (isOnlySpecificCorpusChecked(CorpusIds.L1_ESTONIAN)) {
       newSinglePropertyData.level = '';
     } else {
       setScores([]);
@@ -258,7 +259,7 @@ export default function PublishedTextSearchForm({
   };
 
   const renderTextLevelFields = () => {
-    if (isOnlySpecificCorpusChecked('cYDRkpymb')) {
+    if (isOnlySpecificCorpusChecked(CorpusIds.L1_ESTONIAN)) {
       return (
         <>
           <InputLabel>
@@ -445,7 +446,7 @@ export default function PublishedTextSearchForm({
               ))}
             </Select>
           </FormControl>
-          {isOnlySpecificCorpusChecked('cwUSEqQLt')
+          {isOnlySpecificCorpusChecked(CorpusIds.ACADEMIC)
             ? (
               <>
                 <FormControl size="small">
@@ -605,7 +606,7 @@ export default function PublishedTextSearchForm({
               ))}
             </Select>
           </FormControl>
-          {isOnlySpecificCorpusChecked('cwUSEqQLt')
+          {isOnlySpecificCorpusChecked(CorpusIds.ACADEMIC)
             ? (
               <>
                 <FormControl size="small">
@@ -668,7 +669,7 @@ export default function PublishedTextSearchForm({
                 </Select>
               </FormControl>
             )}
-          {isOnlySpecificCorpusChecked('clWmOIrLa')
+          {isOnlySpecificCorpusChecked(CorpusIds.L2_PROFICIENCY_EXAMS)
             ? (
               <FormControl size="small">
                 <InputLabel>
@@ -710,7 +711,7 @@ export default function PublishedTextSearchForm({
                 </Select>
               </FormControl>
             )}
-          {isOnlySpecificCorpusChecked('cwUSEqQLt')
+          {isOnlySpecificCorpusChecked(CorpusIds.ACADEMIC)
             ? (
               <FormControl size="small">
                 <InputLabel>
