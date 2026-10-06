@@ -903,11 +903,11 @@ class AdminTextServiceTest {
   }
 
   private TextProperty createTextProperty(UUID id, String name, String value) {
-    TextProperty property = new TextProperty();
-    property.setId(id);
-    property.setPropertyName(name);
-    property.setPropertyValue(value);
-    return property;
+    return TextProperty.builder()
+      .id(id)
+      .propertyName(name)
+      .propertyValue(value)
+      .build();
   }
 
   private static String getPropertyValue(List<TextMetadataDto> properties, String name) {
@@ -1133,9 +1133,9 @@ class AdminTextServiceTest {
     List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
 
     // Then
-    assertThat(result).hasSize(2);
-    assertThat(result).anyMatch(r -> r.isNovelName() && "brandNew".equals(r.getPropertyName()));
-    assertThat(result).anyMatch(r -> !r.isNovelName() && "sugu".equals(r.getPropertyName()));
+    assertThat(result).hasSize(2)
+      .anyMatch(r -> r.isNovelName() && "brandNew".equals(r.getPropertyName()))
+      .anyMatch(r -> !r.isNovelName() && "sugu".equals(r.getPropertyName()));
   }
 
 
@@ -1155,15 +1155,15 @@ class AdminTextServiceTest {
     List<PropertyCheckConfigDto> result = adminTextService.getPropertyCheckConfig();
 
     // Then
-    assertThat(result).hasSize(2);
-    assertThat(result).anySatisfy(c -> {
-      assertThat(c.getPropertyName()).isEqualTo("emakeel");
-      assertThat(c.isActive()).isFalse();
-    });
-    assertThat(result).anySatisfy(c -> {
-      assertThat(c.getPropertyName()).isEqualTo("sugu");
-      assertThat(c.isActive()).isTrue();
-    });
+    assertThat(result).hasSize(2)
+      .anySatisfy(c -> {
+        assertThat(c.getPropertyName()).isEqualTo("emakeel");
+        assertThat(c.isActive()).isFalse();
+      })
+      .anySatisfy(c -> {
+        assertThat(c.getPropertyName()).isEqualTo("sugu");
+        assertThat(c.isActive()).isTrue();
+      });
   }
 
   @Test
