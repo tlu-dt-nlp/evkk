@@ -54,7 +54,7 @@ class AdminTextServiceTest {
 
   @Spy
   @SuppressWarnings("unused")
-  private DtoMapperImpl dtoMapper = new DtoMapperImpl();
+  private final DtoMapperImpl dtoMapper = new DtoMapperImpl();
 
   @Mock
   private TextService textService;
