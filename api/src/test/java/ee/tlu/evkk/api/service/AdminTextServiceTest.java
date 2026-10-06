@@ -7,16 +7,20 @@ import ee.evkk.dto.TextDetailsResponseDto;
 import ee.evkk.dto.TextMetadataDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.tlu.evkk.api.controller.dto.NovelPropertyValueDto;
+import ee.tlu.evkk.api.controller.dto.PropertyCheckConfigDto;
 import ee.tlu.evkk.api.converter.DtoMapperImpl;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
+import ee.tlu.evkk.dal.dao.TextPropertyCheckConfigDao;
 import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
 import ee.tlu.evkk.dal.dto.TextMetadata;
 import ee.tlu.evkk.dal.dto.TextProperty;
+import ee.tlu.evkk.dal.dto.TextPropertyCheckConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,6 +70,9 @@ class AdminTextServiceTest {
 
   @Mock
   private TextPropertyDao textPropertyDao;
+
+  @Mock
+  private TextPropertyCheckConfigDao textPropertyCheckConfigDao;
 
   @InjectMocks
   private AdminTextService adminTextService;
@@ -909,5 +916,307 @@ class AdminTextServiceTest {
       .map(TextMetadataDto::getPropertyValue)
       .findFirst()
       .orElse(null);
+  }
+
+
+  @Test
+  @DisplayName("Get property names returns distinct names from DAO")
+  void getPropertyNames_shouldReturnDistinctNamesFromDao() {
+    // Given
+    List<String> expected = List.of("emakeel", "korpus", "sugu");
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(expected);
+
+    // When
+    List<String> result = adminTextService.getPropertyNames();
+
+    // Then
+    assertThat(result).containsExactlyElementsOf(expected);
+    verify(textPropertyDao).findDistinctPropertyNames();
+  }
+
+
+  @Test
+  @DisplayName("Get property values returns distinct values for given property name")
+  void getPropertyValues_shouldReturnDistinctValuesForPropertyName() {
+    // Given
+    String propertyName = "sugu";
+    List<String> expected = List.of("M", "N");
+    when(textPropertyDao.findDistinctValuesByName(propertyName)).thenReturn(expected);
+
+    // When
+    List<String> result = adminTextService.getPropertyValues(propertyName);
+
+    // Then
+    assertThat(result).containsExactlyElementsOf(expected);
+    verify(textPropertyDao).findDistinctValuesByName(propertyName);
+  }
+
+
+  @Test
+  @DisplayName("Check novel values returns empty list when no properties provided")
+  void checkNovelValues_whenNoProperties_shouldReturnEmpty() {
+    // Given
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of());
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(List.of());
+
+    // Then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Check novel values flags entry when property name is completely new")
+  void checkNovelValues_whenPropertyNameIsNew_shouldFlagAsNovelName() {
+    // Given
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("emakeel"));
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("brandNew").propertyValue("someValue").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getPropertyName()).isEqualTo("brandNew");
+    assertThat(result.get(0).getPropertyValue()).isEqualTo("someValue");
+    assertThat(result.get(0).isNovelName()).isTrue();
+  }
+
+  @Test
+  @DisplayName("Check novel values does not flag same novel name twice")
+  void checkNovelValues_whenPropertyNameIsNewAndRepeated_shouldFlagOnlyOnce() {
+    // Given
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of());
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("brandNew").propertyValue("value1").build(),
+      TextMetadataDto.builder().propertyName("brandNew").propertyValue("value2").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).isNovelName()).isTrue();
+  }
+
+  @Test
+  @DisplayName("Check novel values flags entry when value is new for a known active property name")
+  void checkNovelValues_whenValueIsNewForActivePropertyName_shouldFlagAsNovelValue() {
+    // Given
+    TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
+      .propertyName("sugu")
+      .isActive(true)
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(activeConfig));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu"));
+    when(textPropertyDao.findExistingValues(any())).thenReturn(List.of());
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("sugu").propertyValue("X").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getPropertyName()).isEqualTo("sugu");
+    assertThat(result.get(0).getPropertyValue()).isEqualTo("X");
+    assertThat(result.get(0).isNovelName()).isFalse();
+  }
+
+  @Test
+  @DisplayName("Check novel values does not flag entry when value already exists")
+  void checkNovelValues_whenValueAlreadyExists_shouldNotFlag() {
+    // Given
+    TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
+      .propertyName("sugu")
+      .isActive(true)
+      .build();
+
+    TextProperty existing = TextProperty.builder()
+      .propertyName("sugu")
+      .propertyValue("M")
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(activeConfig));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu"));
+    when(textPropertyDao.findExistingValues(any())).thenReturn(List.of(existing));
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("sugu").propertyValue("M").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Check novel values does not flag entry when property name is known but inactive in config")
+  void checkNovelValues_whenPropertyNameIsInactive_shouldNotFlagValue() {
+    // Given
+    TextPropertyCheckConfig inactiveConfig = TextPropertyCheckConfig.builder()
+      .propertyName("kirjeldus")
+      .isActive(false)
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(inactiveConfig));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("kirjeldus"));
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("kirjeldus").propertyValue("some free text").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).isEmpty();
+    verify(textPropertyDao, never()).findExistingValues(any());
+  }
+
+  @Test
+  @DisplayName("Check novel values skips blank property values")
+  void checkNovelValues_whenPropertyValueIsBlank_shouldSkip() {
+    // Given
+    TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
+      .propertyName("sugu")
+      .isActive(true)
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(activeConfig));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu"));
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("sugu").propertyValue("").build(),
+      TextMetadataDto.builder().propertyName("sugu").propertyValue(null).build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Check novel values returns both novel names and novel values when both present")
+  void checkNovelValues_whenBothNovelNamesAndValues_shouldReturnBoth() {
+    // Given
+    TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
+      .propertyName("sugu")
+      .isActive(true)
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(activeConfig));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu"));
+    when(textPropertyDao.findExistingValues(any())).thenReturn(List.of());
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("brandNew").propertyValue("val").build(),
+      TextMetadataDto.builder().propertyName("sugu").propertyValue("X").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).hasSize(2);
+    assertThat(result).anyMatch(r -> r.isNovelName() && "brandNew".equals(r.getPropertyName()));
+    assertThat(result).anyMatch(r -> !r.isNovelName() && "sugu".equals(r.getPropertyName()));
+  }
+
+
+  @Test
+  @DisplayName("Get property check config merges config table with all known property names")
+  void getPropertyCheckConfig_shouldMergeConfigWithKnownPropertyNames() {
+    // Given
+    TextPropertyCheckConfig configuredEntry = TextPropertyCheckConfig.builder()
+      .propertyName("sugu")
+      .isActive(true)
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(configuredEntry));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu", "emakeel"));
+
+    // When
+    List<PropertyCheckConfigDto> result = adminTextService.getPropertyCheckConfig();
+
+    // Then
+    assertThat(result).hasSize(2);
+    assertThat(result).anySatisfy(c -> {
+      assertThat(c.getPropertyName()).isEqualTo("emakeel");
+      assertThat(c.isActive()).isFalse();
+    });
+    assertThat(result).anySatisfy(c -> {
+      assertThat(c.getPropertyName()).isEqualTo("sugu");
+      assertThat(c.isActive()).isTrue();
+    });
+  }
+
+  @Test
+  @DisplayName("Get property check config includes config-only entries not in text_property table")
+  void getPropertyCheckConfig_shouldIncludeConfigOnlyEntries() {
+    // Given
+    TextPropertyCheckConfig configOnly = TextPropertyCheckConfig.builder()
+      .propertyName("legacyProp")
+      .isActive(false)
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(configOnly));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of());
+
+    // When
+    List<PropertyCheckConfigDto> result = adminTextService.getPropertyCheckConfig();
+
+    // Then
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getPropertyName()).isEqualTo("legacyProp");
+    assertThat(result.get(0).isActive()).isFalse();
+  }
+
+  @Test
+  @DisplayName("Get property check config returns results sorted by property name")
+  void getPropertyCheckConfig_shouldReturnSortedByPropertyName() {
+    // Given
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu", "emakeel", "haridus"));
+
+    // When
+    List<PropertyCheckConfigDto> result = adminTextService.getPropertyCheckConfig();
+
+    // Then
+    assertThat(result).extracting(PropertyCheckConfigDto::getPropertyName)
+      .containsExactly("emakeel", "haridus", "sugu");
+  }
+
+
+  @Test
+  @DisplayName("Update property check config calls upsert for each entry")
+  void updatePropertyCheckConfig_shouldCallUpsertForEachEntry() {
+    // Given
+    List<PropertyCheckConfigDto> config = List.of(
+      PropertyCheckConfigDto.builder().propertyName("sugu").isActive(true).build(),
+      PropertyCheckConfigDto.builder().propertyName("kirjeldus").isActive(false).build()
+    );
+
+    // When
+    adminTextService.updatePropertyCheckConfig(config);
+
+    // Then
+    verify(textPropertyCheckConfigDao).upsert("sugu", true);
+    verify(textPropertyCheckConfigDao).upsert("kirjeldus", false);
   }
 }

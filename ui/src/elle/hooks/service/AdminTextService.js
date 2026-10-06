@@ -119,3 +119,59 @@ export const useDeletePublishedText = () => {
 
   return { deletePublishedText };
 };
+
+export const useGetPropertyNames = () => {
+  const { fetchData } = useFetch();
+
+  const getPropertyNames = useCallback(() => {
+    return fetchData('/api/admin/texts/property-names');
+  }, [fetchData]);
+
+  return { getPropertyNames };
+};
+
+export const useGetPropertyValues = () => {
+  const { fetchData } = useFetch();
+
+  const getPropertyValues = useCallback((propertyName) => {
+    return fetchData(`/api/admin/texts/property-values/${encodeURIComponent(propertyName)}`);
+  }, [fetchData]);
+
+  return { getPropertyValues };
+};
+
+export const useCheckNovelValues = () => {
+  const { fetchData } = useFetch();
+
+  const checkNovelValues = useCallback((properties) => {
+    return fetchData('/api/admin/texts/check-novel-values', {
+      method: 'POST',
+      body: JSON.stringify(properties)
+    });
+  }, [fetchData]);
+
+  return { checkNovelValues };
+};
+
+export const useGetPropertyCheckConfig = () => {
+  const { fetchData } = useFetch();
+
+  const getPropertyCheckConfig = useCallback(() => {
+    return fetchData('/api/admin/texts/property-check-config');
+  }, [fetchData]);
+
+  return { getPropertyCheckConfig };
+};
+
+export const useUpdatePropertyCheckConfig = () => {
+  const { fetchData } = useFetch();
+
+  const updatePropertyCheckConfig = useCallback((config) => {
+    return fetchData('/api/admin/texts/property-check-config', {
+      method: 'PUT',
+      body: JSON.stringify(config)
+    });
+  }, [fetchData]);
+
+  return { updatePropertyCheckConfig };
+};

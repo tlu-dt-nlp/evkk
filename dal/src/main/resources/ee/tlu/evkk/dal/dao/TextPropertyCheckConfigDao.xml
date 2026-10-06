@@ -1,0 +1,19 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.TextPropertyCheckConfigDao">
+
+  <select id="findAll" resultType="ee.tlu.evkk.dal.dto.TextPropertyCheckConfig">
+    SELECT property_name, is_active
+    FROM core.text_property_check_config
+    ORDER BY property_name;
+  </select>
+
+  <insert id="upsert">
+    INSERT INTO core.text_property_check_config (property_name, is_active)
+    VALUES (#{propertyName}, #{isActive})
+    ON CONFLICT (property_name) DO UPDATE
+      SET is_active = excluded.is_active;
+  </insert>
+
+</mapper>

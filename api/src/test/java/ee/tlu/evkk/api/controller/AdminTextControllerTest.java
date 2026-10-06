@@ -382,4 +382,146 @@ class AdminTextControllerTest extends IntegrationTest {
         delete("/admin/texts/published/" + randomUUID()))
       .andExpect(status().isNotFound());
   }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot get property names")
+  void unauthenticatedUserCannotGetPropertyNames() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-names"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot get property names")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotGetPropertyNames() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-names"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can get property names")
+  @WithMockUser(username = "admin", roles = { "ADMIN" })
+  void authenticatedAdminCanGetPropertyNames() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-names"))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot get property values")
+  void unauthenticatedUserCannotGetPropertyValues() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-values/sugu"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot get property values")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotGetPropertyValues() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-values/sugu"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can get property values")
+  @WithMockUser(username = "admin", roles = { "ADMIN" })
+  void authenticatedAdminCanGetPropertyValues() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-values/sugu"))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot check novel values")
+  void unauthenticatedUserCannotCheckNovelValues() throws Exception {
+    mockMvc.perform(
+        post("/admin/texts/check-novel-values")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot check novel values")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotCheckNovelValues() throws Exception {
+    mockMvc.perform(
+        post("/admin/texts/check-novel-values")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can check novel values")
+  @WithMockUser(username = "admin", roles = { "ADMIN" })
+  void authenticatedAdminCanCheckNovelValues() throws Exception {
+    mockMvc.perform(
+        post("/admin/texts/check-novel-values")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot get property check config")
+  void unauthenticatedUserCannotGetPropertyCheckConfig() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-check-config"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot get property check config")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotGetPropertyCheckConfig() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-check-config"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can get property check config")
+  @WithMockUser(username = "admin", roles = { "ADMIN" })
+  void authenticatedAdminCanGetPropertyCheckConfig() throws Exception {
+    mockMvc.perform(
+        get("/admin/texts/property-check-config"))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot update property check config")
+  void unauthenticatedUserCannotUpdatePropertyCheckConfig() throws Exception {
+    mockMvc.perform(
+        put("/admin/texts/property-check-config")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot update property check config")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotUpdatePropertyCheckConfig() throws Exception {
+    mockMvc.perform(
+        put("/admin/texts/property-check-config")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can update property check config")
+  @WithMockUser(username = "admin", roles = { "ADMIN" })
+  void authenticatedAdminCanUpdatePropertyCheckConfig() throws Exception {
+    mockMvc.perform(
+        put("/admin/texts/property-check-config")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isNoContent());
+  }
 }

@@ -12,6 +12,7 @@ import {
 } from '../../const/Constants';
 import { DangerButtonStyle, DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import {
+  useCheckNovelValues,
   useDeleteDonatedText,
   useGetDonatedTextDetails,
   usePublishDonatedText,
@@ -32,6 +33,7 @@ import { SuccessSnackbarEventType } from '../snackbar/SuccessSnackbar';
 import AdditionalTextProperties from './AdditionalTextProperties';
 import DonatedTextEditForm from './DonatedTextEditForm';
 import DonatedTextReadOnlyForm from './DonatedTextReadOnlyForm';
+import NovelValuesModal from './NovelValuesModal';
 
 const DONATED_TEXT_KNOWN_PROPERTIES = new Set([
   'title',
@@ -195,6 +197,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   const { publishDonatedText } = usePublishDonatedText();
   const { updateDonatedText } = useUpdateDonatedText();
   const { deleteDonatedText } = useDeleteDonatedText();
+  const { checkNovelValues } = useCheckNovelValues();
 
   const [details, setDetails] = useState(null);
   const [text, setText] = useState('');
@@ -203,6 +206,8 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   const [isEditMode, setIsEditMode] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isNovelValuesModalOpen, setIsNovelValuesModalOpen] = useState(false);
+  const [novelValues, setNovelValues] = useState([]);
   const formRef = useRef(null);
 
   const title = getTextTitle(details);
@@ -223,6 +228,8 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
     setIsEditMode(false);
     setIsPublishModalOpen(false);
     setIsDeleteModalOpen(false);
+    setIsNovelValuesModalOpen(false);
+    setNovelValues([]);
 
     getDonatedTextDetails(textId).then(response => {
       if (!response) {
@@ -294,7 +301,24 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
     if (formRef.current && !formRef.current.reportValidity()) {
       return;
     }
-    setIsPublishModalOpen(true);
+
+    const payload = buildPayload();
+    if (!payload) {
+      return;
+    }
+
+    checkNovelValues(payload.properties).then((novel) => {
+      if (!novel) {
+        return;
+      }
+
+      if (novel.length > 0) {
+        setNovelValues(novel);
+        setIsNovelValuesModalOpen(true);
+      } else {
+        setIsPublishModalOpen(true);
+      }
+    });
   };
 
   const headerActions = (
@@ -382,6 +406,16 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
         onConfirm={handlePublish}
         setIsOpen={setIsPublishModalOpen}
         title="admin_text_publish_modal_title"
+      />
+
+      <NovelValuesModal
+        isOpen={isNovelValuesModalOpen}
+        novelValues={novelValues}
+        onCancel={() => setIsNovelValuesModalOpen(false)}
+        onConfirm={() => {
+          setIsNovelValuesModalOpen(false);
+          setIsPublishModalOpen(true);
+        }}
       />
 
       <ConfirmationModal

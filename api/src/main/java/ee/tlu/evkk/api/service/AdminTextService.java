@@ -6,6 +6,8 @@ import ee.evkk.dto.TextDetailsResponseDto;
 import ee.evkk.dto.TextMetadataDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.tlu.evkk.api.controller.dto.NovelPropertyValueDto;
+import ee.tlu.evkk.api.controller.dto.PropertyCheckConfigDto;
 import ee.tlu.evkk.api.converter.DonatedTextPropertyMapper;
 import ee.tlu.evkk.api.converter.DtoMapper;
 import ee.tlu.evkk.api.exception.DuplicateTextException;
@@ -14,9 +16,11 @@ import ee.tlu.evkk.core.service.TextService;
 import ee.tlu.evkk.dal.dao.TextAddedDao;
 import ee.tlu.evkk.dal.dao.TextDao;
 import ee.tlu.evkk.dal.dao.TextPropertyAddedDao;
+import ee.tlu.evkk.dal.dao.TextPropertyCheckConfigDao;
 import ee.tlu.evkk.dal.dao.TextPropertyDao;
 import ee.tlu.evkk.dal.dto.TextAndMetadata;
 import ee.tlu.evkk.dal.dto.TextProperty;
+import ee.tlu.evkk.dal.dto.TextPropertyCheckConfig;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +44,8 @@ import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_CORPUS;
 import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TEXT_LANGUAGE;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @Service
@@ -51,6 +58,7 @@ public class AdminTextService {
   private final TextPropertyAddedDao textPropertyAddedDao;
   private final TextDao textDao;
   private final TextPropertyDao textPropertyDao;
+  private final TextPropertyCheckConfigDao textPropertyCheckConfigDao;
   private final DtoMapper dtoMapper;
 
   public TextsToReviewResponseDto getTextsToReview() {
@@ -145,6 +153,59 @@ public class AdminTextService {
     return dtoMapper.toDto(textDao.findTextAndMetadataById(publishedTextId));
   }
 
+  public List<String> getPropertyNames() {
+    return textPropertyDao.findDistinctPropertyNames();
+  }
+
+  public List<String> getPropertyValues(String propertyName) {
+    return textPropertyDao.findDistinctValuesByName(propertyName);
+  }
+
+  public List<NovelPropertyValueDto> checkNovelValues(List<TextMetadataDto> properties) {
+    Set<String> namesToCheck = textPropertyCheckConfigDao.findAll().stream()
+      .filter(TextPropertyCheckConfig::isActive)
+      .map(TextPropertyCheckConfig::getPropertyName)
+      .collect(toSet());
+
+    Set<String> allKnownNames = new HashSet<>(textPropertyDao.findDistinctPropertyNames());
+
+    List<NovelPropertyValueDto> result = new ArrayList<>();
+    Set<String> seenNovelNames = new HashSet<>();
+    List<TextProperty> valueCandidates = new ArrayList<>();
+
+    for (TextMetadataDto textMetadataDto : properties) {
+      processProperty(textMetadataDto, allKnownNames, namesToCheck, seenNovelNames, result, valueCandidates);
+    }
+
+    addNovelValues(valueCandidates, result);
+
+    return result;
+  }
+
+  public List<PropertyCheckConfigDto> getPropertyCheckConfig() {
+    Map<String, Boolean> configMap = textPropertyCheckConfigDao.findAll().stream()
+      .collect(toMap(
+        TextPropertyCheckConfig::getPropertyName,
+        TextPropertyCheckConfig::isActive
+      ));
+
+    Set<String> allNames = new HashSet<>(textPropertyDao.findDistinctPropertyNames());
+    allNames.addAll(configMap.keySet());
+
+    return allNames.stream()
+      .sorted()
+      .map(name -> PropertyCheckConfigDto.builder()
+        .propertyName(name)
+        .isActive(configMap.getOrDefault(name, false))
+        .build())
+      .collect(toList());
+  }
+
+  @Transactional
+  public void updatePropertyCheckConfig(List<PropertyCheckConfigDto> config) {
+    config.forEach(c -> textPropertyCheckConfigDao.upsert(c.getPropertyName(), c.isActive()));
+  }
+
   public String getPublishedTexts(CorpusRequestDto request) {
     return textService.detailneparing(request, true);
   }
@@ -200,6 +261,62 @@ public class AdminTextService {
   private void updatePublishedTextContentIfChanged(UUID id, String currentText, String newText) {
     if (newText != null && !newText.equals(currentText)) {
       textDao.updateTextContent(id, newText);
+    }
+  }
+
+  private void processProperty(
+    TextMetadataDto textMetadataDto,
+    Set<String> allKnownNames,
+    Set<String> namesToCheck,
+    Set<String> seenNovelNames,
+    List<NovelPropertyValueDto> result,
+    List<TextProperty> valueCandidates
+  ) {
+    String name = textMetadataDto.getPropertyName();
+    String value = textMetadataDto.getPropertyValue();
+    if (value == null || value.isBlank()) {
+      return;
+    }
+
+    if (!allKnownNames.contains(name) && seenNovelNames.add(name)) {
+      result.add(
+        NovelPropertyValueDto.builder()
+          .propertyName(name)
+          .propertyValue(value)
+          .isNovelName(true)
+          .build()
+      );
+    } else if (namesToCheck.contains(name)) {
+      valueCandidates.add(
+        TextProperty.builder()
+          .propertyName(name)
+          .propertyValue(value)
+          .build()
+      );
+    }
+  }
+
+  private void addNovelValues(List<TextProperty> valueCandidates, List<NovelPropertyValueDto> result) {
+    if (valueCandidates.isEmpty()) {
+      return;
+    }
+
+    Set<String> existingKeys = textPropertyDao.findExistingValues(valueCandidates).stream()
+      .map(tp -> tp.getPropertyName() + "\0" + tp.getPropertyValue())
+      .collect(toSet());
+
+    Set<String> seenNovelValues = new HashSet<>();
+    for (TextProperty tp : valueCandidates) {
+      String key = tp.getPropertyName() + "\0" + tp.getPropertyValue();
+      if (!existingKeys.contains(key) && seenNovelValues.add(key)) {
+        result.add(
+          NovelPropertyValueDto.builder()
+            .propertyName(tp.getPropertyName())
+            .propertyValue(tp.getPropertyValue())
+            .isNovelName(false)
+            .build()
+        );
+      }
     }
   }
 

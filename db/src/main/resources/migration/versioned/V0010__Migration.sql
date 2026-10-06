@@ -1,4 +1,20 @@
 -- ======================================================
+-- PROPERTY CHECK CONFIGURATION
+-- Controls which property_names are validated for novel
+-- values during the donated-text publish flow.
+-- ======================================================
+
+CREATE TABLE core.text_property_check_config
+(
+  property_name text    NOT NULL,
+  is_active     boolean NOT NULL DEFAULT true,
+
+  CONSTRAINT text_property_check_config_pkey PRIMARY KEY (property_name)
+);
+
+CALL core.attach_meta_trigger('core.text_property_check_config');
+
+-- ======================================================
 -- HISTORY / AUDIT TABLES FOR TEXT-RELATED TABLES
 -- Captures INSERT, UPDATE, DELETE on:
 --   core.text, core.text_property,

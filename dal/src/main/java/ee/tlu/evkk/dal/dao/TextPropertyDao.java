@@ -15,6 +15,12 @@ public interface TextPropertyDao {
 
   Collection<TextProperty> findByTextId(@Param("textId") UUID textId);
 
+  List<String> findDistinctPropertyNames();
+
+  List<String> findDistinctValuesByName(@Param("propertyName") String propertyName);
+
+  List<TextProperty> findExistingValues(@Param("candidates") List<TextProperty> candidates);
+
   void updateProperty(@Param("id") UUID id, @Param("propertyValue") String propertyValue);
 
   void insertProperty(@Param("textId") UUID textId, @Param("propertyName") String propertyName, @Param("propertyValue") String propertyValue);

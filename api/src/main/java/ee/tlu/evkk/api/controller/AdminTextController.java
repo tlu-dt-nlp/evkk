@@ -3,8 +3,11 @@ package ee.tlu.evkk.api.controller;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.DonatedTextRequestDto;
 import ee.evkk.dto.TextDetailsResponseDto;
+import ee.evkk.dto.TextMetadataDto;
 import ee.evkk.dto.TextUpdateRequestDto;
 import ee.evkk.dto.TextsToReviewResponseDto;
+import ee.tlu.evkk.api.controller.dto.NovelPropertyValueDto;
+import ee.tlu.evkk.api.controller.dto.PropertyCheckConfigDto;
 import ee.tlu.evkk.api.exception.DuplicateTextException;
 import ee.tlu.evkk.api.service.AdminTextService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -92,5 +96,31 @@ public class AdminTextController {
   @ResponseStatus(NO_CONTENT)
   public void deletePublishedText(@PathVariable UUID id) {
     adminTextService.deletePublishedText(id);
+  }
+
+  @GetMapping("property-names")
+  public List<String> getPropertyNames() {
+    return adminTextService.getPropertyNames();
+  }
+
+  @GetMapping("property-values/{name}")
+  public List<String> getPropertyValues(@PathVariable("name") String propertyName) {
+    return adminTextService.getPropertyValues(propertyName);
+  }
+
+  @PostMapping("check-novel-values")
+  public List<NovelPropertyValueDto> checkNovelValues(@RequestBody List<TextMetadataDto> properties) {
+    return adminTextService.checkNovelValues(properties);
+  }
+
+  @GetMapping("property-check-config")
+  public List<PropertyCheckConfigDto> getPropertyCheckConfig() {
+    return adminTextService.getPropertyCheckConfig();
+  }
+
+  @PutMapping("property-check-config")
+  @ResponseStatus(NO_CONTENT)
+  public void updatePropertyCheckConfig(@RequestBody List<PropertyCheckConfigDto> config) {
+    adminTextService.updatePropertyCheckConfig(config);
   }
 }

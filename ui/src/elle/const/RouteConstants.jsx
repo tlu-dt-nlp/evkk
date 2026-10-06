@@ -9,6 +9,7 @@ import {
   Devices,
   Dvr,
   EditNote,
+  FormatListBulleted,
   Gamepad,
   HistoryEdu,
   Info,
@@ -29,7 +30,8 @@ import {
   Science,
   Source,
   Spellcheck,
-  Translate
+  Translate,
+  Tune
 } from '@mui/icons-material';
 import WordlistIcon from '../resources/images/tools/sonaloend.png';
 import WordContextIcon from '../resources/images/tools/sona_kontekstis.png';
@@ -48,6 +50,8 @@ export const RouteConstants = {
   CORRECTOR: 'corrector',
   CORRECTOR_TEST: 'corrector-test',
   DONATED_TEXTS: 'donated-texts',
+  PROPERTY_CHECK_CONFIG: 'property-check-config',
+  PROPERTY_VALUES: 'property-values',
   EXERCISE_GENERATOR: 'exercise-generator',
   GRANTS: 'grants',
   LEARN: 'learn',
@@ -71,6 +75,8 @@ export const RouteFullPathConstants = {
   ABOUT_US: `/${RouteConstants.ABOUT}/${RouteConstants.US}`,
   ADMIN_DONATED_TEXTS: `/${RouteConstants.ADMIN}/${RouteConstants.DONATED_TEXTS}`,
   ADMIN_OVERVIEW: `/${RouteConstants.ADMIN}/${RouteConstants.OVERVIEW}`,
+  ADMIN_PROPERTY_CHECK_CONFIG: `/${RouteConstants.ADMIN}/${RouteConstants.PROPERTY_CHECK_CONFIG}`,
+  ADMIN_PROPERTY_VALUES: `/${RouteConstants.ADMIN}/${RouteConstants.PROPERTY_VALUES}`,
   ADMIN_PUBLISHED_TEXTS: `/${RouteConstants.ADMIN}/${RouteConstants.PUBLISHED_TEXTS}`,
   LEARN_EXERCISE_GENERATOR: `/${RouteConstants.LEARN}/${RouteConstants.EXERCISE_GENERATOR}`,
   TOOLS_CLUSTERFINDER: `/${RouteConstants.TOOLS}/${RouteConstants.CLUSTERFINDER}`,
@@ -328,7 +334,7 @@ export const LinksDrawerList = [
 
 export const AdminDrawerList = [
   {
-    key: 'admin',
+    key: 'admin-general',
     items: [
       {
         text: 'common_overview',
@@ -349,6 +355,21 @@ export const AdminDrawerList = [
         text: 'common_published_texts',
         icon: <EditNote />,
         navigateTo: RouteConstants.PUBLISHED_TEXTS
+      }
+    ]
+  },
+  {
+    key: 'admin-text-helpers',
+    items: [
+      {
+        text: 'admin_property_values_title',
+        icon: <FormatListBulleted />,
+        navigateTo: RouteConstants.PROPERTY_VALUES
+      },
+      {
+        text: 'admin_property_check_config_title',
+        icon: <Tune />,
+        navigateTo: RouteConstants.PROPERTY_CHECK_CONFIG
       }
     ]
   }
