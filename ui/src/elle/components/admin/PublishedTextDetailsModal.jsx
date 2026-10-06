@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from '@mui/material';
+import { Button, Stack, TextField } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { successEmitter } from '../../../App';
@@ -259,7 +259,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
   };
 
   const headerActions = (
-    <Box className="d-flex flex-wrap gap-1">
+    <Stack direction="row" spacing={1} flexWrap="wrap">
       {!isEditMode && (
         <Button
           onClick={() => setIsEditMode(true)}
@@ -281,7 +281,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
       >
         {t('common_delete')}
       </Button>
-    </Box>
+    </Stack>
   );
 
   return (

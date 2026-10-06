@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -322,7 +322,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   };
 
   const headerActions = (
-    <Box className="d-flex flex-wrap gap-1">
+    <Stack direction="row" spacing={1} flexWrap="wrap">
       <Button
         onClick={handleOpenPublishModal}
         size="small"
@@ -342,7 +342,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
       >
         {t('common_delete')}
       </Button>
-    </Box>
+    </Stack>
   );
 
   return (
