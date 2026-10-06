@@ -15,6 +15,33 @@ export const UserRoles = {
   ADMIN: 'ADMIN'
 };
 
+export const CorpusIds = {
+  L2_OLYMPIADE: 'cFqPphvYi',
+  L2_PROFICIENCY_EXAMS: 'clWmOIrLa',
+  L2_ESTONIAN: 'cFOoRQekA',
+  L1_ESTONIAN: 'cYDRkpymb',
+  L1_RUSSIAN: 'cgSRJPKTr',
+  L3_RUSSIAN: 'cZjHWUPtD',
+  ACADEMIC: 'cwUSEqQLt'
+};
+
+export const isAcademicCorpus = (korpus) => korpus === CorpusIds.ACADEMIC;
+export const isL1EstonianCorpus = (korpus) => korpus === CorpusIds.L1_ESTONIAN;
+export const isL2ExamsCorpus = (korpus) => korpus === CorpusIds.L2_PROFICIENCY_EXAMS;
+
+export const AcademicCategoryIds = {
+  STUDIES: 'ak_erialaopingud',
+  RESEARCH: 'ak_uurimused'
+};
+
+export const DonatedTextTypes = {
+  ACADEMIC: 'akadeemiline',
+  NON_ACADEMIC: 'mitteakadeemiline'
+};
+
+export const isDonatedTextAcademic = (liik) => liik === DonatedTextTypes.ACADEMIC;
+export const isDonatedTextNonAcademic = (liik) => liik === DonatedTextTypes.NON_ACADEMIC;
+
 export const scoreOptions = [
   { key: 'query_text_data_score_under_50', range: 'alla 50%' },
   { key: '51–60%', range: '51-60%' },
@@ -28,7 +55,8 @@ export const addedYearOptions = [
   { key: '2006–2010', range: '2006-2010' },
   { key: '2011–2015', range: '2011-2015' },
   { key: '2016–2020', range: '2016-2020' },
-  { key: '2021–2025', range: '2021-2025' }
+  { key: '2021–2025', range: '2021-2025' },
+  { key: '2026–2030', range: '2026-2030' }
 ];
 
 export const charactersOptions = [
@@ -72,13 +100,13 @@ export const textLevelOptions = [
 ];
 
 export const corpuses = {
-  'cFqPphvYi': 'query_subcoprus_L2_olympiade',
-  'clWmOIrLa': 'query_subcorpus_L2_proficiency_examinations',
-  'cFOoRQekA': 'query_subcorpus_L2_estonian',
-  'cYDRkpymb': 'query_subcorpus_L1_estonian',
-  'cgSRJPKTr': 'query_subcorpus_L1_russian',
-  'cZjHWUPtD': 'query_subcorpus_L3_russian',
-  'cwUSEqQLt': 'query_subcorpus_academic_estonian'
+  [CorpusIds.L2_OLYMPIADE]: 'query_subcoprus_L2_olympiade',
+  [CorpusIds.L2_PROFICIENCY_EXAMS]: 'query_subcorpus_L2_proficiency_examinations',
+  [CorpusIds.L2_ESTONIAN]: 'query_subcorpus_L2_estonian',
+  [CorpusIds.L1_ESTONIAN]: 'query_subcorpus_L1_estonian',
+  [CorpusIds.L1_RUSSIAN]: 'query_subcorpus_L1_russian',
+  [CorpusIds.L3_RUSSIAN]: 'query_subcorpus_L3_russian',
+  [CorpusIds.ACADEMIC]: 'query_subcorpus_academic_estonian'
 };
 
 export const textTypeList = {
@@ -131,13 +159,13 @@ export const textTypeList = {
 };
 
 export const textTypesOptions = {
-  'clWmOIrLa': {
+  [CorpusIds.L2_PROFICIENCY_EXAMS]: {
     'k2eesti_riiklik_eksamitoo': 'common_text_data_type_L2_proficiency_examination'
   },
-  'cFqPphvYi': {
+  [CorpusIds.L2_OLYMPIADE]: {
     'k2eesti_ol_loovkirjutis': 'common_text_data_type_L2_olympiade_creative_writing'
   },
-  'cFOoRQekA': {
+  [CorpusIds.L2_ESTONIAN]: {
     'query_text_data_type_L2_letter': {
       'k2eesti_kiri_isiklik': 'query_text_data_type_L2_letter_informal',
       'k2eesti_kiri_poolametlik': 'query_text_data_type_L2_letter_semi_formal'
@@ -164,25 +192,24 @@ export const textTypesOptions = {
     'k2eesti_kontrolltoo_test': 'query_text_data_type_L2_test',
     'k2eesti_tolge': 'query_text_data_type_L2_translation'
   },
-  'cYDRkpymb': {
+  [CorpusIds.L1_ESTONIAN]: {
     'k1eesti_arvamuslugu': 'query_text_data_type_L1_opinion_piece',
-    // currently no texts present in the database
-    // 'k1eesti_eksamitoo': 'query_text_data_type_L1_examination',
+    'k1eesti_eksamitoo': 'query_text_data_type_L1_examination',
     'k1eesti_harjutus': 'query_text_data_type_L1_exercise',
     'query_text_data_type_L1_e_essay': {
       'k1eesti_ekirjand_9kl': 'query_text_data_type_L1_e_essay_9th_grade',
       'k1eesti_ekirjand_12kl': 'query_text_data_type_L1_e_essay_12th_grade'
     }
   },
-  'cgSRJPKTr': {
+  [CorpusIds.L1_RUSSIAN]: {
     'k1vene_loovkirjutis': 'query_text_data_type_L1_russian_creative_writing',
     'k1vene_eksamitoo': 'query_text_data_type_L1_russian_examination'
   },
-  'cZjHWUPtD': {
+  [CorpusIds.L3_RUSSIAN]: {
     'k3vene_loovkirjutis': 'query_text_data_type_L3_russian_creative_writing',
     'k3vene_eksamitoo': 'query_text_data_type_L3_russian_examination'
   },
-  'cwUSEqQLt': {
+  [CorpusIds.ACADEMIC]: {
     'query_text_data_type_academic_studies': {
       'ak_eriala_analuus': 'query_text_data_type_academic_studies_analysis',
       'ak_eriala_essee': 'query_text_data_type_academic_studies_essay',
@@ -193,15 +220,13 @@ export const textTypesOptions = {
       'ak_eriala_ulevaade': 'query_text_data_type_academic_studies_overview'
     },
     'query_text_data_type_academic_research': {
-      // currently no texts present in the database
-      // 'ak_uurimus_artikkel': 'query_text_data_type_academic_research_research_article',
+      'ak_uurimus_artikkel': 'query_text_data_type_academic_research_research_article',
       'ak_uurimus_ettekanne': 'query_text_data_type_academic_research_presentation',
       'ak_uurimus_kokkuvote': 'query_text_data_type_academic_research_summary',
       'ak_uurimus_batoo': 'query_text_data_type_academic_research_bachelors_thesis',
       'ak_uurimus_diplomitoo': 'query_text_data_type_academic_research_thesis',
-      'ak_uurimus_matoo': 'query_text_data_type_academic_research_masters_thesis'
-      // currently no texts present in the database
-      // 'ak_uurimus_phdtoo': 'query_text_data_type_academic_research_doctoral_thesis'
+      'ak_uurimus_matoo': 'query_text_data_type_academic_research_masters_thesis',
+      'ak_uurimus_phdtoo': 'query_text_data_type_academic_research_doctoral_thesis'
     }
   }
 };
@@ -271,11 +296,9 @@ export const textLanguageOptions = {
 };
 
 export const domainDisplayOptions = {
-  // currently no texts present in the database
-  // 'biojakeskkonnateadused': 'common_text_data_field_of_research_biosciences_and_environment',
+  'biojakeskkonnateadused': 'common_text_data_field_of_research_biosciences_and_environment',
   'yhiskondjakultuur': 'common_text_data_field_of_research_culture_and_society',
-  // currently no texts present in the database
-  // 'terviseuuringud': 'common_text_data_field_of_research_health',
+  'terviseuuringud': 'common_text_data_field_of_research_health',
   'loodustehnika': 'common_text_data_field_of_research_natural_sciences_and_engineering'
 };
 
@@ -328,17 +351,17 @@ export const educationOptions = {
 };
 
 export const textPublishMainTextTypesOptions = {
-  'mitteakadeemiline': 'publish_your_text_text_data_main_text_type_non_academic',
-  'akadeemiline': 'publish_your_text_text_data_main_text_type_academic'
+  [DonatedTextTypes.NON_ACADEMIC]: 'publish_your_text_text_data_main_text_type_non_academic',
+  [DonatedTextTypes.ACADEMIC]: 'publish_your_text_text_data_main_text_type_academic'
 };
 
 export const textPublishAcademicCategoryOptions = {
-  'ak_erialaopingud': 'publish_your_text_text_data_academic_category_academic_studies',
-  'ak_uurimused': 'publish_your_text_text_data_academic_category_research'
+  [AcademicCategoryIds.STUDIES]: 'publish_your_text_text_data_academic_category_academic_studies',
+  [AcademicCategoryIds.RESEARCH]: 'publish_your_text_text_data_academic_category_research'
 };
 
 export const textPublishAcademicStudiesSubtypeOptions = {
-  'ak_analuus': 'query_text_data_type_academic_studies_analysis',
+  'ak_eriala_analuus': 'query_text_data_type_academic_studies_analysis',
   'ak_eriala_essee': 'query_text_data_type_academic_studies_essay',
   'ak_eriala_kursusetoo': 'query_text_data_type_academic_studies_course_paper',
   'ak_eriala_referaat': 'query_text_data_type_academic_studies_report',
@@ -434,26 +457,7 @@ export const languageOptionsForOtherLangs = {
   'saksa': 'query_common_language_de'
 };
 
-export const countryOptionsForQuery = {
-  'Eesti': 'query_common_country_et',
-  'Soome': 'query_common_country_fi',
-  'Leedu': 'query_common_country_lt',
-  'Saksamaa': 'query_common_country_de',
-  'Inglismaa': 'query_common_country_en',
-  'Ungari': 'query_common_country_hu'
-};
-
-export const countryOptionsForQueryResults = {
-  'Eesti': 'query_common_country_et',
-  'Soome': 'query_common_country_fi',
-  'Leedu': 'query_common_country_lt',
-  'Saksamaa': 'query_common_country_de',
-  'Inglismaa': 'query_common_country_en',
-  'Ungari': 'query_common_country_hu',
-  'Muu': 'query_common_country_other'
-};
-
-export const countryOptionsForAddingText = {
+export const countryOptions = {
   'Eesti': 'query_common_country_et',
   'Soome': 'query_common_country_fi',
   'Rootsi': 'query_common_country_se',
@@ -465,8 +469,18 @@ export const countryOptionsForAddingText = {
   'Ungari': 'query_common_country_hu'
 };
 
+export const countryOptionsForQueryResults = {
+  ...countryOptions,
+  'Muu': 'query_common_country_other'
+};
+
 export const textToSpeechVoices = {
   mari: 'Mari',
   albert: 'Albert',
   kalev: 'Kalev'
+};
+
+export const DonatedTextDetailsFormMode = {
+  PUBLISH: 'PUBLISH',
+  SEARCH: 'SEARCH'
 };

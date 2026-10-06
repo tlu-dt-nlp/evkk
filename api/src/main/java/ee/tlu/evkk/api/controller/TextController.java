@@ -134,7 +134,7 @@ public class TextController {
 
   @PostMapping("/detailneparing")
   public ResponseEntity<String> detailneparing(@RequestBody CorpusRequestDto vaartused) {
-    return ok(textService.detailneparing(vaartused));
+    return ok(textService.detailneparing(vaartused, false));
   }
 
   @PostMapping("/tekstidfailina")

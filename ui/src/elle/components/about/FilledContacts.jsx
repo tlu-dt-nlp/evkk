@@ -38,8 +38,8 @@ export default function FilledContacts() {
                    email="kaisa.norak@gmail.com"
                    etisUrl={`https://www.etis.ee/CV/Kaisa_Norak/${etisLanguage}`}
                    icon={WORKER_IMAGES.kaisa} />
-      <ContactCard name="BSc Harli Kodasma"
-                   role="keeletehnoloog-analüütik-tarkvaraarendaja, magistrant"
+      <ContactCard name="MSc Harli Kodasma"
+                   role="keeletehnoloog-analüütik-tarkvaraarendaja"
                    email="harli.kodasma@tlu.ee"
                    etisUrl={`https://www.etis.ee/CV/Harli_Kodasma/${etisLanguage}`}
                    icon={WORKER_IMAGES.harli} />
