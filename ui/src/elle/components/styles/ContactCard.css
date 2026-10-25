@@ -11,13 +11,11 @@
 
 .contact-box {
   display: flex;
-  flex-direction: row;
   align-items: center;
   gap: 24px;
 
   @media (max-width: 600px) {
     flex-direction: column;
-    align-items: center;
     text-align: center;
     gap: 12px;
   }
@@ -30,12 +28,9 @@
   &::before {
     content: "";
     position: absolute;
-    top: 12%;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 12% 0 0;
     border-radius: 10px;
-    background: linear-gradient(315deg, rgba(156, 39, 176, 0.15) 0%, rgba(156, 39, 176, 0.15) 33%, rgba(204, 168, 253, 0.22) 33%, rgba(204, 168, 253, 0.22) 67%, rgba(255, 208, 253, 0.25) 67%, rgba(255, 208, 253, 0.25) 100%);
+    background: linear-gradient(315deg, rgba(156, 39, 176, 0.15) 0 33%, rgba(204, 168, 253, 0.22) 33% 67%, rgba(255, 208, 253, 0.25) 67%);
   }
 }
 
@@ -44,36 +39,6 @@
   position: relative;
   width: 150px;
   border-radius: 0 0 10px 10px;
-}
-
-.contact-image-placeholder {
-  height: 150px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
-  color: #CE93D8;
-
-  /* The Person glyph spans 16 of its 24 viewBox units, so the bottom margin
-     cancels the empty space under it (1/6 of the size) to keep it on the bottom edge */
-  svg {
-    flex-shrink: 0;
-    width: 135%;
-    height: 135%;
-    margin-bottom: -22.5%;
-  }
-}
-
-/* Recolours a transparent silhouette PNG (passed in as the mask image) to the placeholder colour */
-.contact-image-silhouette {
-  height: 150px;
-  background-color: #CE93D8;
-  mask-size: cover;
-  mask-position: bottom;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: cover;
-  -webkit-mask-position: bottom;
-  -webkit-mask-repeat: no-repeat;
 }
 
 .contact-info {
@@ -113,9 +78,6 @@
   }
 
   .contact-email {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
     color: inherit;
     text-decoration: none;
 
