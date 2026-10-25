@@ -41,6 +41,12 @@ pipeline {
             printf '\nGEMINI_API_KEY=%s\n' "$GEMINI_API_KEY" >> ./build/conf/common.env
           '''
         }
+        script {
+          if (params.RESET_DATABASE) {
+            echo 'RESET_DATABASE is set: the demo database will be wiped and re-created'
+            sh "sed -i 's/^EVKK_DB_FLYWAY_COMMANDS=.*/EVKK_DB_FLYWAY_COMMANDS=clean,migrate,seed/' ./build/conf/db.env"
+          }
+        }
       }
     }
 
