@@ -9,6 +9,7 @@ import silvia from './silvia.png';
 import taavi from './taavi.png';
 import annekatrin from './annekatrin.png';
 import ester from './ester.png';
+import placeholderWoman from './placeholder_woman.png';
 
 export const WORKER_IMAGES = {
   pille,
@@ -21,5 +22,6 @@ export const WORKER_IMAGES = {
   silvia,
   taavi,
   annekatrin,
-  ester
+  ester,
+  placeholderWoman
 };
