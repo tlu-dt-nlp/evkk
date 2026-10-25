@@ -70,7 +70,6 @@ subprojects {
     outputs.upToDateWhen { false }
     useJUnitPlatform()
     testLogging { showStandardStreams = true }
-    reports.html.setDestination(file("${rootProject.projectDir}/reports/tests/${project.name}/"))
   }
 
 }
