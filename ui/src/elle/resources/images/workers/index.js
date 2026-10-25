@@ -7,6 +7,8 @@ import karina from './karina.png';
 import mikk from './mikk.png';
 import silvia from './silvia.png';
 import taavi from './taavi.png';
+import annekatrin from './annekatrin.png';
+import ester from './ester.png';
 
 export const WORKER_IMAGES = {
   pille,
@@ -17,5 +19,7 @@ export const WORKER_IMAGES = {
   karina,
   mikk,
   silvia,
-  taavi
+  taavi,
+  annekatrin,
+  ester
 };

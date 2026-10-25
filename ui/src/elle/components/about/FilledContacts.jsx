@@ -45,7 +45,8 @@ export default function FilledContacts() {
                    degree="PhD"
                    role="people_role_visiting_researcher_digital_language_learning"
                    email="annekatrin.kaivapalu@tlu.ee"
-                   etisUrl={`https://www.etis.ee/CV/Annekatrin_Kaivapalu/${etisLanguage}`} />
+                   etisUrl={`https://www.etis.ee/CV/Annekatrin_Kaivapalu/${etisLanguage}`}
+                   icon={WORKER_IMAGES.annekatrin} />
       <ContactCard name="Olga Gaitšenja"
                    degree="PhD"
                    role="people_role_visiting_researcher_call"
@@ -67,7 +68,8 @@ export default function FilledContacts() {
                    degree="MSc"
                    degreeInProgress
                    role="people_role_language_technologist_analyst"
-                   email="ester.ojala@tlu.ee" />
+                   email="ester.ojala@tlu.ee"
+                   icon={WORKER_IMAGES.ester} />
       <ContactCard name="Kaisa Norak"
                    degree="MSc"
                    role="people_role_consultant_thesis_supervisor"
