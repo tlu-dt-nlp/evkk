@@ -495,7 +495,8 @@ def handle_long_sentence_marking(text, doc):
     marked_sentences = set()
     for sentence in doc.sentences:
         sentence_text = sentence.text.strip()
-        if (len(sentence.words) > COMPLEXITY_MARKING_MINIMUM_WORDS_IN_LONG_SENTENCE
+        word_count = sum(1 for word in sentence.words if word.upos not in ('PUNCT', 'SYM'))
+        if (word_count > COMPLEXITY_MARKING_MINIMUM_WORDS_IN_LONG_SENTENCE
             and sentence_text not in marked_sentences):
             marked_sentences.add(sentence_text)
             new_sentence = f'<span id="text-span" class="long-sentence-color">{sentence_text}</span>'

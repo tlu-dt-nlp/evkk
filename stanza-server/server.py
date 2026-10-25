@@ -605,6 +605,21 @@ def hinnang(indeks, arv):
     return vasted[-1]
 
 
+def koondhinnang(smog, fk, lix):
+    # Kuvatakse kuni kaks taset, LIX-indeks on ülimuslik
+    s, f, l = vasted.index(smog), vasted.index(fk), vasted.index(lix)
+    if s == f:
+        # SMOG ja FK on ühel meelel, nende hinnang kaalub LIX-i üles
+        return smog
+    if s == l or f == l:
+        return "/".join([lix, fk if s == l else smog])
+    if min(s, f) < l < max(s, f):
+        # LIX jääb kahe teise hinnangu vahele
+        return lix
+    lahim = s if abs(s - l) < abs(f - l) else f
+    return "/".join([lix, vasted[lahim]])
+
+
 def hinda_keerukust(tekst):
     poly = 0
     silpide_arv = 0
@@ -635,7 +650,7 @@ def hinda_keerukust(tekst):
     v[0] = hinnang("smog", SMOG_hinnang)
     v[1] = hinnang("fk", FK_hinnang)
     v[2] = hinnang("lix", LIX_hinnang)
-    v.append("/".join(list(set(v))))
+    v.append(koondhinnang(*v))
     return [lausetearv, sonadearv, poly, silpide_arv, pikad_sonad, SMOG_hinnang, FK_hinnang, int(LIX_hinnang)] + v
 
 
