@@ -4,7 +4,7 @@ import Home from './elle/pages/Home';
 import Links from './elle/pages/Links';
 import FilledContacts from './elle/components/about/FilledContacts';
 import Grants from './elle/components/about/Grants';
-import ClusterFinder from './elle/tools/ClusterFinder';
+import ClusterFinder from './elle/tools/clusterfinder/ClusterFinder';
 import WordAnalyserParent from './elle/tools/wordanalyser/WordAnalyserParent';
 import AboutUsText from './elle/components/about/AboutUsText';
 import Publications from './elle/components/about/Publications';

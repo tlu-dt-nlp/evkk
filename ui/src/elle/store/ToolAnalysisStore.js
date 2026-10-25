@@ -3,7 +3,8 @@ import { configureStore, createSlice } from '@reduxjs/toolkit';
 const initialState = {
   wordlist: null,
   wordContext: null,
-  collocates: null
+  collocates: null,
+  clusterFinder: null
 };
 
 const toolAnalysisSlice = createSlice({
@@ -18,6 +19,9 @@ const toolAnalysisSlice = createSlice({
     },
     changeCollocatesResult: (state, action) => {
       state.collocates = action.payload;
+    },
+    changeClusterFinderResult: (state, action) => {
+      state.clusterFinder = action.payload;
     }
   }
 });
@@ -25,7 +29,8 @@ const toolAnalysisSlice = createSlice({
 export const {
   changeWordlistResult,
   changeWordContextResult,
-  changeCollocatesResult
+  changeCollocatesResult,
+  changeClusterFinderResult
 } = toolAnalysisSlice.actions;
 
 export const toolAnalysisStore = configureStore({
