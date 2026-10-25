@@ -22,6 +22,7 @@ import {
 } from '../../const/Constants';
 import SelectMultiple, { SelectMultipleType } from '../SelectMultiple';
 import TooltipButton from '../tooltip/TooltipButton';
+import { isSelectOptionReselected } from '../../util/InputUtils';
 
 export default function DonatedTextDetailsForm({
   mode,
@@ -39,6 +40,12 @@ export default function DonatedTextDetailsForm({
     && formData.akadKategooria === AcademicCategoryIds.RESEARCH
     && formData.akadAlamliik === 'ak_uurimus_artikkel';
 
+  const clearOnReselect = (event, name) => {
+    if (isSelectOptionReselected(event, formData[name])) {
+      onChange({ target: { name, value: '' } });
+    }
+  };
+
   return (
     <>
       <Grid
@@ -55,7 +62,7 @@ export default function DonatedTextDetailsForm({
             value={formData.liik}
             required={!isSearchMode}
             onChange={onChange}
-            onClick={isSearchMode && ((event) => onChange(event, 'liik'))}
+            onClick={isSearchMode ? (event => clearOnReselect(event, 'liik')) : undefined}
           >
             {Object.keys(textPublishMainTextTypesOptions).map(type => (
               <MenuItem
@@ -78,7 +85,7 @@ export default function DonatedTextDetailsForm({
               value={formData.autoriValdkond}
               required={!isSearchMode}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'autoriValdkond'))}
+              onClick={isSearchMode ? (event => clearOnReselect(event, 'autoriValdkond')) : undefined}
             >
               {Object.keys(domainSaveOptions).map(domain => (
                 <MenuItem
@@ -101,7 +108,7 @@ export default function DonatedTextDetailsForm({
               name="mitteakadAlamliik"
               value={formData.mitteakadAlamliik}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'mitteakadAlamliik'))}
+              onClick={event => clearOnReselect(event, 'mitteakadAlamliik')}
             >
               {Object.keys(textPublishTextSubtypesOptions).map(type => (
                 <MenuItem
@@ -131,7 +138,7 @@ export default function DonatedTextDetailsForm({
               value={formData.akadKategooria}
               required={!isSearchMode}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'akadKategooria'))}
+              onClick={isSearchMode ? (event => clearOnReselect(event, 'akadKategooria')) : undefined}
             >
               {Object.keys(textPublishAcademicCategoryOptions).map(category => (
                 <MenuItem
@@ -154,7 +161,7 @@ export default function DonatedTextDetailsForm({
               name="akadAlamliik"
               value={formData.akadAlamliik}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'akadAlamliik'))}
+              onClick={event => clearOnReselect(event, 'akadAlamliik')}
             >
               {formData.akadKategooria === AcademicCategoryIds.STUDIES &&
                 Object.keys(textPublishAcademicStudiesSubtypeOptions).map(type => (
@@ -222,7 +229,7 @@ export default function DonatedTextDetailsForm({
             name="oppematerjal"
             value={formData.oppematerjal}
             onChange={onChange}
-            onClick={isSearchMode && ((event) => onChange(event, 'oppematerjal'))}
+            onClick={event => clearOnReselect(event, 'oppematerjal')}
           >
             {Object.keys(usedMaterialsSaveOptions).map(material => (
               <MenuItem
@@ -285,7 +292,7 @@ export default function DonatedTextDetailsForm({
             name="autoriSugu"
             value={formData.autoriSugu}
             onChange={onChange}
-            onClick={isSearchMode && ((event) => onChange(event, 'autoriSugu'))}
+            onClick={event => clearOnReselect(event, 'autoriSugu')}
           >
             {Object.keys(genderOptions).map(gender => (
               <MenuItem
@@ -329,7 +336,7 @@ export default function DonatedTextDetailsForm({
           <Select
             value={formData.autoriElukohariik}
             onChange={onChange}
-            onClick={isSearchMode && ((event) => onChange(event, 'autoriElukohariik'))}
+            onClick={event => clearOnReselect(event, 'autoriElukohariik')}
             name="autoriElukohariik"
           >
             {Object.keys(countryOptions).map(country => (
@@ -352,7 +359,7 @@ export default function DonatedTextDetailsForm({
               name="autoriOppeaste"
               value={formData.autoriOppeaste}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'autoriOppeaste'))}
+              onClick={event => clearOnReselect(event, 'autoriOppeaste')}
             >
               {Object.keys(studyLevelOptions).map(level => (
                 <MenuItem
@@ -375,7 +382,7 @@ export default function DonatedTextDetailsForm({
               name="autoriTeaduskraad"
               value={formData.autoriTeaduskraad}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'autoriTeaduskraad'))}
+              onClick={event => clearOnReselect(event, 'autoriTeaduskraad')}
             >
               {Object.keys(degreeOptions).map(degree => (
                 <MenuItem
@@ -398,7 +405,7 @@ export default function DonatedTextDetailsForm({
               name="autoriHaridus"
               value={formData.autoriHaridus}
               onChange={onChange}
-              onClick={isSearchMode && ((event) => onChange(event, 'autoriHaridus'))}
+              onClick={event => clearOnReselect(event, 'autoriHaridus')}
             >
               {Object.keys(educationOptions).map(education => (
                 <MenuItem

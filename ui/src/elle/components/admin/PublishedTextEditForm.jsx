@@ -36,6 +36,7 @@ import {
   usedMaterialsMultiOptions
 } from '../../const/Constants';
 import SelectMultiple, { SelectMultipleType } from '../SelectMultiple';
+import { isSelectOptionReselected } from '../../util/InputUtils';
 
 export default function PublishedTextEditForm({ formData, setFormData }) {
   const { t } = useTranslation();
@@ -94,6 +95,12 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
     }));
   };
 
+  const clearOnReselect = (event, name) => {
+    if (isSelectOptionReselected(event, formData[name])) {
+      handleChange({ target: { name, value: '' } });
+    }
+  };
+
   return (
     <Grid container
           spacing={{ xs: 6, sm: 3 }}
@@ -134,6 +141,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
               <Select
                 name="tekstityyp"
                 onChange={handleChange}
+                onClick={event => clearOnReselect(event, 'tekstityyp')}
                 value={formData.tekstityyp}
               >
                 {getCorpusTypeOptions().map(({ key, label }) => (
@@ -147,6 +155,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
               <Select
                 name="tekstikeel"
                 onChange={handleChange}
+                onClick={event => clearOnReselect(event, 'tekstikeel')}
                 value={formData.tekstikeel}
               >
                 {Object.keys(textLanguageOptions).map(language => (
@@ -161,6 +170,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                 <Select
                   name="keeletase"
                   onChange={handleChange}
+                  onClick={event => clearOnReselect(event, 'keeletase')}
                   value={formData.keeletase}
                 >
                   {textLevelOptions.map(level => (
@@ -176,6 +186,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                 <Select
                   name="tulemusvahemik"
                   onChange={handleChange}
+                  onClick={event => clearOnReselect(event, 'tulemusvahemik')}
                   value={formData.tulemusvahemik}
                 >
                   {scoreOptions.map(option => (
@@ -192,6 +203,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                   name="abivahendid"
                   value={formData.abivahendid}
                   onChange={handleChange}
+                  onClick={event => clearOnReselect(event, 'abivahendid')}
                 >
                   {Object.keys(usedMaterialsDisplayOptions).map(material => (
                     <MenuItem key={material} value={material}>{t(usedMaterialsDisplayOptions[material])}</MenuItem>
@@ -207,6 +219,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                   <Select
                     name="valdkond"
                     onChange={handleChange}
+                    onClick={event => clearOnReselect(event, 'valdkond')}
                     value={formData.valdkond}
                   >
                     {Object.keys(domainDisplayOptions).map(domain => (
@@ -235,6 +248,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
               <Select
                 name="ajavahemik"
                 onChange={handleChange}
+                onClick={event => clearOnReselect(event, 'ajavahemik')}
                 value={formData.ajavahemik}
               >
                 {addedYearOptions.map(option => (
@@ -256,6 +270,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
               <Select
                 name="vanusevahemik"
                 onChange={handleChange}
+                onClick={event => clearOnReselect(event, 'vanusevahemik')}
                 value={formData.vanusevahemik}
               >
                 {Object.keys(ageOptions).map(age => (
@@ -269,6 +284,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
               <Select
                 name="sugu"
                 onChange={handleChange}
+                onClick={event => clearOnReselect(event, 'sugu')}
                 value={formData.sugu}
               >
                 {Object.keys(genderOptions).map(gender => (
@@ -283,6 +299,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                 <Select
                   name="haridus"
                   onChange={handleChange}
+                  onClick={event => clearOnReselect(event, 'haridus')}
                   value={formData.haridus}
                 >
                   {Object.keys(educationOptions).map(education => (
@@ -299,6 +316,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                   <Select
                     name="oppeaste"
                     onChange={handleChange}
+                    onClick={event => clearOnReselect(event, 'oppeaste')}
                     value={formData.oppeaste}
                   >
                     {Object.keys(studyLevelOptions).map(level => (
@@ -312,6 +330,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                   <Select
                     name="teaduskraad"
                     onChange={handleChange}
+                    onClick={event => clearOnReselect(event, 'teaduskraad')}
                     value={formData.teaduskraad}
                   >
                     {Object.keys(degreeOptions).map(degree => (
@@ -348,6 +367,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
                 <Select
                   name="kodakondsus"
                   onChange={handleChange}
+                  onClick={event => clearOnReselect(event, 'kodakondsus')}
                   value={formData.kodakondsus}
                 >
                   {Object.keys(nationalityOptions).map(nationality => (
@@ -362,6 +382,7 @@ export default function PublishedTextEditForm({ formData, setFormData }) {
               <Select
                 name="riik"
                 onChange={handleChange}
+                onClick={event => clearOnReselect(event, 'riik')}
                 value={formData.riik}
               >
                 {Object.keys(countryOptionsForQueryResults).map(country => (

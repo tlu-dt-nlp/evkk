@@ -85,12 +85,8 @@ export default function DonatedTextSearchForm({ fetchTexts, onResults, refetchTr
     });
   };
 
-  const handleStandardChange = (event, fieldName) => {
-    const isClick = event.type === 'click';
-    const name = isClick ? fieldName : event.target.name;
-    const value = isClick ? event.target.dataset?.value : event.target.value;
-
-    updateFormField(name, value);
+  const handleStandardChange = (event) => {
+    updateFormField(event.target.name, event.target.value);
   };
 
   const formatPayload = (formData) => {
