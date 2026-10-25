@@ -11,62 +11,47 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_19_TO_26;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_27_TO_40;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_41_PLUS;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.AGE_RANGE_UP_TO_18;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_ACADEMIC_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L1_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L1_RUSSIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L2_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L2_OLYMPIADE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L2_PROFICIENCY_EXAMS;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L3_RUSSIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.LANGUAGE_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.LANGUAGE_RUSSIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ACADEMIC_MATERIALS;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ACADEMIC_MATERIALS_OTHER;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ACADEMIC_SUBTYPE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_AGE_RANGE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_AGE_RAW;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ARTICLE_NUMBER;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ARTICLE_PAGES;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ARTICLE_PUBLICATION;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_ARTICLE_YEAR;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_CORPUS;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_COUNTRY;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_DEGREE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_DESCRIPTION;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_DOMAIN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_EDUCATION;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_GENDER;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_NATIVE_LANGUAGE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_NON_ACADEMIC_SUBTYPE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_OTHER_LANGUAGES;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_STUDY_LEVEL;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TEXT_LANGUAGE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TITLE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TYPE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_USED_MATERIALS;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_YEAR;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_YEAR_RANGE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_OLYMPIADE;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_K2_PROFICIENCY_EXAM;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_PREFIX_K1_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_PREFIX_K1_RUSSIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_PREFIX_K2_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.SUBTYPE_PREFIX_K3_RUSSIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.TEXT_TYPE_ACADEMIC;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2000_2005;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2006_2010;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2011_2015;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2016_2020;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2021_2025;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.YEAR_RANGE_2026_2030;
 import static ee.tlu.evkk.api.util.DateUtils.PG_TIMESTAMP_FORMAT;
 import static ee.tlu.evkk.api.util.StringUtils.isNullOrBlank;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.AGE_RANGE_19_TO_26;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.AGE_RANGE_27_TO_40;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.AGE_RANGE_41_PLUS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.AGE_RANGE_UP_TO_18;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_ACADEMIC_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L1_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L1_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L2_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L2_OLYMPIADE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L2_PROFICIENCY_EXAMS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L3_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.LANGUAGE_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.LANGUAGE_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_ACADEMIC_SUBTYPE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_AGE_RANGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_AGE_RAW;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_CORPUS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_NON_ACADEMIC_SUBTYPE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_OTHER_LANGUAGES;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_TEXT_LANGUAGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_TYPE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_YEAR;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_YEAR_RANGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.SUBTYPE_K2_OLYMPIADE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.SUBTYPE_K2_PROFICIENCY_EXAM;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.SUBTYPE_PREFIX_K1_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.SUBTYPE_PREFIX_K1_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.SUBTYPE_PREFIX_K2_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.SUBTYPE_PREFIX_K3_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.TEXT_TYPE_ACADEMIC;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.YEAR_RANGE_2000_2005;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.YEAR_RANGE_2006_2010;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.YEAR_RANGE_2011_2015;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.YEAR_RANGE_2016_2020;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.YEAR_RANGE_2021_2025;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.YEAR_RANGE_2026_2030;
 import static java.lang.Integer.parseInt;
 import static java.time.ZoneOffset.UTC;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -78,33 +63,36 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = PRIVATE)
 public class DonatedTextPropertyMapper {
 
-  private static final Set<String> PASS_THROUGH = Set.of(
-    PROP_TITLE,
-    PROP_DESCRIPTION,
-    PROP_USED_MATERIALS,
-    PROP_ACADEMIC_MATERIALS,
-    PROP_ACADEMIC_MATERIALS_OTHER,
-    PROP_DOMAIN,
-    PROP_GENDER,
-    PROP_EDUCATION,
-    PROP_STUDY_LEVEL,
-    PROP_DEGREE,
-    PROP_NATIVE_LANGUAGE,
-    PROP_COUNTRY,
-    PROP_ARTICLE_PUBLICATION,
-    PROP_ARTICLE_NUMBER,
-    PROP_ARTICLE_PAGES,
-    PROP_ARTICLE_YEAR
+  // properties that are transformed or derived, all others are published as-is
+  private static final Set<String> CONSUMED = Set.of(
+    PROP_TYPE,
+    PROP_ACADEMIC_SUBTYPE,
+    PROP_NON_ACADEMIC_SUBTYPE,
+    PROP_CORPUS,
+    PROP_TEXT_LANGUAGE,
+    PROP_AGE_RAW,
+    PROP_AGE_RANGE,
+    PROP_YEAR,
+    PROP_YEAR_RANGE,
+    PROP_OTHER_LANGUAGES
   );
 
   public static List<TextMetadataDto> map(List<TextMetadata> donatedProperties, String createdAt) {
-    Map<String, List<String>> byName = groupByName(donatedProperties);
+    return map(groupByName(donatedProperties, TextMetadata::getPropertyName, TextMetadata::getPropertyValue), createdAt);
+  }
+
+  public static List<TextMetadataDto> mapDtos(List<TextMetadataDto> donatedProperties, String createdAt) {
+    return map(groupByName(donatedProperties, TextMetadataDto::getPropertyName, TextMetadataDto::getPropertyValue), createdAt);
+  }
+
+  private static List<TextMetadataDto> map(Map<String, List<String>> byName, String createdAt) {
     List<TextMetadataDto> result = new ArrayList<>();
 
-    for (String name : PASS_THROUGH) {
-      byName.getOrDefault(name, List.of())
-        .forEach(value -> result.add(property(name, value)));
-    }
+    byName.forEach((name, values) -> {
+      if (!CONSUMED.contains(name)) {
+        values.forEach(value -> result.add(property(name, value)));
+      }
+    });
 
     byName.getOrDefault(PROP_OTHER_LANGUAGES, List.of()).forEach(raw ->
       splitCommaSeparated(raw).forEach(lang -> result.add(property(PROP_OTHER_LANGUAGES, lang)))
@@ -134,11 +122,11 @@ public class DonatedTextPropertyMapper {
     return result;
   }
 
-  private static Map<String, List<String>> groupByName(List<TextMetadata> properties) {
+  private static <T> Map<String, List<String>> groupByName(List<T> properties, Function<T, String> nameFn, Function<T, String> valueFn) {
     Map<String, List<String>> byName = new LinkedHashMap<>();
-    for (TextMetadata metadata : properties) {
-      byName.computeIfAbsent(metadata.getPropertyName(), k -> new ArrayList<>())
-        .add(metadata.getPropertyValue());
+    for (T metadata : properties) {
+      byName.computeIfAbsent(nameFn.apply(metadata), k -> new ArrayList<>())
+        .add(valueFn.apply(metadata));
     }
     return byName;
   }

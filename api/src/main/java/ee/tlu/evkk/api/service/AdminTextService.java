@@ -40,8 +40,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_CORPUS;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.PROP_TEXT_LANGUAGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_CORPUS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_TEXT_LANGUAGE;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -173,7 +173,7 @@ public class AdminTextService {
     Set<String> seenNovelNames = new HashSet<>();
     List<TextProperty> valueCandidates = new ArrayList<>();
 
-    for (TextMetadataDto textMetadataDto : properties) {
+    for (TextMetadataDto textMetadataDto : DonatedTextPropertyMapper.mapDtos(properties, null)) {
       processProperty(textMetadataDto, allKnownNames, namesToCheck, seenNovelNames, result, valueCandidates);
     }
 

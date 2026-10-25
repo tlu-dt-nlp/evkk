@@ -19,7 +19,6 @@ public class DonatedTextRequestDto {
   private String artikkelAasta;
   private String artikkelNumber;
   private String artikkelLehekyljed;
-  private String tekstiAutor;
   private String autoriVanus;
   private String autoriSugu;
   private String autoriOppeaste;

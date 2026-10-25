@@ -32,10 +32,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.UUID;
 
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L1_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.CORPUS_L2_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.LANGUAGE_ESTONIAN;
-import static ee.tlu.evkk.api.constant.TextPropertyConstants.LANGUAGE_RUSSIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L1_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.CORPUS_L2_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.LANGUAGE_ESTONIAN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.LANGUAGE_RUSSIAN;
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -1061,6 +1061,55 @@ class AdminTextServiceTest {
 
     // Then
     assertThat(result).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Check novel values checks tekstityyp as published, i.e. with the subtype as its value")
+  void checkNovelValues_shouldCheckTekstityypAsSubtype() {
+    // Given
+    TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
+      .propertyName("tekstityyp")
+      .isActive(true)
+      .build();
+
+    TextProperty existing = TextProperty.builder()
+      .propertyName("tekstityyp")
+      .propertyValue("k1eesti_harjutus")
+      .build();
+
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(activeConfig));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("tekstityyp", "korpus", "tekstikeel"));
+    when(textPropertyDao.findExistingValues(any())).thenReturn(List.of(existing));
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("tekstityyp").propertyValue("mitteakadeemiline").build(),
+      TextMetadataDto.builder().propertyName("mitteakad_alamliik").propertyValue("k1eesti_harjutus").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  @DisplayName("Check novel values still flags additional properties not handled by the publish mapper")
+  void checkNovelValues_shouldKeepPropertiesNotHandledByMapper() {
+    // Given
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu"));
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("sugu").propertyValue("naine").build(),
+      TextMetadataDto.builder().propertyName("brandNew").propertyValue("someValue").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+
+    // Then
+    assertThat(result).extracting(NovelPropertyValueDto::getPropertyName).containsExactly("brandNew");
   }
 
   @Test

@@ -48,7 +48,6 @@ const DONATED_TEXT_KNOWN_PROPERTIES = new Set([
   'artikkel_aasta',
   'artikkel_number',
   'artikkel_lehekyljed',
-  'kasAutor',
   'vanus',
   'sugu',
   'oppeaste',
@@ -76,7 +75,6 @@ const EMPTY_DONATED_TEXT_FORM = {
   artikkelAasta: '',
   artikkelNumber: '',
   artikkelLehekyljed: '',
-  tekstiAutor: '',
   autoriVanus: '',
   autoriSugu: '',
   autoriOppeaste: '',
@@ -131,7 +129,6 @@ const createDonatedTextFormData = (details) => {
     artikkelAasta: getFirstPropertyValue(properties, 'artikkel_aasta'),
     artikkelNumber: getFirstPropertyValue(properties, 'artikkel_number'),
     artikkelLehekyljed: getFirstPropertyValue(properties, 'artikkel_lehekyljed'),
-    tekstiAutor: getFirstPropertyValue(properties, 'kasAutor'),
     autoriVanus: getFirstPropertyValue(properties, 'vanus'),
     autoriSugu: getFirstPropertyValue(properties, 'sugu'),
     autoriOppeaste: getFirstPropertyValue(properties, 'oppeaste'),
@@ -177,7 +174,6 @@ const createDonatedTextPayload = (text, formData, additionalProperties) => {
     pushProperty(properties, 'haridus', formData.autoriHaridus);
   }
 
-  pushProperty(properties, 'kasAutor', formData.tekstiAutor);
   pushProperty(properties, 'vanus', formData.autoriVanus);
   pushProperty(properties, 'sugu', formData.autoriSugu);
   pushProperty(properties, 'emakeel', formData.autoriEmakeel?.toLowerCase());

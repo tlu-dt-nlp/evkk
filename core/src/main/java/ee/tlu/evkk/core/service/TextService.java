@@ -38,6 +38,24 @@ import static ee.evkk.dto.enums.CorpusDownloadForm.ANNOTATE_TEI;
 import static ee.evkk.dto.enums.CorpusDownloadForm.BASIC_TEXT;
 import static ee.tlu.evkk.common.util.TextUtils.getSortedPartitionedUUIDs;
 import static ee.tlu.evkk.common.util.TextUtils.sanitizeText;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_ACADEMIC_MATERIALS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_ACADEMIC_SUBTYPE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_AGE_RANGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_AGE_RAW;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_CORPUS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_COUNTRY;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_DEGREE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_DOMAIN;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_EDUCATION;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_GENDER;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_NATIVE_LANGUAGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_NON_ACADEMIC_SUBTYPE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_OTHER_LANGUAGES;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_STUDY_LEVEL;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_TEXT_LANGUAGE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_TYPE;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_USED_MATERIALS;
+import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.PROP_YEAR_RANGE;
 import static java.io.File.createTempFile;
 import static java.lang.Boolean.TRUE;
 import static java.lang.String.format;
@@ -81,40 +99,40 @@ public class TextService {
     List<TextQueryRangeParamBaseHelper> rangeParamBaseHelpers = new ArrayList<>();
     List<TextQueryMultiParamHelper> multiParamHelpers = new ArrayList<>();
 
-    TextQueryDisjunctionParamHelper studyLevelAndDegreeHelper = new TextQueryDisjunctionParamHelper("p13", "teaduskraad", "oppeaste");
+    TextQueryDisjunctionParamHelper studyLevelAndDegreeHelper = new TextQueryDisjunctionParamHelper("p13", PROP_DEGREE, PROP_STUDY_LEVEL);
     TextQuerySingleParamHelper otherLangHelper = new TextQuerySingleParamHelper();
     TextQueryMultiParamHelper usedMultiMaterialsHelper = new TextQueryMultiParamHelper();
 
-    multiParamHelpers.add(new TextQueryMultiParamHelper("p3", "korpus", corpusRequestDto.getCorpuses()));
+    multiParamHelpers.add(new TextQueryMultiParamHelper("p3", PROP_CORPUS, corpusRequestDto.getCorpuses()));
 
     if (corpusRequestDto.getTypes() != null && !corpusRequestDto.getTypes().isEmpty()) {
-      multiParamHelpers.add(new TextQueryMultiParamHelper("p4", "tekstityyp", corpusRequestDto.getTypes()));
+      multiParamHelpers.add(new TextQueryMultiParamHelper("p4", PROP_TYPE, corpusRequestDto.getTypes()));
     }
     if (isNotBlank(corpusRequestDto.getLanguage())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p5", "tekstikeel", corpusRequestDto.getLanguage()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p5", PROP_TEXT_LANGUAGE, corpusRequestDto.getLanguage()));
     }
     if (isNotBlank(corpusRequestDto.getLevel())) {
       singleParamHelpers.add(new TextQuerySingleParamHelper("p6", "keeletase", corpusRequestDto.getLevel()));
     }
     if (isNotBlank(corpusRequestDto.getDomain())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p7", "valdkond", corpusRequestDto.getDomain()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p7", PROP_DOMAIN, corpusRequestDto.getDomain()));
     }
     if (isNotBlank(corpusRequestDto.getUsedMaterials())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p8", "abivahendid", corpusRequestDto.getUsedMaterials()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p8", PROP_USED_MATERIALS, corpusRequestDto.getUsedMaterials()));
     }
     if (corpusRequestDto.getUsedMultiMaterials() != null && !corpusRequestDto.getUsedMultiMaterials().isEmpty()) {
       usedMultiMaterialsHelper.setTable("p9");
-      usedMultiMaterialsHelper.setParameter("akad_oppematerjal");
+      usedMultiMaterialsHelper.setParameter(PROP_ACADEMIC_MATERIALS);
       usedMultiMaterialsHelper.setValues(corpusRequestDto.getUsedMultiMaterials());
     }
     if (isNotBlank(corpusRequestDto.getAge())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p10", "vanusevahemik", corpusRequestDto.getAge()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p10", PROP_AGE_RANGE, corpusRequestDto.getAge()));
     }
     if (isNotBlank(corpusRequestDto.getGender())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p11", "sugu", corpusRequestDto.getGender()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p11", PROP_GENDER, corpusRequestDto.getGender()));
     }
     if (isNotBlank(corpusRequestDto.getEducation())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p12", "haridus", corpusRequestDto.getEducation()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p12", PROP_EDUCATION, corpusRequestDto.getEducation()));
     }
     if (isNotBlank(corpusRequestDto.getDegree()) && isBlank(corpusRequestDto.getStudyLevel())) {
       studyLevelAndDegreeHelper.setFirstValue(corpusRequestDto.getDegree());
@@ -135,24 +153,24 @@ public class TextService {
       studyLevelAndDegreeHelper.setSecondValue(corpusRequestDto.getStudyLevel());
     }
     if (isNotBlank(corpusRequestDto.getNativeLang())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p14", "emakeel", corpusRequestDto.getNativeLang()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p14", PROP_NATIVE_LANGUAGE, corpusRequestDto.getNativeLang()));
     }
     if (isNotBlank(corpusRequestDto.getOtherLang())) {
       otherLangHelper.setTable("p15");
-      otherLangHelper.setParameter("muudkeeled");
+      otherLangHelper.setParameter(PROP_OTHER_LANGUAGES);
       otherLangHelper.setValue(corpusRequestDto.getOtherLang());
     }
     if (isNotBlank(corpusRequestDto.getNationality())) {
       singleParamHelpers.add(new TextQuerySingleParamHelper("p16", "kodakondsus", corpusRequestDto.getNationality()));
     }
     if (isNotBlank(corpusRequestDto.getCountry())) {
-      singleParamHelpers.add(new TextQuerySingleParamHelper("p17", "riik", corpusRequestDto.getCountry()));
+      singleParamHelpers.add(new TextQuerySingleParamHelper("p17", PROP_COUNTRY, corpusRequestDto.getCountry()));
     }
     if (corpusRequestDto.getScores() != null) {
       multiParamHelpers.add(new TextQueryMultiParamHelper("p18", "tulemusvahemik", corpusRequestDto.getScores()));
     }
     if (corpusRequestDto.getAddedYears() != null) {
-      multiParamHelpers.add(new TextQueryMultiParamHelper("p19", "ajavahemik", corpusRequestDto.getAddedYears()));
+      multiParamHelpers.add(new TextQueryMultiParamHelper("p19", PROP_YEAR_RANGE, corpusRequestDto.getAddedYears()));
     }
     if (corpusRequestDto.getCharacters() != null) {
       rangeParamBaseHelpers.add(createRangeBaseHelper("p20", "charCount", corpusRequestDto.getCharacters()));
@@ -173,32 +191,31 @@ public class TextService {
     List<TextQueryMultiParamHelper> multiParamHelpers = new ArrayList<>();
     TextQuerySingleParamHelper otherLangHelper = new TextQuerySingleParamHelper();
 
-    addSingleParam(singleParamHelpers, "p3", "tekstityyp", request.getLiik());
+    addSingleParam(singleParamHelpers, "p3", PROP_TYPE, request.getLiik());
     if (request.getOppematerjal() != null) {
-      addSingleParam(singleParamHelpers, "p4", "abivahendid", booleanToJahEi(request.getOppematerjal()));
+      addSingleParam(singleParamHelpers, "p4", PROP_USED_MATERIALS, booleanToJahEi(request.getOppematerjal()));
     }
-    addMultiParam(multiParamHelpers, "p5", "akad_oppematerjal", request.getAkadOppematerjal());
+    addMultiParam(multiParamHelpers, "p5", PROP_ACADEMIC_MATERIALS, request.getAkadOppematerjal());
     addSingleParam(singleParamHelpers, "p6", "akad_oppematerjal_muu", request.getAkadOppematerjalMuu());
-    addSingleParam(singleParamHelpers, "p7", "mitteakad_alamliik", request.getMitteakadAlamliik());
-    addSingleParam(singleParamHelpers, "p8", "akad_alamliik", request.getAkadAlamliik());
+    addSingleParam(singleParamHelpers, "p7", PROP_NON_ACADEMIC_SUBTYPE, request.getMitteakadAlamliik());
+    addSingleParam(singleParamHelpers, "p8", PROP_ACADEMIC_SUBTYPE, request.getAkadAlamliik());
     addSingleParam(singleParamHelpers, "p9", "artikkel_valjaanne", request.getArtikkelValjaanne());
     addSingleParam(singleParamHelpers, "p10", "artikkel_aasta", request.getArtikkelAasta());
     addSingleParam(singleParamHelpers, "p11", "artikkel_number", request.getArtikkelNumber());
     addSingleParam(singleParamHelpers, "p12", "artikkel_lehekyljed", request.getArtikkelLehekyljed());
-    addSingleParam(singleParamHelpers, "p13", "kasAutor", request.getTekstiAutor());
-    addSingleParam(singleParamHelpers, "p14", "vanus", request.getAutoriVanus());
-    addSingleParam(singleParamHelpers, "p15", "sugu", request.getAutoriSugu());
-    addSingleParam(singleParamHelpers, "p16", "oppeaste", request.getAutoriOppeaste());
-    addSingleParam(singleParamHelpers, "p17", "teaduskraad", request.getAutoriTeaduskraad());
-    addSingleParam(singleParamHelpers, "p18", "haridus", request.getAutoriHaridus());
-    addSingleParam(singleParamHelpers, "p19", "valdkond", request.getAutoriValdkond());
-    addSingleParam(singleParamHelpers, "p20", "emakeel", request.getAutoriEmakeel());
+    addSingleParam(singleParamHelpers, "p14", PROP_AGE_RAW, request.getAutoriVanus());
+    addSingleParam(singleParamHelpers, "p15", PROP_GENDER, request.getAutoriSugu());
+    addSingleParam(singleParamHelpers, "p16", PROP_STUDY_LEVEL, request.getAutoriOppeaste());
+    addSingleParam(singleParamHelpers, "p17", PROP_DEGREE, request.getAutoriTeaduskraad());
+    addSingleParam(singleParamHelpers, "p18", PROP_EDUCATION, request.getAutoriHaridus());
+    addSingleParam(singleParamHelpers, "p19", PROP_DOMAIN, request.getAutoriValdkond());
+    addSingleParam(singleParamHelpers, "p20", PROP_NATIVE_LANGUAGE, request.getAutoriEmakeel());
     if (isNotBlank(request.getAutoriMuudKeeled())) {
       otherLangHelper.setTable("p21");
-      otherLangHelper.setParameter("muudkeeled");
+      otherLangHelper.setParameter(PROP_OTHER_LANGUAGES);
       otherLangHelper.setValue(request.getAutoriMuudKeeled());
     }
-    addSingleParam(singleParamHelpers, "p22", "riik", request.getAutoriElukohariik());
+    addSingleParam(singleParamHelpers, "p22", PROP_COUNTRY, request.getAutoriElukohariik());
 
     String daoResponse = textAddedDao.detailedTextQueryByParameters(
       singleParamHelpers,
@@ -249,7 +266,7 @@ public class TextService {
     ZipEntry zipEntry = new ZipEntry(
       isNotBlank(title)
         ? format("%s (%s).%s", title.trim(), uuid, fileExtension)
-        : format("%s.%s", uuid, fileExtension)
+        : uuid + "." + fileExtension
     );
     zipOutputStream.putNextEntry(zipEntry);
 
@@ -313,37 +330,36 @@ public class TextService {
     textDao.insertAdding(kood, andmed.getSisu());
     lisaTekstiOmadus(kood, "title", andmed.getPealkiri());
     lisaTekstiOmadus(kood, "kirjeldus", andmed.getKirjeldus());
-    lisaTekstiOmadus(kood, "tekstityyp", andmed.getLiik());
+    lisaTekstiOmadus(kood, PROP_TYPE, andmed.getLiik());
     if (TRUE.equals(andmed.getOppematerjal())) {
       String[] m = andmed.getAkadOppematerjal();
       if (m != null) {
         for (String s : m) {
-          lisaTekstiOmadus(kood, "akad_oppematerjal", s);
+          lisaTekstiOmadus(kood, PROP_ACADEMIC_MATERIALS, s);
         }
       }
       lisaTekstiOmadus(kood, "akad_oppematerjal_muu", andmed.getAkadOppematerjalMuu());
     }
     if (andmed.getLiik().equals("akadeemiline")) {
-      lisaTekstiOmadus(kood, "valdkond", andmed.getAutoriValdkond());
-      lisaTekstiOmadus(kood, "akad_alamliik", andmed.getAkadAlamliik());
+      lisaTekstiOmadus(kood, PROP_DOMAIN, andmed.getAutoriValdkond());
+      lisaTekstiOmadus(kood, PROP_ACADEMIC_SUBTYPE, andmed.getAkadAlamliik());
       lisaTekstiOmadus(kood, "artikkel_aasta", andmed.getArtikkelAasta());
       lisaTekstiOmadus(kood, "artikkel_valjaanne", andmed.getArtikkelValjaanne());
       lisaTekstiOmadus(kood, "artikkel_number", andmed.getArtikkelNumber());
       lisaTekstiOmadus(kood, "artikkel_lehekyljed", andmed.getArtikkelLehekyljed());
-      lisaTekstiOmadus(kood, "oppeaste", andmed.getAutoriOppeaste());
-      lisaTekstiOmadus(kood, "teaduskraad", andmed.getAutoriTeaduskraad());
+      lisaTekstiOmadus(kood, PROP_STUDY_LEVEL, andmed.getAutoriOppeaste());
+      lisaTekstiOmadus(kood, PROP_DEGREE, andmed.getAutoriTeaduskraad());
     }
     if (andmed.getLiik().equals("mitteakadeemiline")) {
-      lisaTekstiOmadus(kood, "mitteakad_alamliik", andmed.getMitteakadAlamliik());
+      lisaTekstiOmadus(kood, PROP_NON_ACADEMIC_SUBTYPE, andmed.getMitteakadAlamliik());
     }
-    lisaTekstiOmadus(kood, "abivahendid", booleanToJahEi(andmed.getOppematerjal()));
-    lisaTekstiOmadus(kood, "kasAutor", andmed.getTekstiAutor());
-    lisaTekstiOmadus(kood, "vanus", andmed.getAutoriVanus());
-    lisaTekstiOmadus(kood, "sugu", andmed.getAutoriSugu());
-    lisaTekstiOmadus(kood, "haridus", andmed.getAutoriHaridus());
-    lisaTekstiOmadus(kood, "emakeel", andmed.getAutoriEmakeel().toLowerCase());
-    lisaTekstiOmadus(kood, "muudkeeled", andmed.getAutoriMuudKeeled());
-    lisaTekstiOmadus(kood, "riik", andmed.getAutoriElukohariik());
+    lisaTekstiOmadus(kood, PROP_USED_MATERIALS, booleanToJahEi(andmed.getOppematerjal()));
+    lisaTekstiOmadus(kood, PROP_AGE_RAW, andmed.getAutoriVanus());
+    lisaTekstiOmadus(kood, PROP_GENDER, andmed.getAutoriSugu());
+    lisaTekstiOmadus(kood, PROP_EDUCATION, andmed.getAutoriHaridus());
+    lisaTekstiOmadus(kood, PROP_NATIVE_LANGUAGE, andmed.getAutoriEmakeel().toLowerCase());
+    lisaTekstiOmadus(kood, PROP_OTHER_LANGUAGES, andmed.getAutoriMuudKeeled());
+    lisaTekstiOmadus(kood, PROP_COUNTRY, andmed.getAutoriElukohariik());
     return kood.toString();
   }
 
