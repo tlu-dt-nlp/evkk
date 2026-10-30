@@ -1,7 +1,8 @@
 import { Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import ModalBase from '../modal/ModalBase';
+import Translate from '../Translate';
 
 function NovelTable({ rows, t }) {
   return (
@@ -42,7 +43,7 @@ export default function NovelValuesModal({ isOpen, novelValues, onCancel, onConf
         {novelNames.length > 0 && (
           <Box>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <Trans i18nKey="admin_novel_names_modal_message" components={{ bold: <b /> }} />
+              <Translate i18nKey="admin_novel_names_modal_message" />
             </Typography>
             <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
               <NovelTable rows={novelNames} t={t} />
@@ -53,7 +54,7 @@ export default function NovelValuesModal({ isOpen, novelValues, onCancel, onConf
         {novelValueRows.length > 0 && (
           <Box>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <Trans i18nKey="admin_novel_values_modal_message" components={{ bold: <b /> }} />
+              <Translate i18nKey="admin_novel_values_modal_message" />
             </Typography>
             <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
               <NovelTable rows={novelValueRows} t={t} />

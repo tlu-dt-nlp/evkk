@@ -161,7 +161,17 @@ public class AdminTextService {
     return textPropertyDao.findDistinctValuesByName(propertyName);
   }
 
-  public List<NovelPropertyValueDto> checkNovelValues(List<TextMetadataDto> properties) {
+  public List<NovelPropertyValueDto> checkDonatedTextNovelValues(List<TextMetadataDto> properties) {
+    // check the properties as they will be published, e.g., tekstityyp is replaced with the subtype
+    return checkNovelValues(DonatedTextPropertyMapper.mapDtos(properties, null));
+  }
+
+  public List<NovelPropertyValueDto> checkPublishedTextNovelValues(List<TextMetadataDto> properties) {
+    // published text properties are saved as-is
+    return checkNovelValues(properties);
+  }
+
+  private List<NovelPropertyValueDto> checkNovelValues(List<TextMetadataDto> properties) {
     Set<String> namesToCheck = textPropertyCheckConfigDao.findAll().stream()
       .filter(TextPropertyCheckConfig::isActive)
       .map(TextPropertyCheckConfig::getPropertyName)
@@ -173,7 +183,7 @@ public class AdminTextService {
     Set<String> seenNovelNames = new HashSet<>();
     List<TextProperty> valueCandidates = new ArrayList<>();
 
-    for (TextMetadataDto textMetadataDto : DonatedTextPropertyMapper.mapDtos(properties, null)) {
+    for (TextMetadataDto textMetadataDto : properties) {
       processProperty(textMetadataDto, allKnownNames, namesToCheck, seenNovelNames, result, valueCandidates);
     }
 

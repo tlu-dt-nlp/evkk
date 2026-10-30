@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { successEmitter } from '../../../App';
 import { useGetPropertyCheckConfig, useUpdatePropertyCheckConfig } from '../../hooks/service/AdminTextService';
+import Translate from '../Translate';
 import { SuccessSnackbarEventType } from '../snackbar/SuccessSnackbar';
 
 export default function PropertyCheckConfig() {
@@ -49,7 +50,7 @@ export default function PropertyCheckConfig() {
       </h2>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        {t('admin_property_check_config_description')}
+        <Translate i18nKey="admin_property_check_config_description" />
       </Typography>
 
       <TableContainer component={Paper} variant="outlined">

@@ -5,6 +5,7 @@ import { successEmitter } from '../../../App';
 import { isAcademicCorpus, isL1EstonianCorpus, isL2ExamsCorpus } from '../../const/Constants';
 import { DangerButtonStyle, DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import {
+  useCheckNovelValues,
   useDeletePublishedText,
   useGetPublishedTextDetails,
   useUpdatePublishedText
@@ -18,10 +19,12 @@ import {
   pushProperty,
   toAdditionalProperties
 } from '../../util/AdminUtils';
+import Translate from '../Translate';
 import ConfirmationModal from '../modal/ConfirmationModal';
 import ModalBase from '../modal/ModalBase';
 import { SuccessSnackbarEventType } from '../snackbar/SuccessSnackbar';
 import AdditionalTextProperties from './AdditionalTextProperties';
+import NovelValuesModal from './NovelValuesModal';
 import PublishedTextEditForm from './PublishedTextEditForm';
 import PublishedTextReadOnlyForm from './PublishedTextReadOnlyForm';
 import ReadOnlyField from './ReadOnlyField';
@@ -164,6 +167,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
   const { getPublishedTextDetails } = useGetPublishedTextDetails();
   const { updatePublishedText } = useUpdatePublishedText();
   const { deletePublishedText } = useDeletePublishedText();
+  const { checkPublishedTextNovelValues } = useCheckNovelValues();
 
   const [details, setDetails] = useState(null);
   const [text, setText] = useState('');
@@ -171,6 +175,9 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
   const [additionalProperties, setAdditionalProperties] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isNovelValuesModalOpen, setIsNovelValuesModalOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [novelValues, setNovelValues] = useState([]);
 
   const title = getTextTitle(details);
 
@@ -204,6 +211,9 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
     setDetails(null);
     setIsEditMode(false);
     setIsDeleteModalOpen(false);
+    setIsNovelValuesModalOpen(false);
+    setNovelValues([]);
+    setIsSaveModalOpen(false);
 
     getPublishedTextDetails(textId).then(response => {
       if (!response) {
@@ -215,8 +225,8 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
 
   const buildPayload = () => createPublishedTextPayload(text, formData, additionalProperties);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSave = () => {
+    setIsSaveModalOpen(false);
     const payload = buildPayload();
     if (!payload) {
       return;
@@ -231,6 +241,27 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
       setIsEditMode(false);
       refetch();
       successEmitter.emit(SuccessSnackbarEventType.GENERIC_SUCCESS);
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const payload = buildPayload();
+    if (!payload) {
+      return;
+    }
+
+    checkPublishedTextNovelValues(payload.properties).then((novel) => {
+      if (!novel) {
+        return;
+      }
+
+      if (novel.length > 0) {
+        setNovelValues(novel);
+        setIsNovelValuesModalOpen(true);
+      } else {
+        setIsSaveModalOpen(true);
+      }
     });
   };
 
@@ -383,6 +414,25 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
         onConfirm={handleDelete}
         setIsOpen={setIsDeleteModalOpen}
         title="admin_text_delete_modal_title"
+      />
+
+      <NovelValuesModal
+        isOpen={isNovelValuesModalOpen}
+        novelValues={novelValues}
+        onCancel={() => setIsNovelValuesModalOpen(false)}
+        onConfirm={() => {
+          setIsNovelValuesModalOpen(false);
+          setIsSaveModalOpen(true);
+        }}
+      />
+
+      <ConfirmationModal
+        isOpen={isSaveModalOpen}
+        message={<Translate i18nKey="admin_text_save_published_modal_message" />}
+        onCancel={() => setIsSaveModalOpen(false)}
+        onConfirm={handleSave}
+        setIsOpen={setIsSaveModalOpen}
+        title="admin_text_save_modal_title"
       />
     </>
   );

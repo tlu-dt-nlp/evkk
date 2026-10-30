@@ -143,14 +143,21 @@ export const useGetPropertyValues = () => {
 export const useCheckNovelValues = () => {
   const { fetchData } = useFetch();
 
-  const checkNovelValues = useCallback((properties) => {
-    return fetchData('/api/admin/texts/check-novel-values', {
+  const checkDonatedTextNovelValues = useCallback((properties) => {
+    return fetchData('/api/admin/texts/donated/check-novel-values', {
       method: 'POST',
       body: JSON.stringify(properties)
     });
   }, [fetchData]);
 
-  return { checkNovelValues };
+  const checkPublishedTextNovelValues = useCallback((properties) => {
+    return fetchData('/api/admin/texts/published/check-novel-values', {
+      method: 'POST',
+      body: JSON.stringify(properties)
+    });
+  }, [fetchData]);
+
+  return { checkDonatedTextNovelValues, checkPublishedTextNovelValues };
 };
 
 export const useGetPropertyCheckConfig = () => {

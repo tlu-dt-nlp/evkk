@@ -108,9 +108,14 @@ public class AdminTextController {
     return adminTextService.getPropertyValues(propertyName);
   }
 
-  @PostMapping("check-novel-values")
-  public List<NovelPropertyValueDto> checkNovelValues(@RequestBody List<TextMetadataDto> properties) {
-    return adminTextService.checkNovelValues(properties);
+  @PostMapping("donated/check-novel-values")
+  public List<NovelPropertyValueDto> checkDonatedTextNovelValues(@RequestBody List<TextMetadataDto> properties) {
+    return adminTextService.checkDonatedTextNovelValues(properties);
+  }
+
+  @PostMapping("published/check-novel-values")
+  public List<NovelPropertyValueDto> checkPublishedTextNovelValues(@RequestBody List<TextMetadataDto> properties) {
+    return adminTextService.checkPublishedTextNovelValues(properties);
   }
 
   @GetMapping("property-check-config")

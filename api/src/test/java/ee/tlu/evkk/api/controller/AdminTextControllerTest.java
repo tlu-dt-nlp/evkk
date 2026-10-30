@@ -436,32 +436,64 @@ class AdminTextControllerTest extends IntegrationTest {
   }
 
   @Test
-  @DisplayName("Unauthenticated user cannot check novel values")
-  void unauthenticatedUserCannotCheckNovelValues() throws Exception {
+  @DisplayName("Unauthenticated user cannot check donated text novel values")
+  void unauthenticatedUserCannotCheckDonatedTextNovelValues() throws Exception {
     mockMvc.perform(
-        post("/admin/texts/check-novel-values")
+        post("/admin/texts/donated/check-novel-values")
           .contentType(APPLICATION_JSON)
           .content("[]"))
       .andExpect(status().isUnauthorized());
   }
 
   @Test
-  @DisplayName("Authenticated non-admin user cannot check novel values")
+  @DisplayName("Authenticated non-admin user cannot check donated text novel values")
   @WithMockUser(username = "user")
-  void authenticatedUserCannotCheckNovelValues() throws Exception {
+  void authenticatedUserCannotCheckDonatedTextNovelValues() throws Exception {
     mockMvc.perform(
-        post("/admin/texts/check-novel-values")
+        post("/admin/texts/donated/check-novel-values")
           .contentType(APPLICATION_JSON)
           .content("[]"))
       .andExpect(status().isForbidden());
   }
 
   @Test
-  @DisplayName("Authenticated admin user can check novel values")
+  @DisplayName("Authenticated admin user can check donated text novel values")
   @WithMockUser(username = "admin", roles = { "ADMIN" })
-  void authenticatedAdminCanCheckNovelValues() throws Exception {
+  void authenticatedAdminCanCheckDonatedTextNovelValues() throws Exception {
     mockMvc.perform(
-        post("/admin/texts/check-novel-values")
+        post("/admin/texts/donated/check-novel-values")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("Unauthenticated user cannot check published text novel values")
+  void unauthenticatedUserCannotCheckPublishedTextNovelValues() throws Exception {
+    mockMvc.perform(
+        post("/admin/texts/published/check-novel-values")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Authenticated non-admin user cannot check published text novel values")
+  @WithMockUser(username = "user")
+  void authenticatedUserCannotCheckPublishedTextNovelValues() throws Exception {
+    mockMvc.perform(
+        post("/admin/texts/published/check-novel-values")
+          .contentType(APPLICATION_JSON)
+          .content("[]"))
+      .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @DisplayName("Authenticated admin user can check published text novel values")
+  @WithMockUser(username = "admin", roles = { "ADMIN" })
+  void authenticatedAdminCanCheckPublishedTextNovelValues() throws Exception {
+    mockMvc.perform(
+        post("/admin/texts/published/check-novel-values")
           .contentType(APPLICATION_JSON)
           .content("[]"))
       .andExpect(status().isOk());

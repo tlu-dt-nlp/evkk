@@ -39,6 +39,7 @@ import static ee.tlu.evkk.core.service.constants.TextPropertyConstants.LANGUAGE_
 import static java.util.UUID.randomUUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
@@ -953,22 +954,22 @@ class AdminTextServiceTest {
 
 
   @Test
-  @DisplayName("Check novel values returns empty list when no properties provided")
-  void checkNovelValues_whenNoProperties_shouldReturnEmpty() {
+  @DisplayName("Check donated text novel values returns empty list when no properties provided")
+  void checkDonatedTextNovelValues_whenNoProperties_shouldReturnEmpty() {
     // Given
     when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
     when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of());
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(List.of());
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(List.of());
 
     // Then
     assertThat(result).isEmpty();
   }
 
   @Test
-  @DisplayName("Check novel values flags entry when property name is completely new")
-  void checkNovelValues_whenPropertyNameIsNew_shouldFlagAsNovelName() {
+  @DisplayName("Check donated text novel values flags entry when property name is completely new")
+  void checkDonatedTextNovelValues_whenPropertyNameIsNew_shouldFlagAsNovelName() {
     // Given
     when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
     when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("emakeel"));
@@ -978,7 +979,7 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).hasSize(1);
@@ -988,8 +989,8 @@ class AdminTextServiceTest {
   }
 
   @Test
-  @DisplayName("Check novel values does not flag same novel name twice")
-  void checkNovelValues_whenPropertyNameIsNewAndRepeated_shouldFlagOnlyOnce() {
+  @DisplayName("Check donated text novel values does not flag same novel name twice")
+  void checkDonatedTextNovelValues_whenPropertyNameIsNewAndRepeated_shouldFlagOnlyOnce() {
     // Given
     when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
     when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of());
@@ -1000,7 +1001,7 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).hasSize(1);
@@ -1008,8 +1009,8 @@ class AdminTextServiceTest {
   }
 
   @Test
-  @DisplayName("Check novel values flags entry when value is new for a known active property name")
-  void checkNovelValues_whenValueIsNewForActivePropertyName_shouldFlagAsNovelValue() {
+  @DisplayName("Check donated text novel values flags entry when value is new for a known active property name")
+  void checkDonatedTextNovelValues_whenValueIsNewForActivePropertyName_shouldFlagAsNovelValue() {
     // Given
     TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
       .propertyName("sugu")
@@ -1025,7 +1026,7 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).hasSize(1);
@@ -1035,8 +1036,8 @@ class AdminTextServiceTest {
   }
 
   @Test
-  @DisplayName("Check novel values does not flag entry when value already exists")
-  void checkNovelValues_whenValueAlreadyExists_shouldNotFlag() {
+  @DisplayName("Check donated text novel values does not flag entry when value already exists")
+  void checkDonatedTextNovelValues_whenValueAlreadyExists_shouldNotFlag() {
     // Given
     TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
       .propertyName("sugu")
@@ -1057,15 +1058,15 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).isEmpty();
   }
 
   @Test
-  @DisplayName("Check novel values checks tekstityyp as published, i.e. with the subtype as its value")
-  void checkNovelValues_shouldCheckTekstityypAsSubtype() {
+  @DisplayName("Check donated text novel values checks tekstityyp as published, i.e. with the subtype as its value")
+  void checkDonatedTextNovelValues_shouldCheckTekstityypAsSubtype() {
     // Given
     TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
       .propertyName("tekstityyp")
@@ -1087,15 +1088,15 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).isEmpty();
   }
 
   @Test
-  @DisplayName("Check novel values still flags additional properties not handled by the publish mapper")
-  void checkNovelValues_shouldKeepPropertiesNotHandledByMapper() {
+  @DisplayName("Check donated text novel values still flags additional properties not handled by the publish mapper")
+  void checkDonatedTextNovelValues_shouldKeepPropertiesNotHandledByMapper() {
     // Given
     when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of());
     when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("sugu"));
@@ -1106,15 +1107,15 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).extracting(NovelPropertyValueDto::getPropertyName).containsExactly("brandNew");
   }
 
   @Test
-  @DisplayName("Check novel values does not flag entry when property name is known but inactive in config")
-  void checkNovelValues_whenPropertyNameIsInactive_shouldNotFlagValue() {
+  @DisplayName("Check donated text novel values does not flag entry when property name is known but inactive in config")
+  void checkDonatedTextNovelValues_whenPropertyNameIsInactive_shouldNotFlagValue() {
     // Given
     TextPropertyCheckConfig inactiveConfig = TextPropertyCheckConfig.builder()
       .propertyName("kirjeldus")
@@ -1129,7 +1130,7 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).isEmpty();
@@ -1137,8 +1138,8 @@ class AdminTextServiceTest {
   }
 
   @Test
-  @DisplayName("Check novel values skips blank property values")
-  void checkNovelValues_whenPropertyValueIsBlank_shouldSkip() {
+  @DisplayName("Check donated text novel values skips blank property values")
+  void checkDonatedTextNovelValues_whenPropertyValueIsBlank_shouldSkip() {
     // Given
     TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
       .propertyName("sugu")
@@ -1154,15 +1155,15 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).isEmpty();
   }
 
   @Test
-  @DisplayName("Check novel values returns both novel names and novel values when both present")
-  void checkNovelValues_whenBothNovelNamesAndValues_shouldReturnBoth() {
+  @DisplayName("Check donated text novel values returns both novel names and novel values when both present")
+  void checkDonatedTextNovelValues_whenBothNovelNamesAndValues_shouldReturnBoth() {
     // Given
     TextPropertyCheckConfig activeConfig = TextPropertyCheckConfig.builder()
       .propertyName("sugu")
@@ -1179,7 +1180,7 @@ class AdminTextServiceTest {
     );
 
     // When
-    List<NovelPropertyValueDto> result = adminTextService.checkNovelValues(input);
+    List<NovelPropertyValueDto> result = adminTextService.checkDonatedTextNovelValues(input);
 
     // Then
     assertThat(result).hasSize(2)
@@ -1187,6 +1188,34 @@ class AdminTextServiceTest {
       .anyMatch(r -> !r.isNovelName() && "sugu".equals(r.getPropertyName()));
   }
 
+
+  @Test
+  @DisplayName("Check published text novel values checks the properties as-is, without mapping them")
+  void checkPublishedTextNovelValues_shouldCheckPropertiesAsIs() {
+    // Given
+    when(textPropertyCheckConfigDao.findAll()).thenReturn(List.of(
+      TextPropertyCheckConfig.builder().propertyName("tekstityyp").isActive(true).build(),
+      TextPropertyCheckConfig.builder().propertyName("vanusevahemik").isActive(true).build()
+    ));
+    when(textPropertyDao.findDistinctPropertyNames()).thenReturn(List.of("tekstityyp", "vanusevahemik"));
+    when(textPropertyDao.findExistingValues(any())).thenReturn(List.of());
+
+    List<TextMetadataDto> input = List.of(
+      TextMetadataDto.builder().propertyName("tekstityyp").propertyValue("k1eesti_uus").build(),
+      TextMetadataDto.builder().propertyName("vanusevahemik").propertyValue("uus").build()
+    );
+
+    // When
+    List<NovelPropertyValueDto> result = adminTextService.checkPublishedTextNovelValues(input);
+
+    // Then
+    assertThat(result)
+      .extracting(NovelPropertyValueDto::getPropertyName, NovelPropertyValueDto::getPropertyValue)
+      .containsExactlyInAnyOrder(
+        tuple("tekstityyp", "k1eesti_uus"),
+        tuple("vanusevahemik", "uus")
+      );
+  }
 
   @Test
   @DisplayName("Get property check config merges config table with all known property names")

@@ -27,6 +27,7 @@ import {
   pushProperty,
   toAdditionalProperties
 } from '../../util/AdminUtils';
+import Translate from '../Translate';
 import ConfirmationModal from '../modal/ConfirmationModal';
 import ModalBase from '../modal/ModalBase';
 import { SuccessSnackbarEventType } from '../snackbar/SuccessSnackbar';
@@ -200,7 +201,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   const { publishDonatedText } = usePublishDonatedText();
   const { updateDonatedText } = useUpdateDonatedText();
   const { deleteDonatedText } = useDeleteDonatedText();
-  const { checkNovelValues } = useCheckNovelValues();
+  const { checkDonatedTextNovelValues } = useCheckNovelValues();
 
   const [details, setDetails] = useState(null);
   const [text, setText] = useState('');
@@ -208,6 +209,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
   const [additionalProperties, setAdditionalProperties] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isNovelValuesModalOpen, setIsNovelValuesModalOpen] = useState(false);
   const [novelValues, setNovelValues] = useState([]);
@@ -230,6 +232,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
     setDetails(null);
     setIsEditMode(false);
     setIsPublishModalOpen(false);
+    setIsSaveModalOpen(false);
     setIsDeleteModalOpen(false);
     setIsNovelValuesModalOpen(false);
     setNovelValues([]);
@@ -246,6 +249,13 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (buildPayload()) {
+      setIsSaveModalOpen(true);
+    }
+  };
+
+  const handleSave = () => {
+    setIsSaveModalOpen(false);
     const payload = buildPayload();
     if (!payload) {
       return;
@@ -310,7 +320,7 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
       return;
     }
 
-    checkNovelValues(payload.properties).then((novel) => {
+    checkDonatedTextNovelValues(payload.properties).then((novel) => {
       if (!novel) {
         return;
       }
@@ -403,6 +413,15 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
           )}
         </form>
       </ModalBase>
+
+      <ConfirmationModal
+        isOpen={isSaveModalOpen}
+        message={<Translate i18nKey="admin_text_save_donated_modal_message" />}
+        onCancel={() => setIsSaveModalOpen(false)}
+        onConfirm={handleSave}
+        setIsOpen={setIsSaveModalOpen}
+        title="admin_text_save_modal_title"
+      />
 
       <ConfirmationModal
         isOpen={isPublishModalOpen}
