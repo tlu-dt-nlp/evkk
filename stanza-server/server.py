@@ -68,6 +68,10 @@ vormimargend_upos_piirang = ["ADP", "ADV", "CCONJ", "SCONJ", "INTJ", "X"]
 
 eesti_tahestik = r'[a-zA-ZõÕäÄöÖüÜŽžŠš0-9.-]+'
 
+arvu_algus = re.compile(r'\d{1,3}')
+arvu_jatk = re.compile(r'\d{3}([.,]\d+)?')
+arvu_vahed = {' ', ' ', ' '}
+
 
 @app.route('/full-text-analysis', methods=post)
 def full_text_analysis():
@@ -110,6 +114,7 @@ def keerukus_sonaliigid_mitmekesisus():
     for sentence in doc.sentences:
         laused.append(sentence.text)
         sentence_array = []
+        eelmine = None
         for word in sentence.words:
             if word.upos != 'PUNCT' and word.upos != 'SYM':
                 total_words += 1
@@ -126,7 +131,7 @@ def keerukus_sonaliigid_mitmekesisus():
                     "end": word.end_char,
                     "initial_text": word.text
                 })
-            if word.upos not in sona_upos_piirang:
+            if word.upos not in sona_upos_piirang and not on_arvu_jatk(word, eelmine, text_with_no_line_breaks):
                 sentence_array.append({
                     "start": word.start_char,
                     "end": word.end_char,
@@ -141,6 +146,7 @@ def keerukus_sonaliigid_mitmekesisus():
                     eestikeelsed_sonad.append(word.text)
                 else:
                     eestikeelsed_sonad.append("–")
+            eelmine = word
         word_start_and_end.append(sentence_array)
 
     abstract_answer = utils.analyze(' '.join(lemmad), "estonian")
@@ -613,12 +619,14 @@ def hinda_keerukust(tekst):
     eestikeelsed_sonad = []
 
     for sentence in doc.sentences:
+        eelmine = None
         for word in sentence.words:
-            if word.upos not in sona_upos_piirang and word.xpos != "Z":
+            if word.upos not in sona_upos_piirang and word.xpos != "Z" and not on_arvu_jatk(word, eelmine, tekst):
                 if sona_on_eestikeelne(word.text):
                     eestikeelsed_sonad.append(word.text)
                     if len(word.text) >= 7:
                         pikad_sonad += 1
+            eelmine = word
     lausetearv = len(doc.sentences)
     sonadearv = len(eestikeelsed_sonad)
     if sonadearv == 0:
@@ -662,18 +670,30 @@ def sanitize_lemma(lemma):
     return lemma.replace("=", "")
 
 
+# Stanza jagab tühikuga eraldatud arvu (nt 100 000) mitmeks sõnaks ja märgendab jätkuosa X-iks,
+# seega loeme jätkuosa eelmise arvu osaks
+def on_arvu_jatk(word, eelmine, tekst):
+    return (eelmine is not None
+            and arvu_jatk.fullmatch(word.text) is not None
+            and arvu_algus.fullmatch(eelmine.text) is not None
+            and tekst[eelmine.end_char:word.start_char] in arvu_vahed)
+
+
 def hinda_mitmekesisust(tekst):
     import valemid_mitmekesisus
     doc = nlp_tpl(tekst)
 
     words_array = []
     for s_sentence in doc.sentences:
+        eelmine = None
         for w_word in s_sentence.words:
             if w_word.upos not in sona_upos_piirang_mitmekesisus \
+                and not on_arvu_jatk(w_word, eelmine, tekst) \
                 and not (
                 w_word.feats is not None and (
                 w_word.feats.find("NumForm=Digit") > 0 or w_word.feats.find("Abbr=Yes") >= 0)):
                 words_array.append(w_word)
+            eelmine = w_word
 
     # sõnade arv kokku
     words_count = len(words_array)

@@ -1,0 +1,9 @@
+export const LONG_SENTENCE = 'longsentence';
+export const LONG_WORD = 'longword';
+export const NOUNS = 'nouns';
+export const WORD_REPETITION = 'wordrepetition';
+export const UNCOMMON_WORDS = 'uncommonwords';
+export const ABSTRACT_WORDS = 'abstractwords';
+export const CONTENT_WORDS = 'contentwords';
+export const SPELLCHECKER = 'spellchecker';
+export const GRAMMARCHECKER = 'grammarchecker';
