@@ -64,6 +64,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class DonatedTextPropertyMapper {
 
   // properties that are transformed or derived, all others are published as-is
+  // NB! keep in sync with DONATED_TEXT_KNOWN_PROPERTIES and DONATED_TEXT_DERIVED_PROPERTIES in
+  // DonatedTextDetailsModal.jsx, so these can't be added as additional properties
   private static final Set<String> CONSUMED = Set.of(
     PROP_TYPE,
     PROP_ACADEMIC_SUBTYPE,

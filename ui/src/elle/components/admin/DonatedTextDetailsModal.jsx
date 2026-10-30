@@ -61,6 +61,13 @@ const DONATED_TEXT_KNOWN_PROPERTIES = new Set([
   'tekstikeel'
 ]);
 
+// derived from other properties when publishing, see DonatedTextPropertyMapper
+const DONATED_TEXT_DERIVED_PROPERTIES = new Set([
+  'vanusevahemik',
+  'aasta',
+  'ajavahemik'
+]);
+
 const EMPTY_DONATED_TEXT_FORM = {
   title: '',
   kirjeldus: '',
@@ -369,6 +376,8 @@ export default function DonatedTextDetailsModal({ isOpen, refetch, setIsOpen, te
           <AdditionalTextProperties
             isEditMode={isEditMode}
             properties={additionalProperties}
+            reservedNames={DONATED_TEXT_KNOWN_PROPERTIES}
+            derivedNames={DONATED_TEXT_DERIVED_PROPERTIES}
             setProperties={setAdditionalProperties}
           />
 

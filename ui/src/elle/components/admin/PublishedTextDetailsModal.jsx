@@ -191,7 +191,8 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
 
     setAdditionalProperties([
       ...toAdditionalProperties(response?.properties, PUBLISHED_TEXT_KNOWN_PROPERTIES),
-      ...orphanedKnownProperties.map(p => ({ ...p }))
+      // known properties whose form field isn't shown for this corpus, exempt from the reserved name check
+      ...orphanedKnownProperties.map(p => ({ ...p, allowedName: p.propertyName }))
     ]);
   }, []);
 
@@ -309,6 +310,7 @@ export default function PublishedTextDetailsModal({ isOpen, refetch, setIsOpen, 
           <AdditionalTextProperties
             isEditMode={isEditMode}
             properties={additionalProperties}
+            reservedNames={PUBLISHED_TEXT_KNOWN_PROPERTIES}
             setProperties={setAdditionalProperties}
           />
 

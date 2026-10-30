@@ -22,6 +22,8 @@ export const TRANSLATIONS_ET = {
   admin_text_delete_modal_message: 'Kas oled kindel, et soovid teksti kustutada?',
   admin_text_delete_modal_title: 'Kustuta tekst',
   admin_text_property_name: 'Omaduse nimi',
+  admin_text_property_name_derived: 'Selle omaduse väärtus tuletatakse avaldamisel automaatselt',
+  admin_text_property_name_reserved: 'Sellel omadusel on vormis oma väli',
   admin_text_property_value: 'Omaduse väärtus',
   admin_text_publish_modal_message: 'Kas oled kindel, et soovid teksti avaldada?',
   admin_text_publish_modal_title: 'Avalda tekst',

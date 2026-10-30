@@ -6,8 +6,27 @@ import { useTranslation } from 'react-i18next';
 import { SecondaryButtonStyle } from '../../const/StyleConstants';
 import ReadOnlyField from './ReadOnlyField';
 
-export default function AdditionalTextProperties({ isEditMode, properties, setProperties }) {
+export default function AdditionalTextProperties({
+                                                   isEditMode,
+                                                   properties,
+                                                   setProperties,
+                                                   reservedNames,
+                                                   derivedNames = new Set()
+                                                 }) {
   const { t } = useTranslation();
+
+  // Properties with a dedicated form field (except for the ones loaded as-is from the server)
+  // and properties derived automatically can't be added here
+  const getNameError = (property) => {
+    const name = property.propertyName.trim().toLowerCase();
+    if (reservedNames.has(name) && name !== property.allowedName) {
+      return t('admin_text_property_name_reserved');
+    }
+    if (derivedNames.has(name)) {
+      return t('admin_text_property_name_derived');
+    }
+    return '';
+  };
 
   if (!isEditMode && !properties.length) {
     return null;
@@ -41,16 +60,20 @@ export default function AdditionalTextProperties({ isEditMode, properties, setPr
         <>
           {properties.map((property, index) => (
             <Grid container
-                  alignItems="center"
+                  alignItems="flex-start"
                   key={index}
                   spacing={2}
             >
               <Grid item sx={{ flex: 1 }}>
                 <TextField
+                  error={!!getNameError(property)}
+                  helperText={getNameError(property)}
+                  inputRef={input => input?.setCustomValidity(getNameError(property))}
                   label={t('admin_text_property_name')}
                   name={`additional-property-name-${index}`}
                   onChange={event => updateProperty(index, 'propertyName', event.target.value)}
                   size="small"
+                  slotProps={{ formHelperText: { sx: { marginBottom: '1rem' } } }}
                   value={property.propertyName}
                 />
               </Grid>
@@ -67,9 +90,10 @@ export default function AdditionalTextProperties({ isEditMode, properties, setPr
 
               <Grid item sx={{ flex: '0 0 auto' }}>
                 <IconButton
-                  className="mt-3"
                   color="error"
                   onClick={() => removeProperty(index)}
+                  // label min-height + margin from index.css, so the button is level with the inputs
+                  sx={{ marginTop: 'calc(25px + .25rem)' }}
                 >
                   <DeleteIcon />
                 </IconButton>

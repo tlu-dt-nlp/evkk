@@ -22,6 +22,8 @@ export const TRANSLATIONS_EN = {
   admin_text_delete_modal_message: 'Are you sure you want to delete this text?',
   admin_text_delete_modal_title: 'Delete text',
   admin_text_property_name: 'Property name',
+  admin_text_property_name_derived: 'This property\'s value is derived automatically on publishing',
+  admin_text_property_name_reserved: 'This property has its own field in the form',
   admin_text_property_value: 'Property value',
   admin_text_publish_modal_message: 'Are you sure you want to publish this text?',
   admin_text_publish_modal_title: 'Publish text',
