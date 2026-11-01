@@ -52,7 +52,7 @@ export default function FilledContacts() {
                    role="people_role_visiting_researcher_call"
                    email="olga.gaitsenja@tlu.ee"
                    etisUrl={`https://www.etis.ee/CV/Olga_Pastuhhova/${etisLanguage}`}
-                   icon={WORKER_IMAGES.placeholderWoman} />
+                   icon={WORKER_IMAGES.olga} />
       <ContactCard name="Karina Kert"
                    degree="MA"
                    role="people_role_analyst"
