@@ -26,7 +26,7 @@ const ChartView = ({ containerRef, size, data, chartType, fill, emptyLabel }) =>
   // the ref the ResizeObserver measures, and nothing can be drawn until it has a size.
   const content = () => {
     if (data.length <= 1) {
-      return <Typography variant="body2" color="text.secondary" className="sv2-chart-empty">{emptyLabel}</Typography>;
+      return <Typography variant="body2" color="text.secondary" className="stats-chart-empty">{emptyLabel}</Typography>;
     }
 
     if (size.width <= 0 || size.height <= 0) {
@@ -46,7 +46,7 @@ const ChartView = ({ containerRef, size, data, chartType, fill, emptyLabel }) =>
   };
 
   return (
-    <div ref={containerRef} className={`sv2-chart-box${fill ? ' sv2-chart-box--fill' : ''}`}>
+    <div ref={containerRef} className={`stats-chart-box${fill ? ' stats-chart-box--fill' : ''}`}>
       {content()}
     </div>
   );
@@ -81,7 +81,7 @@ const ChartPanel = ({
 
   return (
     <>
-      <Paper elevation={0} className="sv2-chart-panel">
+      <Paper elevation={0} className="stats-chart-panel">
         <ChartToolbar
           {...toolbarProps}
           isWide={isWide}
@@ -104,7 +104,7 @@ const ChartPanel = ({
         open={isFullscreen}
         onClose={() => setIsFullscreen(false)}
       >
-        <Box className="sv2-fullscreen-body">
+        <Box className="stats-fullscreen-body">
           <ChartToolbar
             {...toolbarProps}
             onPrint={print(fullscreenNode)}
@@ -113,7 +113,7 @@ const ChartPanel = ({
             closeTitleKey="statistics_close"
             inlineClose
           />
-          <Box className="sv2-fullscreen-chart">
+          <Box className="stats-fullscreen-chart">
             <ChartView
               containerRef={fullscreenRef} size={fullscreenSize} data={displayData}
               chartType={chartType} fill emptyLabel={emptyLabel}

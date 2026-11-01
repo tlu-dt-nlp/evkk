@@ -34,9 +34,9 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
         <ListItemButton onClick={onToggle}>
           <ListItemText
             primary={
-              <Box className="sv2-filter-section-label">
+              <Box className="stats-filter-section-label">
                 <span>{label}</span>
-                {isActive && <span className="sv2-filter-badge">1</span>}
+                {isActive && <span className="stats-filter-badge">1</span>}
               </Box>
             }
           />
@@ -45,9 +45,9 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
       </ListItem>
 
       <Collapse in={isOpen} timeout="auto" unmountOnExit>
-        <Box className="sv2-range-body">
+        <Box className="stats-range-body">
           <Slider
-            className="sv2-range-slider"
+            className="stats-range-slider"
             value={value}
             min={range[0]}
             max={range[1]}
@@ -55,9 +55,9 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
             valueLabelDisplay="auto"
             size="small"
           />
-          <Box className="sv2-range-inputs">
+          <Box className="stats-range-inputs">
             <TextField
-              className="sv2-range-input"
+              className="stats-range-input"
               value={draft.min}
               onChange={e => setDraft(prev => ({ ...prev, min: e.target.value }))}
               onBlur={commitMin}
@@ -67,7 +67,7 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
             />
             <Typography variant="caption" color="text.secondary">–</Typography>
             <TextField
-              className="sv2-range-input"
+              className="stats-range-input"
               value={draft.max}
               onChange={e => setDraft(prev => ({ ...prev, max: e.target.value }))}
               onBlur={commitMax}
@@ -77,7 +77,7 @@ const RangeSliderFilter = ({ label, range, value, onChange, onReset, isActive, i
             />
           </Box>
           {isActive && (
-            <Button size="small" variant="text" className="sv2-range-reset" onClick={onReset}>
+            <Button size="small" variant="text" className="stats-range-reset" onClick={onReset}>
               {t('statistics_reset_range')}
             </Button>
           )}

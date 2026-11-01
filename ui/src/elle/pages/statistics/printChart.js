@@ -1,6 +1,6 @@
 import { ACCENT_DEEP, FONT } from './constants';
 
-const FRAME_ID = 'sv2-print-frame';
+const FRAME_ID = 'stats-print-frame';
 const FONT_URL = 'https://fonts.googleapis.com/css?family=Mulish';
 
 const STYLES = `
@@ -13,9 +13,9 @@ const STYLES = `
     color: #333;
   }
   h2 { color: ${ACCENT_DEEP}; font-size: 16pt; font-weight: 700; margin: 0 0 6pt; }
-  .sv2-print-filters { font-size: 9pt; color: #666; margin: 0 0 14pt; line-height: 1.4; }
-  .sv2-print-filters strong { color: #333; }
-  .sv2-print-filters--empty { color: #aaa; }
+  .stats-print-filters { font-size: 9pt; color: #666; margin: 0 0 14pt; line-height: 1.4; }
+  .stats-print-filters strong { color: #333; }
+  .stats-print-filters--empty { color: #aaa; }
   svg { width: 100%; height: auto; display: block; }
 `;
 
@@ -49,8 +49,8 @@ export const printChart = ({ t, svg, title, filtersText }) => {
   document.body.append(frame);
 
   const filtersHtml = filtersText
-    ? `<p class="sv2-print-filters"><strong>${escapeHtml(t('statistics_print_active_filters'))}</strong> ${escapeHtml(filtersText)}</p>`
-    : `<p class="sv2-print-filters sv2-print-filters--empty">${escapeHtml(t('statistics_print_no_filters'))}</p>`;
+    ? `<p class="stats-print-filters"><strong>${escapeHtml(t('statistics_print_active_filters'))}</strong> ${escapeHtml(filtersText)}</p>`
+    : `<p class="stats-print-filters stats-print-filters--empty">${escapeHtml(t('statistics_print_no_filters'))}</p>`;
 
   const doc = frame.contentDocument;
   doc.open();

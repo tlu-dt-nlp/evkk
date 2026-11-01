@@ -31,8 +31,8 @@ const ChartToolbar = ({
   );
 
   return (
-    <Box className="sv2-chart-toolbar">
-      <Typography variant="subtitle2" className="sv2-chart-title">
+    <Box className="stats-chart-toolbar">
+      <Typography variant="subtitle2" className="stats-chart-title">
         {title}
       </Typography>
 
@@ -52,14 +52,14 @@ const ChartToolbar = ({
       )}
 
       <Menu className="statistics-app" anchorEl={anchor} open={Boolean(anchor)} onClose={closeMenu}>
-        <Typography variant="overline" className="sv2-menu-section-label">
+        <Typography variant="overline" className="stats-menu-section-label">
           {t('statistics_chart_type')}
         </Typography>
         {CHART_TYPE_OPTIONS.map(({ type, icon, titleKey }) => (
           <MenuItem key={type} selected={type === chartType} onClick={run(onChartTypeChange, type)}>
             <ListItemIcon>{icon}</ListItemIcon>
             <ListItemText>{t(titleKey)}</ListItemText>
-            {type === chartType && <Check fontSize="small" className="sv2-menu-check" />}
+            {type === chartType && <Check fontSize="small" className="stats-menu-check" />}
           </MenuItem>
         ))}
 

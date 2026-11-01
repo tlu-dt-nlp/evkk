@@ -1,10 +1,10 @@
 import { Box, Drawer } from '@mui/material';
 
 const FilterSidebar = ({ mobileOpen, onMobileClose, children }) => (
-  <Box component="nav" className="sv2-sidebar">
+  <Box component="nav" className="stats-sidebar">
     <Drawer
       variant="temporary"
-      className="responsive-drawer statistics-app sv2-drawer-temporary"
+      className="responsive-drawer statistics-app stats-drawer-temporary"
       open={mobileOpen}
       onClose={onMobileClose}
       slotProps={{ root: { keepMounted: true } }}
@@ -14,7 +14,7 @@ const FilterSidebar = ({ mobileOpen, onMobileClose, children }) => (
 
     <Drawer
       variant="permanent"
-      className="responsive-drawer statistics-app sv2-drawer-permanent"
+      className="responsive-drawer statistics-app stats-drawer-permanent"
       open
     >
       {children}

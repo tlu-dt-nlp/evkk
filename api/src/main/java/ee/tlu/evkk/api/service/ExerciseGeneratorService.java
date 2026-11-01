@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static ee.evkk.dto.enums.ExerciseFormat.FILL_IN_THE_BLANKS;
@@ -53,7 +52,7 @@ public class ExerciseGeneratorService {
   private static final int BLANK_LENGTH = 3;
   private static final String BLANK_REPLACEMENT = "_".repeat(BLANK_LENGTH);
 
-  private final Optional<GeminiService> geminiService;
+  private final GeminiService geminiService;
   private final ExerciseGeneratorSourceDao exerciseGeneratorSourceDao;
   private final ExerciseAnswerDao exerciseAnswerDao;
   private final ObjectMapper objectMapper;
@@ -76,7 +75,7 @@ public class ExerciseGeneratorService {
       shuffle(exercise.getBlanks());
     }
 
-    if (request.isPerformQualityCheck() && !passesQualityCheck(generationContext, request, exercise)) {
+    if (request.isPerformQualityCheck() && !geminiService.checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)) {
       throw new ExerciseDidNotPassQualityGateException();
     }
 
@@ -87,10 +86,6 @@ public class ExerciseGeneratorService {
 
   private static boolean isFillInTheBlanksOutput(ExerciseRequestDto request) {
     return FILL_IN_THE_BLANKS.equals(request.getFormat()) && !ADJECTIVE.equals(request.getType());
-  }
-
-  private boolean passesQualityCheck(GenerationContext generationContext, ExerciseRequestDto request, ExerciseDto exercise) {
-    return geminiService.map(service -> service.checkExerciseQuality(generationContext.getCorrectAnswers(), request, exercise)).orElse(true);
   }
 
   private ExerciseDto generateFromTexts(ExerciseRequestDto request, GenerationContext generationContext) {

@@ -24,8 +24,8 @@ const FilterDrawerContent = ({
 
   return (
     <div>
-      <Box className="sv2-drawer-header">
-        <Typography variant="overline" className="sv2-drawer-title">
+      <Box className="stats-drawer-header">
+        <Typography variant="overline" className="stats-drawer-title">
           {t('statistics_filters')}
         </Typography>
       </Box>
@@ -44,9 +44,9 @@ const FilterDrawerContent = ({
                 <ListItemButton onClick={() => onToggleSection(key)}>
                   <ListItemText
                     primary={
-                      <Box className="sv2-filter-section-label">
+                      <Box className="stats-filter-section-label">
                         <span>{t(labelKey)}</span>
-                        {count > 0 && <span className="sv2-filter-badge">{count}</span>}
+                        {count > 0 && <span className="stats-filter-badge">{count}</span>}
                       </Box>
                     }
                   />
@@ -55,17 +55,17 @@ const FilterDrawerContent = ({
               </ListItem>
 
               <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                <List dense disablePadding className="sv2-filter-options">
+                <List dense disablePadding className="stats-filter-options">
                   {options.map(value => (
                     <ListItemButton
                       key={value}
-                      className="sv2-filter-option"
+                      className="stats-filter-option"
                       onClick={() => onToggleFilter(key, value)}
                     >
-                      <ListItemIcon className="sv2-filter-option-icon">
+                      <ListItemIcon className="stats-filter-option-icon">
                         <Checkbox
                           edge="start" disableRipple tabIndex={-1} size="small"
-                          className="sv2-filter-checkbox"
+                          className="stats-filter-checkbox"
                           checked={Boolean(selected?.has(value))}
                         />
                       </ListItemIcon>
@@ -94,17 +94,17 @@ const FilterDrawerContent = ({
         ))}
       </List>
 
-      <Box className="sv2-drawer-footer">
+      <Box className="stats-drawer-footer">
         <Button
           variant="contained" size="small" fullWidth
-          className={`sv2-accent-button${hasUnappliedChanges ? ' sv2-accent-button--pending' : ''}`}
+          className={`stats-accent-button${hasUnappliedChanges ? ' stats-accent-button--pending' : ''}`}
           onClick={onApply}
         >
           {hasUnappliedChanges ? `${t('statistics_apply_filters')} ●` : t('statistics_apply_filters')}
         </Button>
         <Button
           variant="text" size="small"
-          className="sv2-text-button"
+          className="stats-text-button"
           disabled={!hasActiveFilters && !hasUnappliedChanges}
           onClick={onClearAll}
         >

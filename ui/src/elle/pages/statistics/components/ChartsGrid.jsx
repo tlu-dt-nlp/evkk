@@ -44,7 +44,7 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
   };
 
   return (
-    <div className="sv2-charts-grid">
+    <div className="stats-charts-grid">
       {activeChartKeys.map(key => {
         const field = getField(key);
         if (!field) return null;
@@ -52,7 +52,7 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
         const isLeftCol = columns[key] === 0;
 
         return (
-          <div key={key} className={`sv2-chart-cell${isWide ? ' sv2-chart-cell--wide' : ''}`}>
+          <div key={key} className={`stats-chart-cell${isWide ? ' stats-chart-cell--wide' : ''}`}>
             <ChartPanel
               title={t(field.labelKey)}
               data={chartData[key]}
@@ -71,9 +71,9 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
 
       {inactiveFields.length > 0 && (
         <>
-          <button className="sv2-add-chart-slot" onClick={() => setCheckedKeys([])}>
-            <Add className="sv2-add-chart-icon" />
-            <Typography variant="body2" className="sv2-add-chart-label">{t('statistics_add_chart')}</Typography>
+          <button className="stats-add-chart-slot" onClick={() => setCheckedKeys([])}>
+            <Add className="stats-add-chart-icon" />
+            <Typography variant="body2" className="stats-add-chart-label">{t('statistics_add_chart')}</Typography>
           </button>
 
           {/* Portalled out of the page, so it carries the page scope class itself */}
@@ -84,15 +84,15 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
             fullWidth
             maxWidth="xs"
           >
-            <DialogTitle className="sv2-dialog-title">{t('statistics_add_charts_title')}</DialogTitle>
-            <DialogContent className="sv2-dialog-content">
+            <DialogTitle className="stats-dialog-title">{t('statistics_add_charts_title')}</DialogTitle>
+            <DialogContent className="stats-dialog-content">
               <List dense disablePadding>
                 {inactiveFields.map(({ key, labelKey }) => (
-                  <ListItemButton key={key} onClick={() => toggleChecked(key)} className="sv2-filter-option">
-                    <ListItemIcon className="sv2-filter-option-icon">
+                  <ListItemButton key={key} onClick={() => toggleChecked(key)} className="stats-filter-option">
+                    <ListItemIcon className="stats-filter-option-icon">
                       <Checkbox
                         edge="start" disableRipple tabIndex={-1} size="small"
-                        className="sv2-filter-checkbox"
+                        className="stats-filter-checkbox"
                         checked={checkedKeys?.includes(key) || false}
                       />
                     </ListItemIcon>
@@ -101,11 +101,11 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
                 ))}
               </List>
             </DialogContent>
-            <DialogActions className="sv2-dialog-actions">
+            <DialogActions className="stats-dialog-actions">
               {nextIsSecondInRow && lastExpandableKey ? (
                 <Button
                   size="small" variant="text"
-                  className="sv2-expand-previous-button"
+                  className="stats-expand-previous-button"
                   onClick={expandPrevious}
                 >
                   {t('statistics_expand_previous')}
@@ -113,7 +113,7 @@ const ChartsGrid = ({ layout, chartData, filtersText, actions }) => {
               ) : <span />}
               <Button
                 variant="contained" size="small"
-                className="sv2-accent-button"
+                className="stats-accent-button"
                 disabled={!checkedKeys?.length}
                 onClick={confirmAdd}
               >

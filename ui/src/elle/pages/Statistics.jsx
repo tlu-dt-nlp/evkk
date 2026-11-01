@@ -5,16 +5,16 @@ import { useTranslation } from 'react-i18next';
 import '../components/styles/ResponsiveDrawer.css';
 import './styles/Statistics.css';
 
-import { describeFilters, hasActiveFilters, toChartData, toDataRanges } from './statisticsV2/helpers';
-import { useStatisticsFilters } from './statisticsV2/hooks/useStatisticsFilters';
-import { useStatisticsQuery } from './statisticsV2/hooks/useStatisticsQuery';
-import { useChartLayout } from './statisticsV2/hooks/useChartLayout';
-import FilterSidebar from './statisticsV2/components/FilterSidebar';
-import FilterDrawerContent from './statisticsV2/components/FilterDrawerContent';
-import MetricCard from './statisticsV2/components/MetricCard';
-import ChartsGrid from './statisticsV2/components/ChartsGrid';
+import { describeFilters, hasActiveFilters, toChartData, toDataRanges } from './statistics/helpers';
+import { useStatisticsFilters } from './statistics/hooks/useStatisticsFilters';
+import { useStatisticsQuery } from './statistics/hooks/useStatisticsQuery';
+import { useChartLayout } from './statistics/hooks/useChartLayout';
+import FilterSidebar from './statistics/components/FilterSidebar';
+import FilterDrawerContent from './statistics/components/FilterDrawerContent';
+import MetricCard from './statistics/components/MetricCard';
+import ChartsGrid from './statistics/components/ChartsGrid';
 
-function StatisticsV2() {
+function Statistics() {
   const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openSections, setOpenSections] = useState(new Set());
@@ -72,10 +72,10 @@ function StatisticsV2() {
             />
           </FilterSidebar>
 
-          <Box component="main" className={`sv2-main${isLoading ? ' sv2-main--loading' : ''}`}>
+          <Box component="main" className={`stats-main${isLoading ? ' stats-main--loading' : ''}`}>
             <Button
               variant="contained"
-              className="drawer-toggle-button sv2-drawer-toggle"
+              className="drawer-toggle-button stats-drawer-toggle"
               onClick={() => setMobileOpen(o => !o)}
             >
               <MenuOpen className="drawer-toggle-icon" />
@@ -83,7 +83,7 @@ function StatisticsV2() {
 
             <h2 className="tool-title">{t('common_statistics')}</h2>
 
-            <div className="sv2-metrics-row">
+            <div className="stats-metrics-row">
               <MetricCard value={formatCount(response?.totalCount)} label={t('statistics_text_count')} />
               <MetricCard value={formatCount(response?.avgWordCount)} label={t('statistics_avg_word_count')} />
               <MetricCard value={formatCount(response?.avgSentenceCount)} label={t('statistics_avg_sentence_count')} />
@@ -97,8 +97,8 @@ function StatisticsV2() {
             />
 
             {isCustomLayout && (
-              <Box className="sv2-layout-reset-row">
-                <Button size="small" variant="text" className="sv2-quiet-button" onClick={layoutActions.reset}>
+              <Box className="stats-layout-reset-row">
+                <Button size="small" variant="text" className="stats-quiet-button" onClick={layoutActions.reset}>
                   {t('statistics_reset_layout')}
                 </Button>
               </Box>
@@ -111,4 +111,4 @@ function StatisticsV2() {
   );
 }
 
-export default StatisticsV2;
+export default Statistics;

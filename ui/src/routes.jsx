@@ -36,9 +36,9 @@ import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
 import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
 import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
-import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
 import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
-import StatisticsV2 from './elle/pages/StatisticsV2';
+import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
+import Statistics from './elle/pages/Statistics';
 
 export const routes = [
   {
@@ -96,7 +96,7 @@ export const routes = [
           },
           {
             path: RouteConstants.STATISTICS,
-            element: <StatisticsV2 />,
+            element: <Statistics />,
             handle: { crumb: () => ({ to: RouteConstants.STATISTICS, translateKey: 'common_statistics' }) }
           },
           {
