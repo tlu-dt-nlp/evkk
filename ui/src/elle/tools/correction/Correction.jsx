@@ -35,11 +35,26 @@ export default function Correction() {
   const [value, setValue] = useState(tabValueMap.CORRECTOR);
 
   const tabValues = [
-    <Tab key={tabValueMap.CORRECTOR} label={t('corrector_proofreading')} value={tabValueMap.CORRECTOR} />,
-    <Tab key={tabValueMap.PROFICIENCY_LEVEL} label={t('corrector_proficiency_level')}
-         value={tabValueMap.PROFICIENCY_LEVEL} />,
-    <Tab key={tabValueMap.COMPLEXITY} label={t('corrector_complexity')} value={tabValueMap.COMPLEXITY} />,
-    <Tab key={tabValueMap.VOCABULARY} label={t('corrector_vocabulary')} value={tabValueMap.VOCABULARY} />
+    <Tab
+      key={tabValueMap.CORRECTOR}
+      label={t('corrector_proofreading')}
+      value={tabValueMap.CORRECTOR}
+    />,
+    <Tab
+      key={tabValueMap.PROFICIENCY_LEVEL}
+      label={t('corrector_proficiency_level')}
+      value={tabValueMap.PROFICIENCY_LEVEL}
+    />,
+    <Tab
+      key={tabValueMap.COMPLEXITY}
+      label={t('corrector_complexity')}
+      value={tabValueMap.COMPLEXITY}
+    />,
+    <Tab
+      key={tabValueMap.VOCABULARY}
+      label={t('corrector_vocabulary')}
+      value={tabValueMap.VOCABULARY}
+    />
   ];
 
   const errorBoxTabPanels = [
