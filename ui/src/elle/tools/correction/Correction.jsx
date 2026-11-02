@@ -1,4 +1,3 @@
-import './styles/CorrectionCommon.css';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Tab } from '@mui/material';
