@@ -197,18 +197,26 @@ def generate_error_data(error_word, corrected_word, correction_type, start, end)
 
 
 def calculate_punctuation_separation(correction_type, error_word, corrected_word):
-    punct_mark_length = 1
+    # punctuation mark length is counted separately for the initial and corrected text, because
+    # a missing mark only exists in the corrected text and an extra mark only in the initial text
+    initial_punct_mark_length = 1
+    corrected_punct_mark_length = 1
     punct_mark_extension = 0
     if correction_type == punctuation_order:
-        punct_mark_length = 2
+        initial_punct_mark_length = 2
+        corrected_punct_mark_length = 2
 
     if correction_type == missing_punctuation:
+        initial_punct_mark_length = 0
         punct_mark_extension = 1
 
-    punct_separation_initial = len(error_word) - punct_mark_length
-    punct_separation_corrected = len(corrected_word) - punct_mark_length
+    if correction_type == extra_punctuation:
+        corrected_punct_mark_length = 0
 
-    return punct_mark_length, punct_mark_extension, punct_separation_initial, punct_separation_corrected
+    punct_separation_initial = len(error_word) - initial_punct_mark_length
+    punct_separation_corrected = len(corrected_word) - corrected_punct_mark_length
+
+    return initial_punct_mark_length, punct_mark_extension, punct_separation_initial, punct_separation_corrected
 
 
 def process_punct_values(correction_type, error_word, corrected_word, punct_separation_corrected,
@@ -257,7 +265,7 @@ def process_corrections(corrections):
                                               correction_start, correction_end - punct_mark_length)
             punct_error = generate_error_data(initial_word_punct,
                                               corrected_word_punct, correction_types[1],
-                                              correction_end - punct_mark_length + punct_mark_extension,
+                                              correction_end - punct_mark_length,
                                               correction_end + punct_mark_extension)
 
             processed_corrections.extend([other_error, punct_error])
@@ -274,7 +282,7 @@ def process_corrections(corrections):
                 processed_corrections.extend([generate_error_data(initial_word_punct,
                                                                   corrected_word_punct,
                                                                   correction_types[0],
-                                                                  correction_end - punct_mark_length + punct_mark_extension,
+                                                                  correction_end - punct_mark_length,
                                                                   correction_end + punct_mark_extension)])
             else:
                 processed_corrections.extend([generate_error_data(error_word, corrected_word, correction_types[0],
