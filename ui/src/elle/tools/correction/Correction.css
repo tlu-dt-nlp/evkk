@@ -42,6 +42,7 @@
   padding: 0.5rem;
 }
 
+/* this is necessary, otherwise the CSS minifier/optimizer will emit this specific style from prod build (although it works in dev environment) */
 .correction-container-inner .correction-toggle-button-group,
 .correction-container-inner .correction-toggle-button-group .MuiTab-root {
   min-height: 26px;
