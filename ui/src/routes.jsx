@@ -38,6 +38,7 @@ import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
 import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
 import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
 import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
+import Statistics from './elle/pages/Statistics';
 
 export const routes = [
   {
@@ -92,6 +93,11 @@ export const routes = [
             path: RouteConstants.ADDING,
             element: <Adding />,
             handle: { crumb: () => ({ to: RouteConstants.ADDING, translateKey: 'common_publish_your_text' }) }
+          },
+          {
+            path: RouteConstants.STATISTICS,
+            element: <Statistics />,
+            handle: { crumb: () => ({ to: RouteConstants.STATISTICS, translateKey: 'common_statistics' }) }
           },
           {
             path: RouteConstants.CORRECTOR,
