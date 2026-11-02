@@ -13,8 +13,6 @@ import Wordlist from './elle/tools/wordlist/Wordlist';
 import WordContext from './elle/tools/wordcontext/WordContext';
 import Collocates from './elle/tools/Collocates';
 import Tools from './elle/pages/Tools';
-// TODO ELLE-386 remove this unused import
-// it is only necessary because it imports Correction.css which is still in use in the new correction components
 import Login from './elle/pages/Login';
 import AdminOverview from './elle/components/admin/AdminOverview';
 import DonatedTexts from './elle/components/admin/DonatedTexts';
@@ -34,9 +32,9 @@ import {
 import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
-import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
-import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
-import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
+import Correction from './elle/tools/correction/Correction';
+import { EditorProvider } from './elle/tools/correction/providers/EditorProvider';
+import CorrectionNotAvailableAlert from './elle/tools/correction/components/CorrectionNotAvailableAlert';
 import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
 
 export const routes = [
@@ -97,7 +95,7 @@ export const routes = [
             path: RouteConstants.CORRECTOR,
             element: (
               <EditorProvider>
-                <CorrectionV2 />
+                <Correction />
               </EditorProvider>
             ),
             handle: { crumb: () => ({ to: RouteConstants.CORRECTOR, translateKey: 'common_corrector' }) }
