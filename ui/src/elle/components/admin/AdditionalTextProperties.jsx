@@ -28,6 +28,14 @@ export default function AdditionalTextProperties({
     return '';
   };
 
+  const isNameMissing = (property) => (
+    !property.propertyName.trim() && !!property.propertyValue.trim()
+  );
+
+  const isValueMissing = (property) => (
+    !property.propertyValue.trim() && !!property.propertyName.trim()
+  );
+
   if (!isEditMode && !properties.length) {
     return null;
   }
@@ -68,10 +76,13 @@ export default function AdditionalTextProperties({
                 <TextField
                   error={!!getNameError(property)}
                   helperText={getNameError(property)}
-                  inputRef={input => input?.setCustomValidity(getNameError(property))}
+                  inputRef={input => input?.setCustomValidity(
+                    getNameError(property) || (isNameMissing(property) ? t('admin_text_property_name_missing') : '')
+                  )}
                   label={t('admin_text_property_name')}
                   name={`additional-property-name-${index}`}
                   onChange={event => updateProperty(index, 'propertyName', event.target.value)}
+                  required={isNameMissing(property)}
                   size="small"
                   slotProps={{ formHelperText: { sx: { marginBottom: '1rem' } } }}
                   value={property.propertyName}
@@ -80,9 +91,13 @@ export default function AdditionalTextProperties({
 
               <Grid item sx={{ flex: 1 }}>
                 <TextField
+                  inputRef={input => input?.setCustomValidity(
+                    isValueMissing(property) ? t('admin_text_property_value_missing') : ''
+                  )}
                   label={t('admin_text_property_value')}
                   name={`additional-property-value-${index}`}
                   onChange={event => updateProperty(index, 'propertyValue', event.target.value)}
+                  required={isValueMissing(property)}
                   size="small"
                   value={property.propertyValue}
                 />
