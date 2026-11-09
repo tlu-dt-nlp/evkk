@@ -3,6 +3,13 @@ set -e
 
 echo "Running EVKK ..."
 
+# Prefer Docker Compose v2 (docker compose plugin), fall back to v1 (standalone docker-compose)
+if docker compose version >/dev/null 2>&1; then
+  compose() { docker compose "$@"; }
+else
+  compose() { docker-compose "$@"; }
+fi
+
 echo "Initializing Docker Swarm if needed"
 if ! docker info | grep -q 'Swarm: active'; then
   docker swarm init
@@ -16,7 +23,7 @@ for file in ./images/*.tar; do docker load -i ${file}; done
 echo "Loading images done"
 
 echo "Stopping services"
-docker-compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.base.yml -f compose/docker-compose.yml down --remove-orphans
+compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.base.yml -f compose/docker-compose.yml down --remove-orphans
 docker stack rm evkk
 
 echo "Waiting for stack services to be removed"
@@ -38,10 +45,10 @@ done
 echo "Stopping services done"
 
 echo "Running database migrations"
-docker-compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.db.yml -f compose/docker-compose.yml up --abort-on-container-exit --exit-code-from db
+compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.db.yml -f compose/docker-compose.yml up --abort-on-container-exit --exit-code-from db
 
 echo "Stopping migration containers"
-docker-compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.db.yml -f compose/docker-compose.yml down --remove-orphans
+compose -f compose/docker-compose.postgres.yml -f compose/docker-compose.db.yml -f compose/docker-compose.yml down --remove-orphans
 
 echo "Running database migrations done"
 

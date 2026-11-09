@@ -11,8 +11,11 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 ### Requirements
 
 - JDK 11: https://openjdk.java.net/projects/jdk/11
-- Docker Engine 24.x: https://docs.docker.com/get-docker
-- Docker Compose (version 1, preferably the latest, which is 1.29.2): https://docs.docker.com/compose/install
+- Docker Engine 24.x or newer: https://docs.docker.com/get-docker
+- Docker Compose v2 or newer (the `docker compose` plugin, included with Docker
+  Desktop): https://docs.docker.com/compose/install
+    - The legacy standalone Docker Compose v1 (`docker-compose`, 1.29.2) also still works: the scripts use v2 when it is
+      available and fall back to v1 otherwise
 - NodeJS 24.x: https://nodejs.org/en/download
   - **It is recommended to use NVM** instead of installing NodeJS directly: https://www.nvmnode.com
   - Using NVM, you can install and use the correct version of NodeJS for the project simply by running `nvm install` and
@@ -25,7 +28,8 @@ ELLE - Estonian Language Learning and Analysis Environment is a development of t
 - Yarn 4.x (**does not need to be installed separately**): https://yarnpkg.com
 
 ### Getting started
-1. Make sure *docker-compose* is installed correctly: `docker-compose --version`
+
+1. Make sure Docker Compose is installed correctly: `docker compose version` (or `docker-compose --version` for v1)
 2. Start docker containers (this can take several minutes the first time around). The simplest way in IntelliJ is to use
    a suitable `run-local` run config under `.run`, however, you can also do it manually:
    1. UNIX-like (Linux, macOS): `./run-local.sh`
