@@ -65,6 +65,7 @@ $$ language plpgsql;
 drop schema if exists public cascade;
 call pg_temp.create_schema('sys');
 call pg_temp.create_schema('core');
+call pg_temp.create_schema('history');
 
 ------------------------
 -- CREATE ROLES/USERS --
