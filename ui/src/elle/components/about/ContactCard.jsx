@@ -1,29 +1,36 @@
 import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import '../styles/ContactCard.css';
 import etisLogo from '../../resources/images/misc/etis_logo.svg';
 import NewTabHyperlink from '../NewTabHyperlink';
 
-export default function ContactCard({ name, role, email, etisUrl, icon }) {
+export default function ContactCard({ name, degree, degreeInProgress, role, email, etisUrl, icon }) {
+  const { t } = useTranslation();
+
   return (
     <Box className="contact-box">
       <Box className="icon-box">
         <img className="contact-image"
              src={icon}
-             alt={icon} />
+             alt={name} />
       </Box>
-      <Box>
-        <Box className="name-box">{name}</Box>
-        <Box className="info-box">
-          <div><b>Amet:</b> {role}</div>
-          <div><b>E-post:</b> {email}</div>
+      <Box className="contact-info">
+        <div className="contact-name">
+          {name}, <span className="contact-degree">
+            {degreeInProgress ? t('people_degree_in_progress', { degree }) : degree}
+          </span>
+        </div>
+        <div className="contact-role">{t(role)}</div>
+        <div className="contact-links">
+          <a href={`mailto:${email}`} className="contact-email">
+            {email}
+          </a>
           {etisUrl &&
-            <div className="etis-container">
-              <NewTabHyperlink path={etisUrl}
-                               content={<img src={etisLogo} alt="ETIS" />}
-                               className="etis-link" />
-            </div>
+            <NewTabHyperlink path={etisUrl}
+                             content={<img src={etisLogo} alt="ETIS" />}
+                             className="etis-link" />
           }
-        </Box>
+        </div>
       </Box>
     </Box>
   );
