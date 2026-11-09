@@ -1,4 +1,4 @@
-import { styled, tooltipClasses } from '@mui/material';
+import { styled } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { createTheme } from '@mui/material/styles';
 
@@ -92,6 +92,14 @@ export const DefaultButtonStyle = {
 export const SecondaryButtonStyle = {
   color: '#9C27B0',
   borderColor: '#9C27B0',
+  fontWeight: 'bold',
+  lineHeight: '30px',
+  borderRadius: '15px'
+};
+
+export const DangerButtonStyle = {
+  color: '#D32F2F',
+  borderColor: '#D32F2F',
   fontWeight: 'bold',
   lineHeight: '30px',
   borderRadius: '15px'
@@ -222,19 +230,6 @@ export const modalStyle = {
   overflow: 'auto'
 };
 
-export const ContentEditableDiv = {
-  overflowY: 'auto',
-  border: 'gray 1px solid',
-  borderRadius: '5px',
-  height: '20vw',
-  minHeight: '200px',
-  padding: '1rem',
-  '&[contenteditable="true"]:focus': {
-    outline: 'gray 1px solid'
-  }
-
-};
-
 export const CorrectorErrorCircle = (color) => {
   return {
     backgroundColor: color,
@@ -255,32 +250,6 @@ export const CorrectorAccordionStyle = {
   },
   '&.Mui-expanded': {
     margin: 0
-  }
-};
-
-export const correctionTooltipSlotProps = {
-  popper: {
-    sx: {
-      [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]:
-        {
-          marginBottom: '0px'
-        }
-    }
-  },
-  tooltip: {
-    sx: {
-      maxWidth: 1200,
-      whiteSpace: 'normal',
-      backgroundColor: 'transparent'
-    }
-  }
-};
-
-export const correctionTooltipComponentsProps = {
-  tooltip: {
-    sx: {
-      bgcolor: 'rgba(0, 0, 0, 0)'
-    }
   }
 };
 

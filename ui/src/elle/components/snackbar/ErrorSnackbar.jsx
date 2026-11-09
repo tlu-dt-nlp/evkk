@@ -61,5 +61,6 @@ export const ErrorSnackbarEventType = {
   EXERCISE_COULD_NOT_BE_GENERATED: 'error_exercise_could_not_be_generated',
   EXERCISE_DID_NOT_PASS_QUALITY_GATE: 'error_exercise_did_not_pass_quality_gate',
   EXERCISE_NOT_FOUND_OR_EXPIRED: 'error_exercise_not_found_or_expired',
-  EXERCISE_INVALID_AMOUNT_OF_ANSWERS: 'error_exercise_invalid_amount_of_answers'
+  EXERCISE_INVALID_AMOUNT_OF_ANSWERS: 'error_exercise_invalid_amount_of_answers',
+  DUPLICATE_TEXT: 'error_duplicate_text'
 };

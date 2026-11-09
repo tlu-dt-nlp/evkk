@@ -1,6 +1,7 @@
 # Original code created by Kais Allkivi
 
 import math
+import os
 import pandas as pd
 from joblib import load
 from text_abstraction_analyse import Utils
@@ -40,6 +41,13 @@ model_types = {
                   'sent_len', 'SMOG', 'syllables', 'errors_per_word']}
 }
 
+# Feature value ranges of the training set. Texts outside these ranges (e.g. long subject texts)
+# make the models unreliable, so feature values are capped to these bounds before predicting.
+training_set = pd.read_csv(os.path.join(os.path.dirname(__file__), 'train_test.csv'))
+all_feats = sorted({feat for model_type in model_types.values() for feat in model_type["feats"]})
+feat_min = training_set[all_feats].min()
+feat_max = training_set[all_feats].max()
+
 
 # Morphological tagging of input text
 def linguistic_analysis(model_type, feat_values):
@@ -50,9 +58,11 @@ def linguistic_analysis(model_type, feat_values):
     features = model_types[model_type]["feats"]
 
     dataframe = pd.DataFrame([feat_values])[features].fillna(0)
+    dataframe = dataframe.clip(lower=feat_min[features], upper=feat_max[features], axis=1)
     x_scaled = scaler.transform(dataframe)
-    predicted_level = model.predict(x_scaled)[0]
     predicted_probabilities = model.predict_proba(x_scaled)[0].tolist()
+    # SVC's predict() can disagree with predict_proba(), so the level is taken from the probabilities
+    predicted_level = model.classes_[predicted_probabilities.index(max(predicted_probabilities))]
 
     filtered = [(i, val) for i, val in enumerate(predicted_probabilities) if val > 0.01]
     rounded = [(i, round(val, 2)) for i, val in filtered]

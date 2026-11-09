@@ -1,42 +1,32 @@
 import { useFetch } from '../useFetch';
-import { useEffect } from 'react';
-
-export const useGetTextsToReviewCount = () => {
-  const { fetchData, response } = useFetch();
-
-  useEffect(() => {
-    fetchData('/api/admin/texts-to-review');
-  }, [fetchData]);
-
-  return response;
-};
+import { useCallback } from 'react';
 
 export const useGetDatabaseHealth = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/health');
+  const getDatabaseHealth = useCallback(() => {
+    return fetchData('/api/actuator/health');
   }, [fetchData]);
 
-  return response;
+  return { getDatabaseHealth };
 };
 
 export const useGetWordAnalyserMetrics = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/metrics/tools.wordanalyser', {}, { ignoreNotFoundError: true });
+  const getWordAnalyserMetrics = useCallback(() => {
+    return fetchData('/api/actuator/metrics/tools.wordanalyser', {}, { ignoreNotFoundError: true });
   }, [fetchData]);
 
-  return response;
+  return { getWordAnalyserMetrics };
 };
 
 export const useGetInternalServerErrorMetrics = () => {
-  const { fetchData, response } = useFetch();
+  const { fetchData } = useFetch();
 
-  useEffect(() => {
-    fetchData('/api/actuator/metrics/http.errors.500.total');
+  const getInternalServerErrorMetrics = useCallback(() => {
+    return fetchData('/api/actuator/metrics/http.errors.500.total');
   }, [fetchData]);
 
-  return response;
+  return { getInternalServerErrorMetrics };
 };

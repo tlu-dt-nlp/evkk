@@ -21,5 +21,4 @@ public class StringUtils {
     String string = charSequenceToString(charSequence);
     return string == null || string.isBlank();
   }
-
 }

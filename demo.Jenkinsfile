@@ -18,6 +18,18 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      steps {
+        // Runs tests in JDK 11 (Gradle 5.6.4 can't run on the host's newer JDK) with Redis, Postgres and Stanza
+        sh 'bash ./ci-test.sh'
+      }
+      post {
+        always {
+          junit '**/build/test-results/**/*.xml'
+        }
+      }
+    }
+
     stage('Build') {
       steps {
         withCredentials([
@@ -28,6 +40,12 @@ pipeline {
             ./build.sh
             printf '\nGEMINI_API_KEY=%s\n' "$GEMINI_API_KEY" >> ./build/conf/common.env
           '''
+        }
+        script {
+          if (params.RESET_DATABASE) {
+            echo 'RESET_DATABASE is set: the demo database will be wiped and re-created'
+            sh "sed -i 's/^EVKK_DB_FLYWAY_COMMANDS=.*/EVKK_DB_FLYWAY_COMMANDS=clean,migrate,seed/' ./build/conf/db.env"
+          }
         }
       }
     }

@@ -9,7 +9,8 @@ const ErrorCode400 = {
   'ExerciseCouldNotBeGenerated': ErrorSnackbarEventType.EXERCISE_COULD_NOT_BE_GENERATED,
   'ExerciseDidNotPassQualityGate': ErrorSnackbarEventType.EXERCISE_DID_NOT_PASS_QUALITY_GATE,
   'ExerciseNotFoundOrExpired': ErrorSnackbarEventType.EXERCISE_NOT_FOUND_OR_EXPIRED,
-  'ExerciseInvalidAmountOfAnswers': ErrorSnackbarEventType.EXERCISE_INVALID_AMOUNT_OF_ANSWERS
+  'ExerciseInvalidAmountOfAnswers': ErrorSnackbarEventType.EXERCISE_INVALID_AMOUNT_OF_ANSWERS,
+  'DuplicateText': ErrorSnackbarEventType.DUPLICATE_TEXT
 };
 
 const statusHandlers = {

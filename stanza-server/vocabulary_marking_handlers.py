@@ -2,6 +2,7 @@ from collections import Counter
 
 EXCLUSION_WORDS = ['ja', 'mina', 'olema', 'ei', 'et']
 PRON = 'PRON'
+NUM = 'NUM'
 
 
 def get_repetitions(sentences, location):
@@ -10,6 +11,8 @@ def get_repetitions(sentences, location):
     for index, sentence in enumerate(sentences):
         lemma_map = {}
         for word in location[index]:
+            if word['upos'] == NUM:
+                continue
             lemma = word['lemma']
             if lemma not in lemma_map:
                 lemma_map[lemma] = []

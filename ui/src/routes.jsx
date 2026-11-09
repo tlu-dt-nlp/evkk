@@ -13,16 +13,18 @@ import Wordlist from './elle/tools/wordlist/Wordlist';
 import WordContext from './elle/tools/wordcontext/WordContext';
 import Collocates from './elle/tools/Collocates';
 import Tools from './elle/pages/Tools';
-// TODO ELLE-386 remove this unused import
-// it is only necessary because it imports Correction.css which is still in use in the new correction components
-import Correction from './elle/tools/correction/Correction';
 import Login from './elle/pages/Login';
-import Admin from './elle/pages/Admin';
+import AdminOverview from './elle/components/admin/AdminOverview';
+import DonatedTexts from './elle/components/admin/DonatedTexts';
+import PublishedTexts from './elle/components/admin/PublishedTexts';
+import PropertyValuesBrowser from './elle/components/admin/PropertyValuesBrowser';
+import PropertyCheckConfig from './elle/components/admin/PropertyCheckConfig';
 import RequireAuth from './elle/components/security/RequireAuth';
 import { UserRoles } from './elle/const/Constants';
 import ResponsiveDrawer from './elle/components/ResponsiveDrawer';
 import {
   AboutUsDrawerList,
+  AdminDrawerList,
   LearnDrawerList,
   RouteConstants,
   RouteFullPathConstants
@@ -30,9 +32,9 @@ import {
 import AppLayout from './elle/app/AppLayout';
 import NotFound from './elle/components/error/NotFound';
 import { AppShell } from './elle/app/AppShell';
-import CorrectionV2 from './elle/tools/correctionV2/CorrectionV2';
-import { EditorProvider } from './elle/tools/correctionV2/providers/EditorProvider';
-import CorrectionNotAvailableAlert from './elle/tools/correctionV2/components/CorrectionNotAvailableAlert';
+import Correction from './elle/tools/correction/Correction';
+import { EditorProvider } from './elle/tools/correction/providers/EditorProvider';
+import CorrectionNotAvailableAlert from './elle/tools/correction/components/CorrectionNotAvailableAlert';
 import ExerciseGeneratorForm from './elle/learn/exercise-generator/ExerciseGeneratorForm';
 
 export const routes = [
@@ -93,7 +95,7 @@ export const routes = [
             path: RouteConstants.CORRECTOR,
             element: (
               <EditorProvider>
-                <CorrectionV2 />
+                <Correction />
               </EditorProvider>
             ),
             handle: { crumb: () => ({ to: RouteConstants.CORRECTOR, translateKey: 'common_corrector' }) }
@@ -208,8 +210,64 @@ export const routes = [
             children: [
               {
                 path: RouteConstants.ADMIN,
-                element: <Admin />,
-                handle: { crumb: () => ({ to: RouteConstants.ADMIN, translateKey: 'common_admin_panel' }) }
+                element: <ResponsiveDrawer lists={AdminDrawerList} />,
+                handle: { crumb: () => ({ to: RouteConstants.ADMIN, translateKey: 'common_admin_panel' }) },
+                children: [
+                  {
+                    index: true,
+                    element: <Navigate to={RouteConstants.OVERVIEW} replace />
+                  },
+                  {
+                    path: RouteConstants.OVERVIEW,
+                    element: <AdminOverview />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_OVERVIEW,
+                        translateKey: 'common_overview'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.DONATED_TEXTS,
+                    element: <DonatedTexts />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_DONATED_TEXTS,
+                        translateKey: 'common_donated_texts'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.PUBLISHED_TEXTS,
+                    element: <PublishedTexts />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_PUBLISHED_TEXTS,
+                        translateKey: 'common_published_texts'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.PROPERTY_VALUES,
+                    element: <PropertyValuesBrowser />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_PROPERTY_VALUES,
+                        translateKey: 'admin_property_values_title'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.PROPERTY_CHECK_CONFIG,
+                    element: <PropertyCheckConfig />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_PROPERTY_CHECK_CONFIG,
+                        translateKey: 'admin_property_check_config_title'
+                      })
+                    }
+                  }
+                ]
               }
             ]
           },

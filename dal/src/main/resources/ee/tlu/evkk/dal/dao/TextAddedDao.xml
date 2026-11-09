@@ -8,4 +8,75 @@
     from core.text_added;
   </select>
 
+  <select id="findTextAndMetadataById" resultType="ee.tlu.evkk.dal.dto.TextAndMetadata">
+    select array_to_json(array_agg(json_build_object('propertyName', p.property_name, 'propertyValue',
+                                                     p.property_value))) as properties,
+           t.content                                                     as text
+    from (select property_name, property_value, text_id from core.text_property_added where text_id = #{textId}) p
+           join core.text_added t on p.text_id = t.id
+    group by t.content;
+  </select>
+
+  <select id="detailedTextQueryByParameters" resultType="java.lang.String">
+    select array_to_json(array_agg(row_to_json(t)))
+    from (
+    select p2.text_id, p2.property_value
+    <if test="includeMeta">
+      , p1._meta
+    </if>
+    from core.text_property_added as p2
+    <if test="includeMeta">
+      join core.text_added as p1 on p2.text_id = p1.id
+    </if>
+    <foreach item="singleParamHelper" collection="singleParamHelpers" separator=" ">
+      join core.text_property_added as ${singleParamHelper.table} on p2.text_id = ${singleParamHelper.table}.text_id
+    </foreach>
+    <foreach item="multiParamHelper" collection="multiParamHelpers" separator=" ">
+      <if test="multiParamHelper.values != null">
+        join core.text_property_added as ${multiParamHelper.table} on p2.text_id = ${multiParamHelper.table}.text_id
+      </if>
+    </foreach>
+    <if test="otherLangHelper.table != null">
+      join core.text_property_added as ${otherLangHelper.table} on p2.text_id = ${otherLangHelper.table}.text_id
+    </if>
+    where p2.property_name = 'title'
+    <foreach item="singleParamHelper" collection="singleParamHelpers" separator=" ">
+      and ${singleParamHelper.table}.property_name = #{singleParamHelper.parameter}
+      and ${singleParamHelper.table}.property_value = #{singleParamHelper.value}
+    </foreach>
+    <foreach item="multiParamHelper" collection="multiParamHelpers" separator=" ">
+      <if test="multiParamHelper.values != null">
+        and ${multiParamHelper.table}.property_name = #{multiParamHelper.parameter}
+        and ${multiParamHelper.table}.property_value in
+        <foreach item="multiParam" collection="multiParamHelper.values" separator=", " open="(" close=")">
+          #{multiParam}
+        </foreach>
+      </if>
+    </foreach>
+    <if test="otherLangHelper.table != null">
+      <bind name="likeValue" value="'%' + otherLangHelper.value + '%'"/>
+      and ${otherLangHelper.table}.property_name = #{otherLangHelper.parameter}
+      and ${otherLangHelper.table}.property_value ilike #{likeValue}
+    </if>
+    ) t
+  </select>
+
+  <select id="findCreatedAtById" resultType="java.lang.String">
+    select _meta ->> 'created_at'
+    from core.text_added
+    where id = #{textId};
+  </select>
+
+  <update id="updateTextContent">
+    update core.text_added
+    set content = #{content}
+    where id = #{textId}
+  </update>
+
+  <delete id="deleteById">
+    delete
+    from core.text_added
+    where id = #{textId}
+  </delete>
+
 </mapper>

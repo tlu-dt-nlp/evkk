@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Mapper
@@ -13,4 +14,18 @@ import java.util.UUID;
 public interface TextPropertyDao {
 
   Collection<TextProperty> findByTextId(@Param("textId") UUID textId);
+
+  List<String> findDistinctPropertyNames();
+
+  List<String> findDistinctValuesByName(@Param("propertyName") String propertyName);
+
+  List<TextProperty> findExistingValues(@Param("candidates") List<TextProperty> candidates);
+
+  void updateProperty(@Param("id") UUID id, @Param("propertyValue") String propertyValue);
+
+  void insertProperty(@Param("textId") UUID textId, @Param("propertyName") String propertyName, @Param("propertyValue") String propertyValue);
+
+  void deleteByIds(@Param("ids") List<UUID> ids);
+
+  void deleteByTextId(@Param("textId") UUID textId);
 }

@@ -6,8 +6,11 @@ dependencies {
   api "com.github.npathai:hamcrest-optional:${hamcrestOptionalVersion}"
   api "org.mockito:mockito-junit-jupiter"
 
-  // this excludes junit 4 (we are using 5)
-  api("org.springframework.boot:spring-boot-starter-test") { exclude group: "junit", module: "junit" }
+  // this excludes junit 4 and its vintage engine (we are using 5)
+  api("org.springframework.boot:spring-boot-starter-test") {
+    exclude group: "junit", module: "junit"
+    exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+  }
   api("org.springframework.security:spring-security-test") { exclude group: "junit", module: "junit" }
   api("org.hamcrest:hamcrest-all:${hamcrestVersion}") { exclude group: "junit", module: "junit" }
   api("com.shazam:shazamcrest:${shazamcrestVersion}") { exclude group: "junit", module: "junit" }

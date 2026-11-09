@@ -18,6 +18,18 @@ pipeline {
       }
     }
 
+    stage('Test') {
+      steps {
+        // Runs tests in JDK 11 (Gradle 5.6.4 can't run on the host's newer JDK) with Redis, Postgres and Stanza
+        sh 'bash ./ci-test.sh'
+      }
+      post {
+        always {
+          junit '**/build/test-results/**/*.xml'
+        }
+      }
+    }
+
     stage('Build') {
       steps {
         withCredentials([
