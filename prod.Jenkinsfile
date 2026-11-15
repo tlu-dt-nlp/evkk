@@ -8,13 +8,15 @@ pipeline {
 
   environment {
     BUILD_TARGET = 'prod'
+    // Optional DEPLOY_HOST job parameter overrides the server
+    DEPLOY_HOST = "${params.DEPLOY_HOST?.trim() ?: 'praktika2.cs.tlu.ee'}"
   }
 
   stages {
 
     stage('Notify') {
       steps {
-        slackSend (message: "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Jenkins>)", color: "good")
+        slackSend (message: "Build Started - ${env.JOB_NAME} ${env.BUILD_NUMBER}: ${DEPLOY_HOST} (<${env.BUILD_URL}|Jenkins>)", color: "good")
       }
     }
 
@@ -47,7 +49,7 @@ pipeline {
     stage('Copy files') {
       steps {
         sshagent (credentials: ['deploy']) {
-          sh "scp -o StrictHostKeyChecking=no -r ./build/* evkk@praktika2.cs.tlu.ee:/opt/evkk"
+          sh "scp -o StrictHostKeyChecking=no -r ./build/* evkk@${DEPLOY_HOST}:/opt/evkk"
         }
       }
     }
@@ -55,7 +57,7 @@ pipeline {
     stage('Deploy') {
       steps {
         sshagent (credentials: ['deploy']) {
-          sh "ssh -o StrictHostKeyChecking=no evkk@praktika2.cs.tlu.ee 'docker system prune --force --volumes && cd /opt/evkk/ && ./run.sh'"
+          sh "ssh -o StrictHostKeyChecking=no evkk@${DEPLOY_HOST} 'docker system prune --force --volumes && cd /opt/evkk/ && ./run.sh'"
         }
       }
     }
