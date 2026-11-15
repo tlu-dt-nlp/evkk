@@ -460,7 +460,7 @@ export const TRANSLATIONS_EN = {
   people_role_distinguished_lecturer_software_engineering: 'Senior Lecturer of Software Engineering',
   people_role_language_technologist_analyst: 'Linguistic Technologist-Analyst',
   people_role_language_technologist_software_developer: 'Language Technology Software Developer',
-  people_role_language_technology_project_manager: 'Project Manager',
+  people_role_language_technology_project_manager: 'Language Technology Project Lead',
   people_role_visiting_researcher_call: 'Visiting Research Fellow in Computer-Assisted Language Learning',
   people_role_visiting_researcher_digital_language_learning: 'Visiting Research Fellow in Digital Solutions for Language Learning',
   publish_your_text_author_data_native_language_tooltip: 'If you have more than one native language, enter them, separated by commas.',
