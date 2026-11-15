@@ -8,6 +8,8 @@ pipeline {
 
   environment {
     BUILD_TARGET = 'demo'
+    // Unique image tag per build (prefixed, since demo and prod builds share the Jenkins host's images), used by Swarm to detect changes and roll back
+    IMAGE_TAG = "${BUILD_TARGET}-${env.BUILD_NUMBER}"
   }
 
   stages {
@@ -58,7 +60,7 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'docker system prune --force --volumes && cd /opt/evkk && ./run.sh'
+        sh 'cd /opt/evkk && ./run.sh && docker system prune --force --volumes'
       }
     }
 
