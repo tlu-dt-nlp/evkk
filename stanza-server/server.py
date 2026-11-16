@@ -19,6 +19,7 @@ from text_abstraction_analyse import Utils
 from text_level_model.linguistic_analysis import linguistic_analysis, extract_features
 from text_level_model.train import train
 from vocabulary_marking_handlers import check_both_sentence_repetition
+from keeletuvastus import tuvasta_keel
 
 train()
 utils = Utils()
@@ -186,6 +187,7 @@ def keerukus_sonaliigid_mitmekesisus():
         "keerukus": hinda_keerukust(tekst),
         "mitmekesisus": hinda_mitmekesisust(tekst),
         "lemmad": lemmad,
+        "keel": tuvasta_keel(tekst),
         "keeletase": {
             "lexical": linguistic_analysis("lexical", feat_values),
             "grammatical": linguistic_analysis("grammatical", feat_values),

@@ -7,3 +7,5 @@ export const ABSTRACT_WORDS = 'abstractwords';
 export const CONTENT_WORDS = 'contentwords';
 export const SPELLCHECKER = 'spellchecker';
 export const GRAMMARCHECKER = 'grammarchecker';
+export const ESTONIAN_LANGUAGE_CODE = 'et';
+export const LANGUAGE_DETECTION_MIN_PROBABILITY = 0.5;

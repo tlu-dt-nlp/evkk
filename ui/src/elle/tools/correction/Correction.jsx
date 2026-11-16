@@ -18,6 +18,7 @@ import TextLevelInfo from './components/info/TextLevelInfo';
 import ComplexityInfo from './components/info/ComplexityInfo';
 import VocabularyInfo from './components/info/VocabularyInfo';
 import ErrorAccordion from './components/errors/ErrorAccordion';
+import LanguageWarningAlert from './components/LanguageWarningAlert';
 import { useAnalytics } from '../../context/AnalyticsContext';
 
 const infoContentMap = {
@@ -105,6 +106,7 @@ export default function Correction() {
                   <CorrectorButton />
                 </div>
                 <div className="correction-input-group-inner">
+                  <LanguageWarningAlert />
                   {errorBoxTabPanels}
                 </div>
               </div>

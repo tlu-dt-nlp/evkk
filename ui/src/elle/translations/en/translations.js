@@ -231,6 +231,7 @@ export const TRANSLATIONS_EN = {
   corrector_has_more_verbs: 'More verbs',
   corrector_index_score_difficult: 'Difficult',
   corrector_index_score_easy: 'Easy',
+  corrector_language_warning: 'The text does not appear to be in Estonian (detected language: {{language}}). The application is designed for analysing Estonian texts, so the results may be inaccurate.',
   corrector_lix_index: 'LIX index',
   corrector_long_phrases_tooltip: 'Show sentences longer than 17 words. A lengthy sentence may be difficult to remember, causing the reader to miss its point. Try to break long sentences into shorter ones and avoid repetition.',
   corrector_long_words_tooltip: 'Show words longer than 6 letters. The text becomes more difficult to read if there is a significant amount of words that are longer than average. It\'s better to use Estonian words over foreign ones and verbs over nouns that end in \'-mine\' (e.g. Politsei teostas läbiotsimise -> Politsei otsis läbi).',
