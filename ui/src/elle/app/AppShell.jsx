@@ -9,6 +9,7 @@ import SessionExpirationModal from '../components/modal/SessionExpirationModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import PageTitle from '../components/PageTitle';
 import Navbar from '../components/Navbar';
+import NoticeBanners from '../components/notice/NoticeBanners';
 import DonateText from '../components/DonateText';
 import FooterElement from '../components/FooterElement';
 import withGlobalLoading from '../hoc/withGlobalLoading';
@@ -44,6 +45,7 @@ function AppWithStatus() {
         <PageTitle />
         <ScrollRestoration />
         <Navbar />
+        <NoticeBanners />
         <DonateText />
         <Outlet />
       </div>

@@ -1,4 +1,5 @@
 import { useDraggable, useDroppable } from '@dnd-kit/core';
+import { toTranslateTransform } from '../../util/DndUtils';
 
 export function MatchingOption({ id, value, selected, disabled, onClick }) {
   const {
@@ -112,7 +113,7 @@ export function MatchingBankDropzone({ id, children }) {
 
 const getStyle = (transform, isDragging) => {
   return {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transform: toTranslateTransform(transform),
     opacity: isDragging ? 0.6 : 1
   };
 }
