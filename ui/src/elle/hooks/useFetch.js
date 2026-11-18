@@ -10,7 +10,8 @@ const ErrorCode400 = {
   'ExerciseDidNotPassQualityGate': ErrorSnackbarEventType.EXERCISE_DID_NOT_PASS_QUALITY_GATE,
   'ExerciseNotFoundOrExpired': ErrorSnackbarEventType.EXERCISE_NOT_FOUND_OR_EXPIRED,
   'ExerciseInvalidAmountOfAnswers': ErrorSnackbarEventType.EXERCISE_INVALID_AMOUNT_OF_ANSWERS,
-  'DuplicateText': ErrorSnackbarEventType.DUPLICATE_TEXT
+  'DuplicateText': ErrorSnackbarEventType.DUPLICATE_TEXT,
+  'NoticeOrderOutdated': ErrorSnackbarEventType.NOTICE_ORDER_OUTDATED
 };
 
 const statusHandlers = {
@@ -77,11 +78,15 @@ export const useFetch = () => {
       disableResponseParsing: false,
       disableContentTypeJson: false,
       parseType: FetchParseType.JSON,
-      ignoreNotFoundError: false
+      ignoreNotFoundError: false,
+      // background requests (e.g. polling) show no loading spinner or error snackbars and throw on failure
+      background: false
     };
     const options = { ...defaultOptions, ...userOptions };
 
-    loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START);
+    if (!options.background) {
+      loadingEmitter.emit(LoadingSpinnerEventType.LOADER_START);
+    }
 
     try {
       const fetchParams = { ...params };
@@ -104,6 +109,10 @@ export const useFetch = () => {
       try {
         res = await fetch(url, fetchParams);
       } catch (e) {
+        if (options.background) {
+          throw e;
+        }
+
         if (navigator.onLine) {
           errorEmitter.emit(ErrorSnackbarEventType.GENERIC_ERROR);
         } else {
@@ -113,7 +122,7 @@ export const useFetch = () => {
       }
 
       if (!res.ok) {
-        if (options.disableErrorHandling) {
+        if (options.disableErrorHandling || options.background) {
           throw new Error(`HTTP request failed: ${res}`);
         }
         await handleError(res, options);
@@ -128,7 +137,9 @@ export const useFetch = () => {
       setResponse(result);
       return result;
     } finally {
-      loadingEmitter.emit(LoadingSpinnerEventType.LOADER_END);
+      if (!options.background) {
+        loadingEmitter.emit(LoadingSpinnerEventType.LOADER_END);
+      }
     }
   }, [accessToken]);
 

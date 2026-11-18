@@ -21,3 +21,13 @@ export const useGetStatus = (setStatus, setIsLoading, setDataSuccess) => {
 
   return { getStatus };
 };
+
+export const useGetActiveNotices = () => {
+  const { fetchData } = useFetch();
+
+  const getActiveNotices = useCallback(() => {
+    return fetchData('/api/notices', {}, { background: true });
+  }, [fetchData]);
+
+  return { getActiveNotices };
+};

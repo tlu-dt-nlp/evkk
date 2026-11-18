@@ -3,6 +3,7 @@ package ee.tlu.evkk.api.controller.advice;
 import ee.tlu.evkk.api.controller.error.ErrorEntity;
 import ee.tlu.evkk.api.controller.error.ErrorEntityFactory;
 import ee.tlu.evkk.api.exception.AbstractBusinessException;
+import ee.tlu.evkk.api.exception.BadRequestException;
 import ee.tlu.evkk.api.exception.EntityNotFoundException;
 import ee.tlu.evkk.api.exception.RateLimitExceededException;
 import ee.tlu.evkk.api.exception.UnauthorizedException;
@@ -44,12 +45,12 @@ public class ExceptionHandlingAdvice {
   }
 
   @ExceptionHandler(UnauthorizedException.class)
-  public ResponseEntity<Object> unauthorizedException() {
+  public ResponseEntity<Object> handleUnauthorizedException() {
     return new ResponseEntity<>(UNAUTHORIZED);
   }
 
   @ExceptionHandler(AccessDeniedException.class)
-  public ResponseEntity<Object> accessDeniedException() {
+  public ResponseEntity<Object> handleAccessDeniedException() {
     if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
       return new ResponseEntity<>(UNAUTHORIZED);
     }
@@ -66,6 +67,13 @@ public class ExceptionHandlingAdvice {
     return new ResponseEntity<>(BAD_REQUEST);
   }
 
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<List<ErrorEntity>> handleBadRequestException(BadRequestException ex) {
+    String code = ex.getErrorCode().getCode();
+    log.warn("Bad request ({}): {}", code, ex.getMessage());
+    return createResponseEntity(singletonList(new ErrorEntity(code, code, null)));
+  }
+
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<Object> handleEntityNotFoundException() {
     return new ResponseEntity<>(NOT_FOUND);
@@ -80,5 +88,4 @@ public class ExceptionHandlingAdvice {
   private ResponseEntity<List<ErrorEntity>> createResponseEntity(List<ErrorEntity> errors) {
     return ResponseEntity.status(BAD_REQUEST).body(errors);
   }
-
 }
