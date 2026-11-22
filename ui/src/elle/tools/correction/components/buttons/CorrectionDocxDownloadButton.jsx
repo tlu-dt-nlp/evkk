@@ -47,9 +47,7 @@ export default function CorrectionDocxDownloadButton({ tab }) {
   };
 
   const handleDownload = () => {
-    selected.forEach((subTab) => {
-      downloadAsDocx(editor, tab, subTab, errorResponse, t, includeHeader);
-    });
+    downloadAsDocx(editor, tab, selected, selectedSubTab, errorResponse, t, includeHeader);
     trackEvent('Download', 'export', `correction-docx-[${selected.join(',')}]-summary:${includeHeader}`);
     handleClose();
   };

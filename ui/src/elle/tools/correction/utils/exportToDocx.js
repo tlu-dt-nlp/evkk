@@ -19,13 +19,36 @@ const headerBuilders = {
   [tabValueMap.VOCABULARY]: (_, errorResponse, t) => buildVocabularyHeader(errorResponse, t)
 };
 
-export const downloadAsDocx = (editor, mainTab, subTab, errorResponse, t, includeHeader = true) => {
+const tabLabels = {
+  [tabValueMap.CORRECTOR]: 'corrector_proofreading',
+  [tabValueMap.PROFICIENCY_LEVEL]: 'corrector_proficiency_level',
+  [tabValueMap.COMPLEXITY]: 'corrector_complexity',
+  [tabValueMap.VOCABULARY]: 'corrector_vocabulary'
+};
+
+const pageProperties = { page: { margin: { top: 1080, bottom: 1080, left: 1080, right: 1080 } } };
+
+export const downloadAsDocx = (editor, mainTab, subTabs, activeSubTab, errorResponse, t, includeHeader = true) => {
   if (!editor) return;
 
-  const headerParagraphs = includeHeader ? (headerBuilders[mainTab]?.(subTab, errorResponse, t) ?? []) : [];
-  const subTabLabel = getSubTabLabel(subTab, t);
-  const titleBlock = buildTitleBlock(subTabLabel);
-  const bodyParagraphs = buildDocBody(errorResponse, subTab, editor);
+  const orderedSubTabs = (ToggleButtonCategories[mainTab] ?? [])
+    .map(({ value }) => value)
+    .filter((value) => subTabs.includes(value));
+  if (orderedSubTabs.length === 0) return;
+
+  const hasSummaryPerView = mainTab === tabValueMap.CORRECTOR;
+
+  const sections = orderedSubTabs.map((subTab, index) => {
+    const withHeader = includeHeader && (hasSummaryPerView || index === 0);
+    const headerParagraphs = withHeader ? (headerBuilders[mainTab]?.(subTab, errorResponse, t) ?? []) : [];
+    const titleBlock = buildTitleBlock(getSubTabLabel(subTab, t));
+    const bodyParagraphs = buildDocBody(errorResponse, subTab, subTab === activeSubTab ? editor : null);
+
+    return {
+      properties: pageProperties,
+      children: [...titleBlock, ...headerParagraphs, spacer(160), ...bodyParagraphs]
+    };
+  });
 
   const doc = new Document({
     styles: {
@@ -33,15 +56,13 @@ export const downloadAsDocx = (editor, mainTab, subTab, errorResponse, t, includ
         document: { run: { font: FONT, size: BODY_SIZE } }
       }
     },
-    sections: [
-      {
-        properties: { page: { margin: { top: 1080, bottom: 1080, left: 1080, right: 1080 } } },
-        children: [...titleBlock, ...headerParagraphs, spacer(160), ...bodyParagraphs]
-      }
-    ]
+    sections
   });
 
-  const filename = `${subTabLabel}_${formatTimestamp()}.docx`;
+  const fileLabel = orderedSubTabs.length === 1
+    ? getSubTabLabel(orderedSubTabs[0], t)
+    : t(tabLabels[mainTab] ?? mainTab);
+  const filename = `${fileLabel}_${formatTimestamp()}.docx`;
 
   Packer.toBlob(doc).then((blob) => saveAs(blob, filename));
 };
