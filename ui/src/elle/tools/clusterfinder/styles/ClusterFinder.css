@@ -1,0 +1,104 @@
+/*
+ * Scoped to the ClusterFinder tool.
+ *
+ * Everything the tool renders in place is nested under `.clusterfinder-app`, so no rule
+ * here can reach another tool. The dropdown popover is the one exception: MUI portals it
+ * to <body>, outside the wrapper, so it carries its own `clusterfinder-` prefixed class.
+ */
+
+.clusterfinder-app {
+
+  /* The two filter groups (clause types, word types), stacked. */
+  .filter-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px 0;
+  }
+
+  /* Top row: analysis type / sequence length + order / other options. */
+  .analysis-options {
+    flex-direction: column;
+
+    @media (min-width: 600px) {
+      flex-direction: row;
+    }
+  }
+
+  .sequence-length-select {
+    width: 100px;
+  }
+
+  .order-by-select {
+    width: 200px;
+  }
+
+  /* One cascading filter group: its columns laid out left to right. */
+  .filter-columns {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+
+    &.is-disabled {
+      opacity: 0.5;
+    }
+  }
+
+  .filter-column {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 12px;
+    width: 190px;
+  }
+
+  /* Chips for the current selection, shown in the closed multi-select field. */
+  .selected-chips {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .selected-chip {
+    max-width: 110px;
+  }
+
+  /* The '+ n more' summary standing in for the chips that did not fit. */
+  .selected-chips-overflow {
+    color: rgba(0, 0, 0, 0.6);
+    flex-shrink: 0;
+    font-size: 12px;
+  }
+
+  /* Expand/collapse control for a result row's usage list. */
+  .usages-toggle {
+    margin-bottom: 4px;
+    margin-left: 8px;
+    min-width: auto;
+    padding: 0;
+  }
+
+  /* Validation message under the analyse button. */
+  .no-text-error {
+    margin-top: 16px;
+  }
+
+  .table-search {
+    width: 200px;
+
+    /* index.css puts a 1rem !important bottom margin on every input. */
+    .MuiInputBase-root {
+      margin-bottom: 0 !important;
+    }
+  }
+}
+
+/* Portalled to <body>, so it cannot be nested in the wrapper above. */
+.clusterfinder-tree-popover {
+  max-height: 380px;
+  min-width: 260px;
+  padding: 8px;
+}
