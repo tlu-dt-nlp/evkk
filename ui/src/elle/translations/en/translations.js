@@ -1,4 +1,67 @@
 export const TRANSLATIONS_EN = {
+  admin_notices: {
+    add: 'Add notice',
+    description: 'Notices are shown as banners at the top of the page in the order below. Drag rows to change the order.',
+    empty: 'No notices have been added.',
+    title: 'Notices',
+    delete: {
+      message: 'Are you sure you want to delete this notice? This cannot be undone.',
+      title: 'Delete notice'
+    },
+    dismissible: {
+      helper: 'A closed notice is no longer shown in that browser. If turned off, the notice is shown until it expires or is deleted.',
+      label: 'Users can close the notice'
+    },
+    errors: {
+      content_required: 'Content is required',
+      order_outdated: 'The notices were changed in the meantime. The list has been refreshed, please try again.',
+      pages_required: 'Select at least one page',
+      valid_to_before_valid_from: 'End time must be after start time',
+      valid_to_without_valid_from: 'End time can only be set together with start time'
+    },
+    form: {
+      add_title: 'Add notice',
+      content_en: 'Content in English',
+      content_et: 'Content in Estonian',
+      dismissed_edit_warning: 'This notice is active and can be closed. Users who have already closed it will not see your changes. To show the changes to everyone, delete this notice and add a new one instead.',
+      edit_title: 'Edit notice',
+      preview: 'Preview'
+    },
+    pages: {
+      all_pages: 'All pages',
+      helper: 'Selecting a section shows the notice on all of its subpages.',
+      home: 'Home page',
+      label: 'Shown on',
+      section: '{{name}} (all subpages)',
+      unknown: 'Unknown page ({{key}})'
+    },
+    severity: {
+      error: 'Error',
+      info: 'Info',
+      label: 'Type',
+      success: 'Success',
+      warning: 'Warning'
+    },
+    status: {
+      active: 'Active',
+      expired: 'Expired',
+      scheduled: 'Scheduled'
+    },
+    table: {
+      content: 'Content',
+      created_updated: 'Created / updated',
+      dismissible: 'Closable',
+      drag_to_reorder: 'Drag to reorder',
+      order: 'Order',
+      status: 'Status',
+      validity: 'Valid from / until'
+    },
+    validity: {
+      helper: 'Optional. Leave both empty to show the notice immediately and indefinitely. End time requires a start time.',
+      valid_from: 'Valid from',
+      valid_to: 'Valid until'
+    }
+  },
   admin_novel_names_modal_message: 'The following property <bold>names</bold> do not yet exist in the corpus:',
   admin_novel_values_confirm_message: 'Are you sure they are correct?',
   admin_novel_values_modal_helper: 'You can review existing properties and values on the "Properties and values" tab, and configure which properties are automatically checked on the "Property auto-check settings" tab.',

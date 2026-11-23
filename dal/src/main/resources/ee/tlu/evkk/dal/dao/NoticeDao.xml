@@ -1,0 +1,90 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ee.tlu.evkk.dal.dao.NoticeDao">
+
+  <sql id="columns">
+    id,
+    content_et,
+    content_en,
+    severity,
+    pages,
+    is_dismissible AS dismissible,
+    valid_from,
+    valid_to,
+    sort_order,
+    (_meta ->> 'created_at')::timestamptz AS created_at,
+    (_meta ->> 'updated_at')::timestamptz AS updated_at
+  </sql>
+
+  <select id="findAll" resultType="ee.tlu.evkk.dal.dto.Notice">
+    SELECT
+    <include refid="columns" />
+    FROM core.notice
+    ORDER BY sort_order
+  </select>
+
+  <select id="findActive" resultType="ee.tlu.evkk.dal.dto.Notice">
+    <![CDATA[
+    SELECT ]]><include refid="columns" /><![CDATA[
+    FROM core.notice
+    WHERE (valid_from IS NULL OR valid_from <= now())
+      AND (valid_to IS NULL OR valid_to > now())
+    ORDER BY sort_order
+    ]]>
+  </select>
+
+  <select id="findById" resultType="ee.tlu.evkk.dal.dto.Notice">
+    SELECT
+    <include refid="columns" />
+    FROM core.notice
+    WHERE id = #{id}
+  </select>
+
+  <select id="insert" resultType="java.util.UUID" flushCache="true">
+    INSERT INTO core.notice (content_et, content_en, severity, pages, is_dismissible, valid_from, valid_to,
+                             sort_order)
+    VALUES (#{notice.contentEt},
+            #{notice.contentEn},
+            #{notice.severity},
+            #{notice.pages,javaType=java.util.List},
+            #{notice.dismissible},
+            #{notice.validFrom},
+            #{notice.validTo},
+            (SELECT coalesce(max(sort_order), 0) + 1 FROM core.notice))
+    RETURNING id
+  </select>
+
+  <update id="update">
+    UPDATE core.notice
+    SET content_et     = #{notice.contentEt},
+        content_en     = #{notice.contentEn},
+        severity       = #{notice.severity},
+        pages          = #{notice.pages,javaType=java.util.List},
+        is_dismissible = #{notice.dismissible},
+        valid_from     = #{notice.validFrom},
+        valid_to       = #{notice.validTo}
+    WHERE id = #{notice.id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE
+    FROM core.notice
+    WHERE id = #{id}
+  </delete>
+
+  <update id="updateSortOrder">
+    UPDATE core.notice
+    SET sort_order = #{sortOrder}
+    WHERE id = #{id}
+  </update>
+
+  <update id="compactSortOrder">
+    UPDATE core.notice n
+    SET sort_order = ordered.new_sort_order
+    FROM (SELECT id, row_number() OVER (ORDER BY sort_order) AS new_sort_order FROM core.notice) ordered
+    WHERE n.id = ordered.id
+      AND n.sort_order &lt;&gt; ordered.new_sort_order
+  </update>
+
+</mapper>

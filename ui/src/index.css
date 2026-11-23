@@ -101,6 +101,10 @@ a:hover {
   margin-top: 20px;
 }
 
+.global-page-container.notices-container {
+  margin-bottom: -20px;
+}
+
 @media (max-width: 1399px) {
   .global-page-container {
     width: 90vw !important;
@@ -110,6 +114,10 @@ a:hover {
 @media (max-width: 1023px) {
   .global-page-container {
     width: 100% !important;
+  }
+
+  .global-page-container.notices-container {
+    margin-bottom: 0;
   }
 }
 

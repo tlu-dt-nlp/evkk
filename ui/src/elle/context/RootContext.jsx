@@ -2,6 +2,7 @@ import { createContext, useCallback, useEffect, useState } from 'react';
 import { successEmitter } from '../../App';
 import { SuccessSnackbarEventType } from '../components/snackbar/SuccessSnackbar';
 import { useGetStatus } from '../hooks/service/RootService';
+import { useNoticePolling } from '../hooks/useNoticePolling';
 
 const RootContext = createContext(null);
 
@@ -11,6 +12,7 @@ export const RootProvider = ({ children }) => {
   const [status, setStatus] = useState(true);
   const [clusterFinderIntegrationPath, setClusterFinderIntegrationPath] = useState();
   const [version, setVersion] = useState();
+  const [notices, setNotices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [tokenRenewed, setTokenRenewed] = useState(false);
 
@@ -19,10 +21,12 @@ export const RootProvider = ({ children }) => {
     setAccessToken(res.accessToken);
     setClusterFinderIntegrationPath(res.clusterFinderIntegrationPath);
     setVersion(res.version);
+    setNotices(res.notices ?? []);
     setStatus(true);
   }, []);
 
   const { getStatus } = useGetStatus(setStatus, setIsLoading, setDataSuccess);
+  const { refreshNotices } = useNoticePolling(setNotices);
 
   const loadData = useCallback(async (isTokenRenewed = false) => {
     setIsLoading(true);
@@ -58,6 +62,8 @@ export const RootProvider = ({ children }) => {
         status,
         clusterFinderIntegrationPath,
         version,
+        notices,
+        refreshNotices,
         isLoading,
         setContext,
         clearAuthContext
