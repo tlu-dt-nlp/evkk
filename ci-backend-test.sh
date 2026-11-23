@@ -72,8 +72,9 @@ wait_for postgres 60 docker exec "$ID-postgres" pg_isready -h 127.0.0.1 -U db_us
 echo "Migrating database ..."
 gradle :db:bootRun
 
+# Same check as the Swarm healthcheck: models are loaded before Flask starts listening
 wait_for stanza 600 docker exec "$ID-stanza" \
-  python -c "import urllib.request; urllib.request.urlopen('http://localhost:5300/tervitus')"
+  python -c "import socket; socket.create_connection(('127.0.0.1', 5300), 3)"
 
 echo "Running tests ..."
 gradle test

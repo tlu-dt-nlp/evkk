@@ -20,14 +20,26 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Backend tests') {
       steps {
         // Runs tests in JDK 11 (Gradle 5.6.4 can't run on the host's newer JDK) with Redis, Postgres and Stanza
-        sh 'bash ./ci-test.sh'
+        sh 'bash ./ci-backend-test.sh'
       }
       post {
         always {
           junit '**/build/test-results/**/*.xml'
+        }
+      }
+    }
+
+    stage('UI tests') {
+      steps {
+        // Runs Vitest tests in the same Node image the UI is built with
+        sh 'bash ./ci-ui-test.sh'
+      }
+      post {
+        always {
+          junit 'ui/test-results/*.xml'
         }
       }
     }
