@@ -10,7 +10,8 @@ services:
     image: postgres:13-alpine
     container_name: evkk-postgres
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "db_user", "-d", "evkk" ]
+      # -h forces TCP, so the temporary server used during init doesn't count as ready
+      test: [ "CMD", "pg_isready", "-h", "127.0.0.1", "-U", "db_user", "-d", "evkk" ]
       interval: 5s
       timeout: 5s
       retries: 5
