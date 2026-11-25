@@ -44,6 +44,14 @@ import { buildNoticePages, getNoticePageLabel, mapPagesByKey } from '../notice/N
 import { SuccessSnackbarEventType } from '../snackbar/SuccessSnackbar';
 import NoticeFormModal from './NoticeFormModal';
 
+// macOS (e.g. Safari) hides scrollbars until the user scrolls, so it is not obvious that the wide table scrolls
+// sideways; a styled scrollbar is always visible
+const visibleScrollbarStyle = {
+  '&::-webkit-scrollbar': { height: 10 },
+  '&::-webkit-scrollbar-track': { backgroundColor: 'action.hover' },
+  '&::-webkit-scrollbar-thumb': { backgroundColor: 'action.disabled', borderRadius: 5 }
+};
+
 function SortableNoticeRow({ notice, index, pagesByKey, onEdit, onDelete }) {
   const { t } = useTranslation();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
@@ -237,7 +245,7 @@ export default function Notices({ getAppRoutes }) {
       {notices.length === 0 ? (
         <Typography color="text.secondary">{t('admin_notices.empty')}</Typography>
       ) : (
-        <TableContainer component={Paper} variant="outlined">
+        <TableContainer component={Paper} variant="outlined" sx={visibleScrollbarStyle}>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <Table size="small">
               <TableHead>

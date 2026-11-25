@@ -70,6 +70,17 @@ const renderPageOptionLabel = (key, pagesByKey, t) => {
   return getNoticePageLabel(key, pagesByKey, t);
 };
 
+// Safari shows the current date and time in an empty date field, which looks like a filled-in value,
+// so the native date text is hidden while the field is empty and not being edited
+const emptyDateTimeStyle = {
+  '& input[data-empty="true"]:not(:focus)::-webkit-datetime-edit': { opacity: 0 }
+};
+
+const dateTimeInputProps = (value) => ({
+  inputLabel: { shrink: true },
+  htmlInput: { 'data-empty': !value }
+});
+
 export default function NoticeFormModal({ isOpen, setIsOpen, notice, pages, onSubmit }) {
   const { t } = useTranslation();
   const [form, setForm] = useState(EMPTY_FORM);
@@ -228,7 +239,8 @@ export default function NoticeFormModal({ isOpen, setIsOpen, notice, pages, onSu
             label={t('admin_notices.validity.valid_from')}
             value={form.validFrom}
             onChange={setField('validFrom')}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={dateTimeInputProps(form.validFrom)}
+            sx={emptyDateTimeStyle}
             fullWidth
           />
           <TextField
@@ -238,7 +250,8 @@ export default function NoticeFormModal({ isOpen, setIsOpen, notice, pages, onSu
             onChange={setField('validTo')}
             error={!!errors.validTo}
             helperText={errors.validTo && t(errors.validTo)}
-            slotProps={{ inputLabel: { shrink: true } }}
+            slotProps={dateTimeInputProps(form.validTo)}
+            sx={emptyDateTimeStyle}
             fullWidth
           />
         </Stack>
