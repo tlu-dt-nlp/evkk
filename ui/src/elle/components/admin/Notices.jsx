@@ -27,7 +27,7 @@ import {
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { successEmitter } from '../../../App';
-import { DefaultButtonStyle } from '../../const/StyleConstants';
+import { DefaultButtonStyle, VisibleScrollbarStyle } from '../../const/StyleConstants';
 import RootContext from '../../context/RootContext';
 import {
   useCreateNotice,
@@ -43,14 +43,6 @@ import { getNoticeStatus, NoticeStatusChipColor, toAlertSeverity } from '../noti
 import { buildNoticePages, getNoticePageLabel, mapPagesByKey } from '../notice/NoticePages';
 import { SuccessSnackbarEventType } from '../snackbar/SuccessSnackbar';
 import NoticeFormModal from './NoticeFormModal';
-
-// macOS (e.g. Safari) hides scrollbars until the user scrolls, so it is not obvious that the wide table scrolls
-// sideways; a styled scrollbar is always visible
-const visibleScrollbarStyle = {
-  '&::-webkit-scrollbar': { height: 10 },
-  '&::-webkit-scrollbar-track': { backgroundColor: 'action.hover' },
-  '&::-webkit-scrollbar-thumb': { backgroundColor: 'action.disabled', borderRadius: 5 }
-};
 
 function SortableNoticeRow({ notice, index, pagesByKey, onEdit, onDelete }) {
   const { t } = useTranslation();
@@ -245,7 +237,7 @@ export default function Notices({ getAppRoutes }) {
       {notices.length === 0 ? (
         <Typography color="text.secondary">{t('admin_notices.empty')}</Typography>
       ) : (
-        <TableContainer component={Paper} variant="outlined" sx={visibleScrollbarStyle}>
+        <TableContainer component={Paper} variant="outlined" sx={VisibleScrollbarStyle}>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <Table size="small">
               <TableHead>

@@ -216,6 +216,20 @@ export const ElleDefaultChip = {
   }
 };
 
+// macOS (e.g. Safari) hides scrollbars until the user scrolls, so it is not obvious that an area scrolls;
+// a styled scrollbar is always visible
+export const VisibleScrollbarStyle = {
+  '&::-webkit-scrollbar': { width: 10, height: 10 },
+  '&::-webkit-scrollbar-track': { backgroundColor: 'action.hover' },
+  '&::-webkit-scrollbar-thumb': { backgroundColor: 'action.disabled', borderRadius: 5 }
+};
+
+// for modals: scrolling stops at the modal's edge instead of moving on to the page behind it
+export const ModalScrollStyle = {
+  ...VisibleScrollbarStyle,
+  overscrollBehavior: 'contain'
+};
+
 export const modalStyle = {
   position: 'absolute',
   top: '50%',

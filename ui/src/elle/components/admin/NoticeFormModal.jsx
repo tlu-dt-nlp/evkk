@@ -13,9 +13,9 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DefaultButtonStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
+import { DefaultButtonStyle, ModalScrollStyle, SecondaryButtonStyle } from '../../const/StyleConstants';
 import ModalBase from '../modal/ModalBase';
 import { getNoticeStatus, NoticeSeverity, NoticeStatus, toAlertSeverity } from '../notice/NoticeConstants';
 import { fromDateTimeLocalInputValue, toDateTimeLocalInputValue } from '../../util/DateUtils';
@@ -94,7 +94,8 @@ export default function NoticeFormModal({ isOpen, setIsOpen, notice, pages, onSu
     ...form.pages.filter(key => !pagesByKey.has(key))
   ], [pages, pagesByKey, form.pages]);
 
-  useEffect(() => {
+  // a layout effect, so the modal is first drawn with the right content instead of changing right after opening
+  useLayoutEffect(() => {
     if (isOpen) {
       setForm(toForm(notice));
       setSubmitted(false);
@@ -133,6 +134,7 @@ export default function NoticeFormModal({ isOpen, setIsOpen, notice, pages, onSu
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       disableComfortClosing
+      sx={ModalScrollStyle}
       title={notice ? 'admin_notices.form.edit_title' : 'admin_notices.form.add_title'}
     >
       <Stack spacing={2.5}>
