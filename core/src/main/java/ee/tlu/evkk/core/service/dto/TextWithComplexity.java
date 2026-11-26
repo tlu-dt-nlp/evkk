@@ -1,7 +1,6 @@
 package ee.tlu.evkk.core.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import ee.evkk.dto.LanguageDetectionResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ public class TextWithComplexity {
   private List<String> keerukus;
   private List<String> lemmad;
   private List<String> mitmekesisus;
-  private LanguageDetectionResponseDto keel;
   private Object keeletase;
   private Object abstraktsus;
   private Object grammatika;

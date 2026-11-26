@@ -1,6 +1,7 @@
 package ee.tlu.evkk.core.integration;
 
 import ee.evkk.dto.KeeletaseGrammatikaOigekiriAnaluusResponseDto;
+import ee.evkk.dto.LanguageDetectionResponseDto;
 import ee.evkk.dto.SpellerResponseDto;
 import ee.tlu.evkk.core.service.dto.TextWithComplexity;
 import ee.tlu.evkk.dal.dto.StanzaResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestOperations;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.util.Map.of;
 import static java.util.Objects.requireNonNull;
@@ -27,6 +29,7 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
 
   private static final String MAP_PARAMETER = "tekst";
   private static final String MODEL_PARAMETER = "model";
+  private static final int KEELETUVASTUS_MAX_TAHEMARKE = 2000;
 
   private final RestOperations rest;
 
@@ -43,6 +46,16 @@ public class StanzaServerClient extends AbstractRestOperationsClient {
     HttpEntity<?> requestEntity = new HttpEntity<>(map);
     ResponseEntity<TextWithComplexity> forEntity = retry()
       .execute(context -> rest.postForEntity("/keerukus-sonaliigid-mitmekesisus", requestEntity, TextWithComplexity.class));
+    return forEntity.getBody();
+  }
+
+  public LanguageDetectionResponseDto getKeeletuvastus(String tekst) {
+    String text = Objects.toString(tekst, "");
+    Map<String, String> map = of(MAP_PARAMETER, text.substring(0, Math.min(text.length(), KEELETUVASTUS_MAX_TAHEMARKE)));
+    HttpEntity<?> requestEntity = new HttpEntity<>(map);
+    // no retry: language detection is optional
+    ResponseEntity<LanguageDetectionResponseDto> forEntity =
+      rest.postForEntity("/keeletuvastus", requestEntity, LanguageDetectionResponseDto.class);
     return forEntity.getBody();
   }
 

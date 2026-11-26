@@ -1,9 +1,14 @@
 import { createContext, useContext, useMemo, useRef, useState } from 'react';
-import { useGetCorrectorResult } from '../../../hooks/service/ToolsService';
-import { GRAMMARCHECKER } from '../constants/constants';
+import { useGetCorrectorResult, useGetLanguageDetection } from '../../../hooks/service/ToolsService';
+import { ESTONIAN_LANGUAGE_CODE, GRAMMARCHECKER, LANGUAGE_DETECTION_MIN_PROBABILITY } from '../constants/constants';
 import { tabValueMap, ToggleButtonCategories } from '../constants/tabConfig';
+import { useAnalytics } from '../../../context/AnalyticsContext';
 
 export const EditorContext = createContext();
+
+const isNonEstonian = detection => detection?.keel
+  && detection.keel !== ESTONIAN_LANGUAGE_CODE
+  && detection.toenaosus >= LANGUAGE_DETECTION_MIN_PROBABILITY;
 
 export function EditorProvider({ children }) {
   const [editorValues, setEditorValues] = useState({
@@ -15,6 +20,10 @@ export function EditorProvider({ children }) {
     editor: null
   });
   const { getCorrectorResult } = useGetCorrectorResult();
+  const { getLanguageDetection } = useGetLanguageDetection();
+  const { trackToolAnalyze } = useAnalytics();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [languageWarning, setLanguageWarning] = useState({ isOpen: false, language: null, text: null });
   const latestRequestIdRef = useRef(0);
   const pendingTextRef = useRef(null);
 
@@ -34,6 +43,7 @@ export function EditorProvider({ children }) {
     // drop the result of any request still in flight
     latestRequestIdRef.current++;
     pendingTextRef.current = null;
+    setIsAnalyzing(false);
     setEditorValues(prev => ({ ...prev, errorResponse }));
   };
 
@@ -41,18 +51,48 @@ export function EditorProvider({ children }) {
     setEditorValues(prev => ({ ...prev, content }));
   };
 
-  const analyzeText = async textToAnalyze => {
+  // a newer request has been sent, so the response of this one is stale
+  const isStale = requestId => requestId !== latestRequestIdRef.current;
+
+  // track: count in analytics only when the user clicks btn, not on automatic re-analysis after a tab switch
+  const analyzeText = async (textToAnalyze, { checkLanguage = false, track = false } = {}) => {
     const requestId = ++latestRequestIdRef.current;
     pendingTextRef.current = textToAnalyze;
-    const result = await getCorrectorResult({ tekst: textToAnalyze, model: GRAMMARCHECKER });
+    setIsAnalyzing(true);
 
-    // a newer request has been sent, this response is stale
-    if (requestId !== latestRequestIdRef.current) return;
-    pendingTextRef.current = null;
+    try {
+      if (checkLanguage) {
+        const detection = await getLanguageDetection({ tekst: textToAnalyze });
+        if (isStale(requestId)) return;
 
-    // failed request, useFetch has already shown the error snackbar
-    if (!result) return;
-    setEditorValues(prev => ({ ...prev, initialText: textToAnalyze, errorResponse: result }));
+        if (isNonEstonian(detection)) {
+          // keep pendingTextRef so that switching tabs does not analyse the text the user did not confirm
+          setLanguageWarning({ isOpen: true, language: detection.keel, text: textToAnalyze });
+          return;
+        }
+      }
+
+      if (track) trackToolAnalyze('corrector');
+      const result = await getCorrectorResult({ tekst: textToAnalyze, model: GRAMMARCHECKER });
+      if (isStale(requestId)) return;
+
+      pendingTextRef.current = null;
+      // on a failed request result is empty and useFetch has already shown the error snackbar
+      if (result) {
+        setEditorValues(prev => ({ ...prev, initialText: textToAnalyze, errorResponse: result }));
+      }
+    } finally {
+      if (!isStale(requestId)) setIsAnalyzing(false);
+    }
+  };
+
+  const closeLanguageWarning = () => {
+    setLanguageWarning(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const confirmLanguageWarning = async () => {
+    closeLanguageWarning();
+    await analyzeText(languageWarning.text, { track: true });
   };
 
   const reanalyzeIfStale = async () => {
@@ -72,9 +112,13 @@ export function EditorProvider({ children }) {
       setErrorResponse,
       setContent,
       analyzeText,
-      reanalyzeIfStale
+      reanalyzeIfStale,
+      isAnalyzing,
+      languageWarning,
+      confirmLanguageWarning,
+      closeLanguageWarning
     }),
-    [editorValues, getCorrectorResult]
+    [editorValues, getCorrectorResult, getLanguageDetection, trackToolAnalyze, isAnalyzing, languageWarning]
   );
   return (
     <EditorContext.Provider value={value}>

@@ -6,6 +6,8 @@ import ModalBase from './ModalBase';
 import '../styles/ConfirmationModal.css';
 
 export default function ConfirmationModal({
+  cancelLabel = 'common_no',
+  confirmLabel = 'common_yes',
   isOpen,
   message,
   onCancel,
@@ -34,7 +36,7 @@ export default function ConfirmationModal({
             sx={DefaultButtonStyle}
             variant="contained"
           >
-            {t('common_yes')}
+            {t(confirmLabel)}
           </Button>
 
           <Button
@@ -43,7 +45,7 @@ export default function ConfirmationModal({
             sx={SecondaryButtonStyle}
             variant="outlined"
           >
-            {t('common_no')}
+            {t(cancelLabel)}
           </Button>
         </Stack>
       </Stack>

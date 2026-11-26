@@ -6,6 +6,7 @@ import ee.evkk.dto.CorpusDownloadDto;
 import ee.evkk.dto.CorpusRequestDto;
 import ee.evkk.dto.CorpusTextContentsDto;
 import ee.evkk.dto.KeeletaseGrammatikaOigekiriAnaluusResponseDto;
+import ee.evkk.dto.LanguageDetectionResponseDto;
 import ee.tlu.evkk.api.annotation.RateLimit;
 import ee.tlu.evkk.api.service.WordAnalyserService;
 import ee.tlu.evkk.core.integration.CorrectorServerClient;
@@ -104,6 +105,11 @@ public class TextController {
     String[] vastus = correctorServerClient.getKorrektuur(request.getTekst());
     List<String> body = asList(vastus);
     return ok(body);
+  }
+
+  @PostMapping("/keeletuvastus")
+  public ResponseEntity<LanguageDetectionResponseDto> keeletuvastus(@RequestBody CommonTextRequestDto request) {
+    return ok(stanzaServerClient.getKeeletuvastus(request.getTekst()));
   }
 
   @PostMapping("/keeletase")

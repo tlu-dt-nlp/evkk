@@ -187,7 +187,6 @@ def keerukus_sonaliigid_mitmekesisus():
         "keerukus": hinda_keerukust(tekst),
         "mitmekesisus": hinda_mitmekesisust(tekst),
         "lemmad": lemmad,
-        "keel": tuvasta_keel(tekst),
         "keeletase": {
             "lexical": linguistic_analysis("lexical", feat_values),
             "grammatical": linguistic_analysis("grammatical", feat_values),
@@ -331,6 +330,11 @@ def sonadjaposinfo():
             if word.upos not in sona_upos_piirang:
                 result.append({"word": word.text, "start_char": word.start_char, "end_char": word.end_char})
     return Response(json.dumps(result), mimetype=mimetype)
+
+
+@app.route('/keeletuvastus', methods=post)
+def keeletuvastus():
+    return Response(json.dumps(tuvasta_keel(request.json["tekst"])), mimetype="application/json")
 
 
 @app.route('/keeletase', methods=post)

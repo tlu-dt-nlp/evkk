@@ -65,3 +65,21 @@ export const useGetCorrectorResult = () => {
 
   return { getCorrectorResult };
 };
+
+export const useGetLanguageDetection = () => {
+  const { fetchData } = useFetch();
+  // on a server error return null without an error snackbar, so the analysis can still run
+  const getLanguageDetection = useCallback(async body => {
+    const url = '/api/texts/keeletuvastus';
+    const request = { method: 'POST', body: JSON.stringify(body) };
+    const options = { disableErrorHandling: true };
+
+    try {
+      return await fetchData(url, request, options);
+    } catch {
+      return null;
+    }
+  }, [fetchData]);
+
+  return { getLanguageDetection };
+};

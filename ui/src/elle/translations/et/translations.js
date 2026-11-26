@@ -232,6 +232,7 @@ export const TRANSLATIONS_ET = {
   corrector_index_score_difficult: 'Raske',
   corrector_index_score_easy: 'Kerge',
   corrector_language_warning: 'Tekst ei paista olevat eestikeelne (tuvastatud keel: {{language}}). Rakendus on mõeldud eestikeelsete tekstide analüüsimiseks.',
+  corrector_language_warning_title: 'Teksti keel',
   corrector_lix_index: 'LIX indeks',
   corrector_long_phrases_tooltip: 'Kuva laused, mis on pikemad kui 17 sõna. Liiga pikas lauses võib mõte kaduma minna, sest lugejal on raske loetut meelde jätta. Püüa jagada pikad laused mitmeks lühemaks ja väldi mõttekordusi.',
   corrector_long_words_tooltip: 'Kuva sõnad, mis on pikemad kui 6 tähte. Kui selliseid keskmisest pikemaid sõnu esineb tihedalt, siis on teksti keerukam lugeda. Eelista võõrsõnadele eesti omasõnu ja mine-lõpuga nimisõnadele tegusõnu (nt Politsei teostas läbiotsimise -> Politsei otsis läbi).',
