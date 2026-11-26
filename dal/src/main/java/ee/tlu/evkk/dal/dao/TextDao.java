@@ -12,12 +12,16 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Mapper
 @Repository
 public interface TextDao {
+
+  List<String> getAllData();
 
   String findTextsByIds(@Param("ids") List<UUID> ids);
 

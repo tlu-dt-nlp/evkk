@@ -67,7 +67,8 @@ export const RouteConstants = {
   US: 'us',
   WORDANALYSER: 'wordanalyser',
   WORDCONTEXT: 'wordcontext',
-  WORDLIST: 'wordlist'
+  WORDLIST: 'wordlist',
+  STATISTICS: 'statistics'
 };
 
 export const RouteFullPathConstants = {

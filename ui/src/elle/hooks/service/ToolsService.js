@@ -65,3 +65,16 @@ export const useGetCorrectorResult = () => {
 
   return { getCorrectorResult };
 };
+
+export const useGetStatistics = () => {
+  const { fetchData } = useFetch();
+
+  const getStatistics = useCallback(filter => {
+    return fetchData('/api/statistics', {
+      method: 'POST',
+      body: JSON.stringify(filter || {})
+    });
+  }, [fetchData]);
+
+  return { getStatistics };
+};
