@@ -19,6 +19,7 @@ import DonatedTexts from './elle/components/admin/DonatedTexts';
 import PublishedTexts from './elle/components/admin/PublishedTexts';
 import PropertyValuesBrowser from './elle/components/admin/PropertyValuesBrowser';
 import PropertyCheckConfig from './elle/components/admin/PropertyCheckConfig';
+import Notices from './elle/components/admin/Notices';
 import RequireAuth from './elle/components/security/RequireAuth';
 import { UserRoles } from './elle/const/Constants';
 import ResponsiveDrawer from './elle/components/ResponsiveDrawer';
@@ -264,6 +265,16 @@ export const routes = [
                       crumb: () => ({
                         to: RouteFullPathConstants.ADMIN_PROPERTY_CHECK_CONFIG,
                         translateKey: 'admin_property_check_config_title'
+                      })
+                    }
+                  },
+                  {
+                    path: RouteConstants.NOTICES,
+                    element: <Notices getAppRoutes={() => routes} />,
+                    handle: {
+                      crumb: () => ({
+                        to: RouteFullPathConstants.ADMIN_NOTICES,
+                        translateKey: 'admin_notices.title'
                       })
                     }
                   }

@@ -1,4 +1,67 @@
 export const TRANSLATIONS_ET = {
+  admin_notices: {
+    add: 'Lisa teade',
+    description: 'Teateid kuvatakse lehe ülaosas bänneritena allolevas järjekorras. Järjekorra muutmiseks lohista ridu.',
+    empty: 'Teateid pole lisatud.',
+    title: 'Teated',
+    delete: {
+      message: 'Kas oled kindel, et soovid teate kustutada? Seda ei saa tagasi võtta.',
+      title: 'Teate kustutamine'
+    },
+    dismissible: {
+      helper: 'Suletud teadet selles brauseris enam ei kuvata. Kui see on välja lülitatud, kuvatakse teadet kuni selle kehtivuse lõpu või kustutamiseni.',
+      label: 'Kasutaja saab teate sulgeda'
+    },
+    errors: {
+      content_required: 'Sisu on kohustuslik',
+      order_outdated: 'Teateid on vahepeal muudetud. Nimekiri on värskendatud, proovi uuesti.',
+      pages_required: 'Vali vähemalt üks leht',
+      valid_to_before_valid_from: 'Lõpuaeg peab olema hilisem kui algusaeg',
+      valid_to_without_valid_from: 'Lõpuaega saab määrata ainult koos algusajaga'
+    },
+    form: {
+      add_title: 'Teate lisamine',
+      content_en: 'Sisu inglise keeles',
+      content_et: 'Sisu eesti keeles',
+      dismissed_edit_warning: 'See teade on aktiivne ja suletav. Kasutajad, kes on selle juba sulgenud, sinu muudatusi ei näe. Et muudatused jõuaksid kõigini, kustuta see teade ja lisa selle asemel uus.',
+      edit_title: 'Teate muutmine',
+      preview: 'Eelvaade'
+    },
+    pages: {
+      all_pages: 'Kõik lehed',
+      helper: 'Jaotise valimisel kuvatakse teadet kõigil selle alamlehtedel.',
+      home: 'Avaleht',
+      label: 'Kuvatakse',
+      section: '{{name}} (kõik alamlehed)',
+      unknown: 'Tundmatu leht ({{key}})'
+    },
+    severity: {
+      error: 'Viga',
+      info: 'Info',
+      label: 'Tüüp',
+      success: 'Õnnestumine',
+      warning: 'Hoiatus'
+    },
+    status: {
+      active: 'Aktiivne',
+      expired: 'Aegunud',
+      scheduled: 'Ajastatud'
+    },
+    table: {
+      content: 'Sisu',
+      created_updated: 'Loodud / muudetud',
+      dismissible: 'Suletav',
+      drag_to_reorder: 'Lohista järjekorra muutmiseks',
+      order: 'Järjekord',
+      status: 'Olek',
+      validity: 'Kehtib alates / kuni'
+    },
+    validity: {
+      helper: 'Valikuline. Kui mõlemad jätta tühjaks, kuvatakse teadet kohe ja tähtajatult. Lõpuaega saab määrata ainult koos algusajaga.',
+      valid_from: 'Kehtib alates',
+      valid_to: 'Kehtib kuni'
+    }
+  },
   admin_novel_names_modal_message: 'Järgmised omaduste <bold>nimed</bold> ei eksisteeri veel korpuses:',
   admin_novel_values_confirm_message: 'Kas oled kindel, et need on korrektsed?',
   admin_novel_values_modal_helper: 'Olemasolevate omaduste ja väärtustega saad tutvuda "Omadused ja väärtused" vahelehel ning automaatselt kontrollitavaid omadusi saad seadistada "Omaduste automaatkontrolli seaded" vahelehel.',

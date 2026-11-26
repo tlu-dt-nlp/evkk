@@ -29,8 +29,9 @@ public class RootService {
   private final UserDao userDao;
   private final ServiceLocator serviceLocator;
   private final DtoMapper dtoMapper;
+  private final NoticeService noticeService;
 
-  private static final String ELLE_VERSION = "26.11.2";
+  private static final String ELLE_VERSION = "26.11.3";
 
   @Transactional
   public StatusResponseDto getStatus(HttpServletRequest request) throws TokenNotFoundException {
@@ -42,6 +43,7 @@ public class RootService {
       .accessToken(accessToken)
       .clusterFinderIntegrationPath(serviceLocator.locate(CLUSTER_FINDER).toString())
       .version(ELLE_VERSION)
+      .notices(noticeService.getActiveNotices())
       .build();
   }
 

@@ -1,10 +1,35 @@
 version: "3.7"
 
+# Rolling update policies (see run.sh). Swarm only removes the old task once the new one is healthy,
+# and rolls back automatically if the new one never gets healthy or exits within `monitor`.
+# start-first: new task runs next to the old one, no downtime, but needs RAM for both at once.
+# stop-first: old task is stopped before the new one starts, has downtime, but no extra RAM needed.
+x-start-first: &start-first
+  update_config:
+    parallelism: 1
+    order: start-first
+    monitor: 60s
+    failure_action: rollback
+  rollback_config:
+    parallelism: 1
+    order: start-first
+
+x-stop-first: &stop-first
+  update_config:
+    parallelism: 1
+    order: stop-first
+    monitor: 60s
+    failure_action: rollback
+  rollback_config:
+    parallelism: 1
+    order: stop-first
+
 services:
   redis:
     image: redis:6-alpine
     container_name: evkk-redis
     deploy:
+      <<: *stop-first
       restart_policy:
         condition: any
         window: 120s
@@ -15,18 +40,29 @@ services:
     image: caddy:2.8.4-alpine
     container_name: evkk-caddy
     deploy:
+      <<: *start-first
       restart_policy:
         condition: any
         window: 120s
+      labels:
+        # The Caddyfile is bind mounted, so Swarm can't see it change. The hash label makes it restart when it does.
+        ee.evkk.caddyfile-sha: ${CADDYFILE_SHA:-unknown}
     ports:
       - "9999:9999"
     volumes:
       - $PWD/compose/Caddyfile:/etc/caddy/Caddyfile
 
   ui:
-    image: evkk-ui
+    image: evkk-ui:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-ui
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:5000/" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     deploy:
+      <<: *start-first
       restart_policy:
         condition: any
         window: 120s
@@ -34,13 +70,22 @@ services:
       - api
 
   api:
-    image: evkk-backend
+    image: evkk-backend:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-api
+    entrypoint: [ "/bin/bash", "-c", "java -jar app/api.jar" ]
+    # Tomcat only starts listening once the Spring context is fully up
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "</dev/tcp/127.0.0.1/9090" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
+    stop_grace_period: 30s
     deploy:
+      <<: *start-first
       restart_policy:
         condition: any
         window: 120s
-    entrypoint: [ "/bin/bash", "-c", "java -jar app/api.jar" ]
     secrets:
       - EVKK_API_DATASOURCE_PASSWORD
       - HARID_CLIENT_ID
@@ -54,13 +99,15 @@ services:
       - $PWD/conf/api.env
 
   task_scheduler:
-    image: evkk-backend
+    image: evkk-backend:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-task-scheduler
+    entrypoint: [ "/bin/bash", "-c", "java -jar app/task-scheduler.jar" ]
     deploy:
+      # stop-first so two schedulers never run the same jobs at once
+      <<: *stop-first
       restart_policy:
         condition: any
         window: 120s
-    entrypoint: [ "/bin/bash", "-c", "java -jar app/task-scheduler.jar" ]
     secrets:
       - EVKK_TASK_SCHEDULER_DATASOURCE_PASSWORD
     depends_on:
@@ -70,11 +117,21 @@ services:
       - $PWD/conf/task-scheduler.env
 
   stanza-server:
-    image: evkk-stanza-server
+    image: evkk-stanza-server:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-stanza-server
     environment:
       - CPU_CORE={{.Task.Slot}}
+    # Models are loaded before Flask starts listening
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 5300), 3)" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      # Generous on purpose: a crash is still detected right away, this only delays noticing a task that never listens
+      start_period: 1800s
     deploy:
+      # stop-first one replica at a time: the other 4 keep serving and no extra RAM is needed
+      <<: *stop-first
       mode: replicated
       replicas: 5
       restart_policy:
@@ -85,14 +142,19 @@ services:
           memory: 8G
         reservations:
           memory: 4G
-      update_config:
-        parallelism: 1
-        order: start-first
 
   corrector-server:
-    image: evkk-corrector-server
+    image: evkk-corrector-server:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-corrector-server
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 5200), 3)" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 1800s
     deploy:
+      # stop-first: too big to run two copies at once, corrector is briefly unavailable during the update
+      <<: *stop-first
       restart_policy:
         condition: any
         window: 120s
@@ -101,9 +163,17 @@ services:
           memory: 15G
 
   grammar-worker-server:
-    image: evkk-grammar-worker-server
+    image: evkk-grammar-worker-server:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-grammar-worker-server
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 5400), 3)" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 1800s
     deploy:
+      # stop-first: too big to run two copies at once, grammar checks are briefly unavailable during the update
+      <<: *stop-first
       restart_policy:
         condition: any
         window: 120s
@@ -112,21 +182,35 @@ services:
           memory: 25G
 
   klasterdaja:
-    image: evkk-klasterdaja
+    image: evkk-klasterdaja:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-klasterdaja
+    healthcheck:
+      test: [ "CMD", "python3", "-c", "import socket; socket.create_connection(('127.0.0.1', 5100), 3)" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
     deploy:
+      <<: *start-first
       restart_policy:
         condition: any
         window: 120s
 
   clusterfinder:
-    image: evkk-backend
+    image: evkk-backend:${IMAGE_TAG:?IMAGE_TAG is not set}
     container_name: evkk-clusterfinder
+    entrypoint: [ "/bin/bash", "-c", "java -jar app/clusterfinder.jar" ]
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "</dev/tcp/127.0.0.1/9092" ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 120s
     deploy:
+      <<: *start-first
       restart_policy:
         condition: any
         window: 120s
-    entrypoint: [ "/bin/bash", "-c", "java -jar app/clusterfinder.jar" ]
     env_file:
       - $PWD/conf/common.env
       - $PWD/conf/clusterfinder.env

@@ -2,3 +2,6 @@
 .docker/
 build/
 .gradle-home/
+ui/node_modules/
+ui/test-results/
+ui/.yarn/install-state.gz

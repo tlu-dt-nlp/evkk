@@ -4,6 +4,7 @@ import {
   Article,
   Backup,
   Book,
+  Campaign,
   CoPresent,
   Dashboard,
   Devices,
@@ -57,6 +58,7 @@ export const RouteConstants = {
   LEARN: 'learn',
   LINKS: 'links',
   LOGIN: 'login',
+  NOTICES: 'notices',
   OVERVIEW: 'overview',
   PEOPLE: 'people',
   PUBLICATIONS: 'publications',
@@ -74,6 +76,7 @@ export const RouteFullPathConstants = {
   ABOUT_PUBLICATIONS: `/${RouteConstants.ABOUT}/${RouteConstants.PUBLICATIONS}`,
   ABOUT_US: `/${RouteConstants.ABOUT}/${RouteConstants.US}`,
   ADMIN_DONATED_TEXTS: `/${RouteConstants.ADMIN}/${RouteConstants.DONATED_TEXTS}`,
+  ADMIN_NOTICES: `/${RouteConstants.ADMIN}/${RouteConstants.NOTICES}`,
   ADMIN_OVERVIEW: `/${RouteConstants.ADMIN}/${RouteConstants.OVERVIEW}`,
   ADMIN_PROPERTY_CHECK_CONFIG: `/${RouteConstants.ADMIN}/${RouteConstants.PROPERTY_CHECK_CONFIG}`,
   ADMIN_PROPERTY_VALUES: `/${RouteConstants.ADMIN}/${RouteConstants.PROPERTY_VALUES}`,
@@ -340,6 +343,11 @@ export const AdminDrawerList = [
         text: 'common_overview',
         icon: <Dashboard />,
         navigateTo: RouteConstants.OVERVIEW
+      },
+      {
+        text: 'admin_notices.title',
+        icon: <Campaign />,
+        navigateTo: RouteConstants.NOTICES
       }
     ]
   },

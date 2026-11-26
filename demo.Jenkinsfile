@@ -8,6 +8,8 @@ pipeline {
 
   environment {
     BUILD_TARGET = 'demo'
+    // Unique image tag per build (prefixed, since demo and prod builds share the Jenkins host's images), used by Swarm to detect changes and roll back
+    IMAGE_TAG = "${BUILD_TARGET}-${env.BUILD_NUMBER}"
   }
 
   stages {
@@ -18,14 +20,26 @@ pipeline {
       }
     }
 
-    stage('Test') {
+    stage('Backend tests') {
       steps {
         // Runs tests in JDK 11 (Gradle 5.6.4 can't run on the host's newer JDK) with Redis, Postgres and Stanza
-        sh 'bash ./ci-test.sh'
+        sh 'bash ./ci-backend-test.sh'
       }
       post {
         always {
           junit '**/build/test-results/**/*.xml'
+        }
+      }
+    }
+
+    stage('UI tests') {
+      steps {
+        // Runs Vitest tests in the same Node image the UI is built with
+        sh 'bash ./ci-ui-test.sh'
+      }
+      post {
+        always {
+          junit 'ui/test-results/*.xml'
         }
       }
     }
@@ -58,7 +72,7 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh 'docker system prune --force --volumes && cd /opt/evkk && ./run.sh'
+        sh 'cd /opt/evkk && ./run.sh && docker system prune --force --volumes'
       }
     }
 

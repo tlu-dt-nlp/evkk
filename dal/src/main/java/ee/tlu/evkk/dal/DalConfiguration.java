@@ -3,6 +3,7 @@ package ee.tlu.evkk.dal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ee.tlu.evkk.dal.batis.handler.DurationTypeHandler;
 import ee.tlu.evkk.dal.batis.handler.JsonTypeHandler;
+import ee.tlu.evkk.dal.batis.handler.ListTypeHandler;
 import ee.tlu.evkk.dal.batis.handler.UUIDTypeHandler;
 import ee.tlu.evkk.dal.jdbc.SqlObjectFactory;
 import ee.tlu.evkk.dal.json.Json;
@@ -17,6 +18,7 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import javax.sql.DataSource;
 import java.time.Duration;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -44,6 +46,8 @@ public class DalConfiguration {
       typeHandlerRegistry.register(Json.class, new JsonTypeHandler(jsonFactory));
       typeHandlerRegistry.register(UUID.class, UUIDTypeHandler.class);
       typeHandlerRegistry.register(Duration.class, DurationTypeHandler.class);
+      // maps List properties/parameters to PostgreSQL arrays; <foreach> over a list is unaffected
+      typeHandlerRegistry.register(List.class, ListTypeHandler.class);
     };
   }
 
@@ -52,5 +56,4 @@ public class DalConfiguration {
     ObjectMapper objectMapper = objectMapperBuilder.createXmlMapper(false).build();
     return new JsonFactory(objectMapper);
   }
-
 }

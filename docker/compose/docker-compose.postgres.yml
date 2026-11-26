@@ -1,10 +1,25 @@
 version: "3.7"
 
+networks:
+  default:
+    # Lets run.sh run the database migrations as a one-off container next to the running stack
+    attachable: true
+
 services:
   postgres:
     image: postgres:13-alpine
     container_name: evkk-postgres
+    healthcheck:
+      # -h forces TCP, so the temporary server used during init doesn't count as ready
+      test: [ "CMD", "pg_isready", "-h", "127.0.0.1", "-U", "db_user", "-d", "evkk" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
     deploy:
+      # Never start-first: two postgres instances must not share the data directory
+      update_config:
+        order: stop-first
       restart_policy:
         condition: any
         window: 120s

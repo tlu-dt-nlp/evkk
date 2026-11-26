@@ -15,6 +15,7 @@ export default function ModalBase({
                                     disableComfortClosing = false,
                                     disableCloseButton = false,
                                     modalRef,
+                                    sx,
                                     children
                                   }) {
 
@@ -34,7 +35,7 @@ export default function ModalBase({
       disableEscapeKeyDown={disableComfortClosing}
     >
       <Box
-        sx={modalStyle}
+        sx={sx ? { ...modalStyle, ...sx } : modalStyle}
         className={`modal-base-root ${innerClassName ?? ''}`.trim()}
         ref={modalRef}
       >
