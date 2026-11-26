@@ -31,7 +31,7 @@ public class RootService {
   private final DtoMapper dtoMapper;
   private final NoticeService noticeService;
 
-  private static final String ELLE_VERSION = "26.11.4";
+  private static final String ELLE_VERSION = "26.12.1";
 
   @Transactional
   public StatusResponseDto getStatus(HttpServletRequest request) throws TokenNotFoundException {
