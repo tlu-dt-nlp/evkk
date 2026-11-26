@@ -21,10 +21,6 @@ CADDYFILE_SHA="$(sha256sum compose/Caddyfile | cut -c1-12)"
 
 echo "Running EVKK ${IMAGE_TAG} ..."
 
-stack_exists() {
-  docker stack ls --format '{{.Name}}' | grep -x "$STACK" >/dev/null
-}
-
 stack_services() {
   docker service ls --filter "label=com.docker.stack.namespace=${STACK}" --format '{{.Name}}'
 }
@@ -47,8 +43,6 @@ wait_until() {
   return 1
 }
 
-no_stack() { ! stack_exists && ! docker network inspect "$NETWORK" >/dev/null 2>&1; }
-
 postgres_healthy() {
   docker ps --filter "label=com.docker.swarm.service.name=${STACK}_postgres" --filter health=healthy --format '{{.ID}}' | grep . >/dev/null
 }
@@ -64,17 +58,6 @@ fi
 echo "Loading images"
 for file in ./images/*.tar; do docker load -i "${file}"; done
 echo "Loading images done"
-
-# Leftovers from the old compose-based migration step, e.g. after an aborted deploy
-docker rm -f evkk-postgres evkk-db >/dev/null 2>&1 || true
-
-# One-time switch: stacks created before the network was made attachable must be recreated (causes downtime once)
-if docker network inspect "$NETWORK" >/dev/null 2>&1 \
-  && [[ "$(docker network inspect -f '{{.Attachable}}' "$NETWORK")" != "true" ]]; then
-  echo "Network ${NETWORK} is not attachable, recreating the stack (one-time downtime)"
-  docker stack rm "$STACK"
-  wait_until "stack ${STACK} to be removed" 300 no_stack
-fi
 
 echo "Starting postgres (no-op if already running)"
 docker stack deploy --resolve-image never -c compose/docker-compose.postgres.yml -c compose/docker-compose.yml "$STACK"
@@ -164,11 +147,10 @@ echo "Services deployed using Docker Swarm"
 
 echo "Removing old images (keeping the current and the previous build for rollback)"
 # Only touch tags of this build target (e.g. prod-*), the demo host also holds images built for prod.
-# "latest" is the tag used before images were tagged per build.
 tag_prefix=""
 [[ "$IMAGE_TAG" == *-* ]] && tag_prefix="${IMAGE_TAG%-*}-"
 for image in "${SERVICE_IMAGES[@]}"; do
   docker image ls "$image" --format '{{.CreatedAt}}\t{{.Tag}}' \
-    | sort -r | cut -f2 | grep -E "^(${tag_prefix}|latest$)" | grep -vx "$IMAGE_TAG" | tail -n +2 \
+    | sort -r | cut -f2 | grep "^${tag_prefix}" | grep -vx "$IMAGE_TAG" | tail -n +2 \
     | sed "s|^|${image}:|" | xargs -r docker image rm >/dev/null 2>&1 || true
 done
