@@ -38,12 +38,11 @@ echo "$IMAGE_TAG" > ./build/IMAGE_TAG
 # Remove this target's images from earlier builds (e.g. prod-* on the Jenkins host), they're in the tars already.
 # Tags used by containers (like the running demo stack's) are kept: an unchanged service builds the same image under
 # a new tag, and removing the old tag would leave the running service pointing at a tag that no longer exists.
-# "latest" is the pre-tagging tag.
 tag_prefix=""
 [[ "$IMAGE_TAG" == *-* ]] && tag_prefix="${IMAGE_TAG%-*}-"
 used_tags=$(docker ps -a --format '{{.Image}}' | sed 's/@.*//')
 for service in "${services[@]}"; do
-  docker image ls "$service" --format '{{.Tag}}' | grep -E "^(${tag_prefix}|latest$)" | grep -vx "$IMAGE_TAG" \
+  docker image ls "$service" --format '{{.Tag}}' | grep "^${tag_prefix}" | grep -vx "$IMAGE_TAG" \
     | sed "s|^|${service}:|" | grep -vxF -e "$used_tags" \
     | xargs -r docker image rm >/dev/null 2>&1 || true
 done
