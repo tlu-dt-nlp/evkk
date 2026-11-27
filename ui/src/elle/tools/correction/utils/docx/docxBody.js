@@ -102,5 +102,5 @@ export const buildDocBody = (errorResponse, subTab, editor) => {
   if (subTab === GRAMMARCHECKER) return buildBodyFromTokens(errorResponse?.grammatika);
   const html = errorResponse?.margitudLaused?.[subTab];
   if (html) return buildBodyFromHtml(html);
-  return buildBodyFromEditor(editor);
+  return editor ? buildBodyFromEditor(editor) : [];
 };
